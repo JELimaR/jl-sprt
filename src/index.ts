@@ -1,11 +1,15 @@
-
-import {CollectionsUtilsFunctions} from 'jl-utlts';
+import { CollectionsUtilsFunctions } from 'jl-utlts';
 const CUF = CollectionsUtilsFunctions.getInstance();
 
-import LB, {ILBConfig} from './Basics/LB';
-import {JDateTime} from './Logica/Calendar/JDateTime' 
+import LB, { ILBConfig } from './Basics/LB';
+import { JDateTime } from './Logica/Calendar/JDateTime';
 import { TypeHalfWeekOfYear } from './Logica/Calendar/types';
-import { JCalendarLB, JEvent, JEventCreateNewLB, JEventFechAssignationLB } from './Logica/JCalendarLB';
+import {
+  JCalendarLB,
+  JEvent,
+  JEventCreateNewLB,
+  JEventFechAssignationLB,
+} from './Logica/JCalendarLB';
 import LBManager from './LBManager';
 
 /*
@@ -21,35 +25,35 @@ for (let f=0; f<sch.length;f++) {
 }
 */
 
-console.log('init')
+console.log('init');
 
 const lbm: LBManager = new LBManager();
-console.log(lbm.dt)
-console.log(lbm.dt.getDateTime())
+console.log(lbm.dt);
+console.log(lbm.dt.getDateTime());
 
 // console.log(JSON.stringify(lbm.calendar.events, null, 2));
 // console.log(lbm._nextEvent);
 
 let i = 0;
-while ( lbm.nextEvent /*&& i < 100000*/) {
-	lbm.advance();
-	// if (i<20) console.log(lbm.lb);
-	const events = lbm.getEventNow();
-	events.forEach((eve: JEvent, idx: number) => {
-		if ( eve instanceof JEventCreateNewLB ) {
-			lbm.setLB(eve.ejecute());
-		} else {
-			eve.ejecute();
-		}
-	})
-	if (events.length > 0) {
-		console.log(lbm.dt.getDateTime())
-		// console.log(lbm.calendar)
-	}
-	
-	i++;
-}
+while (lbm.nextEvent /*&& i < 100000*/) {
+  lbm.advance();
+  // if (i<20) console.log(lbm.lb);
+  const events = lbm.getEventNow();
+  events.forEach((eve: JEvent, idx: number) => {
+    if (eve instanceof JEventCreateNewLB) {
+      lbm.setLB(eve.ejecute());
+    } else {
+      eve.ejecute();
+    }
+  });
+  if (events.length > 0) {
+    // console.log(lbm.dt.getDateTime())
+    // console.log(lbm.calendar)
+    console.log(lbm.dt.absolute);
+  }
 
+  i++;
+}
 
 /*
 const cant: number = 10;
@@ -66,7 +70,6 @@ let selectedTeams = teams.slice(0,cant);
 lb.assign(selectedTeams);
 */
 // console.log(JSON.stringify(lb.getFech('id', 13), null,2))
-
 
 // console.log(lb);
 /*

@@ -7,8 +7,10 @@ export interface IJDateTime {
   time: IJTime;
 }
 
-export interface IJDateTimeCreator { interv: number; day: number }
-
+export interface IJDateTimeCreator {
+  interv: number;
+  day: number;
+}
 
 export class JDateTime {
   private _time: JTime;
@@ -30,10 +32,10 @@ export class JDateTime {
   }
 
   getIJDateTimeCreator() {
-	  return {
-		  day: this._date.getDate().dayAbsolute,
-		  interv: this._time.getTime().interv
-		};
+    return {
+      day: this._date.getDate().dayAbsolute,
+      interv: this._time.getTime().interv,
+    };
   }
 
   addInterv(value: number = 1): void {
@@ -60,7 +62,7 @@ export class JDateTime {
 
   // statics
   static isAminorthanB(a: JDateTime, b: JDateTime): boolean {
-	  return this.difBetween(a,b) < 0
+    return this.difBetween(a, b) < 0;
   }
   static difBetween(a: JDateTime, b: JDateTime): number {
     return a.absolute - b.absolute;
@@ -72,28 +74,44 @@ export class JDateTime {
     });
   }
   static subWeeks(dt: JDateTime, ws: number): JDateTime {
-    return new JDateTime({day: dt.getDateTime().date.dayAbsolute - 7*ws, interv: dt.getDateTime().time.interv})
+    return new JDateTime({
+      day: dt.getDateTime().date.dayAbsolute - 7 * ws,
+      interv: dt.getDateTime().time.interv,
+    });
   }
   static halfWeekOfYearToDaysOfYear(hs: TypeHalfWeekOfYear): IJHalfWeekOfYear {
-	  let initWeek = Math.floor((hs+1)/2-1)*7;
-	  const start: TypeDayOfYear = initWeek + ((hs % 2) === 1 ? 2 : 5) as TypeDayOfYear;
-	  const end: TypeDayOfYear = start + ((hs % 2) === 1 ? 2 : 2) as TypeDayOfYear;
-	  return {
-			start,
-			middle: start + 1 as TypeDayOfYear,
-			end
-	  }
+    let initWeek = Math.floor((hs + 1) / 2 - 1) * 7;
+    const start: TypeDayOfYear = (initWeek +
+      (hs % 2 === 1 ? 2 : 5)) as TypeDayOfYear;
+    const end: TypeDayOfYear = (start +
+      (hs % 2 === 1 ? 2 : 2)) as TypeDayOfYear;
+    return {
+      start,
+      middle: (start + 1) as TypeDayOfYear,
+      end,
+    };
   }
-  static createFromDayOfYearAndYear(day: TypeDayOfYear, year: number): JDateTime {
-		return new JDateTime({
+  static halfWeekOfYearToDateTime(
+    hs: TypeHalfWeekOfYear,
+    year: number,
+    opt: 'start' | 'end' | 'middle'
+  ): JDateTime {
+    const dayOfYear: TypeDayOfYear = this.halfWeekOfYearToDaysOfYear(hs)[opt];
+    return this.createFromDayOfYearAndYear(dayOfYear, year);
+  }
+  static createFromDayOfYearAndYear(
+    day: TypeDayOfYear,
+    year: number
+  ): JDateTime {
+    return new JDateTime({
       interv: 0,
-      day: DAYSPERYEAR * (year-1) + day,
+      day: DAYSPERYEAR * (year - 1) + day,
     });
   }
 }
 
 export interface IJHalfWeekOfYear {
-	start: TypeDayOfYear;
-	middle: TypeDayOfYear;
-	end: TypeDayOfYear;
+  start: TypeDayOfYear;
+  middle: TypeDayOfYear;
+  end: TypeDayOfYear;
 }
