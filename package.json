@@ -1,0 +1,31 @@
+{
+  "name": "jl-xxx",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "init-config": "npm install",
+    "build": "tsc",
+    "clean": "node ./scripts/clean.js",
+    "dev:tsc": "tsc --watch",
+    "dev:nodemon": "nodemon ./dist/index.js ",
+    "test": "jest"
+  },
+  "author": "JELimaR",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^26.0.24",
+    "@types/node": "^16.4.3",
+    "@typescript-eslint/eslint-plugin": "^4.28.3",
+    "@typescript-eslint/parser": "^4.28.3",
+    "eslint": "^7.30.0",
+    "jest": "^27.0.6",
+    "nodemon": "^2.0.12",
+    "ts-jest": "^27.0.4",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "jl-utlts": "^1.1.3"
+  }
+}
