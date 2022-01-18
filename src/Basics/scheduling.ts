@@ -1,16 +1,3 @@
-type TypeFechState = 
-	| 'init'
-
-interface IMatch {
-	l: any,
-	v: any,
-}
-
-interface IFech {
-	id: number;
-	state: TypeFechState;
-	matchs: IMatch[];
-}
 
 export interface arr2<T> {
 	0: T,

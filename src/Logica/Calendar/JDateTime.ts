@@ -84,6 +84,12 @@ export class JDateTime {
 			end
 	  }
   }
+  static createFromDayOfYearAndYear(day: TypeDayOfYear, year: number): JDateTime {
+		return new JDateTime({
+      interv: 0,
+      day: DAYSPERYEAR * (year-1) + day,
+    });
+  }
 }
 
 export interface IJHalfWeekOfYear {

@@ -12,6 +12,11 @@ type TypeMatchState =
 	| 'playing'
 	| 'finished'
 
+export interface IJMatch {
+	l: any,
+	v: any,
+}
+
 export default class JMatch {
 	private static cid: number = 0;
 	private static get newId(): number {

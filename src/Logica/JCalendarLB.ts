@@ -22,29 +22,30 @@ export abstract class JEvent {
   get dateTime(): JDateTime {
     return this._dateTime;
   }
+  get calendar(): JCalendar { return this._calendar }
 
   /*abstract*/ advance() {
     console.log('advance event');
   }
 
-  abstract ejecute(params: any): any;
+  abstract ejecute(): any;
 }
 
 /**
  * renombrar eventos para aclarar que son de LB
  */
-export interface IJEventMatchCreator extends IJEventCreator {
+export interface IJEventMatchLBCreator extends IJEventCreator {
 	match: JMatch
 }
 
-export class JEventMatch extends JEvent { // evento que dura algunos intervalos
+export class JEventMatchLB extends JEvent { // evento que dura algunos intervalos
   private _match: JMatch
-  constructor(emc: IJEventMatchCreator) {
+  constructor(emc: IJEventMatchLBCreator) {
     super(emc);
     this._match = emc.match;
   }
 
-  ejecute(params: any): any {
+  ejecute(): any {
       
   }
 }
@@ -61,17 +62,45 @@ export class JEventCreateNewLB extends JEvent { // evento que implica una config
 	this._lbconfig = eclbc.lbconfig;
   }
   ejecute(): LB { // setear datos en algun momento, si no se seteo nada debe dar error o solicitarlo
-    return new LB(this._lbconfig)
+    const lb: LB = new LB(this._lbconfig);
+	this.calendar.addEvent( new JEventTeamAssignationLB({
+		dateTime: {day:5, interv:100},
+		calendar: this.calendar,
+		lb
+	}) );
+    return lb;
   }
 }
 
-export interface IJEventFechCreator extends IJEventCreator {
-	fech: JFech
+export interface IJEventTeamAssignationLBCreator extends IJEventCreator {
+	lb: LB;
 }
 
-export class JEventFechAssignation extends JEvent { // evento que implica una configuracion necesaria
+export class JEventTeamAssignationLB extends JEvent { // evento que implica una configuracion necesaria
+  private _lb: LB;
+  constructor(etc: IJEventTeamAssignationLBCreator) {
+    super(etc);
+	this._lb = etc.lb;
+  }
+
+  ejecute() {
+	  console.log('ejecuting team assignation');
+	  this._lb.assign(teamSelection(this._lb.partsNumber));
+	  console.log(this._lb.teams.map(t => t.team))
+	  this._lb.fechs!.forEach((fech: JFech) => {
+		  console.log(fech.id);
+	  })
+      console.log('ejecuting team assignation');
+  }
+}
+
+export interface IJEventFechAssignatioLBCreator extends IJEventCreator {
+	fech: JFech;
+}
+
+export class JEventFechAssignationLB extends JEvent { // evento que implica una configuracion necesaria
   _fech: JFech;
-  constructor(efc: IJEventFechCreator) {
+  constructor(efc: IJEventFechAssignatioLBCreator) {
     super(efc);
     this._fech = efc.fech;
   }

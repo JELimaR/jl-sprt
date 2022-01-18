@@ -1,5 +1,15 @@
 import { TypeHalfWeekOfYear } from "../Logica/Calendar/types";
-import JMatch from "./JMatch";
+import JMatch, {IJMatch} from "./JMatch";
+
+type TypeFechState = 
+	| 'init'
+
+
+interface IJFech {
+	id: number;
+	state: TypeFechState;
+	matchs: IJMatch[];
+}
 
 export class JFech {
 	private _id: number;

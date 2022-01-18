@@ -1,7 +1,7 @@
 import * as utlts from 'jl-utlts';
 const CUF = utlts.CollectionsUtilsFunctions.getInstance();
 
-import * as data from '../data';
+import scheduling, {arr2} from './scheduling';
 import JTeam from './JTeam';
 import JMatch from './JMatch';
 import { TypeHalfWeekOfYear } from '../Logica/Calendar/types';
@@ -19,7 +19,7 @@ interface ITeamTableItem {
 	team: JTeam;
 }
 
-class TeamTableItem implements ITeamTableItem {
+class TeamTableItem {
 
 	private _team: JTeam;
 	private _pg: number = 0;
@@ -63,7 +63,7 @@ class TeamTableItem implements ITeamTableItem {
 export interface ILBConfig {
 	partsNumber: number;
 	isIV: boolean;
-	hws: TypeHalfWeekOfYear[];
+	fechHalfWeeks: TypeHalfWeekOfYear[];
 	temp: number;
 }
 
@@ -71,23 +71,18 @@ export default class LB {
 
 	private _config: ILBConfig;
 	
-	private _tms: ITeamTableItem[] = [];
+	private _tms: TeamTableItem[] = [];
 	private _fchs: JFech[] = [];
 
-	constructor({partsNumber, isIV, hws, temp}: ILBConfig) {
-		if (partsNumber < 2 || partsNumber > 20 || partsNumber % 1 !== 0) {
-			throw new Error(`no existe sch para el valor: ${partsNumber}`)
+	constructor(config: ILBConfig) {
+		if (config.partsNumber < 2 || config.partsNumber > 20 || config.partsNumber % 1 !== 0) {
+			throw new Error(`no existe sch para el valor: ${config.partsNumber}`)
 		}
-		let sch = LB.getDataScheduling(partsNumber, isIV);
-		if (sch.length !== hws.length) {
+		let sch: arr2<number>[][] = LB.getDataScheduling(config.partsNumber, config.isIV);
+		if (sch.length !== config.fechHalfWeeks.length) {
 			throw new Error(`cantidad de wks incorrecta`);
 		}
-		this._config = {
-			partsNumber,
-			isIV,
-			hws,
-			temp
-		}
+		this._config = config
 	}
 
 	static getCantFchs(n: number, isIV: boolean): number {
@@ -98,8 +93,8 @@ export default class LB {
 		let sch = LB.getDataScheduling(n, isIV);
 		return sch.length*sch[0].length;
 	}
-	static getDataScheduling(n: number, isIV: boolean): data.arr2<number>[][] {
-		return data.scheduling(n, isIV);
+	static getDataScheduling(n: number, isIV: boolean): arr2<number>[][] {
+		return scheduling(n, isIV);
 	}
 
 	get cantFechs(): number {
@@ -107,6 +102,9 @@ export default class LB {
 	}
 	get partsNumber(): number { return this._config.partsNumber }
 	get fechs(): JFech[] { return this._fchs}
+	get teams(): ITeamTableItem[] {
+		return this._tms.map((t: TeamTableItem) => t.ITeamTableItem);
+	}
 
 	assign(parts: JTeam[]): void {
 		if (this._config.partsNumber !== parts.length) {
@@ -117,7 +115,7 @@ export default class LB {
 			this._tms.push( new TeamTableItem( parts[i] ) );
 		}
 		// create matches
-		let sch: data.arr2<number>[][] = LB.getDataScheduling(this._config.partsNumber, this._config.isIV);
+		let sch: arr2<number>[][] = LB.getDataScheduling(this._config.partsNumber, this._config.isIV);
 		for (let f=0; f<sch.length; f++) {
 			
 			let ms: JMatch[] = [];
@@ -125,9 +123,9 @@ export default class LB {
 				const l: JTeam = parts[m[0]-1];
 				const v: JTeam = parts[m[1]-1];
 
-				ms.push( new JMatch(l,v, this._config.hws[f]) );
+				ms.push( new JMatch(l,v, this._config.fechHalfWeeks[f]) );
 			}
-			let ff = new JFech(f+1, this._config.hws[f], CUF.shuffled(ms));
+			let ff = new JFech(f+1, this._config.fechHalfWeeks[f], CUF.shuffled(ms));
 			this._fchs.push(ff);
 		}
 	}
