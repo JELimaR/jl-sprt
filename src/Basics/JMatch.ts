@@ -1,5 +1,5 @@
 import { TypeHalfWeekOfYear } from '../Logica/Calendar/types';
-import Team from './Team';
+import JTeam from './JTeam';
 import { JDateTime } from '../Logica/Calendar/JDateTime';
 
 
@@ -23,18 +23,18 @@ export default class JMatch {
 	private _date: JDateTime | undefined;
 
 	private _state: TypeMatchState = 'created';
-	private _lcl: Team;
-	private _vst: Team;
+	private _lcl: JTeam;
+	private _vst: JTeam;
 
-	constructor(lcl: Team, vst: Team, hw: TypeHalfWeekOfYear) {
+	constructor(lcl: JTeam, vst: JTeam, hw: TypeHalfWeekOfYear) {
 		this._id = JMatch.newId;
 		this._lcl = lcl;
 		this._vst = vst;
 	}
 
 	get id(): number {return this._id}
-	get lcl(): Team { return this._lcl }
-	get vst(): Team { return this._vst }
+	get lcl(): JTeam { return this._lcl }
+	get vst(): JTeam { return this._vst }
 
 	schedule(d: JDateTime): void {
 		this._state = (this._state == 'suspended' || this._state == 'scheduled') ? 'reschuduled' : 'scheduled';

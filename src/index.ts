@@ -2,9 +2,10 @@ import * as data from './data';
 import * as utlts from 'jl-utlts';
 const CUF = utlts.CollectionsUtilsFunctions.getInstance();
 
-import LB from './Basics/LB'
+import LB, {ILBConfig} from './Basics/LB';
+import {JDateTime} from './Logica/Calendar/JDateTime' 
 import { TypeHalfWeekOfYear } from './Logica/Calendar/types';
-import { JCalendarLB, JEvent, JEventCreateNewLB } from './Logica/JCalendarLB';
+import { JCalendarLB, JEvent, JEventCreateNewLB, JEventFechAssignation } from './Logica/JCalendarLB';
 import LBManager from './LBManager';
 
 /*
@@ -30,16 +31,13 @@ const lbm: LBManager = new LBManager();
 let i = 0;
 while ( lbm._nextEvent && i < 100000) {
 	lbm.advance();
+	if (i<20) console.log(lbm.lb);
 	const events = lbm.getEventNow();
 	events.forEach((eve: JEvent, idx: number) => {
-		if (eve instanceof JEventCreateNewLB ) {
-			const cant: number = 10;
-			const IV: boolean = true;
-			let wks: TypeHalfWeekOfYear[] = [];
-			for (let i=0; i < LB.getCantFchs(cant,IV); i++) {
-				wks.push(4*i+12 as TypeHalfWeekOfYear);
-			}
-			lbm.setLB(eve.ejecute({partsNumber: cant, isIV: IV, hws: wks}));
+		if ( eve instanceof JEventCreateNewLB ) {
+			lbm.setLB(eve.ejecute());
+		} else if ( eve instanceof JEventFechAssignation ) {
+			eve.ejecute();
 		}
 	})
 	if (events.length > 0) console.log(lbm.dt)
@@ -55,7 +53,7 @@ for (let i=0; i < LB.getCantFchs(cant,IV); i++) {
 	wks.push(4*i+12 as TypeHalfWeekOfYear);
 }
 
-const lb = new LB({partsNumber: cant, isIV: IV, hws: wks});
+const lb = new LB({partsNumber: cant, isIV: IV, hws: wks, temp: 89});
 let teams: string[] = CUF.shuffled(data.teams,0);
 let selectedTeams = teams.slice(0,cant);
 
@@ -64,5 +62,10 @@ lb.assign(selectedTeams);
 // console.log(JSON.stringify(lb.getFech('id', 13), null,2))
 
 
-console.log()
-
+console.log(lb);
+console.log(lbm.dt.getDateTime());
+/*
+[1, 2, 3, 8, 7, 84, 123, 100, 101, 106, 107, 108].forEach( (value: number) => {
+	console.log(value, JDateTime.halfWeekOfYearToDaysOfYear(value as TypeHalfWeekOfYear));
+});
+*/

@@ -2,26 +2,10 @@ import * as utlts from 'jl-utlts';
 const CUF = utlts.CollectionsUtilsFunctions.getInstance();
 
 import * as data from '../data';
-import Team from './Team';
+import JTeam from './JTeam';
 import JMatch from './JMatch';
 import { TypeHalfWeekOfYear } from '../Logica/Calendar/types';
-
-
-export class JFech {
-	private _id: number;
-	private _matches: JMatch[] = [];
-	private _hw: TypeHalfWeekOfYear;
-
-	constructor(id: number, hw: TypeHalfWeekOfYear, ms: JMatch[]) {
-		this._id = id;
-		this._hw = hw;
-		this._matches = ms; 
-	}
-
-	get id(): number { return this._id }
-	get halfWeek(): TypeHalfWeekOfYear { return this._hw }
-	get matches(): JMatch[] { return this._matches }
-}
+import { JFech } from './JFech';
 
 interface ITeamTableItem {
 	pj: number;
@@ -32,11 +16,12 @@ interface ITeamTableItem {
 	ge: number;
 	sg: number;
 	ps: number;
-	team: Team;
+	team: JTeam;
 }
 
 class TeamTableItem implements ITeamTableItem {
-	private _team: Team;
+
+	private _team: JTeam;
 	private _pg: number = 0;
 	private _pe: number = 0;
 	private _pp: number = 0;
@@ -44,7 +29,7 @@ class TeamTableItem implements ITeamTableItem {
 	private _gf: number = 0;
 	private _ge: number = 0;
 
-	constructor(t: Team) {
+	constructor(t: JTeam) {
 		this._team = t;
 	}
 
@@ -57,7 +42,7 @@ class TeamTableItem implements ITeamTableItem {
 	get sg(): number {return this._gf - this._ge}
 	get ps(): number {return 3*this._pg+this._pe}
 
-	get team(): Team {return this._team}
+	get team(): JTeam {return this._team}
 
 	get ITeamTableItem(): ITeamTableItem {
 		return {
@@ -79,6 +64,7 @@ export interface ILBConfig {
 	partsNumber: number;
 	isIV: boolean;
 	hws: TypeHalfWeekOfYear[];
+	temp: number;
 }
 
 export default class LB {
@@ -88,7 +74,7 @@ export default class LB {
 	private _tms: ITeamTableItem[] = [];
 	private _fchs: JFech[] = [];
 
-	constructor({partsNumber, isIV, hws}: ILBConfig) {
+	constructor({partsNumber, isIV, hws, temp}: ILBConfig) {
 		if (partsNumber < 2 || partsNumber > 20 || partsNumber % 1 !== 0) {
 			throw new Error(`no existe sch para el valor: ${partsNumber}`)
 		}
@@ -100,6 +86,7 @@ export default class LB {
 			partsNumber,
 			isIV,
 			hws,
+			temp
 		}
 	}
 
@@ -121,7 +108,7 @@ export default class LB {
 	get partsNumber(): number { return this._config.partsNumber }
 	get fechs(): JFech[] { return this._fchs}
 
-	assign(parts: Team[]): void {
+	assign(parts: JTeam[]): void {
 		if (this._config.partsNumber !== parts.length) {
 			throw new Error(`cantidad de tms incorrecta`);
 		}
@@ -135,8 +122,8 @@ export default class LB {
 			
 			let ms: JMatch[] = [];
 			for (let m of sch[f]) {
-				const l: Team = parts[m[0]-1];
-				const v: Team = parts[m[1]-1];
+				const l: JTeam = parts[m[0]-1];
+				const v: JTeam = parts[m[1]-1];
 
 				ms.push( new JMatch(l,v, this._config.hws[f]) );
 			}

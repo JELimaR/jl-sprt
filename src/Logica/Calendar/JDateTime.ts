@@ -1,4 +1,4 @@
-import { DAYSPERYEAR } from './types';
+import { DAYSPERYEAR, TypeDayOfYear, TypeHalfWeekOfYear } from './types';
 import { IJDate, JDate } from './JDate';
 import { IJTime, JTime } from './JTime';
 
@@ -29,6 +29,13 @@ export class JDateTime {
     };
   }
 
+  getIJDateTimeCreator() {
+	  return {
+		  day: this._date.getDate().dayAbsolute,
+		  interv: this._time.getTime().interv
+		};
+  }
+
   addInterv(value: number = 1): void {
     for (let i = 0; i < value; i++) {
       if (this._time.addInterv()) {
@@ -52,6 +59,9 @@ export class JDateTime {
   }
 
   // statics
+  static isAminorthanB(a: JDateTime, b: JDateTime): boolean {
+	  return this.difBetween(a,b) < 0
+  }
   static difBetween(a: JDateTime, b: JDateTime): number {
     return a.absolute - b.absolute;
   }
@@ -64,4 +74,20 @@ export class JDateTime {
   static subWeeks(dt: JDateTime, ws: number): JDateTime {
     return new JDateTime({day: dt.getDateTime().date.dayAbsolute - 7*ws, interv: dt.getDateTime().time.interv})
   }
+  static halfWeekOfYearToDaysOfYear(hs: TypeHalfWeekOfYear): IJHalfWeekOfYear {
+	  let initWeek = Math.floor((hs+1)/2-1)*7;
+	  const start: TypeDayOfYear = initWeek + ((hs % 2) === 1 ? 2 : 5) as TypeDayOfYear;
+	  const end: TypeDayOfYear = start + ((hs % 2) === 1 ? 2 : 2) as TypeDayOfYear;
+	  return {
+			start,
+			middle: start + 1 as TypeDayOfYear,
+			end
+	  }
+  }
+}
+
+export interface IJHalfWeekOfYear {
+	start: TypeDayOfYear;
+	middle: TypeDayOfYear;
+	end: TypeDayOfYear;
 }
