@@ -2,7 +2,7 @@ import { TypeHalfWeekOfYear } from '../Logica/Calendar/types';
 import JTeam from './JTeam';
 import { JDateTime } from '../Logica/Calendar/JDateTime';
 
-type TypeMatchState =
+export type TypeMatchState =
   | 'created'
   | 'scheduled'
   | 'suspended'
@@ -93,14 +93,15 @@ class JMatchPlaying {
 
 	advance() {
 		this._time += 5;
-		if (Math.random() < 0.20) this._result.addLcl();
 		if (Math.random() < 0.15) this._result.addLcl();
+		if (Math.random() < 0.11) this._result.addVst();
 	}
 }
 
 export interface JMatchResultInfo {
 	lclGls: number;
 	vstGls: number;
+	winner: 'L' | 'V' | 'E';
 } 
 
 class JMatchResult {
@@ -112,10 +113,12 @@ class JMatchResult {
 	addLcl() { this._lcl++ }
 	addVst() { this._vst++ }
 
-	getResultInfo() {
+	getResultInfo(): JMatchResultInfo {
+		const w = (this._lcl > this._vst) ? 'L' : ((this._lcl < this._vst) ? 'V' : 'E')
 		return {
 			lclGls: this._lcl,
-			vstGls: this._vst
+			vstGls: this._vst,
+			winner: w
 		}
 	}
 }

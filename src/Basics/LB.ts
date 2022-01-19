@@ -3,7 +3,7 @@ const CUF = utlts.CollectionsUtilsFunctions.getInstance();
 
 import scheduling, { arr2 } from './scheduling';
 import JTeam from './JTeam';
-import JMatch from './JMatch';
+import JMatch, {TypeMatchState} from './JMatch';
 import { TypeHalfWeekOfYear } from '../Logica/Calendar/types';
 import { JFech } from './JFech';
 import { JCalendar, JEventFechAssignationLB } from '../Logica/JCalendarLB';
@@ -58,12 +58,18 @@ class TeamTableItem {
   get ps(): number {
     return 3 * this._pg + this._pe;
   }
+	addPg() { this._pg++ }
+	addPe() { this._pe++ }
+	addPp() { this._pp++ }
+
+	addGf(g: number) { this._gf += g }
+	addGe(g: number) { this._ge += g }
 
   get team(): JTeam {
     return this._team;
   }
 
-  get ITeamTableItem(): ITeamTableItem {
+  getInterface(): ITeamTableItem {
     return {
       pj: this.pj,
       pg: this.pg,
@@ -89,8 +95,9 @@ export interface ILBConfig {
 export default class LB {
   private _config: ILBConfig;
 
-  private _tms: TeamTableItem[] = [];
+  // private _tms: TeamTableItem[] = [];
   private _fchs: JFech[] = [];
+	private _participants: Map<number, JTeam> = new Map<number, JTeam>();
 
   constructor(config: ILBConfig) {
     if (
@@ -136,18 +143,35 @@ export default class LB {
   get fechs(): JFech[] {
     return this._fchs;
   }
-  get teams(): ITeamTableItem[] {
-    return this._tms.map((t: TeamTableItem) => t.ITeamTableItem);
+  get teams(): JTeam[] {
+		let out: JTeam[] = [];
+		this._participants.forEach((team: JTeam) => {
+			out.push(team);
+		})
+    return out;
   }
 
-  assign(parts: JTeam[], cal: JCalendar): void {
-    if (this._config.partsNumber !== parts.length) {
+	get table(): ITeamTableItem[] {
+		return this.getCalculatedTable(m => m.state === 'finished');
+	}
+
+	get tablePartial(): ITeamTableItem[] {
+		return this.getCalculatedTable(m => m.state === 'finished' || m.state === 'playing');
+	}
+
+	getTableFech(fid: number): ITeamTableItem[] {
+		const maxMatchId: number = fid * Math.floor(this.partsNumber / 2);
+		return this.getCalculatedTable(m => m.id <= maxMatchId);
+	}
+
+  assign(participants: JTeam[], cal: JCalendar): void {
+    if (this._config.partsNumber !== participants.length) {
       throw new Error(`cantidad de tms incorrecta`);
     }
     // assign parts and table items
-    for (let i = 0; i < this._config.partsNumber; i++) {
-      this._tms.push(new TeamTableItem(parts[i]));
-    }
+		participants.forEach((team: JTeam, idx: number) => {
+			this._participants.set(idx+1, team);
+		})
     // create matches
     let sch: arr2<number>[][] = LB.getDataScheduling(
       this._config.partsNumber,
@@ -156,8 +180,8 @@ export default class LB {
     for (let f = 0; f < sch.length; f++) {
       let ms: JMatch[] = [];
       for (let m of sch[f]) {
-        const l: JTeam = parts[m[0] - 1];
-        const v: JTeam = parts[m[1] - 1];
+        const l: JTeam = participants[m[0] - 1];
+        const v: JTeam = participants[m[1] - 1];
 
         ms.push(new JMatch(l, v, this._config.fechHalfWeeks[f]));
       }
@@ -187,4 +211,51 @@ export default class LB {
   getFech(field: 'id' | 'halfWeek', fiw: number): JFech | undefined {
     return this._fchs.find((f: JFech) => f[field] === fiw);
   }
+
+	getCalculatedTable(condition: (m: JMatch) => boolean): ITeamTableItem[] {
+		let teamsTTI: TeamTableItem[] = []; // pasar a map
+		this._participants.forEach((team: JTeam) => {
+			teamsTTI.push(new TeamTableItem(team));
+		})
+		this._fchs.forEach((f: JFech) => {
+			f.matches.forEach((m: JMatch) => {
+				if (condition(m)) {
+					let ltti: TeamTableItem | undefined = teamsTTI.find(t => t.team.id === m.lcl.id);
+					let vtti: TeamTableItem | undefined = teamsTTI.find(t => t.team.id === m.vst.id);
+					if (!ltti || !vtti) throw new Error(`non finded`);
+
+					// gls L
+					ltti.addGf(m.result.lclGls)
+					ltti.addGe(m.result.vstGls)
+
+					// gls V
+					vtti.addGf(m.result.vstGls)
+					vtti.addGe(m.result.lclGls)
+
+					// add pj
+					if (m.result.winner === 'L') {
+						ltti.addPg();
+						vtti.addPp();
+					} else if (m.result.winner === 'V') {
+						ltti.addPp();
+						vtti.addPg();
+					} else {
+						ltti.addPe();
+						vtti.addPe();
+					}
+				}
+			})
+		})
+		teamsTTI.sort((a: TeamTableItem, b: TeamTableItem) => {
+			if (a.ps - b.ps !== 0) {
+				return b.ps - a.ps
+			}
+			if (a.sg - b.sg !== 0) {
+				return b.sg - a.sg
+			}
+			return b.gf - a.gf
+			
+		})
+		return teamsTTI.map((tti: TeamTableItem) => tti.getInterface());
+	}
 }

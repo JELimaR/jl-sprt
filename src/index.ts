@@ -56,6 +56,31 @@ while (lbm.nextEvent /*&& i < 100000*/) {
   i++;
 }
 
+let fid: number = 2;
+console.log(`hasta la fecha ${fid}`)
+lbm.lb!.getTableFech(fid).forEach((team) => {
+	console.log(JSON.stringify(team, null, 0))
+})
+console.log('-----------------------------------------');
+fid = 8;
+console.log(`hasta la fecha ${fid}`)
+lbm.lb!.getTableFech(fid).forEach((team) => {
+	console.log(JSON.stringify(team, null, 0))
+})
+fid = 11;
+console.log(`hasta la fecha ${fid}`)
+lbm.lb!.getTableFech(fid).forEach((team) => {
+	console.log(JSON.stringify(team, null, 0))
+})
+console.log('-----------------------------------------');
+console.log('final')
+lbm.lb!.table.forEach((team) => {
+	console.log(JSON.stringify(team, null, 0))
+})
+
+
+
+
 
 /*
 const cant: number = 10;

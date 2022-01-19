@@ -36,7 +36,7 @@ export default class LBManager {
   }
 
   advance(): JEvent | null {
-    this.dt.addInterv(100);
+    this.dt.addInterv(1);
     return this.nextEvent;
   }
 

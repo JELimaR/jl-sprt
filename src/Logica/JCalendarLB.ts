@@ -13,10 +13,12 @@ export interface IJEventCreator {
 export abstract class JEvent {
   private _dateTime: JDateTime;
   private _calendar: JCalendar;
+	private _state: 'created' | 'process' | 'finished';
 
   constructor(ec: IJEventCreator) {
     this._dateTime = new JDateTime(ec.dateTime);
     this._calendar = ec.calendar;
+		this._state = 'created';
   }
 
   get dateTime(): JDateTime {
@@ -26,7 +28,7 @@ export abstract class JEvent {
     return this._calendar;
   }
 
-  /*abstract*/ advance() {
+  /*abstract*/ advance() { // para los eventos que duran mas de un intervalo y tienen acciones y estados
     console.log('advance event');
   }
 
@@ -50,13 +52,14 @@ export class JEventMatchLB extends JEvent {
 
   ejecute(): void {
 		this._match.start();
-    console.log(`playing match ${this._match.id} between`);
-    console.log(`\t ${this._match.lcl} \t-\t ${this._match.vst}`);
+    console.log(`playing match ${this._match.id}`);
 		while (this._match.state !== 'finished') {
 			this._match.advance();
 		}
+		console.log(`\tresult:`)
 		const res = this._match.result;
-		console.log(`\t\t ${res.lclGls} \t-\t ${res.vstGls}`);
+		console.log(`\t\t ${this._match.lcl.id}: ${res.lclGls}`);
+		console.log(`\t\t ${this._match.vst.id}: ${res.vstGls}`);
   }
 }
 

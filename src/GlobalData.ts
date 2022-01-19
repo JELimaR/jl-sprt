@@ -1,5 +1,6 @@
 import { CollectionsUtilsFunctions } from 'jl-utlts';
 import LB, { ILBConfig } from './Basics/LB';
+import JTeam from './Basics/JTeam';
 import { TypeHalfWeekOfYear } from './Logica/Calendar/types';
 
 const CUF = CollectionsUtilsFunctions.getInstance();
@@ -11,7 +12,7 @@ for (let i = 1; i <= 70; i++) {
 // configuracion de la fed o conf o fih
 // fuente global de datos externa
 export const dataCreateLB = (): ILBConfig => {
-  const cant: number = 10;
+  const cant: number = 8;
   const IV: boolean = true;
   let wks: TypeHalfWeekOfYear[] = [];
   let wksass: TypeHalfWeekOfYear[] = [];
@@ -32,7 +33,10 @@ export const dataCreateLB = (): ILBConfig => {
   };
 };
 
-export const teamSelection = (cant: number) => {
-  let teams: string[] = CUF.shuffled(teamsList, 0);
+export const teamSelection = (cant: number): JTeam[] => {
+  let teams: JTeam[] = [];
+	CUF.shuffled(teamsList, 0).forEach((val: string) => {
+		teams.push(new JTeam(val));
+	})
   return teams.slice(0, cant);
 };
