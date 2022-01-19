@@ -49,8 +49,14 @@ export class JEventMatchLB extends JEvent {
   }
 
   ejecute(): void {
+		this._match.start();
     console.log(`playing match ${this._match.id} between`);
-    console.log(`\t ${this._match.lcl} - ${this._match.vst}`);
+    console.log(`\t ${this._match.lcl} \t-\t ${this._match.vst}`);
+		while (this._match.state !== 'finished') {
+			this._match.advance();
+		}
+		const res = this._match.result;
+		console.log(`\t\t ${res.lclGls} \t-\t ${res.vstGls}`);
   }
 }
 

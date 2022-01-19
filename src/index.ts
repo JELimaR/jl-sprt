@@ -36,24 +36,26 @@ console.log(lbm.dt.getDateTime());
 
 let i = 0;
 while (lbm.nextEvent /*&& i < 100000*/) {
-  lbm.advance();
-  // if (i<20) console.log(lbm.lb);
-  const events = lbm.getEventNow();
-  events.forEach((eve: JEvent, idx: number) => {
-    if (eve instanceof JEventCreateNewLB) {
-      lbm.setLB(eve.ejecute());
-    } else {
-      eve.ejecute();
-    }
-  });
-  if (events.length > 0) {
-    // console.log(lbm.dt.getDateTime())
-    // console.log(lbm.calendar)
-    console.log(lbm.dt.absolute);
-  }
+	lbm.advance();
+	// if (i<20) console.log(lbm.lb);
+	const events = lbm.getEventNow();
+	events.forEach((eve: JEvent, idx: number) => {
+		if (eve instanceof JEventCreateNewLB) {
+			lbm.setLB(eve.ejecute());
+		} else {
+			eve.ejecute();
+		}
+	});
+	if (events.length > 0) {
+		const idt = lbm.dt.getDateTime();
+		const s = `${idt.date.dayOfMonth} - ${idt.date.monthOfYear}`
+		console.log(s);
+		console.log('-----------------------------------------');
+	}
 
   i++;
 }
+
 
 /*
 const cant: number = 10;

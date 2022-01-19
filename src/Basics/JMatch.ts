@@ -30,10 +30,14 @@ export default class JMatch {
   private _lcl: JTeam; // JTeamMatch
   private _vst: JTeam;
 
+	private _playing: JMatchPlaying;
+
   constructor(lcl: JTeam, vst: JTeam, hw: TypeHalfWeekOfYear) {
     this._id = JMatch.newId;
     this._lcl = lcl;
     this._vst = vst;
+
+		this._playing = new JMatchPlaying();
   }
 
   get id(): number {
@@ -46,6 +50,10 @@ export default class JMatch {
     return this._vst;
   }
 
+	get state(): TypeMatchState {
+		return this._state;
+	}
+
   schedule(d: JDateTime): void {
     this._state =
       this._state == 'suspended' || this._state == 'scheduled'
@@ -53,4 +61,61 @@ export default class JMatch {
         : 'scheduled';
     this._date = d;
   }
+
+	// process
+	start() {
+		if (!(this._state === 'scheduled' || this._state === 'reschuduled' )) throw new Error('Match is none scheduled')
+		this._state = 'playing';
+	}
+
+	advance() {
+		if (this._state !== 'playing') throw new Error('Match is none playing');
+		this._playing.advance();
+		if (this._playing.time === 80) this._state = 'finished';
+	}
+
+	get result(): JMatchResultInfo {
+		return this._playing.result;
+	}
+}
+
+class JMatchPlaying {
+	_time: number;
+	_result: JMatchResult;
+	constructor() {
+		this._time = 0;
+		this._result = new JMatchResult();
+	}
+	get time(): number { return this._time;	}
+	get result(): JMatchResultInfo {
+		return this._result.getResultInfo();
+	}
+
+	advance() {
+		this._time += 5;
+		if (Math.random() < 0.20) this._result.addLcl();
+		if (Math.random() < 0.15) this._result.addLcl();
+	}
+}
+
+export interface JMatchResultInfo {
+	lclGls: number;
+	vstGls: number;
+} 
+
+class JMatchResult {
+	_lcl: number = 0;
+	_vst: number = 0;
+
+	constructor() {}
+
+	addLcl() { this._lcl++ }
+	addVst() { this._vst++ }
+
+	getResultInfo() {
+		return {
+			lclGls: this._lcl,
+			vstGls: this._vst
+		}
+	}
 }
