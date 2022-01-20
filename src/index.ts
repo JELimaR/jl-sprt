@@ -2,15 +2,13 @@ import { CollectionsUtilsFunctions } from 'jl-utlts';
 const CUF = CollectionsUtilsFunctions.getInstance();
 
 import LB, { ILBConfig } from './Basics/LB';
-import { JDateTime } from './Logica/Calendar/JDateTime';
-import { TypeHalfWeekOfYear } from './Logica/Calendar/types';
+import { JDateTime } from './Logica/DateTimeClasses/JDateTime';
+import { TypeHalfWeekOfYear } from './Logica/DateTimeClasses/types';
 import {
-  JCalendarLB,
-  JEvent,
   JEventCreateNewLB,
-  JEventFechAssignationLB,
 } from './Logica/JCalendarLB';
 import LBManager from './LBManager';
+import { JEvent } from './Logica/Event/JEvent';
 
 /*
 const sch = data.scheduling(6, true);
@@ -36,8 +34,9 @@ console.log(lbm.dt.getDateTime());
 
 let i = 0;
 while (lbm.nextEvent /*&& i < 100000*/) {
-	lbm.advance();
-	// if (i<20) console.log(lbm.lb);
+	// lbm.advance();
+	lbm.dt = lbm.nextEvent!.dateTime;
+	// if (i>20 && i<50) console.log(lbm.lb);
 	const events = lbm.getEventNow();
 	events.forEach((eve: JEvent, idx: number) => {
 		if (eve instanceof JEventCreateNewLB) {
@@ -52,7 +51,6 @@ while (lbm.nextEvent /*&& i < 100000*/) {
 		console.log(s);
 		console.log('-----------------------------------------');
 	}
-
   i++;
 }
 

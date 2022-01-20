@@ -1,23 +1,22 @@
 import { CollectionsUtilsFunctions } from 'jl-utlts';
 const CUF = CollectionsUtilsFunctions.getInstance();
 
-import { JFech } from './Basics/JFech';
+import { JFech } from './Basics/Fech/JFech';
 import LB, { ILBConfig } from './Basics/LB';
 import { dataCreateLB } from './GlobalData';
-import { JDateTime } from './Logica/Calendar/JDateTime';
-import { TypeHalfWeekOfYear } from './Logica/Calendar/types';
+import { JDateTime } from './Logica/DateTimeClasses/JDateTime';
+import { TypeHalfWeekOfYear } from './Logica/DateTimeClasses/types';
+import { JEvent } from './Logica/Event/JEvent';
+import JCalendar from './Logica/JCalendar';
 import {
-  JCalendarLB,
   JEventCreateNewLB,
-  JEvent,
-  JEventFechAssignationLB,
 } from './Logica/JCalendarLB';
 
 /************************************************************************/
 export default class LBManager {
   public lb: LB | undefined;
   public dt: JDateTime = new JDateTime({ day: 1, interv: 0 });
-  public calendar: JCalendarLB = new JCalendarLB();
+  public calendar: JCalendar = new JCalendar();
 
   constructor() {
     this.calendar.addEvent(

@@ -1,7 +1,7 @@
 import { CollectionsUtilsFunctions } from 'jl-utlts';
 import LB, { ILBConfig } from './Basics/LB';
 import JTeam from './Basics/JTeam';
-import { TypeHalfWeekOfYear } from './Logica/Calendar/types';
+import { TypeHalfWeekOfYear } from './Logica/DateTimeClasses/types';
 
 const CUF = CollectionsUtilsFunctions.getInstance();
 
@@ -34,9 +34,12 @@ export const dataCreateLB = (): ILBConfig => {
 };
 
 export const teamSelection = (cant: number): JTeam[] => {
+  let selection: string[] = CUF.shuffled(teamsList, 0).slice(0, cant);
+  // let selection: string[] = teamsList.slice(0, cant);
+  selection.sort();
   let teams: JTeam[] = [];
-	CUF.shuffled(teamsList, 0).forEach((val: string) => {
+	selection.forEach((val: string) => {
 		teams.push(new JTeam(val));
 	})
-  return teams.slice(0, cant);
+  return teams;
 };

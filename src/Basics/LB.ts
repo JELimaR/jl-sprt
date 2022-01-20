@@ -3,11 +3,11 @@ const CUF = utlts.CollectionsUtilsFunctions.getInstance();
 
 import scheduling, { arr2 } from './scheduling';
 import JTeam from './JTeam';
-import JMatch, {TypeMatchState} from './JMatch';
-import { TypeHalfWeekOfYear } from '../Logica/Calendar/types';
-import { JFech } from './JFech';
-import { JCalendar, JEventFechAssignationLB } from '../Logica/JCalendarLB';
-import { IJHalfWeekOfYear, JDateTime } from '../Logica/Calendar/JDateTime';
+import JMatch, {TypeMatchState} from './Match/JMatch';
+import { TypeHalfWeekOfYear } from '../Logica/DateTimeClasses/types';
+import { JFech } from './Fech/JFech';
+import { IJHalfWeekOfYear, JDateTime } from '../Logica/DateTimeClasses/JDateTime';
+import JCalendar from '../Logica/JCalendar';
 
 interface ITeamTableItem {
   pj: number;
@@ -95,7 +95,6 @@ export interface ILBConfig {
 export default class LB {
   private _config: ILBConfig;
 
-  // private _tms: TeamTableItem[] = [];
   private _fchs: JFech[] = [];
 	private _participants: Map<number, JTeam> = new Map<number, JTeam>();
 
@@ -122,18 +121,6 @@ export default class LB {
     this._config = config;
   }
 
-  static getCantFchs(n: number, isIV: boolean): number {
-    let sch = LB.getDataScheduling(n, isIV);
-    return sch.length;
-  }
-  static getCantMatches(n: number, isIV: boolean): number {
-    let sch = LB.getDataScheduling(n, isIV);
-    return sch.length * sch[0].length;
-  }
-  static getDataScheduling(n: number, isIV: boolean): arr2<number>[][] {
-    return scheduling(n, isIV);
-  }
-
   get cantFechs(): number {
     return LB.getCantFchs(this._config.partsNumber, this._config.isIV);
   }
@@ -149,6 +136,9 @@ export default class LB {
 			out.push(team);
 		})
     return out;
+  }
+  get config(): ILBConfig {
+    return this._config;
   }
 
 	get table(): ITeamTableItem[] {
@@ -183,34 +173,24 @@ export default class LB {
         const l: JTeam = participants[m[0] - 1];
         const v: JTeam = participants[m[1] - 1];
 
-        ms.push(new JMatch(l, v, this._config.fechHalfWeeks[f]));
+        ms.push(new JMatch(l, v, /*this._config.fechHalfWeeks[f]*/));
       }
-      let ff = new JFech(
+      let ff = new JFech( // en vez de crearla se puede simplemente agregar los matchs
         f + 1,
         this._config.fechHalfWeeks[f],
         CUF.shuffled(ms)
       );
       this._fchs.push(ff);
     }
-    for (let i = 0; i < this.cantFechs; i++) {
-      const dt = JDateTime.halfWeekOfYearToDateTime(
-        this._config.fechHalfWeeksAssignation[i] as TypeHalfWeekOfYear,
-        this._config.temp,
-        'middle'
-      );
-      cal.addEvent(
-        new JEventFechAssignationLB({
-          dateTime: dt.getIJDateTimeCreator(),
-          calendar: cal,
-          fech: this._fchs[i],
-        })
-      );
-    }
+    
+    this._fchs.forEach((fech: JFech) => {
+      fech.generateMatchesAssignations(cal, this)
+    })
   }
 
-  getFech(field: 'id' | 'halfWeek', fiw: number): JFech | undefined {
-    return this._fchs.find((f: JFech) => f[field] === fiw);
-  }
+  // getFech(field: 'id' | 'halfWeek', fiw: number): JFech | undefined {
+  //   return this._fchs.find((f: JFech) => f[field] === fiw);
+  // }
 
 	getCalculatedTable(condition: (m: JMatch) => boolean): ITeamTableItem[] {
 		let teamsTTI: TeamTableItem[] = []; // pasar a map
@@ -225,12 +205,12 @@ export default class LB {
 					if (!ltti || !vtti) throw new Error(`non finded`);
 
 					// gls L
-					ltti.addGf(m.result.lclGls)
-					ltti.addGe(m.result.vstGls)
+					ltti.addGf(m.result.lclGls);
+					ltti.addGe(m.result.vstGls);
 
 					// gls V
-					vtti.addGf(m.result.vstGls)
-					vtti.addGe(m.result.lclGls)
+					vtti.addGf(m.result.vstGls);
+					vtti.addGe(m.result.lclGls);
 
 					// add pj
 					if (m.result.winner === 'L') {
@@ -258,4 +238,17 @@ export default class LB {
 		})
 		return teamsTTI.map((tti: TeamTableItem) => tti.getInterface());
 	}
+
+  // statics
+  static getCantFchs(n: number, isIV: boolean): number {
+    let sch = LB.getDataScheduling(n, isIV);
+    return sch.length;
+  }
+  static getCantMatches(n: number, isIV: boolean): number {
+    let sch = LB.getDataScheduling(n, isIV);
+    return sch.length * sch[0].length;
+  }
+  static getDataScheduling(n: number, isIV: boolean): arr2<number>[][] {
+    return scheduling(n, isIV);
+  }
 }
