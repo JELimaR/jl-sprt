@@ -1,14 +1,13 @@
 import { CollectionsUtilsFunctions } from 'jl-utlts';
 const CUF = CollectionsUtilsFunctions.getInstance();
 
-import LB, { ILBConfig } from './Basics/LB';
-import { JDateTime } from './Logica/DateTimeClasses/JDateTime';
-import { TypeHalfWeekOfYear } from './Logica/DateTimeClasses/types';
-import {
-  JEventCreateNewLB,
-} from './Logica/JCalendarLB';
+import JLeague, { IJLeagueConfig } from './Basics/JLeague';
+import JTeam from './Basics/JTeam';
+import { JDateTime } from './Calendar/DateTime/JDateTime';
+import { TypeHalfWeekOfYear } from './Calendar/DateTime/types';
 import LBManager from './LBManager';
-import { JEvent } from './Logica/Event/JEvent';
+import GSManager from './GSManager';
+import { JEvent } from './Calendar/Event/JEvent';
 
 /*
 const sch = data.scheduling(6, true);
@@ -39,11 +38,7 @@ while (lbm.nextEvent /*&& i < 100000*/) {
 	// if (i>20 && i<50) console.log(lbm.lb);
 	const events = lbm.getEventNow();
 	events.forEach((eve: JEvent, idx: number) => {
-		if (eve instanceof JEventCreateNewLB) {
-			lbm.setLB(eve.ejecute());
-		} else {
-			eve.ejecute();
-		}
+		eve.ejecute();
 	});
 	if (events.length > 0) {
 		const idt = lbm.dt.getDateTime();
@@ -54,29 +49,14 @@ while (lbm.nextEvent /*&& i < 100000*/) {
   i++;
 }
 
-let fid: number = 2;
-console.log(`hasta la fecha ${fid}`)
-lbm.lb!.getTableFech(fid).forEach((team) => {
-	console.log(JSON.stringify(team, null, 0))
-})
-console.log('-----------------------------------------');
-fid = 8;
-console.log(`hasta la fecha ${fid}`)
-lbm.lb!.getTableFech(fid).forEach((team) => {
-	console.log(JSON.stringify(team, null, 0))
-})
-fid = 11;
-console.log(`hasta la fecha ${fid}`)
-lbm.lb!.getTableFech(fid).forEach((team) => {
-	console.log(JSON.stringify(team, null, 0))
-})
-console.log('-----------------------------------------');
-console.log('final')
-lbm.lb!.table.forEach((team) => {
-	console.log(JSON.stringify(team, null, 0))
+[2, 4, 8, 11, 14].forEach((fid: number) => {
+	console.log(`hasta la fecha ${fid}`)
+	console.table(lbm.lb!.getTableFech(fid))
+	console.log('-----------------------------------------');
 })
 
-
+console.log(`final`)
+console.table(lbm.lb!.table)
 
 
 
@@ -101,4 +81,58 @@ lb.assign(selectedTeams);
 [1, 2, 3, 8, 7, 84, 123, 100, 101, 106, 107, 108].forEach( (value: number) => {
 	console.log(value, JDateTime.halfWeekOfYearToDaysOfYear(value as TypeHalfWeekOfYear));
 });
+*/
+/*
+import JStage, {JStagePlayOff} from './JStage';
+
+const partsNumber = 23;
+console.log('parts', partsNumber)
+console.log('rounds', JStagePlayOff.maxNumberRound(partsNumber));
+console.log('winners', JStagePlayOff.winnersInMaxNumberRound(partsNumber));
+*/
+const gsm = new GSManager();
+console.log(gsm.calendar.events)
+
+
+while (gsm.nextEvent && i < 100000) {
+	// gsm.advance();
+	gsm.dt = gsm.nextEvent!.dateTime;
+	
+	const events = gsm.getEventNow();
+	events.forEach((eve: JEvent, idx: number) => {
+		eve.ejecute();
+	});
+	if (events.length > 0) {
+		const idt = gsm.dt.getDateTime();
+		const s = `${idt.date.dayOfMonth} - ${idt.date.monthOfYear}`
+		console.log(s);
+		console.log('-----------------------------------------');
+	}
+  i++;
+}
+
+console.log(`final`)
+gsm.sg!.groups.forEach((g: any) => {
+	console.table(g.table)
+})
+
+/*
+import {firstStageGroupTeamSelection} from './GlobalData';
+
+let bombos = firstStageGroupTeamSelection([4,8]);
+
+let groups: {
+	uno: JTeam[],
+	dos: JTeam[],
+} = {uno: [], dos: []}
+
+for(let g in groups) {
+	bombos.forEach((b: any) => {
+		b.getElements().forEach((t: JTeam) => {
+			groups[g as 'uno' | 'dos'].push(t)
+		})
+	})
+}
+
+console.log(groups)
 */

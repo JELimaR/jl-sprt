@@ -3,13 +3,14 @@ const CUF = utlts.CollectionsUtilsFunctions.getInstance();
 
 import scheduling, { arr2 } from './scheduling';
 import JTeam from './JTeam';
-import JMatch, {TypeMatchState} from './Match/JMatch';
-import { TypeHalfWeekOfYear } from '../Logica/DateTimeClasses/types';
+import JMatch, { TypeMatchState } from './Match/JMatch';
+import { TypeHalfWeekOfYear } from '../Calendar/DateTime/types';
 import { JFech } from './Fech/JFech';
-import { IJHalfWeekOfYear, JDateTime } from '../Logica/DateTimeClasses/JDateTime';
-import JCalendar from '../Logica/JCalendar';
+import { IJHalfWeekOfYear, JDateTime } from '../Calendar/DateTime/JDateTime';
+import JCalendar from '../Calendar/JCalendar';
 
 interface ITeamTableItem {
+	pos: number;
   pj: number;
   pg: number;
   pe: number;
@@ -71,6 +72,7 @@ class TeamTableItem {
 
   getInterface(): ITeamTableItem {
     return {
+			pos: 1,
       pj: this.pj,
       pg: this.pg,
       pe: this.pe,
@@ -84,29 +86,29 @@ class TeamTableItem {
   }
 }
 
-export interface ILBConfig {
+export interface IJLeagueConfig {
   partsNumber: number;
   isIV: boolean;
   fechHalfWeeks: TypeHalfWeekOfYear[];
-  fechHalfWeeksAssignation: TypeHalfWeekOfYear[];
+  fechHalfWeeksSchedule: TypeHalfWeekOfYear[];
   temp: number;
 }
 
-export default class LB {
-  private _config: ILBConfig;
+export default class JLeague {
+  private _config: IJLeagueConfig;
 
   private _fchs: JFech[] = [];
 	private _participants: Map<number, JTeam> = new Map<number, JTeam>();
 
-  constructor(config: ILBConfig) {
+  constructor(config: IJLeagueConfig) {
     if (
       config.partsNumber < 2 ||
       config.partsNumber > 20 ||
-      config.partsNumber % 1 !== 0
+      !Number.isInteger(config.partsNumber)
     ) {
       throw new Error(`no existe sch para el valor: ${config.partsNumber}`);
     }
-    let sch: arr2<number>[][] = LB.getDataScheduling(
+    let sch: arr2<number>[][] = JLeague.getDataScheduling(
       config.partsNumber,
       config.isIV
     );
@@ -114,7 +116,7 @@ export default class LB {
       throw new Error(`cantidad de wks incorrecta`);
     }
     if (
-      config.fechHalfWeeks.length !== config.fechHalfWeeksAssignation.length
+      config.fechHalfWeeks.length !== config.fechHalfWeeksSchedule.length
     ) {
       throw new Error(`cantidad de wks de assignation incorrecta`);
     }
@@ -122,7 +124,7 @@ export default class LB {
   }
 
   get cantFechs(): number {
-    return LB.getCantFchs(this._config.partsNumber, this._config.isIV);
+    return JLeague.getCantFchs(this._config.partsNumber, this._config.isIV);
   }
   get partsNumber(): number {
     return this._config.partsNumber;
@@ -137,7 +139,7 @@ export default class LB {
 		})
     return out;
   }
-  get config(): ILBConfig {
+  get config(): IJLeagueConfig {
     return this._config;
   }
 
@@ -158,28 +160,35 @@ export default class LB {
     if (this._config.partsNumber !== participants.length) {
       throw new Error(`cantidad de tms incorrecta`);
     }
-    // assign parts and table items
+    // assign participants and table items
 		participants.forEach((team: JTeam, idx: number) => {
 			this._participants.set(idx+1, team);
 		})
     // create matches
-    let sch: arr2<number>[][] = LB.getDataScheduling(
+    let sch: arr2<number>[][] = JLeague.getDataScheduling(
       this._config.partsNumber,
       this._config.isIV
     );
     for (let f = 0; f < sch.length; f++) {
       let ms: JMatch[] = [];
       for (let m of sch[f]) {
-        const l: JTeam = participants[m[0] - 1];
-        const v: JTeam = participants[m[1] - 1];
+        const ht: JTeam = participants[m[0] - 1];
+        const at: JTeam = participants[m[1] - 1];
 
-        ms.push(new JMatch(l, v, /*this._config.fechHalfWeeks[f]*/));
+        ms.push(new JMatch({
+					homeTeam: ht,
+					awayTeam: at,
+					hw: this._config.fechHalfWeeks[f],
+					//config: this._config
+					temp: this._config.temp
+				}));
       }
-      let ff = new JFech( // en vez de crearla se puede simplemente agregar los matchs
-        f + 1,
-        this._config.fechHalfWeeks[f],
-        CUF.shuffled(ms)
-      );
+      let ff = new JFech({ // en vez de crearla se puede simplemente agregar los matchs y crearla antes en el constructor
+        num: f + 1,
+        halfweek: this._config.fechHalfWeeks[f],
+				halfweekMatchDateAssignation: this._config.fechHalfWeeksSchedule[f],
+        matches: CUF.shuffled(ms)
+			});
       this._fchs.push(ff);
     }
     
@@ -200,28 +209,28 @@ export default class LB {
 		this._fchs.forEach((f: JFech) => {
 			f.matches.forEach((m: JMatch) => {
 				if (condition(m)) {
-					let ltti: TeamTableItem | undefined = teamsTTI.find(t => t.team.id === m.lcl.id);
-					let vtti: TeamTableItem | undefined = teamsTTI.find(t => t.team.id === m.vst.id);
-					if (!ltti || !vtti) throw new Error(`non finded`);
+					let htti: TeamTableItem | undefined = teamsTTI.find(t => t.team.id === m.homeTeam.id);
+					let atti: TeamTableItem | undefined = teamsTTI.find(t => t.team.id === m.awayTeam.id);
+					if (!htti || !atti) throw new Error(`non finded`);
 
-					// gls L
-					ltti.addGf(m.result.lclGls);
-					ltti.addGe(m.result.vstGls);
+					// gls HT
+					htti.addGf(m.result.homeScore);
+					htti.addGe(m.result.awayScore);
 
-					// gls V
-					vtti.addGf(m.result.vstGls);
-					vtti.addGe(m.result.lclGls);
+					// gls AT
+					atti.addGf(m.result.awayScore);
+					atti.addGe(m.result.homeScore);
 
 					// add pj
 					if (m.result.winner === 'L') {
-						ltti.addPg();
-						vtti.addPp();
+						htti.addPg();
+						atti.addPp();
 					} else if (m.result.winner === 'V') {
-						ltti.addPp();
-						vtti.addPg();
+						htti.addPp();
+						atti.addPg();
 					} else {
-						ltti.addPe();
-						vtti.addPe();
+						htti.addPe();
+						atti.addPe();
 					}
 				}
 			})
@@ -233,19 +242,20 @@ export default class LB {
 			if (a.sg - b.sg !== 0) {
 				return b.sg - a.sg
 			}
-			return b.gf - a.gf
-			
+			return b.gf - a.gf			
 		})
-		return teamsTTI.map((tti: TeamTableItem) => tti.getInterface());
+		return teamsTTI.map((tti: TeamTableItem, idx: number) => {
+			return {...tti.getInterface(), pos: idx+1}
+		});
 	}
 
   // statics
   static getCantFchs(n: number, isIV: boolean): number {
-    let sch = LB.getDataScheduling(n, isIV);
+    let sch = JLeague.getDataScheduling(n, isIV);
     return sch.length;
   }
   static getCantMatches(n: number, isIV: boolean): number {
-    let sch = LB.getDataScheduling(n, isIV);
+    let sch = JLeague.getDataScheduling(n, isIV);
     return sch.length * sch[0].length;
   }
   static getDataScheduling(n: number, isIV: boolean): arr2<number>[][] {

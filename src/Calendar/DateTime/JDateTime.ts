@@ -60,6 +60,10 @@ export class JDateTime {
     this._date.subDay();
   }
 
+	copy(): JDateTime {
+		return new JDateTime(this.getIJDateTimeCreator());
+	}
+
   // statics
   static isAminorthanB(a: JDateTime, b: JDateTime): boolean {
     return this.difBetween(a, b) < 0;

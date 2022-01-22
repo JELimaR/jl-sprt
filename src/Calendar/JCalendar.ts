@@ -1,5 +1,6 @@
-import { JDateTime } from "./DateTimeClasses/JDateTime";
+import { JDateTime } from "./DateTime/JDateTime";
 import { JEvent } from "./Event/JEvent";
+import { JEventCreator } from "./Event/JEventCreator";
 
 export default class JCalendar {
     private _events: JEvent[] = [];
@@ -9,7 +10,7 @@ export default class JCalendar {
     addEvent(event: JEvent) {
         this._events.push(event);
         this._events.sort((a: JEvent, b: JEvent) => {
-        return JDateTime.difBetween(a.dateTime, b.dateTime);
+        	return JDateTime.difBetween(a.dateTime, b.dateTime);
         });
     }
 

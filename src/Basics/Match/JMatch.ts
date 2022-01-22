@@ -1,7 +1,8 @@
-import { TypeHalfWeekOfYear } from '../../Logica/DateTimeClasses/types';
+import { TypeHalfWeekOfYear } from '../../Calendar/DateTime/types';
+import { IJLeagueConfig } from '../JLeague';
 import JTeam from '../JTeam';
-import { JDateTime } from '../../Logica/DateTimeClasses/JDateTime';
-import JCalendar from '../../Logica/JCalendar';
+import { JDateTime } from '../../Calendar/DateTime/JDateTime';
+import JCalendar from '../../Calendar/JCalendar';
 
 export type TypeMatchState =
 	| 'created'
@@ -12,9 +13,12 @@ export type TypeMatchState =
 	| 'playing'
 	| 'finished';
 
-export interface IJMatch {
-	l: any;
-	v: any;
+export interface IJMatchInfo {
+	homeTeam: JTeam;
+	awayTeam: JTeam;
+	hw: TypeHalfWeekOfYear;
+	// config: IJLeagueConfig; // info en vez de config
+	temp: number;
 }
 
 export default class JMatch {
@@ -28,15 +32,16 @@ export default class JMatch {
 	private _date: JDateTime | undefined;
 
 	private _state: TypeMatchState = 'created';
-	private _lcl: JTeam; // JTeamMatch
-	private _vst: JTeam;
+	private _homeTeam: JTeam; // JTeamMatch
+	private _awayTeam: JTeam;
 
 	private _playing: JMatchPlaying;
 
-	constructor(lcl: JTeam, vst: JTeam/*, hw: TypeHalfWeekOfYear*/) {
+	constructor(imi: IJMatchInfo) {
 		this._id = JMatch.newId;
-		this._lcl = lcl;
-		this._vst = vst;
+		this._homeTeam = imi.homeTeam;
+		this._awayTeam = imi.awayTeam;
+		this._date = JDateTime.halfWeekOfYearToDateTime( imi.hw, imi.temp, 'middle' );
 
 		this._playing = new JMatchPlaying();
 	}
@@ -44,11 +49,11 @@ export default class JMatch {
 	get id(): number {
 		return this._id;
 	}
-	get lcl(): JTeam {
-		return this._lcl;
+	get homeTeam(): JTeam {
+		return this._homeTeam;
 	}
-	get vst(): JTeam {
-		return this._vst;
+	get awayTeam(): JTeam {
+		return this._awayTeam;
 	}
 
 	get state(): TypeMatchState {
@@ -60,7 +65,7 @@ export default class JMatch {
 			this._state == 'suspended' || this._state == 'scheduled'
 				? 'reschuduled'
 				: 'scheduled';
-		this._date = d;
+		this._date = d.copy();
 	}
 
 	// process
@@ -75,7 +80,7 @@ export default class JMatch {
 		if (this._playing.time === 80) this._state = 'finished';
 	}
 
-	get result(): JMatchResultInfo {
+	get result(): IJMatchResultInfo {
 		return this._playing.result;
 	}
 }
@@ -88,37 +93,37 @@ class JMatchPlaying {
 		this._result = new JMatchResult();
 	}
 	get time(): number { return this._time; }
-	get result(): JMatchResultInfo {
+	get result(): IJMatchResultInfo {
 		return this._result.getResultInfo();
 	}
 
 	advance() {
 		this._time += 5;
-		if (Math.random() < 0.15) this._result.addLcl();
-		if (Math.random() < 0.11) this._result.addVst();
+		if (Math.random() < 0.10) this._result.addHomeScore();
+		if (Math.random() < 0.08) this._result.addAwayScore();
 	}
 }
 
-export interface JMatchResultInfo {
-	lclGls: number;
-	vstGls: number;
+export interface IJMatchResultInfo {
+	homeScore: number;
+	awayScore: number;
 	winner: 'L' | 'V' | 'E';
 }
 
 class JMatchResult {
-	_lcl: number = 0;
-	_vst: number = 0;
+	_homeScore: number = 0;
+	_awayScore: number = 0;
 
 	constructor() { }
 
-	addLcl() { this._lcl++ }
-	addVst() { this._vst++ }
+	addHomeScore() { this._homeScore++ }
+	addAwayScore() { this._awayScore++ }
 
-	getResultInfo(): JMatchResultInfo {
-		const w = (this._lcl > this._vst) ? 'L' : ((this._lcl < this._vst) ? 'V' : 'E')
+	getResultInfo(): IJMatchResultInfo {
+		const w = (this._homeScore > this._awayScore) ? 'L' : ((this._homeScore < this._awayScore) ? 'V' : 'E')
 		return {
-			lclGls: this._lcl,
-			vstGls: this._vst,
+			homeScore: this._homeScore,
+			awayScore: this._awayScore,
 			winner: w
 		}
 	}
