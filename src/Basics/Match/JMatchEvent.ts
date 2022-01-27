@@ -13,7 +13,7 @@ export class JEventMatch extends JEvent {
 			this._match = emc.match;
 	}
 
-	ejecute(): void {
+	execute(): void {
 			this._match.start();
 			console.log(`playing match ${this._match.id}`);
 			while (this._match.state !== 'finished') {
@@ -21,7 +21,11 @@ export class JEventMatch extends JEvent {
 			}
 			console.log(`\tresult:`)
 			const res = this._match.result;
-			console.log(`\t\t ${this._match.homeTeam.id}: ${res.homeScore}`);
-			console.log(`\t\t ${this._match.awayTeam.id}: ${res.awayScore}`);
+			const global = this._match.serie?.result;
+			const homeGlobal = global?.getScore(this._match.homeTeam.id)
+			const awayGlobal = global?.getScore(this._match.awayTeam.id)
+			if (!res) throw new Error(`no se obtuvo un res`)
+			console.log(`\t\t ${this._match.homeTeam.id}: ${res.teamOneScore.score}${(global) ? ' ' + homeGlobal : ''}`);
+			console.log(`\t\t ${this._match.awayTeam.id}: ${res.teamTwoScore.score}${(global) ? ' ' + awayGlobal : ''}`);
 	}
 }

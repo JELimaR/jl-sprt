@@ -2,20 +2,25 @@ import { CollectionsUtilsFunctions } from "jl-utlts";
 
 const CUF = CollectionsUtilsFunctions.getInstance();
 
+export interface IJBomboInfo<T> {
+	elements: T[];
+	selectionPerTime: number;
+}
+
 export default class JBombo<T> {
 	public _elements: T[];
 	private _stack: T[] = [];
 	private _selectionPerTime: number;
-	private _state: 'created' | 'started' | 'finished';
+	private _state: 'reseted' | 'started';
 
 	constructor(elements: T[], selectionPerTime: number) {
 		this._elements = elements;
 		this._selectionPerTime = selectionPerTime;
-		this._state = 'created';
+		this._state = 'reseted';
 	}
 
 	private start(): void {
-		if (this._state === 'created' || this._state === 'finished') {
+		if (this._state === 'reseted') {
 			this._stack = [...this._elements];
 		}
 		this._state = 'started'
@@ -33,7 +38,9 @@ export default class JBombo<T> {
 				// throw new Error('no hay para elegir');
 			}
 		}
-		if (this._stack.length === 0) this._state = 'finished';
 		return out;
+	}
+	reset(): void {
+		this._state = 'reseted';
 	}
 }

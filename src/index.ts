@@ -5,105 +5,39 @@ import JLeague, { IJLeagueConfig } from './Basics/JLeague';
 import JTeam from './Basics/JTeam';
 import { JDateTime } from './Calendar/DateTime/JDateTime';
 import { TypeHalfWeekOfYear } from './Calendar/DateTime/types';
-import LBManager from './LBManager';
-import GSManager from './GSManager';
+
+// import LBManager from './LBManager';
+// import GSManager from './GSManager';
 import { JEvent } from './Calendar/Event/JEvent';
+import { JFech } from './Basics/Fech/JFech';
+import JMatch from './Basics/Match/JMatch';
+import TManager from './TManager';
+import JStageGroup from './Basics/Stage/JStageGroup';
+import JStagePlayoff from './Basics/Stage/JStagePlayoff';
+import { JRound } from './Basics/Round/JRound';
+import { JRankCalculator } from './Basics/Rank/JRank';
+import JStageParallels from './Basics/Stage/JStageParallels';
 
-/*
-const sch = data.scheduling(6, true);
-
-for (let f=0; f<sch.length;f++) {
-	console.log();
-	let fs: string = ``;
-	for (let m=0; m<sch[f].length;m++) {
-		fs = `${fs}${sch[f][m][0]}-${sch[f][m][1]} `;
-	}
-	console.log(fs)
-}
-*/
 
 console.log('init');
-
-const lbm: LBManager = new LBManager();
-console.log(lbm.dt);
-console.log(lbm.dt.getDateTime());
-
-// console.log(JSON.stringify(lbm.calendar.events, null, 2));
-// console.log(lbm._nextEvent);
-
-let i = 0;
-while (lbm.nextEvent /*&& i < 100000*/) {
-	// lbm.advance();
-	lbm.dt = lbm.nextEvent!.dateTime;
-	// if (i>20 && i<50) console.log(lbm.lb);
-	const events = lbm.getEventNow();
-	events.forEach((eve: JEvent, idx: number) => {
-		eve.ejecute();
-	});
-	if (events.length > 0) {
-		const idt = lbm.dt.getDateTime();
-		const s = `${idt.date.dayOfMonth} - ${idt.date.monthOfYear}`
-		console.log(s);
-		console.log('-----------------------------------------');
-	}
-  i++;
-}
-
-[2, 4, 8, 11, 14].forEach((fid: number) => {
-	console.log(`hasta la fecha ${fid}`)
-	console.table(lbm.lb!.getTableFech(fid))
-	console.log('-----------------------------------------');
-})
-
-console.log(`final`)
-console.table(lbm.lb!.table)
+let i: number = 0;
 
 
+const tm = new TManager();
+console.log(tm._calendar.events)
 
-/*
-const cant: number = 10;
-const IV: boolean = true;
-let wks: TypeHalfWeekOfYear[] = [];
-
-for (let i=0; i < LB.getCantFchs(cant,IV); i++) {
-	wks.push(4*i+12 as TypeHalfWeekOfYear);
-}
-const lb = new LB({partsNumber: cant, isIV: IV, hws: wks, temp: 89});
-let teams: string[] = CUF.shuffled(data.teams,0);
-let selectedTeams = teams.slice(0,cant);
-
-lb.assign(selectedTeams);
-*/
-// console.log(JSON.stringify(lb.getFech('id', 13), null,2))
-
-// console.log(lb);
-/*
-[1, 2, 3, 8, 7, 84, 123, 100, 101, 106, 107, 108].forEach( (value: number) => {
-	console.log(value, JDateTime.halfWeekOfYearToDaysOfYear(value as TypeHalfWeekOfYear));
-});
-*/
-/*
-import JStage, {JStagePlayOff} from './JStage';
-
-const partsNumber = 23;
-console.log('parts', partsNumber)
-console.log('rounds', JStagePlayOff.maxNumberRound(partsNumber));
-console.log('winners', JStagePlayOff.winnersInMaxNumberRound(partsNumber));
-*/
-const gsm = new GSManager();
-console.log(gsm.calendar.events)
-
-
-while (gsm.nextEvent && i < 100000) {
+let dt: JDateTime = new JDateTime({day: 0, interv: 0});
+while (tm.getNextEvent(dt)) {
 	// gsm.advance();
-	gsm.dt = gsm.nextEvent!.dateTime;
+	dt = tm.getNextEvent(dt)!.dateTime;
 	
-	const events = gsm.getEventNow();
+	const events = tm.getEventNow(dt);
 	events.forEach((eve: JEvent, idx: number) => {
-		eve.ejecute();
+		console.log(idx);
+		eve.execute();
 	});
 	if (events.length > 0) {
-		const idt = gsm.dt.getDateTime();
+		const idt = dt.getDateTime();
 		const s = `${idt.date.dayOfMonth} - ${idt.date.monthOfYear}`
 		console.log(s);
 		console.log('-----------------------------------------');
@@ -112,12 +46,30 @@ while (gsm.nextEvent && i < 100000) {
 }
 
 console.log(`final`)
-gsm.sg!.groups.forEach((g: any) => {
-	console.table(g.table)
+tm._trn._stages.forEach((s: JStageParallels) => {
+	console.log(`Stage`, s.info.stageId);
+	console.log('qualified');
+	console.table(s.oneSS!.qualified().map(t => t.id));
+	console.log('rank');
+	console.table(JRankCalculator.getRankStageParallel(s).table);
+	// if (s.one instanceof JStageGroup) {
+		// s.groups.forEach((g: JLeague) => {
+		// 	console.table(g.table)
+		// })
+		// console.log(s.config);
+	// } else if (s.one instanceof JStagePlayoff) {
+		
+	// }
 })
 
+// console.log(tm._trn.config.participantsRank);
+// console.log(JRankCalculator.getRankStageParallel(tm._trn.stages.get(1)!));
+// console.log(tm._trn.stages.get(2)!.one.qualified().map(t => t.id));
+
+console.log(tm._trn.stages.length);
+// console.table(tm._trn._stages[0].rank)
+
 /*
-import {firstStageGroupTeamSelection} from './GlobalData';
 
 let bombos = firstStageGroupTeamSelection([4,8]);
 
@@ -136,3 +88,33 @@ for(let g in groups) {
 
 console.log(groups)
 */
+
+// gsm.sg?._groups.forEach((g: JLeague) => {
+// 	g.teams.forEach((t: JTeam) => {
+// 		if (t.id === 'T1001') {
+// 			let printer: string, points: number, sum: number = 0;
+// 			t.matches.forEach((m: JMatch) => {
+// 				if (m.result.winner === 'E')  {
+// 					printer = 'E';
+// 				} else if (m.homeTeam.id === t.id ) { 
+// 					printer = (m.result.winner === 'L') ? 'G' : 'P'
+// 				}	else {
+// 					printer = (m.result.winner === 'V') ? 'G' : 'P'
+// 				}
+// 				switch (printer) {
+// 					case 'G':
+// 						points = 3;
+// 						break;
+// 					case'E':
+// 						points = 1;
+// 						break;
+// 					default:
+// 						points = 0;
+// 						break;
+// 				}
+// 				sum = sum + points;
+// 				console.log('res:', printer, 'points: ', points, 'sum: ', sum)
+// 			})
+// 		}
+// 	})
+// })

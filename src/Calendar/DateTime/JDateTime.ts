@@ -1,4 +1,4 @@
-import { DAYSPERYEAR, TypeDayOfYear, TypeHalfWeekOfYear } from './types';
+import { DAYSPERYEAR, TypeDayOfYear, TypeHalfWeekOfYear, TypeIntervOfDay, TypeDateAndTimeOfYear } from './types';
 import { IJDate, JDate } from './JDate';
 import { IJTime, JTime } from './JTime';
 
@@ -8,7 +8,7 @@ export interface IJDateTime {
 }
 
 export interface IJDateTimeCreator {
-  interv: number;
+  interv: TypeIntervOfDay;
   day: number;
 }
 
@@ -24,6 +24,10 @@ export class JDateTime {
     return this._date.getDate().dayAbsolute * 300 + this._time.getTime().interv;
   }
 
+  set time(interv: TypeIntervOfDay) {
+    this._time = new JTime(interv)
+  }
+
   getDateTime(): IJDateTime {
     return {
       date: this._date.getDate(),
@@ -31,7 +35,7 @@ export class JDateTime {
     };
   }
 
-  getIJDateTimeCreator() {
+  getIJDateTimeCreator(): IJDateTimeCreator {
     return {
       day: this._date.getDate().dayAbsolute,
       interv: this._time.getTime().interv,
@@ -60,9 +64,9 @@ export class JDateTime {
     this._date.subDay();
   }
 
-	copy(): JDateTime {
-		return new JDateTime(this.getIJDateTimeCreator());
-	}
+  copy(): JDateTime {
+    return new JDateTime(this.getIJDateTimeCreator());
+  }
 
   // statics
   static isAminorthanB(a: JDateTime, b: JDateTime): boolean {
@@ -95,22 +99,21 @@ export class JDateTime {
       end,
     };
   }
-  static halfWeekOfYearToDateTime(
-    hs: TypeHalfWeekOfYear,
-    year: number,
-    opt: 'start' | 'end' | 'middle'
-  ): JDateTime {
+  static createFromHalfWeekOfYearAndYear(hs: TypeHalfWeekOfYear, year: number, opt: 'start' | 'end' | 'middle', interv?: TypeIntervOfDay): JDateTime {
     const dayOfYear: TypeDayOfYear = this.halfWeekOfYearToDaysOfYear(hs)[opt];
-    return this.createFromDayOfYearAndYear(dayOfYear, year);
+    return this.createFromDayOfYearAndYear(dayOfYear, year, interv);
   }
-  static createFromDayOfYearAndYear(
-    day: TypeDayOfYear,
-    year: number
-  ): JDateTime {
+  static createFromDayOfYearAndYear(day: TypeDayOfYear, year: number, interv: TypeIntervOfDay = 0): JDateTime {
     return new JDateTime({
-      interv: 0,
-      day: DAYSPERYEAR * (year - 1) + day,
+      interv: interv,
+      day: JDate.absolouteFromDayOfYearAndYear(day, year)
     });
+  }
+  static createFromTypeDateAndTimeOfYearAndYear(dt: TypeDateAndTimeOfYear, year: number): JDateTime {
+    return new JDateTime({
+      day: JDate.absolouteFromDayOfYearAndYear(dt.day, year),
+      interv: JTime.intervFromHourOfDayAndMinutesOfHour(dt.hour, dt.mins)
+    })
   }
 }
 

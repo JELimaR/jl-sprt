@@ -4,6 +4,7 @@ import { JEventCreator } from "./Event/JEventCreator";
 
 export default class JCalendar {
     private _events: JEvent[] = [];
+    private _now: JDateTime = new JDateTime({day: 1, interv: 0}); // usar en el constructor
 
     constructor() {}
 
@@ -14,11 +15,12 @@ export default class JCalendar {
         });
     }
 
+    get now(): JDateTime { return this._now }
+    set now(dt: JDateTime) { this._now = dt.copy() }
+
     get events(): JEvent[] {
         // cambiar a IJEvent?
         return this._events;
     }
 
 }
-
-export class JCalendarLB extends JCalendar {}

@@ -21,11 +21,11 @@ export class JEventMatchsOfFechSchedule extends JEventOthers {
 		this._config = efc.config;
 	}
 
-	ejecute() {
+	execute() {
 		console.log(`ejecuting match scheduling for fech number: ${this._fech.num}`);
 		// el evento debe crearse en el match
 		this._fech.matches.forEach((match: JMatch) => {
-			const dt = JDateTime.halfWeekOfYearToDateTime(
+			const dt = JDateTime.createFromHalfWeekOfYearAndYear(
 				this._fech.halfWeek,
 				this._config.temp,
 				'end'

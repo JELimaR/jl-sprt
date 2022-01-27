@@ -1,39 +1,36 @@
 import { IJEventCreatorInfo, JEventCreator } from "../Calendar/Event/JEventCreator";
-
-import { JEventStageGroupTeamsDraw } from "./JEventStageGroupTeamsDraw";
 import { IJDateTimeCreator, JDateTime } from '../Calendar/DateTime/JDateTime';
-import JBombo from './JBombo';
+import { JEventStagePlayoffTeamsDraw } from "./JEventStagePlayoffTeamsDraw";
 import JTeam from "./JTeam";
 import JTournament, { IJTournamentConfig } from "../JTournament";
-import JStageGroup, { IJStageGroupInfo } from "./Stage/JStageGroup";
+import JStagePlayoff, { IJStagePlayoffInfo } from "./Stage/JStagePlayoff";
 
-export interface IJEventStageGroupCreatorInfo extends IJEventCreatorInfo {
-  tournament: JTournament; // se debe hacer de otra forma
-  stageGroupConfig: IJStageGroupInfo;
+export interface IJEventStagePlayoffCreatorInfo extends IJEventCreatorInfo {
+  tournament: JTournament;
+  stagePlayoffConfig: IJStagePlayoffInfo;
   stageId: number;
 }
 
-export class JEventStageGroupCreator extends JEventCreator<JStageGroup> {
+export class JEventStagePlayoffCreator extends JEventCreator<JStagePlayoff> {
   // evento que implica una configuracion necesaria
   private _tournament: JTournament;
-  private _stageGroupConfig: IJStageGroupInfo;
+  private _stagePlayoffConfig: IJStagePlayoffInfo;
   private _stageId: number;
-
-  constructor(ecgsc: IJEventStageGroupCreatorInfo) {
-    super(ecgsc);
-    this._tournament = ecgsc.tournament;
-    this._stageGroupConfig = ecgsc.stageGroupConfig;
-    this._stageId = ecgsc.stageId;
+  constructor(espc: IJEventStagePlayoffCreatorInfo) {
+    super(espc);
+    this._tournament = espc.tournament;
+    this._stagePlayoffConfig = espc.stagePlayoffConfig;
+    this._stageId = espc.stageId;
   }
 
   execute() {
     // setear datos en algun momento, si no se seteo nada debe dar error o solicitarlo
-    this.element = new JStageGroup({
+    this.element = new JStagePlayoff({
       tournamentConfig: this._tournament.config,
-      info: this._stageGroupConfig,
+      info: this._stagePlayoffConfig,
       stageId: this._stageId
     });
-		let dt: JDateTime = new JDateTime(this._stageGroupConfig.drawDate);
+		let dt: JDateTime = new JDateTime(this._stagePlayoffConfig.drawDate);
 		if (!JDateTime.isAminorthanB(this.dateTime, dt)) {
 			dt = this.dateTime.copy();
 			dt.addInterv();
@@ -45,19 +42,13 @@ export class JEventStageGroupCreator extends JEventCreator<JStageGroup> {
       this.element.prevStage = this._tournament.stages[stageId-1]; // se usa para calcular los clasificados
     }
     let participants: JTeam[] = [...this.element.qualified()];
-    // participants = participants.concat(
-    //   this._tournament.newParticipantsPerStage[stageId]
-    // );
-
-    console.log(participants);
-    console.log(this.element.qualified());
 
     this.calendar.addEvent(
-      new JEventStageGroupTeamsDraw({
+      new JEventStagePlayoffTeamsDraw({
         dateTime: dt.getIJDateTimeCreator(),
         calendar: this.calendar,
-        stageGroup: this.element,
-        bombos: this.element.getBombos(participants), // otra forma
+        stagePlayoff: this.element,
+        bombos: this.element.getBombos(participants),
       })
     );
 		this.notify();

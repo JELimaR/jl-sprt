@@ -1,8 +1,5 @@
+import { arr2 } from "./types";
 
-export interface arr2<T> {
-	0: T,
-	1: T
-}
 
 
 export default (n: number, isIV: boolean): arr2<number>[][] => {

@@ -2,8 +2,7 @@ import JBombo from './JBombo';
 import JTeam from './JTeam';
 import JLeague from './JLeague';
 import { IJEventInfo, JEvent } from "../Calendar/Event/JEvent";
-import { JStageGroup } from '../JStage';
-import { IJDateTimeCreator, JDateTime } from '../Calendar/DateTime/JDateTime';
+import JStageGroup from "./Stage/JStageGroup";
 
 type JLeagueTeams = Array<JTeam>;
 
@@ -15,31 +14,47 @@ export interface IJEventStageGroupTeamsDrawInfo extends IJEventInfo {
 }
   
 export class JEventStageGroupTeamsDraw extends JEvent {
-	// evento que implica una configuracion necesaria
 	private _stageGroup: JStageGroup;
 	private _bombos: JBombo<JTeam>[];
 	constructor(egstd: IJEventStageGroupTeamsDrawInfo) {
 		super(egstd);
 		this._stageGroup = egstd.stageGroup;
-		this._bombos = egstd.bombos
+		this._bombos = egstd.bombos;
 	}
 
-	ejecute() {
-		console.log('ejecuting teams draw');
-		//let i: number = 0;
-		//let list: JTeam[][] = [];
-		// while ( this._stageGroup.config.drawRulesValidate(list) && i >= 0 && i < 1000000 ) {
-		//i++;
-		//}
+	execute() {
+		console.log('ejecuting teams draw for stage group');
+		
+		let groupsTeamsArr: JTeam[][];
+		let isValid: boolean = false;
+		
+		let i: number = 0;
+		while (!isValid && i >= 0 && i < 1000000 ) {
+			this._bombos.forEach((b: JBombo<JTeam>) => b.reset());
+			groupsTeamsArr = this.draw();
+			isValid = true;
+			groupsTeamsArr.forEach((tarr: JTeam[]) => {
+				if (!this._stageGroup.drawRulesValidate(tarr)) isValid = false;
+			})
+			i++;
+		}
 		this._stageGroup.groups.forEach((group: JLeague, idx: number) => {
+			group.assign(groupsTeamsArr[idx], this.calendar);
+		})
+		console.log('end teams draw');
+	}
+	
+	private draw(): Array<JTeam[]> {
+		let out: JTeam[][] = [];
+		this._stageGroup.groups.forEach(() => {
 			let teams: JTeam[] = [];
 			this._bombos.forEach((b: JBombo<JTeam>) => {
 				b.getElements().forEach((t: JTeam) => {
 					teams.push(t);
 				})
 			})
-			group.assign(teams, this.calendar);
+			out.push(teams);
 		})
-		console.log('end teams draw');
+		return out;
 	}
 }

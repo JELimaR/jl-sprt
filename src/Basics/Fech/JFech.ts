@@ -5,10 +5,6 @@ import JLeague from "../JLeague";
 import JMatch from "../Match/JMatch";
 import { JEventMatchsOfFechSchedule } from "./JEventMatchsOfFechSchedule";
 
-type TypeFechState =
-	| 'init'
-
-
 export interface IJFechInfo {
 	num: number;
 	halfweek: TypeHalfWeekOfYear;
@@ -33,8 +29,12 @@ export class JFech {
 	get halfWeek(): TypeHalfWeekOfYear { return this._halfWeek }
 	get matches(): JMatch[] { return this._matches }
 
-	generateMatchesAssignations(cal: JCalendar, league: JLeague): void {
-		const dt = JDateTime.halfWeekOfYearToDateTime(
+	get isFinished(): boolean {
+		return this._matches.every((m: JMatch) => m.state === 'finished');
+	}
+
+	generateMatchesSchedules(cal: JCalendar, league: JLeague): void {
+		const dt = JDateTime.createFromHalfWeekOfYearAndYear(
 			this._halfweekMatchDateAssignation,
 			league.config.temp,
 			'middle'

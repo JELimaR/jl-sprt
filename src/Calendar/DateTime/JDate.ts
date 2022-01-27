@@ -1,4 +1,4 @@
-import { TypeDayOfWeek, TypeMonthOfYear } from './types';
+import { TypeDayOfWeek, TypeDayOfYear, TypeMonthOfYear } from './types';
 import {
   daysOfWeekNames,
   DAYSPEREVENMONTH,
@@ -9,7 +9,7 @@ import {
   monthsOfYearNames,
 } from './types';
 
-export type TypeHalfWeekOfWeek = 'weekend' | 'middleweek';
+export type TypeHalfWeekOfWeek = 'weekend' | 'middleweek'; // pasar a types
 
 export interface IJDate {
   dayName: string;
@@ -73,5 +73,9 @@ export class JDate {
       typeHalfWeek: dayOfWeek <= 4 ? 'middleweek' : 'weekend',
       monthParity: monthOfYear % 2 === 1 ? 'oddMonth' : 'evenMonth',
     };
+  }
+
+  static absolouteFromDayOfYearAndYear(day: TypeDayOfYear, year: number): number {
+    return DAYSPERYEAR * (year - 1) + day;
   }
 }

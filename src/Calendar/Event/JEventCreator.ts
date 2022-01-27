@@ -43,5 +43,5 @@ export abstract class JEventCreator<T> extends JEvent implements IJSubject {
 			})
 		}
 
-    abstract ejecute(): void;
+    abstract execute(): void;
 }
