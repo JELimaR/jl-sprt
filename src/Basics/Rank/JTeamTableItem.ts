@@ -1,6 +1,6 @@
 import JTeam from "../JTeam";
 
-export interface ITeamTableItem {
+export interface IJTeamTableItem {
 	pos: number;
   pj: number;
   pg: number;
@@ -13,7 +13,7 @@ export interface ITeamTableItem {
   team: JTeam;
 }
 
-export default class TeamTableItem {
+export default class JTeamTableItem {
   private _team: JTeam;
   private _pg: number = 0;
   private _pe: number = 0;
@@ -61,7 +61,7 @@ export default class TeamTableItem {
     return this._team;
   }
 
-  getInterface(): ITeamTableItem {
+  getInterface(): IJTeamTableItem {
     return {
 			pos: 1,
       pj: this.pj,

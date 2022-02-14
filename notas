@@ -1,0 +1,24 @@
+Una vez termina un stage, se cream los events de teamsdraw y luego los matchshedule
+
+para sortear se necesita tener el ranking de participantes:
+	una stage participan los clasificados de la etapa anterior
+	y los nuevos participantes que no estuvieron en la etapa anterior.
+
+
+
+
+un stage se debe crear luego de terminada la stage anterior
+
+
+/***********************************************************/
+cada ronda se crea luego de finalizada la ronda anterior
+
+/*************************************************************/
+agregar estadios
+agregar federacion
+verificaciones de inicio y fin
+eliminar todo los seteos como halfweek
+
+VER RANK DE TRN
+
+quitar instancias de rank permanentes en: jleague, jsingle, jstages

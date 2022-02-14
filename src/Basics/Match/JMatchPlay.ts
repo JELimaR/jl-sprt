@@ -1,4 +1,4 @@
-import JResult, { IJResultInfo } from "../JResult";
+import JResult from "./JResult";
 import { JTeamMatch } from "../JTeam";
 
 
@@ -8,8 +8,9 @@ export default class JMatchPlay {
   _globalResult: JResult | undefined;
   _teamOne: JTeamMatch | undefined;
   _teamTwo: JTeamMatch | undefined;
+
 	constructor(globalResult?: JResult) {
-		this._time = 0;		
+		this._time = -1;	
     this._globalResult = globalResult;
 	}
 	get time(): number { return this._time; }
@@ -18,14 +19,16 @@ export default class JMatchPlay {
 	}
 
   init(one: JTeamMatch, two: JTeamMatch) {
+    this._time = 0;
     this._teamOne = one;
     this._teamTwo = two;
-    this._result = new JResult([this._teamOne.id, this._teamTwo.id]);
+    this._result = new JResult(this._teamOne.id, this._teamTwo.id);
   }
 
 	advance() {
     if (!this._result || !this._teamOne || !this._teamTwo)
       throw new Error(`no se init el match`)
+    
 		this._time += 5;
 		if (Math.random() < 0.10) {
       this._result.addScore(this._teamOne.id);

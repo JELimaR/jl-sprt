@@ -24,9 +24,12 @@ export class JDateTime {
     return this._date.getDate().dayAbsolute * 300 + this._time.getTime().interv;
   }
 
-  set time(interv: TypeIntervOfDay) {
-    this._time = new JTime(interv)
-  }
+  // set time(interv: TypeIntervOfDay) {
+  //   this._time = new JTime(interv)
+  // }
+
+  get date(): JDate {return this._date}
+  get time(): JTime {return this._time}
 
   getDateTime(): IJDateTime {
     return {

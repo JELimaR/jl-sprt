@@ -1,10 +1,8 @@
-import { IJDateTimeCreator } from "../../Calendar/DateTime/JDateTime";
-import { IJTournamentConfig } from "../../JTournament";
-import { JRankCalculator, TypeTanking } from "../Rank/JRank";
-import { ITeamTableItem } from "../Rank/JTeamTableItem";
-import { IJStageGroupInfo } from "./JStageGroup";
-import { IJStagePlayoffInfo } from "./JStagePlayoff";
-import JSubStage, { IJSubStageInfo } from "./JSubStage";
+import { IJTournamentConfig } from "../JTournament";
+import { JRankCalculator, TypeRanking } from "../Rank/JRank";
+import { IJStageGroupInfo } from "./StageGroup/JStageGroup";
+import { IJStagePlayoffInfo } from "./StagePlayoff/JStagePlayoff";
+import JSubStage from "./JSubStage";
 
 export type TypeSubStageInfo =
 	| {
@@ -53,9 +51,9 @@ export default class JStageParallels {
     }
   }
 
-  forEachSubStageInfo(func: (value: TypeSubStageInfo, idx?: number) => void): void {
+  forEachSubStageInfo(func: (value: TypeSubStageInfo, lvl?: number) => void): void {
     if (!this._parallelInfo.one) throw new Error(`no existen datos`)
-    func(this._parallelInfo.one, 0);
+    func(this._parallelInfo.one, 1);
     if (!this._parallelInfo.two) return;
     func(this._parallelInfo.two, 2);
     if (!this._parallelInfo.three) return;
@@ -78,7 +76,7 @@ export default class JStageParallels {
     return out;
   }
 
-  get rank(): TypeTanking {
+  get rank(): TypeRanking {
     return JRankCalculator.getRankStageParallel(this)
   }
 

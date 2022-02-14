@@ -1,12 +1,16 @@
-import { JDateTime } from "./DateTime/JDateTime";
+import { IJDateTimeCreator, JDateTime } from "./DateTime/JDateTime";
 import { JEvent } from "./Event/JEvent";
 import { JEventCreator } from "./Event/JEventCreator";
 
 export default class JCalendar {
     private _events: JEvent[] = [];
-    private _now: JDateTime = new JDateTime({day: 1, interv: 0}); // usar en el constructor
+    private _initDate: JDateTime;
+    private _now: JDateTime;
 
-    constructor() {}
+    constructor(dti: IJDateTimeCreator) {
+        this._now = new JDateTime(dti);
+        this._initDate = this._now.copy();
+    }
 
     addEvent(event: JEvent) {
         this._events.push(event);
@@ -16,7 +20,11 @@ export default class JCalendar {
     }
 
     get now(): JDateTime { return this._now }
-    set now(dt: JDateTime) { this._now = dt.copy() }
+    set now(dt: JDateTime) { 
+        this._now = dt.copy()
+    }
+
+    get init(): JDateTime { return this._initDate }
 
     get events(): JEvent[] {
         // cambiar a IJEvent?
