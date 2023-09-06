@@ -8,8 +8,6 @@ import JSubStage from './Stage/JSubStage';
 import { JEventStagePlayoffCreator } from './Stage/StagePlayoff/JEventStagePlayoffCreator';
 import { TypeJCategory } from './types';
 
-
-
 export interface IJTournamentConfig {
 	entity: any;
 	name: string;
@@ -18,7 +16,7 @@ export interface IJTournamentConfig {
 	participantsRank: JRankItem[];
 }
 
-// se debe determinar los clasificados en cada stage una vez que esta termina
+// se debe determinar el ranking en cada stage una vez que esta termina
 export default class JTournament implements IJObserver<JEventCreator<JSubStage>> {
 	_stages: JStageParallels[] = [];
 	_stagesInfoList: TypeStageParallelInfo[] = [];

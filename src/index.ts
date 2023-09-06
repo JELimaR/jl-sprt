@@ -11,7 +11,6 @@ import JStageParallels from './Basics/Stage/JStageParallels';
 import JStageGroup from './Basics/Stage/StageGroup/JStageGroup';
 import JLeague from './Basics/Stage/StageGroup/JLeague';
 import JStagePlayoff from './Basics/Stage/StagePlayoff/JStagePlayoff';
-import JSubStage from './Basics/Stage/JSubStage';
 import JTeam from './Basics/JTeam';
 import JMatch from './Basics/Match/JMatch';
 import { JEventCreator } from './Calendar/Event/JEventCreator';

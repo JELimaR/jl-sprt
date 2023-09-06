@@ -1,5 +1,5 @@
 import JTeam from '../JTeam'
-import { IJDateTimeCreator, JDateTime } from '../../Calendar/DateTime/JDateTime';
+import { IJDateTimeCreator } from '../../Calendar/DateTime/JDateTime';
 import { IJTournamentConfig } from '../JTournament';
 import { arr2 } from '../types';
 import { IJTeamTableItem } from '../Rank/JTeamTableItem';

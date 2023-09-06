@@ -10,7 +10,7 @@ export interface IJSportOrganizationCreator<G extends JGeogEntity, M extends { i
   dateTimeCreation: IJDateTimeCreator;
 }
 
-export default class JSportOrganization<G, M extends { id: string }> {
+export default class JSportOrganization<G extends JGeogEntity, M extends { id: string }> {
 
   private _areaAsosiated: G;
   private _headquarters: JTown;
