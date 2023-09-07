@@ -1,6 +1,6 @@
-import JTeam from "../JTeam";
+import Team from "../Team";
 
-export interface IJTeamTableItem {
+export interface ITeamTableItem {
 	pos: number;
   pj: number;
   pg: number;
@@ -10,11 +10,11 @@ export interface IJTeamTableItem {
   ge: number;
   sg: number;
   ps: number;
-  team: JTeam;
+  team: Team;
 }
 
-export default class JTeamTableItem {
-  private _team: JTeam;
+export default class TeamTableItem {
+  private _team: Team;
   private _pg: number = 0;
   private _pe: number = 0;
   private _pp: number = 0;
@@ -22,7 +22,7 @@ export default class JTeamTableItem {
   private _gf: number = 0;
   private _ge: number = 0;
 
-  constructor(t: JTeam) {
+  constructor(t: Team) {
     this._team = t;
   }
 
@@ -57,11 +57,11 @@ export default class JTeamTableItem {
 	addGf(g: number) { this._gf += g }
 	addGe(g: number) { this._ge += g }
 
-  get team(): JTeam {
+  get team(): Team {
     return this._team;
   }
 
-  getInterface(): IJTeamTableItem {
+  getInterface(): ITeamTableItem {
     return {
 			pos: 1,
       pj: this.pj,

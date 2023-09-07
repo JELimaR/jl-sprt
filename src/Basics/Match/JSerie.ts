@@ -3,12 +3,12 @@ import { JDateTime } from '../../Calendar/DateTime/JDateTime';
 import { TypeHalfWeekOfYear } from '../../Calendar/DateTime/types';
 import { arr2 } from '../types';
 import JResult, { IJResultInfo } from './JResult';
-import JTeam from '../JTeam';
+import Team from '../Team';
 import JMatch from './JMatch';
 
 export interface IJSerieInfo {
-	teamOne: JTeam;
-	teamTwo: JTeam;
+	teamOne: Team;
+	teamTwo: Team;
 	isIV: boolean;
 	hws: arr2<TypeHalfWeekOfYear>;
 	// config: {temp: number}; // info en vez de config
@@ -25,8 +25,8 @@ export default class JSerie {
 	private _date: JDateTime | undefined;
 
 	// private _state: TypeMatchState = 'created';
-	private _teamOne: JTeam; // JTeamMatch
-	private _teamTwo: JTeam;
+	private _teamOne: Team; // JTeamMatch
+	private _teamTwo: Team;
 	private _matches: JMatch[];
 
 	constructor(isi: IJSerieInfo) {
@@ -76,7 +76,7 @@ export default class JSerie {
 		return this._matches.every((m: JMatch) => m.state === 'finished');
 	}
 
-	get winner(): JTeam { 
+	get winner(): Team { 
 		if (this._result.getResultInfo().teamWinner === 'none') throw new Error( `no hubo ganador en la serie`)
 		let out = (this._result.getResultInfo().teamWinner === this._teamOne.id) ? this._teamOne : this._teamTwo;
 		/*
@@ -91,6 +91,6 @@ export default class JSerie {
 		return out;
 		
 	}
-	get loser(): JTeam { return (this.winner.id === this._teamTwo.id) ? this._teamOne : this._teamTwo }
+	get loser(): Team { return (this.winner.id === this._teamTwo.id) ? this._teamOne : this._teamTwo }
 
 }

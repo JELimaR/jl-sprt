@@ -1,14 +1,13 @@
-import JStageGroup from '../Stage/StageGroup/JStageGroup';
-import JLeague from '../Stage/StageGroup/JLeague';
-import JTeam from '../JTeam';
+// import JStageGroup from '../Stage/StageGroup/JStageGroup';
+import League from '../Stage/StageGroup/League';
+import Team from '../Team';
 import JMatch from '../Match/JMatch';
-import JSingleElmination from '../Stage/StagePlayoff/JSingleElmination';
+import SingleElmination from '../Stage/StagePlayoff/SingleElmination';
 import { JRound } from '../Stage/StagePlayoff/Round/JRound';
-import JStagePlayoff from '../Stage/StagePlayoff/JStagePlayoff';
-import JTeamTableItem, { IJTeamTableItem } from './JTeamTableItem';
-import JStageParallels from '../Stage/JStageParallels';
-import JSubStage from '../Stage/JSubStage';
-import JBase from '../Stage/JBase';
+// import JStagePlayoff from '../Stage/StagePlayoff/JStagePlayoff';
+import TeamTableItem, { ITeamTableItem } from './TeamTableItem';
+// import JSubStage from '../Stage/JSubStage';
+import StageBase, { IStageBaseConfig, IStageBaseInfo } from '../Stage/StageBase';
 
 // JRankHistoric
 // JRankRecent - x years
@@ -18,8 +17,8 @@ import JBase from '../Stage/JBase';
 // JRankTemporal - solo para JRankLeague
 
 export interface JRankItem {
-  team: JTeam;
-  rank: number
+  team: Team;
+  rank: number;
 }
 
 export type TypeRanking = {
@@ -34,110 +33,110 @@ export class JRankCalculator {
   /**
    * 
    */
-   static getCoefStageParallel(para: JStageParallels): any {
-    let rank: TypeRanking = this.getRankStageParallel(para);
+  //  static getCoefStageParallel(para: JStageParallels): any {
+    // let rank: TypeRanking = this.getRankStageParallel(para);
 
     
 
-    return {
-      state: (para.isFinished) ? 'final' : 'partial',
-      table: rank,
-    };
-  }
+  //   return {
+  //     state: (para.isFinished) ? 'final' : 'partial',
+  //     table: rank,
+  //   };
+  // }
 
   /**
    * 
    */
-  static getRankStageParallel(para: JStageParallels): TypeRanking {
-    let out: JRankItem[] = (!para.prevStage)
-      ? [...para.tournamentConfig.participantsRank]
-      : [...this.getRankStageParallel(para.prevStage).table]
+  // static getRankStageParallel(para: JStageParallels): TypeRanking {
+  //   let out: JRankItem[] = (!para.prevStage)
+  //     ? [...para.tournamentConfig.participantsRank]
+  //     : [...this.getRankStageParallel(para.prevStage).table]
 
-    para.forEachSubStage((ss: JSubStage) => {
-      const ttis: IJTeamTableItem[] = ss.relativeTable;
-      const rankMin: number = ss.config.rankMinValue;
-      ttis.forEach((tti: IJTeamTableItem, i: number) => {
-        out[i + rankMin - 1] = {
-          team: tti.team,
-          rank: i + rankMin,
-        }
-      })
-    })
+  //   para.forEachSubStage((ss: JSubStage) => {
+  //     const ttis: IJTeamTableItem[] = ss.relativeTable;
+  //     const rankMin: number = ss.config.rankMinValue;
+  //     ttis.forEach((tti: IJTeamTableItem, i: number) => {
+  //       out[i + rankMin - 1] = {
+  //         team: tti.team,
+  //         rank: i + rankMin,
+  //       }
+  //     })
+  //   })
 
-    return {
-      state: (para.isFinished) ? 'final' : 'partial',
-      table: out,
-    };
-  }
+  //   return {
+  //     state: (para.isFinished) ? 'final' : 'partial',
+  //     table: out,
+  //   };
+  // }
   
   /**
    * 
    */
-  static getTableStageGroup(stageGroup: JStageGroup): IJTeamTableItem[] {
-    let teamsTTI: IJTeamTableItem[] = []; // pasar a map
+  // static getTableStageGroup(stageGroup: JStageGroup): ITeamTableItem[] {
+  //   let teamsTTI: ITeamTableItem[] = []; // pasar a map
 
-    stageGroup.groups.forEach((g: JLeague) => {
-      teamsTTI = teamsTTI.concat(g.table);
-    })
+  //   stageGroup.groups.forEach((g: League) => {
+  //     teamsTTI = teamsTTI.concat(g.table);
+  //   })
 
-    teamsTTI.sort((a: IJTeamTableItem, b: IJTeamTableItem) => {
-      if (b.pos - a.pos !== 0) {
-        return a.pos - b.pos
-      }
-      if (a.ps - b.ps !== 0) {
-        return b.ps - a.ps
-      }
-      if (a.sg - b.sg !== 0) {
-        return b.sg - a.sg
-      }
-      return b.gf - a.gf
-    })
-    return teamsTTI;
-  }
-
-  /**
-   * 
-   */
-  static getTableStagePlayoff(stagePlayoff: JStagePlayoff): IJTeamTableItem[] {
-    let teamsTTI: IJTeamTableItem[] = []; // pasar a map
-
-    let playoff: JSingleElmination = stagePlayoff.playoff;
-    teamsTTI = stagePlayoff.playoff.table;// teamsTTI.concat(rnk.getCalculatedTable(condition));
-
-    playoff.rounds.forEach((r: JRound, idx: number) => {
-      r.losers.forEach((lt: JTeam) => {
-        let item = teamsTTI.find((value: IJTeamTableItem) => value.team.id === lt.id)
-        if (item) item.pos = playoff.rounds.length + 1 - idx;
-      })
-    });
-    teamsTTI.sort((a: IJTeamTableItem, b: IJTeamTableItem) => {
-      if (b.pos - a.pos !== 0) {
-        return a.pos - b.pos
-      }
-      if (a.ps - b.ps !== 0) {
-        return b.ps - a.ps
-      }
-      if (a.sg - b.sg !== 0) {
-        return b.sg - a.sg
-      }
-      return b.gf - a.gf
-    })
-    return teamsTTI;
-  }
+  //   teamsTTI.sort((a: ITeamTableItem, b: ITeamTableItem) => {
+  //     if (b.pos - a.pos !== 0) {
+  //       return a.pos - b.pos
+  //     }
+  //     if (a.ps - b.ps !== 0) {
+  //       return b.ps - a.ps
+  //     }
+  //     if (a.sg - b.sg !== 0) {
+  //       return b.sg - a.sg
+  //     }
+  //     return b.gf - a.gf
+  //   })
+  //   return teamsTTI;
+  // }
 
   /**
    * 
    */
-  static getTableBase(base: JBase, condition: (m: JMatch) => boolean): IJTeamTableItem[] {
-    let teamsTTI: JTeamTableItem[] = []; // pasar a map
-    base.teams.forEach((team: JTeam) => {
-      teamsTTI.push(new JTeamTableItem(team));
+  // static getTableStagePlayoff(stagePlayoff: JStagePlayoff): IJTeamTableItem[] {
+  //   let teamsTTI: IJTeamTableItem[] = []; // pasar a map
+
+  //   let playoff: JSingleElmination = stagePlayoff.playoff;
+  //   teamsTTI = stagePlayoff.playoff.table;// teamsTTI.concat(rnk.getCalculatedTable(condition));
+
+  //   playoff.rounds.forEach((r: JRound, idx: number) => {
+  //     r.losers.forEach((lt: Team) => {
+  //       let item = teamsTTI.find((value: IJTeamTableItem) => value.team.id === lt.id)
+  //       if (item) item.pos = playoff.rounds.length + 1 - idx;
+  //     })
+  //   });
+  //   teamsTTI.sort((a: IJTeamTableItem, b: IJTeamTableItem) => {
+  //     if (b.pos - a.pos !== 0) {
+  //       return a.pos - b.pos
+  //     }
+  //     if (a.ps - b.ps !== 0) {
+  //       return b.ps - a.ps
+  //     }
+  //     if (a.sg - b.sg !== 0) {
+  //       return b.sg - a.sg
+  //     }
+  //     return b.gf - a.gf
+  //   })
+  //   return teamsTTI;
+  // }
+
+  /**
+   * 
+   */
+  static getTableBase(base: StageBase<IStageBaseInfo, IStageBaseConfig>, condition: (m: JMatch) => boolean): ITeamTableItem[] {
+    let teamsTTI: TeamTableItem[] = []; // pasar a map
+    base.teams.forEach((team: Team) => {
+      teamsTTI.push(new TeamTableItem(team));
     })
     base.matches/*.forEach((r: JRound) => {
 			r.matches*/.forEach((m: JMatch) => {
       if (condition(m) && !!m.result) {
-        let htti: JTeamTableItem | undefined = teamsTTI.find(t => t.team.id === m.homeTeam.id);
-        let atti: JTeamTableItem | undefined = teamsTTI.find(t => t.team.id === m.awayTeam.id);
+        let htti: TeamTableItem | undefined = teamsTTI.find(t => t.team.id === m.homeTeam.id);
+        let atti: TeamTableItem | undefined = teamsTTI.find(t => t.team.id === m.awayTeam.id);
         if (htti && atti) {
           // gls HT
           htti.addGf(m.result.teamOneScore.score);
@@ -163,8 +162,8 @@ export class JRankCalculator {
       // })
     })
 
-    teamsTTI.sort((a: JTeamTableItem, b: JTeamTableItem) => {
-      if (base instanceof JSingleElmination) {
+    teamsTTI.sort((a: TeamTableItem, b: TeamTableItem) => {
+      if (base instanceof SingleElmination) {
         if (a.pj - b.pj !== 0) {
           return b.pj - a.pj
         }
@@ -177,12 +176,12 @@ export class JRankCalculator {
       }
       return b.gf - a.gf
     })
-    if (base instanceof JLeague) {
-      return teamsTTI.map((tti: JTeamTableItem, idx: number) => {
+    if (base instanceof League) {
+      return teamsTTI.map((tti: TeamTableItem, idx: number) => {
         return { ...tti.getInterface(), pos: idx + 1 }
       });
-    } else if (base instanceof JSingleElmination) {
-      return teamsTTI.map((tti: JTeamTableItem) => {
+    } else if (base instanceof SingleElmination) {
+      return teamsTTI.map((tti: TeamTableItem) => {
         return { ...tti.getInterface(), pos: 1 }
       });
     } else {

@@ -1,16 +1,16 @@
 import { CollectionsUtilsFunctions } from 'jl-utlts';
-import JTeam from '../Basics/JTeam';
+import Team from '../Basics/Team';
 import { arr2 } from '../Basics/types';
 import JFederation from './Federation/JFederation';
 
 const CUF = CollectionsUtilsFunctions.getInstance();
 
 
-export const getExampleTeams = (n: number, pid: string = ''): JTeam[] => {
-	let out: JTeam[] = [];
+export const getExampleTeams = (n: number, pid: string = ''): Team[] => {
+	let out: Team[] = [];
 	for (let i = 1; i <= n; i++) {
 		out.push(
-			new JTeam(
+			new Team(
 				`${pid}-T${1000+i}`
 			)
 		)

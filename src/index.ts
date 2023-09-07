@@ -1,111 +1,77 @@
 // import { CollectionsUtilsFunctions } from 'jl-utlts';
 // const CUF = CollectionsUtilsFunctions.getInstance();
 
+import League from './Basics/Stage/StageGroup/League';
+import SingleElmination from './Basics/Stage/StagePlayoff/SingleElmination';
 import { JDateTime } from './Calendar/DateTime/JDateTime';
-
 import { JEvent } from './Calendar/Event/JEvent';
-
+import JCalendar from './Calendar/JCalendar';
+import { getExampleTeams } from './Entities/ExampleData';
 import TManager from './TManager';
-import { JRankCalculator, JRankItem } from './Basics/Rank/JRank';
-import JStageParallels from './Basics/Stage/JStageParallels';
-import JStageGroup from './Basics/Stage/StageGroup/JStageGroup';
-import JLeague from './Basics/Stage/StageGroup/JLeague';
-import JStagePlayoff from './Basics/Stage/StagePlayoff/JStagePlayoff';
-import JTeam from './Basics/JTeam';
-import JMatch from './Basics/Match/JMatch';
-import { JEventCreator } from './Calendar/Event/JEventCreator';
 
+const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getIJDateTimeCreator());
 
+const selection = getExampleTeams(6)
 
-console.log('init');
-let i: number = 0;
+// league creation
+const league = new League({
+  id: 'L1-1',
+  name: 'League Name',
+  season: 1986,
+}, {
+  idConfig: 'L1',
+  isIV: false,
+  isNeutral: true,
+  participantsNumber: 6,
 
+  turnHalfWeeks: [25, 26, 28, 31, 35],
+  turnHalfWeeksSchedule: [9, 9, 9, 9, 9],
+});
 
-const tm = new TManager();
-console.log(tm._calendar.events.map((eve: JEvent) => {
-	if (eve instanceof JEventCreator) {
-		return new JDateTime(eve.dateTime.getIJDateTimeCreator())
-	}
-}))
+league.assign(selection, cal);
 
-let dt: JDateTime = new JDateTime({ day: 0, interv: 0 });
-while (tm.getNextEvent(dt)) {
-	// gsm.advance();
-	dt = tm.getNextEvent(dt)!.dateTime;
-	if (tm._calendar.events.length === 6) {
-		console.log(tm._calendar.events.map((eve: JEvent) => {
-			return JSON.stringify({dt: new JDateTime(eve.dateTime.getIJDateTimeCreator())}, null, 2)
+// single elimination creation
+const singleElimination = new SingleElmination(
+  {
+    id: 'C',
+    name: 'Cup 1',
+    season: 1986
+  },
+  {
+    idConfig: 'C1',
+    isIV: true,
+    isNeutral: false,
+    participantsNumber: 8,
+    roundsNumber: 3,
+    roundHalfWeeks: [[62, 63], [68, 69], [72,74]],
+    roundHalfWeeksSchedule: [40, 65, 70]
+  }
+);
 
-		}))
-	}
+singleElimination.assign(getExampleTeams(14).slice(6,14), cal)
 
-	const events = tm.getEventNow(dt);
-	events.forEach((eve: JEvent, idx: number) => {
-		console.log(idx);
-		eve.execute();
-	});
-	if (events.length > 0) {
-		const idt = dt.getDateTime();
-		const s = `${idt.date.dayOfMonth} - ${idt.date.monthOfYear}`
-		console.log(s);
-		console.log('-----------------------------------------');
-	}
-	i++;
+const mostrarFecha = (dt: JDateTime) => {
+  const { date: {
+    dayOfMonth, monthName, dayName, year
+  } } = dt.getDateTime()
+  console.log(dayName, dayOfMonth, monthName, year)
 }
 
-console.log(`final`)
-tm._trn._stages.forEach((s: JStageParallels) => {
-	console.log(`Stage`, s.info.stageId);
-	console.log('qualified');
-	console.table(s.oneSS!.qualified().map(t => t.id));
-	if (s.oneSS instanceof JStageGroup) {
-		s.oneSS.groups.forEach((g: JLeague) => {
-			console.table(g.table)
-		})
-		// console.log(s.config);
-	} else if (s.oneSS instanceof JStagePlayoff) {
+mostrarFecha(cal.now)
 
-	}
-	console.table(s.oneSS?.relativeTable);
-	console.log('rank');
-	console.table(JRankCalculator.getRankStageParallel(s).table);
-})
+let idx: number = 0;
+while (idx < cal.events.length) {
+  console.log(idx);
 
-// console.log(tm._trn.config.participantsRank);
-// console.log(JRankCalculator.getRankStageParallel(tm._trn.stages.get(1)!));
-// console.log(tm._trn.stages.get(2)!.one.qualified().map(t => t.id));
+  const eve = cal.events[idx];
+  eve.execute();
+  mostrarFecha(eve.dateTime);
+  idx++;
+}
 
-console.log(tm._trn.stages.length);
+console.log(cal.events.length);
 
-const TID: string = tm._trn.rank.table[0].team.id;
-console.log(TID);
-
-let arrTeamsPoints: { team: string, rank: number, points: number, matchNumber: number, pointsAvg: string }[] = [];
-
-tm._trn.rank.table.forEach((item: JRankItem) => {
-	const team: JTeam = item.team;
-	let printer: string, points: number, sum: number = 0;
-	team.matches.forEach((m: JMatch) => {
-		if (m.result!.teamWinner === 'none') {
-			printer = 'E';
-			points = 1;
-		} else if (m.result!.teamWinner === team.id) {
-			printer = 'G'
-			points = 3;
-		} else {
-			printer = 'P'
-			points = 0;
-		}
-		sum = sum + points;
-		if (TID === team.id) console.log('res:', printer, 'points: ', points, 'sum: ', sum)
-	})
-	arrTeamsPoints.push({
-		team: team.id,
-		points: sum,
-		rank: item.rank,
-		matchNumber: team.matches.length,
-		pointsAvg: (sum / team.matches.length).toLocaleString('de-DE')
-	})
-})
-
-console.table(arrTeamsPoints);
+console.table(league.table)
+console.table(singleElimination.table)
+// console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getDateTime())
+// console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getIJDateTimeCreator())

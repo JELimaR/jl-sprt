@@ -1,4 +1,4 @@
-import JTeam from "../Basics/JTeam";
+import Team from "../Basics/Team";
 import { TypeCategoryList, TypeJCategory } from "../Basics/types";
 
 export class JInstallation {
@@ -19,7 +19,7 @@ export default class JInstitution {
   _id: string;
   _installations: JInstallation[] = [];
 
-  _teams: TypeCategoryList<JTeam> = {};
+  _teams: TypeCategoryList<Team> = {};
 
   constructor(iic: IJInstitutionCreator) {
     this._id = iic.id;
@@ -32,8 +32,8 @@ export default class JInstitution {
       throw new Error(`la inst ${this._id} ya cuenta con un team en la categoria: ${category}`);
 
     let tid: string = `${this._id}-${category}`
-    this._teams[category] = new JTeam(tid);
+    this._teams[category] = new Team(tid);
   }
-  getInstitutionPerCategory(category: TypeJCategory): JTeam | undefined { return this._teams[category] }
+  getInstitutionPerCategory(category: TypeJCategory): Team | undefined { return this._teams[category] }
 
 }

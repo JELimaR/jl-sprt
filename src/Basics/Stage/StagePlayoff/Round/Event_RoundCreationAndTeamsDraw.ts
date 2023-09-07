@@ -1,19 +1,19 @@
 import { IJEventOthersInfo, JEventOthers } from "../../../../Calendar/Event/JEvent";
-import JSingleElmination from "../JSingleElmination"
-import JTeam from "../../../JTeam";
+import SingleElmination from "../SingleElmination"
+import Team from "../../../Team";
 import { arr2 } from "../../../types";
 
-export interface IJEventRoundCreationAndTeamsDrawInfo extends IJEventOthersInfo {
-  playoff: JSingleElmination;
-  teams?: arr2<JTeam>[];
+export interface IEvent_RoundCreationAndTeamsDrawInfo extends IJEventOthersInfo {
+  playoff: SingleElmination;
+  teams?: Team[];
 }
 
 /* acá se generan las rounds */
 
-export default class JEventRoundCreationAndTeamsDraw extends JEventOthers {
-  private _playoff: JSingleElmination;
-  private _teams?: arr2<JTeam>[];
-  constructor(ertd: IJEventRoundCreationAndTeamsDrawInfo) {
+export default class Event_RoundCreationAndTeamsDraw extends JEventOthers {
+  private _playoff: SingleElmination;
+  private _teams?: Team[];
+  constructor(ertd: IEvent_RoundCreationAndTeamsDrawInfo) {
     super(ertd);
     this._playoff = ertd.playoff;
     this._teams = ertd.teams;
@@ -24,8 +24,7 @@ export default class JEventRoundCreationAndTeamsDraw extends JEventOthers {
     if (!this._teams && this._playoff.rounds.length === 0)
       throw new Error(`teams presentados ${this._teams} && ronda anterior: ${this._playoff.rounds.length}`)
 
-
-    let teams: arr2<JTeam>[] = [];
+    let teams: Team[] = [];
     if (!!this._teams) {
       teams = this._teams
     } else {
@@ -37,14 +36,14 @@ export default class JEventRoundCreationAndTeamsDraw extends JEventOthers {
     
   }
   
-  private draw(list: JTeam[]): arr2<JTeam>[] {
+  private draw(list: Team[]): Team[] {
     // donde se hace sorteo?
-    let out: arr2<JTeam>[] = [];
+    let out: Team[] = [];
     
     const total = list.length;
-    for (let i = 0; i < total / 2; i++) {
+    for (let i = 0; i < total/2; i++) {
 			out.push(
-				[list[total - i - 1], list[i]]
+				list[total - i - 1], list[i]
 			)
 		}
 

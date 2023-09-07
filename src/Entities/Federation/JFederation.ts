@@ -1,11 +1,11 @@
-import JTeam from "../../Basics/JTeam";
+import Team from "../../Basics/Team";
 import { TypeCategoryList, TypeJCategory } from "../../Basics/types";
 import { IJDateTimeCreator, JDateTime } from "../../Calendar/DateTime/JDateTime";
 import JInstitution from "../JInstitution";
-import JLeagueSystem, { IJCupSystemCreator, IJLeagueSystemCreator, JCupSystem } from "../JLeagueSystem";
+import LeagueSystem, { IJCupSystemCreator, ILeagueSystemCreator, JCupSystem } from "../LeagueSystem";
 import { DAYSPERYEAR, TypeDayOfYear } from "../../Calendar/DateTime/types";
 import JEventChangeFederationReadingConfig from "./JEventChangeFederationReadingConfig";
-import JSportOrganization, { IJSportOrganizationCreator } from "../JSportOrganization";
+import JSportOrganization, { IJSportOrganizationCreator } from "../SportOrganization";
 import { JCountry } from "../JGeogEntity";
 
 export type TypeFederationReadingConfig = 
@@ -15,7 +15,7 @@ export type TypeFederationReadingConfig =
  }
  | {
   type: 'l',
-  config: IJLeagueSystemCreator
+  config: ILeagueSystemCreator
 }
 
 export interface IJFederationCreator extends IJSportOrganizationCreator<JCountry, JInstitution> {
@@ -33,16 +33,16 @@ export default class JFederation extends JSportOrganization<JCountry, JInstituti
    * comps
    */
   // config
-  private _leagueSystemConfig: TypeCategoryList<IJLeagueSystemCreator> = {};
+  private _leagueSystemConfig: TypeCategoryList<ILeagueSystemCreator> = {};
   private _cupSystemConfg: TypeCategoryList<IJCupSystemCreator> = {};
   // tournaments
-  private _currentLeagueSystem: TypeCategoryList<JLeagueSystem> = {};
+  private _currentLeagueSystem: TypeCategoryList<LeagueSystem> = {};
   private _currenCupSystem: TypeCategoryList<JCupSystem> = {};
-  private _historicLeagueSystem: TypeCategoryList<JLeagueSystem>[] = [];
+  private _historicLeagueSystem: TypeCategoryList<LeagueSystem>[] = [];
   private _historicCupSystem: TypeCategoryList<JCupSystem>[] = [];
 
   //
-  private _teams: TypeCategoryList<JTeam> = {};
+  private _teams: TypeCategoryList<Team> = {};
   
   // _calendar: JCalendar;
   
@@ -57,28 +57,28 @@ export default class JFederation extends JSportOrganization<JCountry, JInstituti
       throw new Error(`la inst ${this._id} ya cuenta con un team en la categoria: ${category}`);
       
     let tid: string = `${this._id}-${category}`
-    this._teams[category] = new JTeam(tid);
+    this._teams[category] = new Team(tid);
   }
-  getFederationTeamPerCategory(category: TypeJCategory): JTeam | undefined { return this._teams[category] }
+  getFederationTeamPerCategory(category: TypeJCategory): Team | undefined { return this._teams[category] }
 
-  getInstitutionTeamsPerCategory(cat: TypeJCategory): JTeam[] {
-    let out: JTeam[] = [];
+  getInstitutionTeamsPerCategory(cat: TypeJCategory): Team[] {
+    let out: Team[] = [];
     this.members.forEach((inst: JInstitution) => {
-      const team: JTeam | undefined = inst.getInstitutionPerCategory(cat);
+      const team: Team | undefined = inst.getInstitutionPerCategory(cat);
       if (team) out.push(team);
     })
     return out;
   }
 
-  setleagueSystem(ilsc: IJLeagueSystemCreator ): void { 
+  setleagueSystem(ilsc: ILeagueSystemCreator ): void { 
     this._leagueSystemConfig[ilsc.category] = ilsc;
   }
   setCupSystem(icsc: IJCupSystemCreator ): void { 
     this._cupSystemConfg[icsc.category] = icsc;
   }
 
-  changeLeagueSystemConfig(ilsc: IJLeagueSystemCreator): void {
-    const currentlsConfig: IJLeagueSystemCreator | undefined = this._leagueSystemConfig[ilsc.category];
+  changeLeagueSystemConfig(ilsc: ILeagueSystemCreator): void {
+    const currentlsConfig: ILeagueSystemCreator | undefined = this._leagueSystemConfig[ilsc.category];
     if (!currentlsConfig) {
       this.setleagueSystem(ilsc);
     } else {

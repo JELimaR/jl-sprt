@@ -1,6 +1,6 @@
 import JMatch from "./Match/JMatch";
 
-export default class JTeam {
+export default class Team {
 	private _id: string;
 	private _matches: JMatch[] = [];
 	constructor(id: string) {
@@ -12,15 +12,15 @@ export default class JTeam {
 	addNewMatch(match: JMatch) { 
 		this._matches.push(match);
 	}
-	getTeamMatch(): JTeamMatch {
-		return new JTeamMatch(this._id);
+	getTeamMatch(): TeamMatch {
+		return new TeamMatch(this._id);
 	}
 }
 
-export class JTeamMatch {
+export class TeamMatch {
 	private _id: string;
-	private _starters: JPlayer[] = [];
-	private _subs: JPlayer[] = [];
+	private _starters: Player[] = [];
+	private _subs: Player[] = [];
 	constructor(id: string) {
 		this._id = id;
 	}
@@ -28,6 +28,6 @@ export class JTeamMatch {
 	get id(): string {return this._id}
 }
 
-export class JPlayer {
+export class Player {
 
 }

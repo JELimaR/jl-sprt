@@ -1,5 +1,5 @@
 import { TypeHalfWeekOfYear } from '../../Calendar/DateTime/types';
-import JTeam from '../JTeam';
+import Team from '../Team';
 import { JDateTime } from '../../Calendar/DateTime/JDateTime';
 import JSerie from './JSerie';
 import JMatchPlay from './JMatchPlay';
@@ -15,8 +15,8 @@ export type TypeMatchState =
 	| 'finished';
 
 export interface IJMatchInfo {
-	homeTeam: JTeam;
-	awayTeam: JTeam;
+	homeTeam: Team;
+	awayTeam: Team;
 	hw: TypeHalfWeekOfYear;
 	// config: IJLeagueConfig; // info en vez de config
 	temp: number;
@@ -38,8 +38,8 @@ export default class JMatch /*implements IJSubject*/  {
 	// private _observers: IJObserver<JMatch>[] = [];
 
 	private _state: TypeMatchState = 'created';
-	private _homeTeam: JTeam; // JTeamMatch
-	private _awayTeam: JTeam;
+	private _homeTeam: Team; // JTeamMatch
+	private _awayTeam: Team;
 
 	private _isNeutral: boolean;
 
@@ -80,10 +80,10 @@ export default class JMatch /*implements IJSubject*/  {
 	get id(): string {
 		return this._id;
 	}
-	get homeTeam(): JTeam {
+	get homeTeam(): Team {
 		return this._homeTeam;
 	}
-	get awayTeam(): JTeam {
+	get awayTeam(): Team {
 		return this._awayTeam;
 	}
 

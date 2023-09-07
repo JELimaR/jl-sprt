@@ -1,7 +1,7 @@
 import JFederation from "./Federation/JFederation";
 import JConfederation from "./JConfederation";
 import { JWorld } from "./JGeogEntity";
-import JSportOrganization, { IJSportOrganizationCreator } from "./JSportOrganization";
+import JSportOrganization, { IJSportOrganizationCreator } from "./SportOrganization";
 
 export interface IJInternationalEntityCreator extends IJSportOrganizationCreator<JWorld, JFederation> {
 

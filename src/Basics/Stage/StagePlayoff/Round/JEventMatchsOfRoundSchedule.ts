@@ -3,7 +3,7 @@ import { IJEventOthersInfo, JEventOthers } from "../../../../Calendar/Event/JEve
 import JMatch from "../../../Match/JMatch";
 import { JEventMatch } from "../../../Match/JEventMatch";
 import { JRound } from "./JRound";
-import { IJSingleElminationConfig } from '../JSingleElmination';
+import SingleElmination, { ISingleElminationConfig } from '../SingleElmination';
 import JSerie from "../../../Match/JSerie";
 import { TypeHalfWeekOfYear } from "../../../../Calendar/DateTime/types";
 import { arr2 } from "../../../types";
@@ -11,17 +11,17 @@ import { arr2 } from "../../../types";
 
 export interface IJEventMatchsOfRoundScheduleInfo extends IJEventOthersInfo {
 	round: JRound;
-	config: IJSingleElminationConfig;
+	playoff: SingleElmination;
 }
   
 export class JEventMatchsOfRoundSchedule extends JEventOthers {
 	// evento que implica una configuracion necesaria
 	_round: JRound;
-	_config: IJSingleElminationConfig;
+	_playoff: SingleElmination;
 	constructor(efc: IJEventMatchsOfRoundScheduleInfo) {
 		super(efc);
 		this._round = efc.round;
-		this._config = efc.config;
+		this._playoff = efc.playoff;
 	}
 
 	execute() {
@@ -32,7 +32,7 @@ export class JEventMatchsOfRoundSchedule extends JEventOthers {
 			serie.matches.forEach((m: JMatch, idx: number) => {
 				const dt: JDateTime = JDateTime.createFromHalfWeekOfYearAndYear(
 					hws2[idx as 0 | 1],
-					this._config.season,
+					this._playoff.info.season,
 					'end'
 				);
 				m.schedule(dt);

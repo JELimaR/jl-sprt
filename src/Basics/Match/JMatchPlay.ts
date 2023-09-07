@@ -1,13 +1,13 @@
 import JResult from "./JResult";
-import { JTeamMatch } from "../JTeam";
+import { TeamMatch } from "../Team";
 
 
 export default class JMatchPlay {
 	_time: number;
 	_result: JResult | undefined;
   _globalResult: JResult | undefined;
-  _teamOne: JTeamMatch | undefined;
-  _teamTwo: JTeamMatch | undefined;
+  _teamOne: TeamMatch | undefined;
+  _teamTwo: TeamMatch | undefined;
 
 	constructor(globalResult?: JResult) {
 		this._time = -1;	
@@ -18,7 +18,7 @@ export default class JMatchPlay {
 		return this._result;
 	}
 
-  init(one: JTeamMatch, two: JTeamMatch) {
+  init(one: TeamMatch, two: TeamMatch) {
     this._time = 0;
     this._teamOne = one;
     this._teamTwo = two;

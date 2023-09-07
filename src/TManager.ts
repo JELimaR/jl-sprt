@@ -1,4 +1,4 @@
-import JTournament from "./Basics/JTournament";
+import JTournament from "./Basics/Tournament";
 import { JDateTime } from "./Calendar/DateTime/JDateTime";
 import { JEvent } from "./Calendar/Event/JEvent";
 import JCalendar from "./Calendar/JCalendar";
@@ -14,18 +14,18 @@ export default class TManager/* implements IJObserver<JEventCreator<JSubStage>>*
   public _calendar: JCalendar;
 
   constructor() {
-    console.log(exampleSet.tournamentconfig);
-    console.log(exampleSet.stages);
+    // console.log(exampleSet.tournamentconfig);
+    // console.log(exampleSet.stages);
     this._calendar = new JCalendar({
       day: 1,
       interv: 0
     });
     
     this._trn = new JTournament(
-      exampleSet.tournamentconfig,
-      exampleSet.stages,
-      this._calendar,
-      exampleSet.participantsRank
+      // exampleSet.tournamentconfig,
+      // exampleSet.stages,
+      // this._calendar,
+      // exampleSet.participantsRank
     );
 
   }
