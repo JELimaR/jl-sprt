@@ -1,6 +1,6 @@
 import { CollectionsUtilsFunctions } from 'jl-utlts';
-import Team from '../Basics/Team';
-import { arr2 } from '../Basics/types';
+import Team from '../Tournament/Team';
+import { arr2 } from '../Tournament/types';
 import JFederation from './Federation/JFederation';
 
 const CUF = CollectionsUtilsFunctions.getInstance();

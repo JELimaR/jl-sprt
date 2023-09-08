@@ -1,5 +1,5 @@
-import Team from "../Basics/Team";
-import { TypeCategoryList, TypeJCategory } from "../Basics/types";
+import Team from "../Tournament/Team";
+import { TypeCategoryList, TypeJCategory } from "../Tournament/types";
 
 export class JInstallation {
 

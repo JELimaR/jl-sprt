@@ -1,4 +1,4 @@
-import JTournament from "./Basics/Tournament";
+import JTournament from "./Tournament/Tournament";
 import { JDateTime } from "./Calendar/DateTime/JDateTime";
 import { JEvent } from "./Calendar/Event/JEvent";
 import JCalendar from "./Calendar/JCalendar";

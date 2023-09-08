@@ -2,12 +2,12 @@ import { CollectionsUtilsFunctions } from "jl-utlts";
 
 const CUF = CollectionsUtilsFunctions.getInstance();
 
-export interface IJBomboInfo<T> {
+export interface IBomboInfo<T> {
 	elements: T[];
 	selectionPerTime: number;
 }
 
-export default class JBombo<T> {
+export default class Bombo<T> {
 	public _elements: T[];
 	private _stack: T[] = [];
 	private _selectionPerTime: number;
@@ -40,6 +40,7 @@ export default class JBombo<T> {
 		}
 		return out;
 	}
+	
 	reset(): void {
 		this._state = 'reseted';
 	}

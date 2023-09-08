@@ -1,5 +1,5 @@
-import Team from "../../Basics/Team";
-import { TypeCategoryList, TypeJCategory } from "../../Basics/types";
+import Team from "../../Tournament/Team";
+import { TypeCategoryList, TypeJCategory } from "../../Tournament/types";
 import { IJDateTimeCreator, JDateTime } from "../../Calendar/DateTime/JDateTime";
 import JInstitution from "../JInstitution";
 import LeagueSystem, { IJCupSystemCreator, ILeagueSystemCreator, JCupSystem } from "../LeagueSystem";

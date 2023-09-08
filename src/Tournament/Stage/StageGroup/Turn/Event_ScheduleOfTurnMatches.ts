@@ -3,34 +3,34 @@ import { IJEventOthersInfo, JEventOthers } from "../../../../Calendar/Event/JEve
 import JMatch from "../../../Match/JMatch";
 import { JEventMatch } from "../../../Match/JEventMatch";
 import { Turn } from "./Turn";
-import League, { ILeagueConfig, ILeagueInfo } from '../League';
+import League from '../League';
 import { ITCCDATA } from "../../../../patterns/templateConfigCreator";
 
 
-export interface IEvent_MatchsOfTurnScheduleInfo extends IJEventOthersInfo {
-	matchHWeek: Turn;
+export interface IEvent_ScheduleOfTurnMatchesInfo extends IJEventOthersInfo {
+	turn: Turn;
 	// leagueData: ITCCDATA<ILeagueInfo, ILeagueConfig>;
 	league: League;
 }
   
-export class Event_MatchsOfTurnSchedule extends JEventOthers {
+export class Event_ScheduleOfTurnMatches extends JEventOthers {
 	// evento que implica una configuracion necesaria
-	_matchHWeek: Turn;
+	_turn: Turn;
 	// _leagueData: ITCCDATA<ILeagueInfo, ILeagueConfig>
 	_league: League;
-	constructor(efc: IEvent_MatchsOfTurnScheduleInfo) {
+	constructor(efc: IEvent_ScheduleOfTurnMatchesInfo) {
 		super(efc);
-		this._matchHWeek = efc.matchHWeek;
+		this._turn = efc.turn;
 		// this._leagueData = efc.leagueData;
 		this._league = efc.league;
 	}
 
 	execute() {
-		console.log(`ejecuting match scheduling for matchHWeek number: ${this._matchHWeek.num}`);
+		console.log(`ejecuting match scheduling for matchHWeek number: ${this._turn.num}`);
 		// el evento debe crearse en el match
-		this._matchHWeek.matches.forEach((match: JMatch) => {
+		this._turn.matches.forEach((match: JMatch) => {
 			const dt = JDateTime.createFromHalfWeekOfYearAndYear(
-				this._matchHWeek.halfWeek,
+				this._turn.halfWeek,
 				// this._leagueData.info.season,
 				this._league.info.season,
 				'end'

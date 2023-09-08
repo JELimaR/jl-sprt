@@ -6,13 +6,13 @@ import SingleElmination from '../SingleElmination';
 import Team from '../../../Team';
 import JMatch from '../../../Match/JMatch';
 import JSerie from '../../../Match/JSerie';
-import { JEventMatchsOfRoundSchedule } from './JEventMatchsOfRoundSchedule';
+import { Event_ScheduleOfRoundMatches } from './Event_ScheduleOfRoundMatches';
 
 
 export interface IJRoundInfo {
 	num: number;
 	halfweeks: arr2<TypeHalfWeekOfYear>;
-	halfweekMatchDateAssignation: TypeHalfWeekOfYear;
+	halfweekSchedule: TypeHalfWeekOfYear;
 	series: JSerie[];
 }
 
@@ -20,12 +20,12 @@ export class JRound {
 	private _num: number;
 	private _series: JSerie[] = [];
 	private _halfWeeks: arr2<TypeHalfWeekOfYear>;
-	private _halfweekMatchDateAssignation: TypeHalfWeekOfYear;
+	private _halfweekSchedule: TypeHalfWeekOfYear;
 
 	constructor(ri: IJRoundInfo) {
 		this._num = ri.num;
 		this._halfWeeks = ri.halfweeks;
-		this._halfweekMatchDateAssignation = ri.halfweekMatchDateAssignation;
+		this._halfweekSchedule = ri.halfweekSchedule;
 		this._series = ri.series; // ver como se hace
 	}
 
@@ -61,7 +61,7 @@ export class JRound {
 
 	generateMatchOfRoundScheduleEvents(cal: JCalendar, playoff: SingleElmination, roundCreateAt: JDateTime): void {
 		let dt = JDateTime.createFromHalfWeekOfYearAndYear(
-			this._halfweekMatchDateAssignation,
+			this._halfweekSchedule,
 			playoff.info.season,
 			'middle'
 		);
@@ -70,7 +70,7 @@ export class JRound {
 			dt.addInterv(1);
 		}
 		cal.addEvent(
-			new JEventMatchsOfRoundSchedule({
+			new Event_ScheduleOfRoundMatches({
 				dateTime: dt.getIJDateTimeCreator(),
 				calendar: cal,
 				round: this,

@@ -3,25 +3,25 @@ import { TypeHalfWeekOfYear } from "../../../../Calendar/DateTime/types";
 import JCalendar from "../../../../Calendar/JCalendar";
 import League from "../League";
 import JMatch from "../../../Match/JMatch";
-import { Event_MatchsOfTurnSchedule } from "./Event_MatchsOfTurnSchedule";
+import { Event_ScheduleOfTurnMatches } from "./Event_ScheduleOfTurnMatches";
 
 export interface ITurnInfo {
 	num: number;
 	halfweek: TypeHalfWeekOfYear;
-	halfweekMatchDateAssignation: TypeHalfWeekOfYear;
+	halfweekSchedule: TypeHalfWeekOfYear;
 	matches: JMatch[];
 }
 
-export class Turn {
+export /*default*/ class Turn {
 	private _num: number;
 	private _matches: JMatch[] = [];
 	private _halfWeek: TypeHalfWeekOfYear;
-	private _halfweekMatchDateAssignation: TypeHalfWeekOfYear;
+	private _halfweekSchedule: TypeHalfWeekOfYear;
 
 	constructor(fi: ITurnInfo) {
 		this._num = fi.num;
 		this._halfWeek = fi.halfweek;
-		this._halfweekMatchDateAssignation = fi.halfweekMatchDateAssignation;
+		this._halfweekSchedule = fi.halfweekSchedule;
 		this._matches = fi.matches; // ver como se hace
 	}
 
@@ -35,15 +35,15 @@ export class Turn {
 
 	generateMatchOfTurnScheduleEvents(cal: JCalendar, league: League): void {
 		const dt = JDateTime.createFromHalfWeekOfYearAndYear(
-			this._halfweekMatchDateAssignation,
+			this._halfweekSchedule,
 			league.info.season,
 			'start'
 		);
 		cal.addEvent(
-			new Event_MatchsOfTurnSchedule({
+			new Event_ScheduleOfTurnMatches({
 				dateTime: dt.getIJDateTimeCreator(),
 				calendar: cal,
-				matchHWeek: this,
+				turn: this,
 				// leagueData: league.getData()
 				league
 			})

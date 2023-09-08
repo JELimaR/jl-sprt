@@ -9,16 +9,16 @@ import { TypeHalfWeekOfYear } from "../../../../Calendar/DateTime/types";
 import { arr2 } from "../../../types";
 
 
-export interface IJEventMatchsOfRoundScheduleInfo extends IJEventOthersInfo {
+export interface IEvent_ScheduleOfRoundMatchesInfo extends IJEventOthersInfo {
 	round: JRound;
 	playoff: SingleElmination;
 }
   
-export class JEventMatchsOfRoundSchedule extends JEventOthers {
+export class Event_ScheduleOfRoundMatches extends JEventOthers {
 	// evento que implica una configuracion necesaria
 	_round: JRound;
 	_playoff: SingleElmination;
-	constructor(efc: IJEventMatchsOfRoundScheduleInfo) {
+	constructor(efc: IEvent_ScheduleOfRoundMatchesInfo) {
 		super(efc);
 		this._round = efc.round;
 		this._playoff = efc.playoff;

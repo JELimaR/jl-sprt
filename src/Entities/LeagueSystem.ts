@@ -1,6 +1,6 @@
-import { ITournamentConfig } from "../Basics/Tournament";
+import { ITournamentConfig } from "../Tournament/Tournament";
 // import { TypeStageParallelInfo } from "../Basics/Stage/JStageParallels";
-import { TypeJCategory } from "../Basics/types";
+import { TypeJCategory } from "../Tournament/types";
 import { IJDateTimeCreator } from "../Calendar/DateTime/JDateTime";
 
 // cambiar league system por division system

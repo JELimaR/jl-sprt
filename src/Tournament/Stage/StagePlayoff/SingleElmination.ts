@@ -7,28 +7,29 @@ import { JDateTime } from '../../../Calendar/DateTime/JDateTime';
 import Event_RoundCreationAndTeamsDraw from './Round/Event_RoundCreationAndTeamsDraw';
 import JMatch from '../../Match/JMatch';
 import { arr2 } from '../../types';
-import { ITeamTableItem } from '../../Rank/TeamTableItem';
-import { JRankCalculator } from '../../Rank/JRank';
-import StageBase, { IStageBaseConfig, IStageBaseInfo } from '../StageBase';
+import BaseStage, { IBaseStageConfig, IBaseStageInfo } from '../BaseStage';
 
 
-export interface ISingleElminationConfig extends IStageBaseConfig {
+export interface ISingleElminationConfig extends IBaseStageConfig {
   roundsNumber: number;
   roundHalfWeeks: arr2<TypeHalfWeekOfYear>[];
   roundHalfWeeksSchedule: TypeHalfWeekOfYear[];
 }
 
-export interface ISingleElminationInfo extends IStageBaseInfo {
+export interface ISingleElminationInfo extends IBaseStageInfo {
 
 }
 
-export default class SingleElmination extends StageBase<ISingleElminationInfo, ISingleElminationConfig> { // Single elimination
+export default class SingleElmination extends BaseStage<ISingleElminationInfo, ISingleElminationConfig> { // Single elimination
 
-  _rounds: JRound[] = [];
-  _participants: Team[] = [];
+  private _rounds: JRound[] = [];
 
   constructor(info: ISingleElminationInfo, config: ISingleElminationConfig) { // FALTA VERIFICAR QUE CADA fechHalfWeeks sea mayor al fechHalfWeeksSchedule
-    super(info, config)
+    super(info, config);
+    console.log('se')
+  }
+
+  constructorVerification(config: ISingleElminationConfig): void {
     if (SingleElmination.maxNumberRound(config.participantsNumber) < config.roundsNumber) {
       throw new Error(`la cantidad de rounds: ${config.roundsNumber} es
       mayor a la cantidad posible de rounds: ${SingleElmination.maxNumberRound(config.participantsNumber)} para la cantidad de
@@ -45,31 +46,23 @@ export default class SingleElmination extends StageBase<ISingleElminationInfo, I
     })
     return out;
   }
-  get teams(): Team[] { return this._participants }
 
-  get table(): ITeamTableItem[] {
-    return JRankCalculator.getTableBase(this, m => m.state === 'finished');
-  }
+  /**
+   * Para crear los rounds.
+   * Se agregan al calendario eventos para la creacion y "asignacion" de teams de todas las rounds.
+   * Ademas, en caso de que corresponda, se realiza el sorteo/draw
+   * @param cal JCalendar
+   */
+  createChildren(cal: JCalendar): void {
 
-  assign(teams: Team[], cal: JCalendar): void { // solo una vez?
+    // cal.addEvent(new Event_RoundCreationAndTeamsDraw({ // crear el evento de draw y round creation
+    //   dateTime: JDateTime.createFromHalfWeekOfYearAndYear(this.config.roundHalfWeeksSchedule[0], this.info.season, 'start', 12).getIJDateTimeCreator(),
+    //   calendar: cal,
+    //   playoff: this,
+    //   // teams: this.teamsArr
+    // }))
 
-    if (this.config.participantsNumber !== teams.length) {
-      throw new Error(`cantidad de tms incorrecta:
-      presentados: ${teams.length} y se esperaban: ${this.config.participantsNumber}`);
-    }
-
-    teams.forEach((team: Team, idx: number) => {
-			this._participants.push(team);
-		})
-
-    cal.addEvent(new Event_RoundCreationAndTeamsDraw({ // crear el evento de draw y round creation
-      dateTime: JDateTime.createFromHalfWeekOfYearAndYear(this.config.roundHalfWeeksSchedule[0], this.info.season, 'start', 12).getIJDateTimeCreator(),
-      calendar: cal,
-      playoff: this,
-      teams
-    }))
-
-    for (let i = 1; i < this.config.roundsNumber; i++) {
+    for (let i = 0; i < this.config.roundsNumber; i++) {
       cal.addEvent(new Event_RoundCreationAndTeamsDraw({ // crear los eventos de draw y round creation
         dateTime: JDateTime.createFromHalfWeekOfYearAndYear(this.config.roundHalfWeeksSchedule[i], this.info.season, 'start', 12).getIJDateTimeCreator(),
         calendar: cal,
@@ -79,36 +72,31 @@ export default class SingleElmination extends StageBase<ISingleElminationInfo, I
     }
   }
 
-  getLastRoundWinners(): Team[] {
-    let n: number = this._rounds.length;
-    return this._rounds[n - 1].winners;
-  }
-
-  newRound(teamsDrawSorted: Team[], calendar: JCalendar, dt: JDateTime) {
-
+  createNewRound(teamsDrawSorted: Team[], calendar: JCalendar, dt: JDateTime) {
+    const roundNumber: number = this._rounds.length + 1;
+    const roundIndex: number = this._rounds.length;
     const round: JRound = new JRound({
-      num: this._rounds.length + 1,
-      series: this.generateSeries(teamsDrawSorted!),
-      halfweeks: this.config.roundHalfWeeks[this._rounds.length],
-      halfweekMatchDateAssignation: this.config.roundHalfWeeksSchedule[this._rounds.length],
+      num: roundNumber,
+      series: this.createRoundSeries(teamsDrawSorted!),
+      halfweeks: this.config.roundHalfWeeks[roundIndex],
+      halfweekSchedule: this.config.roundHalfWeeksSchedule[roundIndex],
     })
 
     round.generateMatchOfRoundScheduleEvents(calendar, this, dt);
     this._rounds.push(round);
-
   }
 
-  generateSeries(teams: Team[]): JSerie[] {
+  createRoundSeries(teams: Team[]): JSerie[] {
     // console.log('presentados para generar serie', teams.length);
     let out: JSerie[] = [];
-    
-    const total: number = this.matches.length/(this.config.isIV ? 2 : 1);
-    for (let i = 0; i < teams.length; i+=2) {
+
+    const total: number = this.matches.length / (this.config.isIV ? 2 : 1);
+    for (let i = 0; i < teams.length; i += 2) {
       out.push(
         new JSerie({
-          teamOne: teams[i+0],
-          teamTwo: teams[i+1],
-          id: `${this.info.id}-S${total+i+1}`,
+          teamOne: teams[i + 0],
+          teamTwo: teams[i + 1],
+          id: `${this.info.id}-S${total + i/2 + 1}`,
           isIV: this.config.isIV,
           season: this.info.season,
           hws: this.config.roundHalfWeeks[this._rounds.length],
@@ -120,6 +108,7 @@ export default class SingleElmination extends StageBase<ISingleElminationInfo, I
     return out;
   }
 
+  /************************************************************************************************************************************************************* */
   // statics 
   static maxNumberRound(partsNumber: number): number {
     let out: number = 0;
@@ -135,5 +124,18 @@ export default class SingleElmination extends StageBase<ISingleElminationInfo, I
       partsNumber /= 2;
     }
     return partsNumber;
+  }
+
+  static teamsSortForDraw(teamRankArr: Team[]): Team[] {
+    let out: Team[] = [];
+    
+    const total = teamRankArr.length;
+    for (let i = 0; i < total/2; i++) {
+			out.push(
+				teamRankArr[total - i - 1], teamRankArr[i]
+			)
+		}
+
+    return out;
   }
 }

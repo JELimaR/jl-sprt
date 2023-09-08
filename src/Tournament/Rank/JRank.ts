@@ -7,7 +7,7 @@ import { JRound } from '../Stage/StagePlayoff/Round/JRound';
 // import JStagePlayoff from '../Stage/StagePlayoff/JStagePlayoff';
 import TeamTableItem, { ITeamTableItem } from './TeamTableItem';
 // import JSubStage from '../Stage/JSubStage';
-import StageBase, { IStageBaseConfig, IStageBaseInfo } from '../Stage/StageBase';
+import BaseStage, { IBaseStageConfig, IBaseStageInfo } from '../Stage/BaseStage';
 
 // JRankHistoric
 // JRankRecent - x years
@@ -127,11 +127,12 @@ export class JRankCalculator {
   /**
    * 
    */
-  static getTableBase(base: StageBase<IStageBaseInfo, IStageBaseConfig>, condition: (m: JMatch) => boolean): ITeamTableItem[] {
+  static getTableBase(base: BaseStage<IBaseStageInfo, IBaseStageConfig>, caso: 'partial' | 'last'): ITeamTableItem[] {
     let teamsTTI: TeamTableItem[] = []; // pasar a map
-    base.teams.forEach((team: Team) => {
+    base.participants.forEach((team: Team) => {
       teamsTTI.push(new TeamTableItem(team));
     })
+    const condition = BaseStage.getTableCondition(caso);
     base.matches/*.forEach((r: JRound) => {
 			r.matches*/.forEach((m: JMatch) => {
       if (condition(m) && !!m.result) {

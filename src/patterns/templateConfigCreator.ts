@@ -2,11 +2,11 @@
 
 export interface ITCCInfo {
   id: string;
-  name: string;
 }
 
 export interface ITCCConfig {
   idConfig: string;
+  name: string;
 }
 
 export interface ITCCDATA<I extends ITCCInfo, C extends ITCCConfig> {
