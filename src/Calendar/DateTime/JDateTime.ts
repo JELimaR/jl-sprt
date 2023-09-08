@@ -94,12 +94,10 @@ export class JDateTime {
     let initWeek = Math.floor((hs + 1) / 2 - 1) * 7;
     const start: TypeDayOfYear = (initWeek +
       (hs % 2 === 1 ? 2 : 5)) as TypeDayOfYear;
-    const end: TypeDayOfYear = (start +
-      (hs % 2 === 1 ? 2 : 2)) as TypeDayOfYear;
     return {
       start,
       middle: (start + 1) as TypeDayOfYear,
-      end,
+      end: (start + 2) as TypeDayOfYear,
     };
   }
   static createFromHalfWeekOfYearAndYear(hs: TypeHalfWeekOfYear, year: number, opt: 'start' | 'end' | 'middle', interv?: TypeIntervOfDay): JDateTime {
