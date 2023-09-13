@@ -1,13 +1,16 @@
-import { TypeDayOfYear, TypeHalfWeekOfYear } from "../../Calendar/DateTime/types";
+import { IJDateTime, IJDateTimeCreator, JDateTime } from "../../Calendar/DateTime/JDateTime";
+import { TypeDayOfYear, TypeHalfWeekOfYear, TypeIntervOfDay } from "../../Calendar/DateTime/types";
 import JCalendar from "../../Calendar/JCalendar";
 import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator";
 import { JRankItem, TypeRanking } from "../Rank/JRank";
 import Team from "../Team";
 import Bombo from "./Bombo";
+import { Event_StagePlayoffEnd } from "./StagePlayoff/Event_StagePlayoffEnd";
+import { Event_StagePlayoffStart } from "./StagePlayoff/Event_StagePlayoffStart";
 
 type TQualyCondition = {
   rankId: string; // puede ser un tournament u otro rank
-  season: 'current' | 'previus'; // innecesario
+  season: 'current' | 'previus'; // innecesario?
   minRankPos: number;
   maxRankPos: number;
 }
@@ -20,9 +23,9 @@ export interface IStageConfig extends ITCCConfig {
   type: 'group' | 'playoff';
   // bsConfig: IBaseStageConfig;
   // pueden ser halfweeks
-  dayOfDrawDate: TypeDayOfYear; // ver si es necesario! // puede ser neceario solo para crear un evento que muestre un sorteo
-  dayOfStartDate: TypeDayOfYear;
-  dayOfEndDate: TypeDayOfYear; // agregar validaciones en BaseStage con esto
+  dayOfDrawDate?: {day: TypeDayOfYear, interv: TypeIntervOfDay}; // puede ser neceario solo para crear un evento que muestre un sorteo
+  halfWeekOfStartDate: TypeHalfWeekOfYear;
+  halfWeekOfEndDate: TypeHalfWeekOfYear; // agregar validaciones en BaseStage con esto
   
   drawRulesValidate: TypeDrawRulePlayoff[]; // reglas que validan un sorteo
   // boolean que define si hay o no sorteo
@@ -42,13 +45,28 @@ export interface IStageInfo extends ITCCInfo {
  * generar el end event
  */
 export default abstract class Stage<I extends IStageInfo, C extends IStageConfig> extends TCC<I, C> {
-  constructor(info: I, config: C) {
+  constructor(info: I, config: C, calendar: JCalendar) {
     super(info, config);
 
     this.getHalfWeekOfMatches().forEach((hw: TypeHalfWeekOfYear) => {
       // const dayOfYear = JDateTime.halfWeekOfYearToDaysOfYear(hw).start;
       // console.log(dayOfYear < config.dayOfStartDate)
     })
+
+    const startEvent = new Event_StagePlayoffStart({
+      calendar: calendar, 
+      dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.halfWeekOfStartDate, info.season, 'start').getIJDateTimeCreator(), 
+      stage: this
+    })
+
+    const endEvent = new Event_StagePlayoffEnd({
+      calendar: calendar, 
+      dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.halfWeekOfEndDate, info.season, 'end', 299).getIJDateTimeCreator(), 
+      stage: this
+    })
+
+    calendar.addEvent(startEvent);
+    calendar.addEvent(endEvent);
   }
 
   abstract getHalfWeekOfMatches(): TypeHalfWeekOfYear[];

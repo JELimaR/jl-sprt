@@ -27,28 +27,29 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
   private _playoff: SingleElmination;
 
   constructor(info: IStagePlayoffInfo, config: IStagePlayoffConfig, calendar: JCalendar) {
-    super(info, config);
+    super(info, config, calendar);
 
     const SEInfo: ISingleElminationInfo = {
       id: '',
       season: this.info.season,
     }
     this._playoff = new SingleElmination(SEInfo, this.config.playoff);
-    // ver si esto debe ir acá
-    const startEvent = new Event_StagePlayoffStart({
-      calendar: calendar, 
-      dateTime: JDateTime.createFromDayOfYearAndYear(config.dayOfStartDate, info.season).getIJDateTimeCreator(), 
-      stagePlayoff: this
-    })
 
-    const endEvent = new Event_StagePlayoffEnd({
-      calendar: calendar, 
-      dateTime: JDateTime.createFromDayOfYearAndYear(config.dayOfEndDate, info.season, 299).getIJDateTimeCreator(), 
-      stagePlayoff: this
-    })
+    // ver si esto debe ir acá - puede ser una opcion moverlo a la clase Stage
+    // const startEvent = new Event_StagePlayoffStart({
+    //   calendar: calendar, 
+    //   dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.halfWeekOfStartDate, info.season, 'start').getIJDateTimeCreator(), 
+    //   stage: this
+    // })
 
-    calendar.addEvent(startEvent);
-    calendar.addEvent(endEvent);
+    // const endEvent = new Event_StagePlayoffEnd({
+    //   calendar: calendar, 
+    //   dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.halfWeekOfEndDate, info.season, 'end', 299).getIJDateTimeCreator(), 
+    //   stagePlayoff: this
+    // })
+
+    // calendar.addEvent(startEvent);
+    // calendar.addEvent(endEvent);
   }
 
   get playoff(): SingleElmination { return this._playoff }
@@ -80,7 +81,7 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
    * @param cal 
    */
   start(teams: Team[], cal: JCalendar): void {
-    const participants: Team[] = (false) ?  teams : this.teamsDraw(teams);
+    const participants: Team[] = (this.config.dayOfDrawDate) ? this.teamsDraw(teams) : teams;
     this._playoff.assign(participants, cal);
   }
 
@@ -137,15 +138,5 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
     
   	return true;
   }
-
-  // halfWeekOfMatches(): TypeHalfWeekOfYear[] {
-  //   let halfWeekOfMatches: Set<TypeHalfWeekOfYear> = new Set<TypeHalfWeekOfYear>();
-  //   this._playoff.matches.forEach((match: JMatch) => {
-  //     halfWeekOfMatches.add(match.date.getDateTime().date.halfWeekOfYear)
-  //   })
-  //   const out: TypeHalfWeekOfYear[] = [];
-  //   halfWeekOfMatches.forEach((hw: TypeHalfWeekOfYear) => out.push(hw));
-  //   return out;
-  // }
 
 }

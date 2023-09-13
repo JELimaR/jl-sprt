@@ -1,28 +1,34 @@
 import { IJEventInfo, JEvent } from "../../../Calendar/Event/JEvent";
 import { globalRanksMap } from "../../../examples/stageExample";
-import { JRankCalculator } from "../../Rank/JRank";
+import { JRankCalculator, JRankItem } from "../../Rank/JRank";
 import TeamTableItem, { ITeamTableItem } from "../../Rank/TeamTableItem";
+import { TYPEGENERICSTAGE } from "../Stage";
 import StagePlayoff from "./StagePlayoff";
 
 export interface IEvent_StagePlayoffEndInfo extends IJEventInfo {
-	stagePlayoff: StagePlayoff;
+	stage: TYPEGENERICSTAGE;
 }
 
 /**
- * Este evento implica la asignacion de los teams, lo que provocara la creación de los eventos de draw de los BaseStage
+ * Este evento implica la finalización de un stage, lo cual genera que se agregue al global rank
  */
 export class Event_StagePlayoffEnd extends JEvent {
-  private _stagePlayoff: StagePlayoff;
+  private _stage: TYPEGENERICSTAGE;
   constructor(iespsi: IEvent_StagePlayoffEndInfo) {
     super(iespsi);
-    this._stagePlayoff = iespsi.stagePlayoff;
+    this._stage = iespsi.stage;
   }
 
   execute() {
-    console.log(`ejecuting finishing stage: ${this._stagePlayoff.info.id}`);
+    console.log(`ejecuting finishing stage: ${this._stage.info.id}`);
     // borrar
-    const ranking = JRankCalculator.getTableStagePlayoff(this._stagePlayoff).map((t: ITeamTableItem, i: number) => { return {rank: i+1, team: t.team} });
-    globalRanksMap.set(this._stagePlayoff.config.idConfig, ranking)
-    // console.log(globalRanksMap)
+    let ranking: JRankItem[];
+    if (this._stage instanceof StagePlayoff) {
+      ranking = JRankCalculator.getTableStagePlayoff(this._stage).map((t: ITeamTableItem, i: number) => { return {rank: i+1, team: t.team} });
+    } else {
+      throw new Error(`No implementado aún para StageGroup`)
+    }
+
+    globalRanksMap.set(this._stage.config.idConfig, ranking)
   }
 }

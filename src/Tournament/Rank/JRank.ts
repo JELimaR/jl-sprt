@@ -73,11 +73,11 @@ export class JRankCalculator {
   /**
    * 
    */
-  // static getTableStageGroup(stageGroup: JStageGroup): ITeamTableItem[] {
+  // static getTableStageGroup(stageGroup: StageGroup): ITeamTableItem[] {
   //   let teamsTTI: ITeamTableItem[] = []; // pasar a map
 
   //   stageGroup.groups.forEach((g: League) => {
-  //     teamsTTI = teamsTTI.concat(g.table);
+  //     teamsTTI = teamsTTI.concat(this.getTableBase(g, 'last'));
   //   })
 
   //   teamsTTI.sort((a: ITeamTableItem, b: ITeamTableItem) => {

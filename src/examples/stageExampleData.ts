@@ -4,9 +4,9 @@ const stageConfig1: IStagePlayoffConfig = {
   type: 'playoff',
   idConfig: 'sc1',
   name: 'Stage sc1',
-  dayOfDrawDate: 50,
-  dayOfStartDate: 50,
-  dayOfEndDate: 105,
+  // dayOfDrawDate: 50,
+  halfWeekOfStartDate: 20,
+  halfWeekOfEndDate: 30,
 
   bombos: [{elemsNumber: 10, selectionPerTime: 1}, {elemsNumber: 10, selectionPerTime: 1}, {elemsNumber: 10, selectionPerTime: 1}, {elemsNumber: 10, selectionPerTime: 1}],
 
@@ -34,9 +34,9 @@ const stageConfig2: IStagePlayoffConfig = {
   type: 'playoff',
   idConfig: 'sc2',
   name: 'Stage sc2',
-  dayOfDrawDate: 169,
-  dayOfStartDate: 169,
-  dayOfEndDate: 230,
+  dayOfDrawDate: {day: 174, interv: 80},
+  halfWeekOfStartDate: 48,
+  halfWeekOfEndDate: 65,
 
   qualifyConditions: [{rankId: 'sc1', season: 'current', minRankPos: 1, maxRankPos: 10}],
 
