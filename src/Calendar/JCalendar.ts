@@ -1,6 +1,6 @@
 import { IJDateTimeCreator, JDateTime } from "./DateTime/JDateTime";
 import { JEvent } from "./Event/JEvent";
-import { JEventCreator } from "./Event/JEventCreator";
+import { Event_Creator } from "./Event/Event_Creator";
 
 export default class JCalendar {
     private _events: JEvent[] = [];

@@ -1,4 +1,4 @@
-import { TypeDayOfWeek, TypeDayOfYear, TypeMonthOfYear } from './types';
+import { TypeDayOfWeek, TypeDayOfYear, TypeHalfWeekOfYear, TypeMonthOfYear } from './types';
 import {
   daysOfWeekNames,
   DAYSPEREVENMONTH,
@@ -18,7 +18,7 @@ export interface IJDate {
   dayOfYear: number;
   dayOfMonth: number;
   dayOfWeek: TypeDayOfWeek;
-  halfWeekOfYear: number;
+  halfWeekOfYear: TypeHalfWeekOfYear;
   halfWeekOfMonth: number;
   weekOfYear: number;
   monthOfYear: number;
@@ -50,7 +50,7 @@ export class JDate {
     const year = Math.floor((dayAbsolute - 1) / DAYSPERYEAR) + 1;
     const weekOfYear = Math.floor((dayOfYear - 1) / DAYSPERWEEK) + 1;
     const dayOfWeek: TypeDayOfWeek = ((dayOfYear - 1) % DAYSPERWEEK) + 1 as TypeDayOfWeek;
-    const halfWeekOfYear = (weekOfYear - 1) * 2 + (dayOfWeek > 4 ? 2 : 1);
+    const halfWeekOfYear = (weekOfYear - 1) * 2 + (dayOfWeek > 4 ? 2 : 1) as TypeHalfWeekOfYear;
     const monthOfYear =
       Math.floor((halfWeekOfYear - 1) / HALFWEEKSPERMONTH) + 1 as TypeMonthOfYear;
     const dayOfMonthAux =

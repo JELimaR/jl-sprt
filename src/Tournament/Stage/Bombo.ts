@@ -26,7 +26,7 @@ export default class Bombo<T> {
 		this._state = 'started'
 	}
 
-	getElements(): T[] {
+	getNextElements(): T[] {
 		if (this._state !== 'started') this.start();
 		let out: T[] = [];
 		for (let idx = 0; idx < this._selectionPerTime; idx++) {
@@ -38,6 +38,19 @@ export default class Bombo<T> {
 				// throw new Error('no hay para elegir');
 			}
 		}
+		return out;
+	}
+
+	/**
+	 * Devuelve todos los elementos en un orden aleatorio.
+	 * Se utiliza para el uso en StagePlayoff
+	 * @returns 
+	 */
+	getAllElementsPlayoff(): T[] {
+		if (this._state !== 'started') this.start();
+		let out: T[] = CUF.shuffled<T>({ array: this._stack });
+		this._stack.forEach((v: T,i:number,arr) => arr.shift())
+		this._stack.shift();
 		return out;
 	}
 	

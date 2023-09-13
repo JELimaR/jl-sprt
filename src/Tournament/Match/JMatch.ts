@@ -34,7 +34,7 @@ export default class JMatch /*implements IJSubject*/  {
 	}*/
 
 	private _id: string;
-	private _date: JDateTime | undefined;
+	private _date: JDateTime;
 	// private _observers: IJObserver<JMatch>[] = [];
 
 	private _state: TypeMatchState = 'created';
@@ -80,6 +80,7 @@ export default class JMatch /*implements IJSubject*/  {
 	get id(): string {
 		return this._id;
 	}
+	get date(): JDateTime {return this._date}
 	get homeTeam(): Team {
 		return this._homeTeam;
 	}

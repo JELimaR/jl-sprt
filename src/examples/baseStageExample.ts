@@ -1,10 +1,10 @@
-import { JDateTime } from "./Calendar/DateTime/JDateTime";
-import JCalendar from "./Calendar/JCalendar";
-import { getExampleTeams } from "./Entities/ExampleData";
-import { JRankCalculator } from "./Tournament/Rank/JRank";
-import League from "./Tournament/Stage/StageGroup/League";
-import SingleElmination from "./Tournament/Stage/StagePlayoff/SingleElmination";
-import mostrarFecha from "./mostrarFechaBorrar";
+import { JDateTime } from "../Calendar/DateTime/JDateTime";
+import JCalendar from "../Calendar/JCalendar";
+import { getExampleTeams } from "../Entities/ExampleData";
+import { JRankCalculator } from "../Tournament/Rank/JRank";
+import League from "../Tournament/Stage/StageGroup/League";
+import SingleElmination from "../Tournament/Stage/StagePlayoff/SingleElmination";
+import mostrarFecha from "../mostrarFechaBorrar";
 
 export default function baseStageExample() {
 

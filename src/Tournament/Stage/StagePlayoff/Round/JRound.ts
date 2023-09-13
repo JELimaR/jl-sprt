@@ -59,16 +59,16 @@ export class JRound {
 		return this.matches.every((m: JMatch) => m.state === 'finished');
 	}
 
-	generateMatchOfRoundScheduleEvents(cal: JCalendar, playoff: SingleElmination, roundCreateAt: JDateTime): void {
+	generateMatchOfRoundScheduleEvents(cal: JCalendar, playoff: SingleElmination/*, roundCreateAt: JDateTime*/): void {
 		let dt = JDateTime.createFromHalfWeekOfYearAndYear(
 			this._halfweekSchedule,
 			playoff.info.season,
 			'middle'
 		);
-		if (roundCreateAt.absolute > dt.absolute) {
-			dt = roundCreateAt.copy();
-			dt.addInterv(1);
-		}
+		// if (roundCreateAt.absolute > dt.absolute) {
+		// 	dt = roundCreateAt.copy();
+		// 	dt.addInterv(1);
+		// }
 		cal.addEvent(
 			new Event_ScheduleOfRoundMatches({
 				dateTime: dt.getIJDateTimeCreator(),

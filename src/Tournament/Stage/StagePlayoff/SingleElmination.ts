@@ -16,9 +16,7 @@ export interface ISingleElminationConfig extends IBaseStageConfig {
   roundHalfWeeksSchedule: TypeHalfWeekOfYear[];
 }
 
-export interface ISingleElminationInfo extends IBaseStageInfo {
-
-}
+export interface ISingleElminationInfo extends IBaseStageInfo {}
 
 export default class SingleElmination extends BaseStage<ISingleElminationInfo, ISingleElminationConfig> { // Single elimination
 
@@ -26,7 +24,6 @@ export default class SingleElmination extends BaseStage<ISingleElminationInfo, I
 
   constructor(info: ISingleElminationInfo, config: ISingleElminationConfig) { // FALTA VERIFICAR QUE CADA fechHalfWeeks sea mayor al fechHalfWeeksSchedule
     super(info, config);
-    console.log('se')
   }
 
   constructorVerification(config: ISingleElminationConfig): void {
@@ -50,7 +47,6 @@ export default class SingleElmination extends BaseStage<ISingleElminationInfo, I
   /**
    * Para crear los rounds.
    * Se agregan al calendario eventos para la creacion y "asignacion" de teams de todas las rounds.
-   * Ademas, en caso de que corresponda, se realiza el sorteo/draw
    * @param cal JCalendar
    */
   createChildren(cal: JCalendar): void {
@@ -72,7 +68,7 @@ export default class SingleElmination extends BaseStage<ISingleElminationInfo, I
     }
   }
 
-  createNewRound(teamsDrawSorted: Team[], calendar: JCalendar, dt: JDateTime) {
+  createNewRound(teamsDrawSorted: Team[], calendar: JCalendar/*, dt: JDateTime*/) {
     const roundNumber: number = this._rounds.length + 1;
     const roundIndex: number = this._rounds.length;
     const round: JRound = new JRound({
@@ -82,7 +78,7 @@ export default class SingleElmination extends BaseStage<ISingleElminationInfo, I
       halfweekSchedule: this.config.roundHalfWeeksSchedule[roundIndex],
     })
 
-    round.generateMatchOfRoundScheduleEvents(calendar, this, dt);
+    round.generateMatchOfRoundScheduleEvents(calendar, this/*, dt*/);
     this._rounds.push(round);
   }
 
@@ -124,18 +120,5 @@ export default class SingleElmination extends BaseStage<ISingleElminationInfo, I
       partsNumber /= 2;
     }
     return partsNumber;
-  }
-
-  static teamsSortForDraw(teamRankArr: Team[]): Team[] {
-    let out: Team[] = [];
-    
-    const total = teamRankArr.length;
-    for (let i = 0; i < total/2; i++) {
-			out.push(
-				teamRankArr[total - i - 1], teamRankArr[i]
-			)
-		}
-
-    return out;
   }
 }
