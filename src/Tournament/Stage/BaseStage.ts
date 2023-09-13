@@ -2,6 +2,7 @@ import JCalendar from "../../Calendar/JCalendar";
 import Team from "../Team";
 import JMatch from "../Match/JMatch";
 import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator";
+import { TypeTableMatchState } from "../Rank/JRank";
 
 /**
  * En el BaseStage es donde se configuran las rondas o turnos y los partidos de un torneo.
@@ -77,11 +78,11 @@ export default abstract class BaseStage<I extends IBaseStageInfo, C extends IBas
     return out;
   }
 
-  static getTableCondition(caso: 'partial' | 'last'): (m: JMatch) => boolean {
-    switch (caso) {
+  static getTableCondition(ttms: TypeTableMatchState): (m: JMatch) => boolean {
+    switch (ttms) {
       case 'partial':
         return (m => m.state === 'finished' || m.state === 'playing');
-      case 'last':
+      case 'finished':
         return (m => m.state === 'finished');
       default:
         throw new Error('asdfghdhgf');

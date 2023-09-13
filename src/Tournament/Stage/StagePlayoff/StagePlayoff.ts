@@ -5,9 +5,6 @@ import { TypeHalfWeekOfYear } from "../../../Calendar/DateTime/types";
 import { arr2 } from "../../types";
 import Team from "../../Team";
 import JCalendar from "../../../Calendar/JCalendar";
-import { JDateTime } from "../../../Calendar/DateTime/JDateTime";
-import { Event_StagePlayoffStart } from "./Event_StagePlayoffStart";
-import { Event_StagePlayoffEnd } from "./Event_StagePlayoffEnd";
 import Bombo from "../Bombo";
 
 export interface IStagePlayoffConfig extends IStageConfig {
@@ -34,22 +31,6 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
       season: this.info.season,
     }
     this._playoff = new SingleElmination(SEInfo, this.config.playoff);
-
-    // ver si esto debe ir acá - puede ser una opcion moverlo a la clase Stage
-    // const startEvent = new Event_StagePlayoffStart({
-    //   calendar: calendar, 
-    //   dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.halfWeekOfStartDate, info.season, 'start').getIJDateTimeCreator(), 
-    //   stage: this
-    // })
-
-    // const endEvent = new Event_StagePlayoffEnd({
-    //   calendar: calendar, 
-    //   dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.halfWeekOfEndDate, info.season, 'end', 299).getIJDateTimeCreator(), 
-    //   stagePlayoff: this
-    // })
-
-    // calendar.addEvent(startEvent);
-    // calendar.addEvent(endEvent);
   }
 
   get playoff(): SingleElmination { return this._playoff }

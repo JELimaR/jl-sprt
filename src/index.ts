@@ -2,7 +2,7 @@
 // const CUF = CollectionsUtilsFunctions.getInstance();
 
 import baseStageExample from './examples/baseStageExample';
-import stageExample from './examples/stageExample';
+import stageExample from './examples/stageExample01';
 
 function app() {
 

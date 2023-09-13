@@ -67,6 +67,6 @@ export default function baseStageExample() {
 
   console.log(cal.events.length);
 
-  console.table(JRankCalculator.getTableBase(league, 'last'))
-  console.table(JRankCalculator.getTableBase(singleElimination, 'last'))
+  console.table(JRankCalculator.getTableBase(league, 'finished'))
+  console.table(JRankCalculator.getTableBase(singleElimination, 'finished'))
 }

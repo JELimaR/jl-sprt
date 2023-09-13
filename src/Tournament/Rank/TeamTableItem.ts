@@ -1,7 +1,7 @@
 import Team from "../Team";
 
 export interface ITeamTableItem {
-	pos: number;
+  pos: number;
   pj: number;
   pg: number;
   pe: number;
@@ -10,11 +10,12 @@ export interface ITeamTableItem {
   ge: number;
   sg: number;
   ps: number;
-  team: Team;
+  team: string;
 }
 
 export default class TeamTableItem {
   private _team: Team;
+  private _pos: number = 1;
   private _pg: number = 0;
   private _pe: number = 0;
   private _pp: number = 0;
@@ -25,6 +26,9 @@ export default class TeamTableItem {
   constructor(t: Team) {
     this._team = t;
   }
+
+  set pos(pos: number) { this._pos = pos };
+  get pos(): number { return this._pos };
 
   get pj(): number {
     return this._pg + this._pe + this._pp;
@@ -50,12 +54,12 @@ export default class TeamTableItem {
   get ps(): number {
     return 3 * this._pg + this._pe;
   }
-	addPg() { this._pg++ }
-	addPe() { this._pe++ }
-	addPp() { this._pp++ }
+  addPg() { this._pg++ }
+  addPe() { this._pe++ }
+  addPp() { this._pp++ }
 
-	addGf(g: number) { this._gf += g }
-	addGe(g: number) { this._ge += g }
+  addGf(g: number) { this._gf += g }
+  addGe(g: number) { this._ge += g }
 
   get team(): Team {
     return this._team;
@@ -63,7 +67,7 @@ export default class TeamTableItem {
 
   getInterface(): ITeamTableItem {
     return {
-			pos: 1,
+      pos: this.pos,
       pj: this.pj,
       pg: this.pg,
       pe: this.pe,
@@ -72,7 +76,7 @@ export default class TeamTableItem {
       ge: this.ge,
       sg: this.sg,
       ps: this.ps,
-      team: this.team,
+      team: this.team.id,
     };
   }
 }

@@ -1,12 +1,12 @@
-import { IJDateTime, IJDateTimeCreator, JDateTime } from "../../Calendar/DateTime/JDateTime";
+import { JDateTime } from "../../Calendar/DateTime/JDateTime";
 import { TypeDayOfYear, TypeHalfWeekOfYear, TypeIntervOfDay } from "../../Calendar/DateTime/types";
 import JCalendar from "../../Calendar/JCalendar";
 import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator";
-import { JRankItem, TypeRanking } from "../Rank/JRank";
+import { TypeRanking } from "../Rank/JRank";
 import Team from "../Team";
 import Bombo from "./Bombo";
-import { Event_StagePlayoffEnd } from "./StagePlayoff/Event_StagePlayoffEnd";
-import { Event_StagePlayoffStart } from "./StagePlayoff/Event_StagePlayoffStart";
+import { Event_StageEnd } from "./Event_StageEnd";
+import { Event_StageStart } from "./Event_StageStart";
 
 type TQualyCondition = {
   rankId: string; // puede ser un tournament u otro rank
@@ -45,6 +45,7 @@ export interface IStageInfo extends ITCCInfo {
  * generar el end event
  */
 export default abstract class Stage<I extends IStageInfo, C extends IStageConfig> extends TCC<I, C> {
+  
   constructor(info: I, config: C, calendar: JCalendar) {
     super(info, config);
 
@@ -53,13 +54,13 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
       // console.log(dayOfYear < config.dayOfStartDate)
     })
 
-    const startEvent = new Event_StagePlayoffStart({
+    const startEvent = new Event_StageStart({
       calendar: calendar, 
       dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.halfWeekOfStartDate, info.season, 'start').getIJDateTimeCreator(), 
       stage: this
     })
 
-    const endEvent = new Event_StagePlayoffEnd({
+    const endEvent = new Event_StageEnd({
       calendar: calendar, 
       dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.halfWeekOfEndDate, info.season, 'end', 299).getIJDateTimeCreator(), 
       stage: this
@@ -68,6 +69,9 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
     calendar.addEvent(startEvent);
     calendar.addEvent(endEvent);
   }
+
+  abstract get isFinished(): boolean;
+  // abstract getState(): 'created' | 'started' | 'ended';
 
   abstract getHalfWeekOfMatches(): TypeHalfWeekOfYear[];
   abstract getHalfWeekOfSchedule(): TypeHalfWeekOfYear[];
@@ -96,15 +100,15 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
     return out;
   }
 
-  getParticipants(globalRanksMap: Map<string, JRankItem[]>) { // cambiar Map por TypeRanking
+  getParticipants(globalRanksMap: Map<string, TypeRanking>) { // cambiar Map por TypeRanking
     const teams: Team[] = [];
     this.config.qualifyConditions.forEach(qc => {
       const ranking = globalRanksMap.get(qc.rankId)!; // verificar correctamente
 
-      if (ranking.length < qc.maxRankPos) throw new Error(``)
+      if (ranking.table.length < qc.maxRankPos) throw new Error(``)
 
       for (let p = qc.minRankPos - 1; p < qc.maxRankPos; p++)
-        teams.push(ranking[p].team);
+        teams.push(ranking.table[p].team);
     })
 
     return teams;

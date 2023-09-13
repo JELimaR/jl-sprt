@@ -5,10 +5,11 @@ import JMatch from '../Match/JMatch';
 import SingleElmination from '../Stage/StagePlayoff/SingleElmination';
 import { JRound } from '../Stage/StagePlayoff/Round/JRound';
 // import JStagePlayoff from '../Stage/StagePlayoff/JStagePlayoff';
-import TeamTableItem, { ITeamTableItem } from './TeamTableItem';
+import TeamTableItem, { } from './TeamTableItem';
 // import JSubStage from '../Stage/JSubStage';
 import BaseStage, { IBaseStageConfig, IBaseStageInfo } from '../Stage/BaseStage';
 import StagePlayoff from '../Stage/StagePlayoff/StagePlayoff';
+import { TYPEGENERICSTAGE } from '../Stage/Stage';
 
 // JRankHistoric
 // JRankRecent - x years
@@ -17,14 +18,17 @@ import StagePlayoff from '../Stage/StagePlayoff/StagePlayoff';
 // JRankLeague
 // JRankTemporal - solo para JRankLeague
 
-export interface JRankItem {
+export type TypeTableMatchState = 'partial' | 'finished';
+
+export interface RankItem {
   team: Team;
   rank: number;
 }
 
 export type TypeRanking = {
-  state: 'partial' | 'final',
-  table: JRankItem[]
+  rankId: string;
+  // state: 'partial' | 'final';
+  table: RankItem[];
 }
 
 /**************************************** */
@@ -35,15 +39,41 @@ export class JRankCalculator {
    * 
    */
   //  static getCoefStageParallel(para: JStageParallels): any {
-    // let rank: TypeRanking = this.getRankStageParallel(para);
+  // let rank: TypeRanking = this.getRankStageParallel(para);
 
-    
+
 
   //   return {
   //     state: (para.isFinished) ? 'final' : 'partial',
   //     table: rank,
   //   };
   // }
+
+
+  static getStageRelativeRank(stage: TYPEGENERICSTAGE): TypeRanking {
+    let ttiArr: TeamTableItem[];
+
+    if (stage instanceof StagePlayoff) {
+      ttiArr = this.getTableStagePlayoff(stage, 'finished');
+    } /* else if (stage instanceof StageGroup) {
+      ttiArr = this.getTableStageGroup(stage, 'finished');
+    }*/ else {
+      throw new Error(`not implemented yet in RankCalculator.getStageRelativeRank`)
+    }
+
+    const rankItemArr: RankItem[] = ttiArr.map((tti, idx) => {
+      return {
+        team: tti.team,
+        rank: idx + 1
+      }
+    })
+
+    return {
+      rankId: 'sr_' + stage.config.idConfig,
+      // state: (stage.isFinished) ? 'final' : 'partial',
+      table: rankItemArr,
+    }
+  }
 
   /**
    * 
@@ -69,7 +99,7 @@ export class JRankCalculator {
   //     table: out,
   //   };
   // }
-  
+
   /**
    * 
    */
@@ -98,97 +128,94 @@ export class JRankCalculator {
   /**
    * 
    */
-  static getTableStagePlayoff(stagePlayoff: StagePlayoff): ITeamTableItem[] {
-    let teamsTTI: ITeamTableItem[] = []; // pasar a map
+  static getTableStagePlayoff(stagePlayoff: StagePlayoff, ttms: TypeTableMatchState): TeamTableItem[] {
+    let teamsTTI: TeamTableItem[] = []; // pasar a map
 
     let playoff: SingleElmination = stagePlayoff.playoff;
-    teamsTTI = JRankCalculator.getTableBase(playoff, 'last');// teamsTTI.concat(rnk.getCalculatedTable(condition));
+    teamsTTI = JRankCalculator.getTableBase(playoff, ttms);
 
     playoff.rounds.forEach((r: JRound, idx: number) => {
       r.losers.forEach((loser: Team) => {
-        let item = teamsTTI.find((value: ITeamTableItem) => value.team.id === loser.id)
+        let item = teamsTTI.find((value: TeamTableItem) => value.team.id === loser.id)
         if (item) item.pos = playoff.rounds.length + 1 - idx;
       })
     });
-    teamsTTI.sort((a: ITeamTableItem, b: ITeamTableItem) => {
-      if (b.pos - a.pos !== 0) {
-        return a.pos - b.pos
-      }
-      if (a.ps - b.ps !== 0) {
-        return b.ps - a.ps
-      }
-      if (a.sg - b.sg !== 0) {
-        return b.sg - a.sg
-      }
-      return b.gf - a.gf
-    })
+    teamsTTI.sort((a, b) => simpleSortFunc(a, b, true));
     return teamsTTI;
   }
 
   /**
    * 
    */
-  static getTableBase(base: BaseStage<IBaseStageInfo, IBaseStageConfig>, caso: 'partial' | 'last'): ITeamTableItem[] {
-    let teamsTTI: TeamTableItem[] = []; // pasar a map
-    base.participants.forEach((team: Team) => {
-      teamsTTI.push(new TeamTableItem(team));
-    })
-    const condition = BaseStage.getTableCondition(caso);
-    base.matches.forEach((m: JMatch) => {
-      if (condition(m) && !!m.result) {
-        let htti: TeamTableItem | undefined = teamsTTI.find(t => t.team.id === m.homeTeam.id);
-        let atti: TeamTableItem | undefined = teamsTTI.find(t => t.team.id === m.awayTeam.id);
-        if (htti && atti) {
-          // gls HT
-          htti.addGf(m.result.teamOneScore.score);
-          htti.addGe(m.result.teamTwoScore.score);
+  static getTableBase(base: BaseStage<IBaseStageInfo, IBaseStageConfig>, ttms: TypeTableMatchState): TeamTableItem[] {
+    let out: TeamTableItem[] = calcTableValues(base, ttms);
+    // const teamsTTI: TeamTableItem[] = calcTableValues(base, ttms)
 
-          // gls AT
-          atti.addGf(m.result.teamTwoScore.score);
-          atti.addGe(m.result.teamOneScore.score);
+    // ordenar segun criterio 'simpleSortFunc'
+    // out = teamsTTI.map((tti: TeamTableItem) => tti.getInterface());
+    out.sort((a, b) => simpleSortFunc(a, b, base instanceof SingleElmination));
 
-          // add pj
-          if (m.result.teamWinner === htti.team.id) {
-            htti.addPg();
-            atti.addPp();
-          } else if (m.result.teamWinner === atti.team.id) {
-            htti.addPp();
-            atti.addPg();
-          } else {
-            htti.addPe();
-            atti.addPe();
-          }
-        } else throw new Error(`non finded`);
-      }
-      // })
-    })
-
-    teamsTTI.sort((a: TeamTableItem, b: TeamTableItem) => {
-      if (base instanceof SingleElmination) {
-        if (a.pj - b.pj !== 0) {
-          return b.pj - a.pj
-        }
-      }
-      if (a.ps - b.ps !== 0) {
-        return b.ps - a.ps
-      }
-      if (a.sg - b.sg !== 0) {
-        return b.sg - a.sg
-      }
-      return b.gf - a.gf
-    })
+    // la posicion se establece de formas distintas segun el tipo de BaseStage
     if (base instanceof League) {
-      return teamsTTI.map((tti: TeamTableItem, idx: number) => {
-        return { ...tti.getInterface(), pos: idx + 1 }
-      });
-    } else if (base instanceof SingleElmination) {
-      return teamsTTI.map((tti: TeamTableItem) => {
-        return { ...tti.getInterface(), pos: 1 }
-      });
-    } else {
-      throw new Error(`no esta implementado este caso en 'JRank.getTableBase()'`)
+      out.map((itti, idx) => itti.pos = idx + 1)
     }
+
+    return out;
   }
 }
 
+const simpleSortFunc = (a: TeamTableItem, b: TeamTableItem, isSE: boolean) => {
+  if (isSE) {
+    if (a.pj - b.pj !== 0) {
+      return b.pj - a.pj
+    }
+  }
+  if (b.pos - a.pos !== 0) {
+    return a.pos - b.pos
+  }
+  if (a.ps - b.ps !== 0) {
+    return b.ps - a.ps;
+  }
+  if (a.sg - b.sg !== 0) {
+    return b.sg - a.sg;
+  }
+  return b.gf - a.gf;
+}
 
+const calcTableValues = (base: BaseStage<IBaseStageInfo, IBaseStageConfig>, ttms: TypeTableMatchState): TeamTableItem[] => {
+  // para cada match, calcular los valores de la tabla de de cada team!
+  // valores: pg, pp, pg, pe, gf, ge
+  const out: TeamTableItem[] = []; // pasar a map
+  base.participants.forEach((team: Team) => out.push(new TeamTableItem(team)));
+  // 
+  const matchConditionFunc = BaseStage.getTableCondition(ttms);
+
+  base.matches.forEach((m: JMatch) => {
+    if (matchConditionFunc(m) && !!m.result) {
+      let htti: TeamTableItem | undefined = out.find(t => t.team.id === m.homeTeam.id);
+      let atti: TeamTableItem | undefined = out.find(t => t.team.id === m.awayTeam.id);
+
+      if (htti && atti) {
+        // gls HT
+        htti.addGf(m.result.teamOneScore.score);
+        htti.addGe(m.result.teamTwoScore.score);
+        // gls AT
+        atti.addGf(m.result.teamTwoScore.score);
+        atti.addGe(m.result.teamOneScore.score);
+        // add pj
+        if (m.result.teamWinner === htti.team.id) {
+          htti.addPg();
+          atti.addPp();
+        } else if (m.result.teamWinner === atti.team.id) {
+          htti.addPp();
+          atti.addPg();
+        } else {
+          htti.addPe();
+          atti.addPe();
+        }
+      } else throw new Error(`non finded`);
+    }
+  })
+
+  return out;
+}
