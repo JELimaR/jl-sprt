@@ -2,14 +2,17 @@
 // const CUF = CollectionsUtilsFunctions.getInstance();
 
 import baseStageExample from './examples/baseStageExample';
-import stageExample from './examples/stageExample01';
+import stageExample01 from './examples/stageExample01';
+import stageExample02 from './examples/stageExample02';
 
 function app() {
 
   // baseStageExample();
 
-  stageExample();
-    
+  // stageExample01();
+
+  stageExample02();
+
   // console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getDateTime())
   // console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getIJDateTimeCreator())
 }

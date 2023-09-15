@@ -1,9 +1,8 @@
 import { IJEventInfo, JEvent } from "../../Calendar/Event/JEvent";
-import { globalFinishedRankingsMap } from "../../examples/stageExample01";
+import { globalFinishedRankingsMap } from "../Rank/globalFinishedRankingsMap";
 import { JRankCalculator, RankItem, TypeRanking } from "../Rank/JRank";
 import TeamTableItem, {  } from "../Rank/TeamTableItem";
 import { TYPEGENERICSTAGE } from "./Stage";
-import StagePlayoff from "./StagePlayoff/StagePlayoff";
 
 export interface IEvent_StageEndInfo extends IJEventInfo {
 	stage: TYPEGENERICSTAGE;

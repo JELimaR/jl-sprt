@@ -2,7 +2,7 @@ import { JDateTime } from "../../Calendar/DateTime/JDateTime";
 import { TypeDayOfYear, TypeHalfWeekOfYear, TypeIntervOfDay } from "../../Calendar/DateTime/types";
 import JCalendar from "../../Calendar/JCalendar";
 import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator";
-import { TypeRanking } from "../Rank/JRank";
+// import { TypeRanking } from "../Rank/JRank";
 import Team from "../Team";
 import Bombo from "./Bombo";
 import { Event_StageEnd } from "./Event_StageEnd";
@@ -17,7 +17,7 @@ type TQualyCondition = {
 
 type TypeDrawRulePlayoff = {}
 
-export type TypeBomboData = { elemsNumber: number, selectionPerTime: number }
+export type TypeBomboData = { elemsNumber: number }
 
 export interface IStageConfig extends ITCCConfig {
   type: 'group' | 'playoff';
@@ -94,24 +94,26 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
         elements.push(teams[tid]);
         tid++;
       }
-      out.push(new Bombo(elements, bomboData.selectionPerTime));
+      out.push(new Bombo(elements, this.getSelectionPerTime(elements.length)));
     })
 
     return out;
   }
 
-  getParticipants(globalRanksMap: Map<string, TypeRanking>) { // cambiar Map por TypeRanking
-    const teams: Team[] = [];
-    this.config.qualifyConditions.forEach(qc => {
-      const ranking = globalRanksMap.get(qc.rankId)!; // verificar correctamente
+  abstract getSelectionPerTime(elementsNumber: number): number;
 
-      if (ranking.table.length < qc.maxRankPos) throw new Error(``)
+  // getParticipants(globalRanksMap: Map<string, TypeRanking>) {
+  //   const teams: Team[] = [];
+  //   this.config.qualifyConditions.forEach(qc => {
+  //     const ranking = globalRanksMap.get(qc.rankId)!; // verificar correctamente
 
-      for (let p = qc.minRankPos - 1; p < qc.maxRankPos; p++)
-        teams.push(ranking.table[p].team);
-    })
+  //     if (ranking.table.length < qc.maxRankPos) throw new Error(``)
 
-    return teams;
-  }
+  //     for (let p = qc.minRankPos - 1; p < qc.maxRankPos; p++)
+  //       teams.push(ranking.table[p].team);
+  //   })
+
+  //   return teams;
+  // }
 }
 export type TYPEGENERICSTAGE = Stage<IStageInfo, IStageConfig>;

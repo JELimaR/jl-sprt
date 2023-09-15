@@ -52,6 +52,10 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
     return this.config.playoff.roundHalfWeeksSchedule;
   }
 
+  getSelectionPerTime(elementsNumber: number): number {
+    return elementsNumber;
+  }
+
   /**
    * Sorteo y asignacion de equipos a BaseStage!!
    * dado un array [T1,T2,T3,T4,T5,T6] el emparejamiento será:

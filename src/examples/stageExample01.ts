@@ -8,15 +8,15 @@ import mostrarFecha from "../mostrarFechaBorrar";
 import exampleAdvance from "./exampleAdvance";
 import stageExampleData from "./stageExampleData";
 import TeamTableItem from "../Tournament/Rank/TeamTableItem";
+import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
 
 const {
   s1,
   s2
 } = stageExampleData;
 const selection = getExampleTeams(150, 'Team');
-export const globalFinishedRankingsMap = new Map<string, TypeRanking>();
 
-export default function stageExample() {
+export default function stageExample01() {
 
   const rankItemArr: RankItem[] = selection.map((t: Team, i: number) => { return {rank: i+1, team: t} });
   const ranking: TypeRanking = {    rankId: 'rankingInicial', table: rankItemArr  }

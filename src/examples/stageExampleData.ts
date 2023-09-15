@@ -1,3 +1,4 @@
+import { IStageGroupConfig, IStageGroupInfo } from "../Tournament/Stage/StageGroup/StageGroup";
 import { IStagePlayoffConfig, IStagePlayoffInfo } from "../Tournament/Stage/StagePlayoff/StagePlayoff";
 
 const stageConfig1: IStagePlayoffConfig = {
@@ -7,9 +8,9 @@ const stageConfig1: IStagePlayoffConfig = {
   halfWeekOfStartDate: 20,
   halfWeekOfEndDate: 30,
 
-  bombos: [{elemsNumber: 10, selectionPerTime: 1}, {elemsNumber: 10, selectionPerTime: 1}, {elemsNumber: 10, selectionPerTime: 1}, {elemsNumber: 10, selectionPerTime: 1}],
+  bombos: [{ elemsNumber: 10 }, { elemsNumber: 10 }, { elemsNumber: 10 }, { elemsNumber: 10 }],
 
-  qualifyConditions: [{minRankPos: 1, maxRankPos: 40, rankId: 'rankingInicial', season: 'previus'}],
+  qualifyConditions: [{ minRankPos: 1, maxRankPos: 40, rankId: 'rankingInicial', season: 'previus' }],
 
   playoff: {
     idConfig: 'sc1-P',
@@ -17,7 +18,7 @@ const stageConfig1: IStagePlayoffConfig = {
     isNeutral: true,
     name: 'Single Elimination',
     participantsNumber: 40,
-    roundHalfWeeks: [[20, 21], [24,25], [28,30]],
+    roundHalfWeeks: [[20, 21], [24, 25], [28, 30]],
     roundHalfWeeksSchedule: [20, 24, 28],
     roundsNumber: 3,
   },
@@ -28,18 +29,18 @@ const stageInfo1: IStagePlayoffInfo = {
   id: 'sp11986',
   season: 1986,
 }
-
+/*************************************************************************************************************** */
 const stageConfig2: IStagePlayoffConfig = {
   type: 'playoff',
   idConfig: 'sc2',
   name: 'Stage sc2',
-  dayOfDrawDate: {day: 174, interv: 80},
+  dayOfDrawDate: { day: 174, interv: 80 },
   halfWeekOfStartDate: 48,
   halfWeekOfEndDate: 65,
 
-  qualifyConditions: [{rankId: 'sr_sc1', season: 'current', minRankPos: 1, maxRankPos: 10}],
+  qualifyConditions: [{ rankId: 'sr_sc1', season: 'current', minRankPos: 1, maxRankPos: 10 }],
 
-  bombos: [{elemsNumber: 10, selectionPerTime: 1}],
+  bombos: [{ elemsNumber: 10 }],
 
   playoff: {
     idConfig: 'sc2-P',
@@ -58,10 +59,73 @@ const stageInfo2: IStagePlayoffInfo = {
   id: 'sp21986',
   season: 1986,
 }
-// const stageConfig2: IStageGroupConfig = {}
-// const stageInfo2: IStageGroupInfo = {}
+
+/****************************************************************************************************************** */
+const stageConfig3: IStageGroupConfig = {
+  type: 'group',
+  idConfig: 'sc3',
+  name: 'Stage sc3',
+  dayOfDrawDate: { day: 174, interv: 80 },
+  halfWeekOfStartDate: 30,
+  halfWeekOfEndDate: 48,
+
+  qualifyConditions: [{ rankId: 'rankingInicial', season: 'current', minRankPos: 1, maxRankPos: 40 }],
+
+  bombos: [{ elemsNumber: 8 }, { elemsNumber: 20 }, { elemsNumber: 12 }],
+
+  participantsPerGroup: [10, 10, 10, 10],
+
+  group: {
+    idConfig: 'sc3-G',
+    isIV: false,
+    isNeutral: true,
+    name: 'Group',
+    participantsNumber: 10,
+    turnHalfWeeks: [32, 34, 36, 38, 40, 42, 44, 46, 48],
+    turnHalfWeeksSchedule: [30, 30, 30, 30, 30, 30, 30, 30, 30],
+  },
+  drawRulesValidate: []
+}
+
+const stageInfo3: IStageGroupInfo = {
+  id: 'sg31986',
+  season: 1986,
+}
+/****************************************************************************************************************** */
+const stageConfig4: IStageGroupConfig = {
+  type: 'group',
+  idConfig: 'sc4',
+  name: 'Stage sc4',
+  dayOfDrawDate: {day: 174, interv: 80},
+  halfWeekOfStartDate: 50,
+  halfWeekOfEndDate: 64,
+
+  qualifyConditions: [{ rankId: 'sr_sc3', season: 'current', minRankPos: 1, maxRankPos: 16 }],
+
+  bombos: [{ elemsNumber: 4 }, { elemsNumber: 4 }, { elemsNumber: 4 }, { elemsNumber: 4 }],
+
+  participantsPerGroup: [4, 4, 4, 4],
+
+  group: {
+    idConfig: 'sc4-G',
+    isIV: true,
+    isNeutral: false,
+    name: 'Group',
+    participantsNumber: 4,
+    turnHalfWeeks: [52, 54, 56, 60, 62, 64],
+    turnHalfWeeksSchedule: [50, 50, 50, 50, 50, 50],
+  },
+  drawRulesValidate: []
+}
+
+const stageInfo4: IStageGroupInfo = {
+  id: 'sg41986',
+  season: 1986,
+}
 
 export default {
-  s1: {info: stageInfo1, config: stageConfig1},
-  s2: {info: stageInfo2, config: stageConfig2},
+  s1: { info: stageInfo1, config: stageConfig1 },
+  s2: { info: stageInfo2, config: stageConfig2 },
+  s3: { info: stageInfo3, config: stageConfig3 },
+  s4: { info: stageInfo4, config: stageConfig4 },
 }

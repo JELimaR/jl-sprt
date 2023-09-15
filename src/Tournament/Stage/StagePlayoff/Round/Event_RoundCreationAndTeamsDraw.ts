@@ -20,7 +20,7 @@ export default class Event_RoundCreationAndTeamsDraw extends JEventOthers {
     console.log(`ejecuting creation of Round number: ${thisRoundNumber}, from: ${this._playoff.info.id}`);
 
     const winners = this.getLastRoundWinners();
-    const teams: Team[] = SingleElmination.teamsSortForDraw(winners);
+    const teams: Team[] = SingleElmination.teamsSortForDraw(winners, true);
     
     this._playoff.createNewRound(teams, this.calendar/*, this.dateTime*/)
   }

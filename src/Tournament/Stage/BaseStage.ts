@@ -67,13 +67,19 @@ export default abstract class BaseStage<I extends IBaseStageInfo, C extends IBas
   }
   abstract createChildren(cal: JCalendar): void;
 
-  static teamsSortForDraw(teamRankArr: Team[]): Team[] {
+  static teamsSortForDraw(teamRankArr: Team[], masmenos: boolean): Team[] {
     let out: Team[] = [];
     const total = teamRankArr.length;
     for (let i = 0; i < total/2; i++) {
-			out.push(
-				teamRankArr[total - i - 1], teamRankArr[i]
-			)
+      if (masmenos) {
+        out.push(
+          teamRankArr[total - i - 1], teamRankArr[i]
+        )  
+      } else {
+        out.push(
+          teamRankArr[i], teamRankArr[total - i - 1]
+        )
+      }
 		}
     return out;
   }
