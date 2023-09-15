@@ -33,7 +33,9 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
         id: '' + i + 1,
         season: this.info.season,
       }
-      const group = new League(GInfo, this.config.group)
+      const GConfig: ILeagueConfig = {...this.config.group};
+      GConfig.participantsNumber = this.config.participantsPerGroup[i];
+      const group = new League(GInfo, GConfig)
       this._groups.push(group)
     }
 
@@ -69,29 +71,55 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
    * @param cal 
    */
   start(teams: Team[], cal: JCalendar): void {
-    const participants: Team[][] = (this.config.dayOfDrawDate) ? this.teamsDraw(teams) : this.teamsNoDraw(teams);
-
+    const participants: Team[][] = /*(this.config.dayOfDrawDate) ? this.teamsDraw(teams) : */this.teamsNoDraw(teams);
+    // console.log(participants)
     this._groups.forEach((g: League,i: number) => {
-      const arr = League.teamsSortForDraw(participants[i], false)
+      const arr = /*League.teamsSortForDraw(*/participants[i]/*, false)*/
+      // console.log(i, [arr], g.config.participantsNumber)
+      // console.log()
       g.assign(arr, cal);
     })
   }
 
-  // no funciona bien
+  // no funciona bien -> esta mejorado
+  /**
+   * g  
+   * 0	1	6	11	16
+   * 1	2	7	12	13
+   * 2	3	8	9	14
+   * 3	4	5	10	15
+   */
   private teamsNoDraw(teams: Team[]): Team[][] {
     let sorted: Team[][] = [];
-    teams = League.teamsSortForDraw(teams, false);
-    let ti = 0;
-    this.groups.forEach((g: League, gi: number) => {
-      let teamsGroup: Team[] = [];
-
-      for (let i = 0; i < this.config.participantsPerGroup[gi]; i++) {
-        teamsGroup.push(teams[ti]);
-        ti++;
+    // teams = League.teamsSortForDraw(teams, false);
+    let aksdfh = 0;
+    let auxCounter = 0;
+    teams.forEach((t: Team, tindx: number) => {
+      // console.log('g', tindx % this.groups.length)
+      if (auxCounter == this.groupsNumber) {
+        auxCounter = 0;
+        aksdfh++;
       }
-
-      sorted.push(teamsGroup);
+      // const aux = Math.trunc(aksdfh/this.groupsNumber)
+      const gid = (tindx + aksdfh) % this.groupsNumber;
+      if (!sorted[gid]) sorted[gid] = [];
+      
+      sorted[gid].push(t);
+      auxCounter++
     })
+    sorted.sort((a: Team[], b: Team[]) => b.length - a.length)
+    console.log(sorted)
+    // throw new Error(`stop`)
+    // this.groups.forEach((g: League, gi: number) => {
+    //   let teamsGroup: Team[] = [];
+
+    //   for (let i = 0; i < this.config.participantsPerGroup[gi]; i++) {
+    //     teamsGroup.push(teams[ti]);
+    //     ti++;
+    //   }
+
+    //   sorted.push(teamsGroup);
+    // })
 
     return sorted
   }
@@ -118,12 +146,12 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
   private selection(bombos: Bombo<Team>[]): Array<Team[]> {
     let out: Team[][] = [];
     this.groups.forEach(() => {
-      let teams: Team[] = [];
+      let groupTeams: Team[] = [];
       bombos.forEach((b: Bombo<Team>) => {
         const elems = b.getNextElements();
-        elems.forEach((t: Team) => { teams.push(t); })
+        elems.forEach((t: Team) => { groupTeams.push(t); })
       })
-      out.push(teams);
+      out.push(groupTeams);
     })
     return out;
   }

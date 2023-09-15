@@ -23,7 +23,7 @@ export interface IBaseStageInfo extends ITCCInfo {
 export default abstract class BaseStage<I extends IBaseStageInfo, C extends IBaseStageConfig> extends TCC<I, C> {
 
   /**
-   * Creacion de una SB. Se asigna la config y la info
+   * Creacion de una BS. Se asigna la config y la info
    * Quedan desconocidos los participants y por tanto no se crean los turns/rounds
    *        -> ESTOS SE CREAN EN LA ASIGNACION -> función assign()
    * 
@@ -58,6 +58,7 @@ export default abstract class BaseStage<I extends IBaseStageInfo, C extends IBas
       throw new Error(`cantidad de tms incorrecta:
       presentados: ${participants.length} y se esperaban: ${this.config.participantsNumber}`);
     }
+    // verificar que no se repitan
     // assign participants and table items
     participants.forEach((team: Team, idx: number) => {
       this.participants.set(idx + 1, team);
@@ -67,11 +68,11 @@ export default abstract class BaseStage<I extends IBaseStageInfo, C extends IBas
   }
   abstract createChildren(cal: JCalendar): void;
 
-  static teamsSortForDraw(teamRankArr: Team[], masmenos: boolean): Team[] {
+  static teamsSortForDraw(teamRankArr: Team[], decreas: boolean): Team[] {
     let out: Team[] = [];
-    const total = teamRankArr.length;
+    const total = teamRankArr.length; // debe ser par
     for (let i = 0; i < total/2; i++) {
-      if (masmenos) {
+      if (decreas) {
         out.push(
           teamRankArr[total - i - 1], teamRankArr[i]
         )  

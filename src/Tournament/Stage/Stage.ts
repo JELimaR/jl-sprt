@@ -86,6 +86,7 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
   abstract start(teams: Team[], cal: JCalendar): void;
 
   createBombosforDraw(teams: Team[]): Bombo<Team>[] {
+
     let out: Bombo<Team>[] = [];
     let tid = 0;
     this.config.bombos.forEach((bomboData: TypeBomboData) => {
@@ -96,7 +97,6 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
       }
       out.push(new Bombo(elements, this.getSelectionPerTime(elements.length)));
     })
-
     return out;
   }
 

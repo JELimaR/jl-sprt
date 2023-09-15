@@ -100,11 +100,11 @@ const stageConfig4: IStageGroupConfig = {
   halfWeekOfStartDate: 50,
   halfWeekOfEndDate: 64,
 
-  qualifyConditions: [{ rankId: 'sr_sc3', season: 'current', minRankPos: 1, maxRankPos: 16 }],
+  qualifyConditions: [{ rankId: 'sr_sc3', season: 'current', minRankPos: 1, maxRankPos: 15 }],
 
-  bombos: [{ elemsNumber: 4 }, { elemsNumber: 4 }, { elemsNumber: 4 }, { elemsNumber: 4 }],
+  bombos: [{ elemsNumber: 4 }, { elemsNumber: 4 }, { elemsNumber: 4 }, { elemsNumber: 3 }],
 
-  participantsPerGroup: [4, 4, 4, 4],
+  participantsPerGroup: [4, 4, 4, 3],
 
   group: {
     idConfig: 'sc4-G',

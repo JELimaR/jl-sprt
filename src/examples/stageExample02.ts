@@ -40,6 +40,7 @@ export default function stageExample02() {
   }))
   
   console.log(SE4.groups.map(l => {
+    console.table(JRankCalculator.getTableBase(l, 'partial').map(e => e.getInterface()))
     return l.teamsArr.map((t => t.id))
   }))
 

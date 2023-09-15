@@ -113,7 +113,7 @@ export class JRankCalculator {
       out = out.concat(this.getTableBase(g, 'finished'));
     })
 
-    out.sort((a,b) => simpleSortFunc(a,b,false))
+    out.sort((a,b) => simpleSortFunc(a,b,false)) // usar la media de puntos
 
     return out;
   }
@@ -162,9 +162,14 @@ const simpleSortFunc = (a: TeamTableItem, b: TeamTableItem, isSE: boolean) => {
     if (a.pj - b.pj !== 0) {
       return b.pj - a.pj
     }
-  }
+  } 
   if (b.pos - a.pos !== 0) {
     return a.pos - b.pos
+  }
+  if (!isSE) {
+    if (a.pm - b.pm !== 0) {
+      return b.pm - a.pm
+    }
   }
   if (a.ps - b.ps !== 0) {
     return b.ps - a.ps;

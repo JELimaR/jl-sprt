@@ -10,6 +10,7 @@ export interface ITeamTableItem {
   ge: number;
   sg: number;
   ps: number;
+  pm: number;
   team: string;
 }
 
@@ -51,6 +52,9 @@ export default class TeamTableItem {
   get sg(): number {
     return this._gf - this._ge;
   }
+  get pm(): number {
+    return this.pj == 0 ? 0 : Math.round(this.ps/this.pj*1000)/1000
+  }
   get ps(): number {
     return 3 * this._pg + this._pe;
   }
@@ -76,6 +80,7 @@ export default class TeamTableItem {
       ge: this.ge,
       sg: this.sg,
       ps: this.ps,
+      pm: this.pm,
       team: this.team.id,
     };
   }
