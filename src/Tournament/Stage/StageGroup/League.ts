@@ -223,4 +223,41 @@ export default class League extends BaseStage<ILeagueInfo, ILeagueConfig> {
   static getDataScheduling(n: number, opt: TypeBaseStageOption): arr2<number>[][] {
     return robinRoundSchedulingFunction(n, opt);
   }
+
+  //
+  static teamsSortForDraw(teamRankArr: Team[]) {
+    let out: Team[] = [];
+
+    let currUpIndex = 0;
+    let currUnderIndex = teamRankArr.length - 1;
+
+    let i = 0;
+    let j = teamRankArr.length - 1;
+
+    let pair = false;
+    while (currUpIndex < currUnderIndex) {
+
+      if (pair) {
+        out[currUpIndex] = teamRankArr[j];
+        j--;
+        out[currUnderIndex] = teamRankArr[j];
+        j--;
+        pair = false;
+      } else {
+        out[currUpIndex] = teamRankArr[i];
+        i++;
+        out[currUnderIndex] = teamRankArr[i];
+        i++;
+        pair = true;
+      }
+
+      currUpIndex++;
+      currUnderIndex--;
+    }
+
+    if (currUpIndex == currUnderIndex) {
+      out[currUpIndex] = teamRankArr[i];
+    }
+    return out;
+  }
 }

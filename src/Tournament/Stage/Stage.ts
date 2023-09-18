@@ -17,7 +17,7 @@ type TQualyCondition = {
 
 type TypeDrawRulePlayoff = {}
 
-export type TypeBomboData = { elemsNumber: number }
+// export type TypeBomboData = { elemsNumber: number }
 
 export interface IStageConfig extends ITCCConfig {
   type: 'group' | 'playoff';
@@ -32,7 +32,7 @@ export interface IStageConfig extends ITCCConfig {
 
   qualifyConditions: TQualyCondition[];
 
-  bombos: TypeBomboData[];
+  bombos: number[];
 
 }
 
@@ -89,9 +89,9 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
 
     let out: Bombo<Team>[] = [];
     let tid = 0;
-    this.config.bombos.forEach((bomboData: TypeBomboData) => {
+    this.config.bombos.forEach((bomboData: number) => {
       const elements: Team[] = [];
-      for (let i = 0; i < bomboData.elemsNumber; i++) {
+      for (let i = 0; i < bomboData; i++) {
         elements.push(teams[tid]);
         tid++;
       }

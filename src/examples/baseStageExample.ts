@@ -10,8 +10,8 @@ export default function baseStageExample() {
 
   const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getIJDateTimeCreator());
 
-  const selectionL = getExampleTeams(10);
-  const selectionC = getExampleTeams(132).slice(100, 133);
+  const selectionL = getExampleTeams(10, 'TL');
+  const selectionC = getExampleTeams(132, 'TC').slice(100, 133);
 
   // league creation
   const league = new League({
@@ -65,6 +65,6 @@ export default function baseStageExample() {
 
   console.log(cal.events.length);
 
-  console.table(JRankCalculator.getTableBase(league, 'finished'))
-  console.table(JRankCalculator.getTableBase(singleElimination, 'finished'))
+  console.table(JRankCalculator.getTableBase(league, 'finished').map(e => e.getInterface()))
+  console.table(JRankCalculator.getTableBase(singleElimination, 'finished').map(e => e.getInterface()))
 }

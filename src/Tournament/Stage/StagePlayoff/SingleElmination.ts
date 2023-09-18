@@ -16,7 +16,7 @@ export interface ISingleElminationConfig extends IBaseStageConfig {
   roundHalfWeeksSchedule: TypeHalfWeekOfYear[];
 }
 
-export interface ISingleElminationInfo extends IBaseStageInfo {}
+export interface ISingleElminationInfo extends IBaseStageInfo { }
 
 export default class SingleElmination extends BaseStage<ISingleElminationInfo, ISingleElminationConfig> { // Single elimination
 
@@ -92,7 +92,7 @@ export default class SingleElmination extends BaseStage<ISingleElminationInfo, I
         new JSerie({
           teamOne: teams[i + 0],
           teamTwo: teams[i + 1],
-          id: `${this.info.id}-S${total + i/2 + 1}`,
+          id: `${this.info.id}-S${total + i / 2 + 1}`,
           // isIV: this.config.isIV,
           season: this.info.season,
           hws: this.config.roundHalfWeeks[this._rounds.length],
@@ -121,5 +121,18 @@ export default class SingleElmination extends BaseStage<ISingleElminationInfo, I
       partsNumber /= 2;
     }
     return partsNumber;
+  }
+
+  //
+  static teamsSortForDraw(teamRankArr: Team[]): Team[] {
+    let out: Team[] = [];
+    const total = teamRankArr.length; // debe ser par
+    for (let i = 0; i < total / 2; i++) {
+      out.push(
+        teamRankArr[total - i - 1], teamRankArr[i]
+      )
+
+    }
+    return out;
   }
 }

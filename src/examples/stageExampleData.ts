@@ -8,7 +8,7 @@ const stageConfig1: IStagePlayoffConfig = {
   halfWeekOfStartDate: 20,
   halfWeekOfEndDate: 30,
 
-  bombos: [{ elemsNumber: 10 }, { elemsNumber: 10 }, { elemsNumber: 10 }, { elemsNumber: 10 }],
+  bombos: [10, 10, 10, 10],
 
   qualifyConditions: [{ minRankPos: 1, maxRankPos: 40, rankId: 'rankingInicial', season: 'previus' }],
 
@@ -39,7 +39,7 @@ const stageConfig2: IStagePlayoffConfig = {
 
   qualifyConditions: [{ rankId: 'sr_sc1', season: 'current', minRankPos: 1, maxRankPos: 10 }],
 
-  bombos: [{ elemsNumber: 10 }],
+  bombos: [10],
 
   playoff: {
     idConfig: 'sc2-P',
@@ -69,7 +69,7 @@ const stageConfig3: IStageGroupConfig = {
 
   qualifyConditions: [{ rankId: 'rankingInicial', season: 'current', minRankPos: 1, maxRankPos: 40 }],
 
-  bombos: [{ elemsNumber: 8 }, { elemsNumber: 20 }, { elemsNumber: 12 }],
+  bombos: [8, 20, 12],
 
   participantsPerGroup: [10, 10, 10, 10],
 
@@ -93,13 +93,13 @@ const stageConfig4: IStageGroupConfig = {
   type: 'group',
   idConfig: 'sc4',
   name: 'Stage sc4',
-  dayOfDrawDate: {day: 174, interv: 80},
+  dayOfDrawDate: { day: 174, interv: 80 },
   halfWeekOfStartDate: 50,
   halfWeekOfEndDate: 64,
 
   qualifyConditions: [{ rankId: 'sr_sc3', season: 'current', minRankPos: 1, maxRankPos: 15 }],
 
-  bombos: [{ elemsNumber: 4 }, { elemsNumber: 4 }, { elemsNumber: 4 }, { elemsNumber: 3 }],
+  bombos: [4, 4, 4, 3],
 
   participantsPerGroup: [4, 4, 4, 3],
 

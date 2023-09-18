@@ -70,22 +70,22 @@ export default abstract class BaseStage<I extends IBaseStageInfo, C extends IBas
   }
   abstract createChildren(cal: JCalendar): void;
 
-  static teamsSortForDraw(teamRankArr: Team[], decreas: boolean): Team[] {
-    let out: Team[] = [];
-    const total = teamRankArr.length; // debe ser par
-    for (let i = 0; i < total/2; i++) {
-      if (decreas) {
-        out.push(
-          teamRankArr[total - i - 1], teamRankArr[i]
-        )  
-      } else {
-        out.push(
-          teamRankArr[i], teamRankArr[total - i - 1]
-        )
-      }
-		}
-    return out;
-  }
+  // static teamsSortForDraw(teamRankArr: Team[], decreas: boolean): Team[] {
+  //   let out: Team[] = [];
+  //   const total = teamRankArr.length; // debe ser par
+  //   for (let i = 0; i < total/2; i++) {
+  //     if (decreas) {
+  //       out.push(
+  //         teamRankArr[total - i - 1], teamRankArr[i]
+  //       )  
+  //     } else {
+  //       out.push(
+  //         teamRankArr[i], teamRankArr[total - i - 1]
+  //       )
+  //     }
+	// 	}
+  //   return out;
+  // }
 
   static getTableCondition(ttms: TypeTableMatchState): (m: JMatch) => boolean {
     switch (ttms) {
