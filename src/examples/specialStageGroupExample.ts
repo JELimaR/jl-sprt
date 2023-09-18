@@ -10,11 +10,11 @@ import StageGroup, { IStageGroupConfig } from "../Tournament/Stage/StageGroup/St
 import Team from "../Tournament/Team";
 import exampleAdvance from "./exampleAdvance";
 
-const selection = getExampleTeams(150, 'Team');
+const selection = getExampleTeams(26, 'Team');
 
 export default function specialStageGroupExample() {
 
-  const rankItemArr: RankItem[] = selection.map((t: Team, i: number) => { return { rank: i + 1, team: t } });
+  const rankItemArr: RankItem[] = selection.map((t: Team, i: number) => { return { rank: i + 1, team: t, originId: `C${(i % 13) + 1}` } });
   const ranking: TypeRanking = { rankId: 'rankingInicial', table: rankItemArr }
   globalFinishedRankingsMap.set(ranking.rankId, ranking);
 
@@ -33,6 +33,11 @@ export default function specialStageGroupExample() {
   console.log(SG.groups.map(l => {
     return l.teamsArr.map((t => t.id))
   }))
+  SG.groups.forEach(l => {
+    console.log()
+    console.log(l.info.id)
+    console.table(JRankCalculator.getTableBase(l, 'finished').map(e => e.getInterface()))
+  })
 
   globalFinishedRankingsMap.forEach((ranking: TypeRanking, key: string) => {
     if (key !== 'rankingInicial') {
@@ -53,7 +58,7 @@ const stageLeagueconfig: IStageGroupConfig = {
 
   bombos: [
     { elemsNumber: 13, selectionPerTime: [3, 3, 3, 2, 2] },
-    { elemsNumber: 13, selectionPerTime: [2, 2, 3, 3, 3] }
+    { elemsNumber: 13, selectionPerTime: [3, 2, 2, 3, 3] }
   ],
 
   drawRulesValidate: [],

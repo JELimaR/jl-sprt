@@ -24,9 +24,14 @@ export default class TeamTableItem {
   private _gf: number = 0;
   private _ge: number = 0;
 
-  constructor(t: Team) {
+  private _bsId: string;
+
+  constructor(t: Team, bsId: string) {
     this._team = t;
+    this._bsId = bsId;
   }
+
+  get bsId(): string { return this._bsId }
 
   set pos(pos: number) { this._pos = pos };
   get pos(): number { return this._pos };

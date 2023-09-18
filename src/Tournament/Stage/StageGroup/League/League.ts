@@ -1,5 +1,3 @@
-// import * as utlts from 'jl-utlts';
-// const CUF = utlts.CollectionsUtilsFunctions.getInstance();
 
 import { TypeHalfWeekOfYear } from "../../../../Calendar/DateTime/types";
 import JCalendar from "../../../../Calendar/JCalendar";
@@ -63,10 +61,6 @@ export default class League extends BaseStage<ILeagueInfo, ILeagueConfig> {
 
   }
 
-  get turnsNumber(): number {
-    return League.getTurnsNumber(this.config.participantsNumber, this.config.opt);
-  }
-
   get turns(): Turn[] {
     return this._turns;
   }
@@ -79,63 +73,20 @@ export default class League extends BaseStage<ILeagueInfo, ILeagueConfig> {
     return out;
   }
 
-  // assign(participants: Team[], cal: JCalendar): void {
-  //   super.assign(participants, cal);
-  //   // create matches
-  //   let sch: arr2<number>[][] = League.getDataScheduling(
-  //     this.config.participantsNumber,
-  //     this.config.isNeutral,
-  //     this.config.isIV
-  //   );
-  //   let mid: number = 1;
-  //   for (let f = 0; f < sch.length; f++) {
-  //     let ms: JMatch[] = [];
-  //     for (let m of sch[f]) {
-  //       const ht: Team = participants[m[0] - 1];
-  //       const at: Team = participants[m[1] - 1];
-
-  //       ms.push(new JMatch({
-  // 				homeTeam: ht,
-  // 				awayTeam: at,
-  // 				hw: this.config.turnHalfWeeks[f],
-  // 				temp: this.info.season,
-  //         id: `${this.info.id}-M${mid++}`,
-  //         allowedDraw: true,
-  //         isNeutral: this.config.isNeutral
-  // 			}));
-  //     }
-  //     let ff = new Turn({ // en vez de crearla se puede simplemente agregar los matchs y crearla antes en el constructor
-  //       num: f + 1,
-  //       halfweek: this.config.turnHalfWeeks[f],
-  // 			halfweekMatchDateAssignation: this.config.turnHalfWeeksSchedule[f],
-  //       matches: ms
-  // 		});
-  //     this._turn.push(ff);
-  //   }
-
-  //   this._turn.forEach((turn: Turn) => {
-  //     turn.generateMatchOfTurnScheduleEvents(cal, this)
-  //   })
-  // }
-
   /**
    * Para crear los turns
    * @param cal 
    */
   createChildren(cal: JCalendar): void {
-    // create matches
-    const participants = this.teamsArr;
+    // matriz 
     let sch: arr2<number>[][] = League.getDataScheduling(
       this.config.participantsNumber,
       this.config.opt
     );
-    // let mid: number = 1;
 
     for (let t = 0; t < sch.length; t++) {
       let teams: Team[] = [];
       for (let m of sch[t]) {
-        // const ht: Team = participants[m[0] - 1];
-        // const at: Team = participants[m[1] - 1];
         const ht: Team = this.participants.get(m[0])!;
         const at: Team = this.participants.get(m[1])!;
         teams.push(ht);
@@ -143,35 +94,7 @@ export default class League extends BaseStage<ILeagueInfo, ILeagueConfig> {
       }
 
       this.createNewTurn(teams, cal);
-
-      //   let matches: JMatch[] = [];
-      //   for (let m of sch[t]) {
-      //     const ht: Team = participants[m[0] - 1];
-      //     const at: Team = participants[m[1] - 1];
-
-      //     matches.push(new JMatch({
-      //       homeTeam: ht,
-      //       awayTeam: at,
-      //       hw: this.config.turnHalfWeeks[t],
-      //       temp: this.info.season,
-      //       id: `${this.info.id}-T${t + 1}-M${mid++}`,
-      //       allowedDraw: true,
-      //       isNeutral: this.config.isNeutral
-      //     }));
-      //   }
-      //   let turn = new Turn({ // en vez de crearla se puede simplemente agregar los matchs y crearla antes en el constructor
-      //     num: t + 1,
-      //     halfweek: this.config.turnHalfWeeks[t],
-      //     halfweekSchedule: this.config.turnHalfWeeksSchedule[t],
-      //     matches: matches
-      //   });
-      //   this._turns.push(turn);
-
     }
-
-    // this._turns.forEach((turn: Turn) => {
-    //   turn.generateMatchOfTurnScheduleEvents(cal, this)
-    // })
   }
 
   createNewTurn(teamsDrawSorted: Team[], calendar: JCalendar/*, dt: JDateTime*/) {

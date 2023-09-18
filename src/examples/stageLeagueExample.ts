@@ -13,7 +13,7 @@ const selection = getExampleTeams(150, 'Team');
 
 export default function stageLeagueExample() {
 
-  const rankItemArr: RankItem[] = selection.map((t: Team, i: number) => { return { rank: i + 1, team: t } });
+  const rankItemArr: RankItem[] = selection.map((t: Team, i: number) => { return { rank: i + 1, team: t, originId: 'rankingInicial' } });
   const ranking: TypeRanking = { rankId: 'rankingInicial', table: rankItemArr }
   globalFinishedRankingsMap.set(ranking.rankId, ranking);
 

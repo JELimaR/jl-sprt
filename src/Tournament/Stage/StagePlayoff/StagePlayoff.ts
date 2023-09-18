@@ -6,6 +6,7 @@ import { arr2 } from "../../types";
 import Team from "../../Team";
 import JCalendar from "../../../Calendar/JCalendar";
 import Bombo from "../Bombo";
+import { RankItem } from "../../Rank/Rank";
 
 export interface IStagePlayoffConfig extends IStageConfig {
   type: 'playoff',
@@ -65,28 +66,28 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
    * @param teams 
    * @param cal 
    */
-  start(teams: Team[], cal: JCalendar): void {
-    const participants: Team[] = (this.config.dayOfDrawDate) ? this.teamsDraw(teams) : teams;
+  start(teams: RankItem[], cal: JCalendar): void {
+    const participants: Team[] = (this.config.dayOfDrawDate) ? this.teamsDraw(teams) : teams.map(ri => ri.team);
     this._playoff.assign(participants, cal);
   }
 
-  private teamsDraw(teams: Team[]) {
-    let sorted: Team[] = [];
+  private teamsDraw(teams: RankItem[]) {
+    let sorted: RankItem[] = [];
     let i = 0; // conteo de la cantidad de intentos para un draw valido
     let isValid = false;
     const bombos = this.createBombosforDraw(teams);
     while (!isValid && i < 1000) { // mientras no encuentre un orden valido y no haya llegado a 1000 intentos
-      bombos.forEach((bom: Bombo<Team>) => { bom.reset(); })
+      bombos.forEach((bom: Bombo<RankItem>) => { bom.reset(); })
       sorted = this.selection(bombos);
       isValid = this.drawRulesValidate(sorted);
       i++;
     }
-    return sorted;
+    return sorted.map(ri => ri.team);
   }
 
-  private selection(bombos: Bombo<Team>[]) {
-    const out: Team[] = [];
-    bombos.forEach((bom: Bombo<Team>) => {
+  private selection(bombos: Bombo<RankItem>[]) {
+    const out: RankItem[] = [];
+    bombos.forEach((bom: Bombo<RankItem>) => {
       // let elems = bom.getNextElements();
       // while (elems.length > 0) {
       //   out.push(...elems);
@@ -111,12 +112,12 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
    *    T5vsT2
    *    T4vsT3
    */
-  drawRulesValidate(teams: Team[]): boolean {
+  drawRulesValidate(teams: RankItem[]): boolean {
     const series: arr2<Team>[] = [];
     for (let i = 0; i < teams.length/2; i++) {
       let serie: arr2<Team> = [
-        teams[i],
-        teams[teams.length - 1 - i]
+        teams[i].team,
+        teams[teams.length - 1 - i].team
       ];
       series.push(serie);
     }

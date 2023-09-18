@@ -15,7 +15,7 @@ const robinRoundSchedulingFunction = (n: number, opt: 'home' | 'h&a' | 'neutral'
 			rnd.forEach((m: arr2<number>) => {
 				m = neutral(m);
 				raux.push(m);
-				console.log(m);
+				// console.log(m);
 			})
 			out.push(raux);
 		})

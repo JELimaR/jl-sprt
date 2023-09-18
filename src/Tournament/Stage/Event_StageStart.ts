@@ -1,5 +1,6 @@
 import { IJEventInfo, JEvent } from "../../Calendar/Event/JEvent";
 import { globalFinishedRankingsMap } from "../Rank/globalFinishedRankingsMap";
+import { RankItem } from "../Rank/Rank";
 import Team from "../Team";
 import { TYPEGENERICSTAGE } from "./Stage";
 
@@ -25,14 +26,14 @@ export class Event_StageStart extends JEvent {
   }
 
   getParticipants() { // cambiar Map por TypeRanking
-    const teams: Team[] = [];
+    const teams: RankItem[] = [];
     this._stage.config.qualifyConditions.forEach(qc => {
       const ranking = globalFinishedRankingsMap.get(qc.rankId)!; // verificar correctamente
 
       if (ranking.table.length < qc.maxRankPos) throw new Error(``)
 
       for (let p = qc.minRankPos - 1; p < qc.maxRankPos; p++)
-        teams.push(ranking.table[p].team);
+        teams.push(ranking.table[p]);
     })
 
     return teams;

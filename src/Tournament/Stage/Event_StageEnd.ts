@@ -22,14 +22,8 @@ export class Event_StageEnd extends JEvent {
     console.log(`ejecuting finishing stage: ${this._stage.info.id}`);
 
     if (!this._stage.isFinished) throw new Error(`la stage ${this._stage.info.id} no esta terminada`)
-    // borrar
+ 
     let ranking: TypeRanking = JRankCalculator.getStageRelativeRank(this._stage);
-    // if (this._stage instanceof StagePlayoff) {
-    //   ranking = JRankCalculator.getTableStagePlayoff(this._stage, 'finished').map((t: TeamTableItem, i: number) => { return {rank: i+1, team: t.team} });
-    // } else {
-    //   throw new Error(`No implementado aún para StageGroup`)
-    // }
-
     globalFinishedRankingsMap.set(ranking.rankId, ranking);
   }
 }

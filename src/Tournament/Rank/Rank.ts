@@ -24,7 +24,7 @@ export type TypeTableMatchState = 'partial' | 'finished';
 export interface RankItem {
   team: Team;
   rank: number;
-  // originId
+  originId: string;
 }
 
 export type TypeRanking = {
@@ -66,7 +66,8 @@ export class JRankCalculator {
     const rankItemArr: RankItem[] = ttiArr.map((tti, idx) => {
       return {
         team: tti.team,
-        rank: idx + 1
+        rank: idx + 1,
+        originId: tti.bsId
       }
     })
 
@@ -106,7 +107,6 @@ export class JRankCalculator {
    * 
    */
   static getTableStageGroup(stageGroup: StageGroup, ttms: TypeTableMatchState): TeamTableItem[] {
-    // throw new Error(`not implemented yet in RankCalculator.getTableStageGroup`)
     let out: TeamTableItem[] = []; // pasar a map
 
     stageGroup.groups.forEach((g: League) => {
@@ -142,10 +142,7 @@ export class JRankCalculator {
    */
   static getTableBase(base: BaseStage<IBaseStageInfo, IBaseStageConfig>, ttms: TypeTableMatchState): TeamTableItem[] {
     let out: TeamTableItem[] = calcTableValues(base, ttms);
-    // const teamsTTI: TeamTableItem[] = calcTableValues(base, ttms)
 
-    // ordenar segun criterio 'simpleSortFunc'
-    // out = teamsTTI.map((tti: TeamTableItem) => tti.getInterface());
     out.sort((a, b) => simpleSortFunc(a, b, base instanceof SingleElmination));
 
     // la posicion se establece de formas distintas segun el tipo de BaseStage
@@ -184,7 +181,7 @@ const calcTableValues = (base: BaseStage<IBaseStageInfo, IBaseStageConfig>, ttms
   // para cada match, calcular los valores de la tabla de de cada team!
   // valores: pg, pp, pg, pe, gf, ge
   const out: TeamTableItem[] = []; // pasar a map
-  base.participants.forEach((team: Team) => out.push(new TeamTableItem(team)));
+  base.participants.forEach((team: Team) => out.push(new TeamTableItem(team, base.info.id)));
   // 
   const matchConditionFunc = BaseStage.getTableCondition(ttms);
 

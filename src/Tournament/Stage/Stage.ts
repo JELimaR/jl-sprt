@@ -2,6 +2,7 @@ import { JDateTime } from "../../Calendar/DateTime/JDateTime";
 import { TypeDayOfYear, TypeHalfWeekOfYear, TypeIntervOfDay } from "../../Calendar/DateTime/types";
 import JCalendar from "../../Calendar/JCalendar";
 import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator";
+import { RankItem } from "../Rank/Rank";
 // import { TypeRanking } from "../Rank/JRank";
 import Team from "../Team";
 import { IBaseStageConfig } from "./BaseStage";
@@ -124,22 +125,21 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
   abstract getHalfWeekOfMatches(): TypeHalfWeekOfYear[];
   abstract getHalfWeekOfSchedule(): TypeHalfWeekOfYear[];
 
-  abstract drawRulesValidate(team: Team[]): boolean;
+  abstract drawRulesValidate(team: RankItem[]): boolean;
 
   /**
    * Sorteo y asignacion de equipos a BaseStage!!
    * @param teams 
    * @param cal 
    */
-  abstract start(teams: Team[], cal: JCalendar): void;
+  abstract start(teams: RankItem[], cal: JCalendar): void;
 
-  createBombosforDraw(teams: Team[]): Bombo<Team>[] {
-
-    let out: Bombo<Team>[] = [];
+  createBombosforDraw(teams: RankItem[]): Bombo<RankItem>[] {
+    let out: Bombo<RankItem>[] = [];
     let tid = 0;
-    this.config.bombos.forEach((bomboData: IBomboInfo) => {
-      const elements: Team[] = [];
-      for (let i = 0; i < bomboData.elemsNumber; i++) {
+    this.config.bombos.forEach((bomboInfo: IBomboInfo) => {
+      const elements: RankItem[] = [];
+      for (let i = 0; i < bomboInfo.elemsNumber; i++) {
         elements.push(teams[tid]);
         tid++;
       }
@@ -147,7 +147,7 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
       if (this.config.type == 'playoff') {
         out.push(new Bombo(elements, [elements.length]));
       } else {
-        out.push(new Bombo(elements, bomboData.selectionPerTime));
+        out.push(new Bombo(elements, bomboInfo.selectionPerTime));
       }
     })
     return out;

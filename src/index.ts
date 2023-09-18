@@ -9,13 +9,13 @@ import stageLeagueExample from './examples/stageLeagueExample';
 
 function app() {
 
-  baseStageExample();
+  // baseStageExample();
 
-  stageExample01();
+  // stageExample01();
 
-  stageExample02();
+  // stageExample02();
 
-  stageLeagueExample();
+  // stageLeagueExample();
 
   specialStageGroupExample();
 

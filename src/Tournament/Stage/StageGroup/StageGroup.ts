@@ -3,7 +3,7 @@ import Stage, { IStageConfig, IStageInfo } from "../Stage";
 import { TypeHalfWeekOfYear } from "../../../Calendar/DateTime/types";
 import Team from "../../Team";
 import JCalendar from "../../../Calendar/JCalendar";
-import Bombo from "../Bombo";
+import Bombo, { IBomboInfo } from "../Bombo";
 import { RankItem } from "../../Rank/Rank";
 
 
@@ -31,7 +31,7 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
 
     for (let i = 0; i < config.participantsPerGroup.length; i++) {
       const GInfo: ILeagueInfo = {
-        id: '' + i + 1,
+        id: 'G' + (i + 1),
         season: this.info.season,
       }
       const GConfig: ILeagueConfig = {...this.config.bsConfig};
@@ -39,6 +39,17 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
       const group = new League(GInfo, GConfig)
       this._groups.push(group)
     }
+
+    this.groups.forEach((g: League, i: number) => {
+      let sumBombo = 0;
+      this.config.bombos.forEach((ibi: IBomboInfo) => {
+        sumBombo += ibi.selectionPerTime[i] ? ibi.selectionPerTime[i] : 0;
+      })
+      if (sumBombo !== g.config.participantsNumber) {
+        throw new Error(`En StageGroup constructor:
+        La cantidad de participantes ${g.config.participantsNumber} no coincide con la cantidad definida por los bombos ${sumBombo}`)
+      }
+    })
 
   }
 
@@ -57,11 +68,6 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
   getHalfWeekOfSchedule(): TypeHalfWeekOfYear[] {
     return this.config.bsConfig.turnHalfWeeksSchedule;
   }
-
-  // getSelectionPerTime(elementsNumber: number): number {
-  //   return Math.ceil(elementsNumber/this.groupsNumber);
-  // }
-
   /**
    * Sorteo y asignacion de equipos a BaseStage!!
    * dado un array [T1,T2,T3,T4,T5,T6] el emparejamiento será:
@@ -71,12 +77,12 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
    * @param teams 
    * @param cal 
    */
-  start(teams: Team[], cal: JCalendar): void {
+  start(teams: RankItem[], cal: JCalendar): void {
     const participants: Team[][] = (this.config.dayOfDrawDate) ? this.teamsDraw(teams) : this.teamsNoDraw(teams);
     // console.log(participants)
     this._groups.forEach((g: League,i: number) => {
       const arr = League.teamsSortForDraw(participants[i]);
-      console.log(i, [arr], g.config.participantsNumber)
+      // console.log(i, [arr], g.config.participantsNumber)
       // console.log()
       g.assign(arr, cal);
     })
@@ -90,80 +96,63 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
    * 2	3	8	9	14
    * 3	4	5	10	15
    */
-  private teamsNoDraw(teams: Team[]): Team[][] {
-    let sorted: Team[][] = [];
+  private teamsNoDraw(teams: RankItem[]): Team[][] {
+    let sorted: RankItem[][] = [];
     // teams = League.teamsSortForDraw(teams, false);
-    let aksdfh = 0;
+    let gidOffset = 0;
     let auxCounter = 0;
-    teams.forEach((t: Team, tindx: number) => {
+    teams.forEach((t: RankItem, tindx: number) => {
       // console.log('g', tindx % this.groups.length)
       if (auxCounter == this.groupsNumber) {
         auxCounter = 0;
-        aksdfh++;
+        gidOffset++;
       }
       // const aux = Math.trunc(aksdfh/this.groupsNumber)
-      const gid = (tindx + aksdfh) % this.groupsNumber;
+      const gid = (tindx + gidOffset) % this.groupsNumber;
       if (!sorted[gid]) sorted[gid] = [];
       
       sorted[gid].push(t);
       auxCounter++
     })
-    sorted.sort((a: Team[], b: Team[]) => b.length - a.length)
-    // console.log(sorted)
-    // throw new Error(`stop`)
-    // this.groups.forEach((g: League, gi: number) => {
-    //   let teamsGroup: Team[] = [];
-
-    //   for (let i = 0; i < this.config.participantsPerGroup[gi]; i++) {
-    //     teamsGroup.push(teams[ti]);
-    //     ti++;
-    //   }
-
-    //   sorted.push(teamsGroup);
-    // })
-
-    return sorted
+    // los grupos de mayor numeros deben ir primero
+    sorted.sort((a: RankItem[], b: RankItem[]) => b.length - a.length)
+    return sorted.map(ris => ris.map(ri => ri.team))
   }
 
 
-  private teamsDraw(teams: Team[]): Team[][] {
-    let sorted: Team[][] = [];
+  private teamsDraw(teams: RankItem[]): Team[][] {
+    let sorted: RankItem[][] = [];
     let i = 0; // conteo de la cantidad de intentos para un draw valido
     let isValid = false;
     const bombos = this.createBombosforDraw(teams);
     while (!isValid && i < 1000) { // mientras no encuentre un orden valido y no haya llegado a 1000 intentos
-      bombos.forEach((bom: Bombo<Team>) => { bom.reset(); })
+      bombos.forEach((bom: Bombo<RankItem>) => { bom.reset(); })
       sorted = this.selection(bombos);
 
       isValid = true;
-      sorted.forEach((tarr: Team[]) => {
+      sorted.forEach((tarr: RankItem[]) => {
         if (!this.drawRulesValidate(tarr)) isValid = false;
       })
       i++;
+      console.log('i', i)
     }
-    sorted.sort((a: Team[], b: Team[]) => b.length - a.length)
-    return sorted;
+    // los grupos de mayor numeros deben ir primero
+    sorted.sort((a: RankItem[], b: RankItem[]) => b.length - a.length)
+    return sorted.map(ris => ris.map(ri => ri.team))
   }
   // 
-  private selection(bombos: Bombo<Team>[]): Array<Team[]> {
-    let out: Team[][] = [];
+  private selection(bombos: Bombo<RankItem>[]): Array<RankItem[]> {
+    let out: RankItem[][] = [];
     this.groups.forEach(() => {
-      let groupTeams: Team[] = [];
-      bombos.forEach((b: Bombo<Team>) => {
+      let groupTeams: RankItem[] = [];
+      bombos.forEach((b: Bombo<RankItem>) => {
         const elems = b.getNextElements();
-        elems.forEach((t: Team) => { groupTeams.push(t); })
+        elems.forEach((ri: RankItem) => { groupTeams.push(ri); })
       })
       out.push(groupTeams);
     })
     return out;
   }
-
-  // get relativeTable(): IJTeamTableItem[] {
-  // 	return JRankCalculator.getTableStageGroup(this);
-  // }
-  // get rank(): ITeamTableItem[] { 
-  // 	return JRankCalculator.getTableStageGroup(this);
-  // }
 
   /**
    * por ejemplo
@@ -171,10 +160,10 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
    * 2 - no pueden haber n teams  que sean de la misma feder, confed, etc.
    * 3 - no pueden haber n teams de cierta caracteristica
    */
-  drawRulesValidate(teams: Team[]): boolean {
-    const rArr: RankItem[] = teams.map(t => {return {team: t, rank: 2}})
-    
+  drawRulesValidate(teams: RankItem[]): boolean {
     return true;
+    // const setset = new Set<string>(teams.map(ri => ri.originId));
+    // return teams.length - setset.size == 0;
   }
 
 }
