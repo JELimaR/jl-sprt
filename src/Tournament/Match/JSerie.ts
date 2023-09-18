@@ -5,21 +5,24 @@ import { arr2 } from '../types';
 import JResult, { IJResultInfo } from './JResult';
 import Team from '../Team';
 import JMatch from './JMatch';
+import { TypeBaseStageOption } from '../Stage/BaseStage';
 
 export interface IJSerieInfo {
 	teamOne: Team;
 	teamTwo: Team;
-	isIV: boolean;
+	// isIV: boolean;
 	hws: arr2<TypeHalfWeekOfYear>;
 	// config: {temp: number}; // info en vez de config
 	season: number,
 	id: string;
-	isNeutral: boolean;
+	// isNeutral: boolean;
+  opt: TypeBaseStageOption
 }
 
-
 export default class JSerie {
-	_isIV: boolean = false;
+
+  _opt: TypeBaseStageOption
+	// _isIV: boolean = false;
 	private _result: JResult;
 	private _id: string;
 	private _date: JDateTime | undefined;
@@ -30,7 +33,8 @@ export default class JSerie {
 	private _matches: JMatch[];
 
 	constructor(isi: IJSerieInfo) {
-		this._isIV = isi.isIV;
+    this._opt = isi.opt;
+		// this._isIV = isi.isIV;
 		this._id = isi.id;
 		this._teamOne = isi.teamOne;
 		this._teamTwo = isi.teamTwo;
@@ -47,12 +51,12 @@ export default class JSerie {
 				temp: isi.season,
 				id: `${this._id}-M1`,
 				serie: this,
-				allowedDraw: this._isIV,
-				isNeutral: isi.isNeutral,
+				allowedDraw: this._opt == 'h&a',
+				isNeutral: isi.opt == 'neutral',
 			})
 		];
 
-		if (this._isIV) {
+		if (this._opt == 'h&a') {
 			this._matches.push(
 				new JMatch({
 					homeTeam: this._teamTwo,
@@ -62,7 +66,7 @@ export default class JSerie {
 					id: `${this._id}-M2`,
 					serie: this,
 					allowedDraw: true,
-					isNeutral: isi.isNeutral,
+					isNeutral: isi.opt == 'neutral',
 				})
 			)
 		}

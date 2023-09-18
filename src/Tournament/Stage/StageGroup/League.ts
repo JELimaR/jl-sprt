@@ -6,7 +6,7 @@ import JCalendar from "../../../Calendar/JCalendar";
 import JMatch from "../../Match/JMatch";
 import Team from "../../Team";
 import { arr2 } from "../../types";
-import BaseStage, { IBaseStageConfig, IBaseStageInfo } from "../BaseStage";
+import BaseStage, { IBaseStageConfig, IBaseStageInfo, TypeBaseStageOption } from "../BaseStage";
 import robinRoundSchedulingFunction from "../Scheduling/RoundRobin";
 import { Turn } from "./Turn/Turn";
 
@@ -48,8 +48,7 @@ export default class League extends BaseStage<ILeagueInfo, ILeagueConfig> {
     }
     let sch: arr2<number>[][] = League.getDataScheduling(
       config.participantsNumber,
-      config.isNeutral,
-      config.isIV,
+      config.opt,
     );
     if (sch.length !== config.turnHalfWeeks.length) {
       throw new Error(`cantidad de wks incorrecta
@@ -65,7 +64,7 @@ export default class League extends BaseStage<ILeagueInfo, ILeagueConfig> {
   }
 
   get turnsNumber(): number {
-    return League.getTurnsNumber(this.config.participantsNumber, this.config.isNeutral, this.config.isIV);
+    return League.getTurnsNumber(this.config.participantsNumber, this.config.opt);
   }
 
   get turns(): Turn[] {
@@ -128,8 +127,7 @@ export default class League extends BaseStage<ILeagueInfo, ILeagueConfig> {
     const participants = this.teamsArr;
     let sch: arr2<number>[][] = League.getDataScheduling(
       this.config.participantsNumber,
-      this.config.isNeutral,
-      this.config.isIV
+      this.config.opt
     );
     // let mid: number = 1;
 
@@ -146,28 +144,28 @@ export default class League extends BaseStage<ILeagueInfo, ILeagueConfig> {
 
       this.createNewTurn(teams, cal);
 
-    //   let matches: JMatch[] = [];
-    //   for (let m of sch[t]) {
-    //     const ht: Team = participants[m[0] - 1];
-    //     const at: Team = participants[m[1] - 1];
+      //   let matches: JMatch[] = [];
+      //   for (let m of sch[t]) {
+      //     const ht: Team = participants[m[0] - 1];
+      //     const at: Team = participants[m[1] - 1];
 
-    //     matches.push(new JMatch({
-    //       homeTeam: ht,
-    //       awayTeam: at,
-    //       hw: this.config.turnHalfWeeks[t],
-    //       temp: this.info.season,
-    //       id: `${this.info.id}-T${t + 1}-M${mid++}`,
-    //       allowedDraw: true,
-    //       isNeutral: this.config.isNeutral
-    //     }));
-    //   }
-    //   let turn = new Turn({ // en vez de crearla se puede simplemente agregar los matchs y crearla antes en el constructor
-    //     num: t + 1,
-    //     halfweek: this.config.turnHalfWeeks[t],
-    //     halfweekSchedule: this.config.turnHalfWeeksSchedule[t],
-    //     matches: matches
-    //   });
-    //   this._turns.push(turn);
+      //     matches.push(new JMatch({
+      //       homeTeam: ht,
+      //       awayTeam: at,
+      //       hw: this.config.turnHalfWeeks[t],
+      //       temp: this.info.season,
+      //       id: `${this.info.id}-T${t + 1}-M${mid++}`,
+      //       allowedDraw: true,
+      //       isNeutral: this.config.isNeutral
+      //     }));
+      //   }
+      //   let turn = new Turn({ // en vez de crearla se puede simplemente agregar los matchs y crearla antes en el constructor
+      //     num: t + 1,
+      //     halfweek: this.config.turnHalfWeeks[t],
+      //     halfweekSchedule: this.config.turnHalfWeeksSchedule[t],
+      //     matches: matches
+      //   });
+      //   this._turns.push(turn);
 
     }
 
@@ -201,9 +199,9 @@ export default class League extends BaseStage<ILeagueInfo, ILeagueConfig> {
         homeTeam: teams[i + 1],
         hw: this.config.turnHalfWeeks[turnNumber - 1],
         temp: this.info.season,
-        id: `${this.info.id}-T${turnNumber}-M${total + i/2 + 1}`,
+        id: `${this.info.id}-T${turnNumber}-M${total + i / 2 + 1}`,
         allowedDraw: true,
-        isNeutral: this.config.isNeutral
+        isNeutral: this.config.opt == 'neutral'
       })
 
       out.push(match);
@@ -214,15 +212,15 @@ export default class League extends BaseStage<ILeagueInfo, ILeagueConfig> {
 
   /************************************************************************************************************************************************************* */
   // statics
-  static getTurnsNumber(n: number, isN: boolean, isIV: boolean): number {
-    let sch = League.getDataScheduling(n, isN, isIV);
+  static getTurnsNumber(n: number, opt: TypeBaseStageOption): number {
+    let sch = League.getDataScheduling(n, opt);
     return sch.length;
   }
-  static getCantMatches(n: number, isN: boolean, isIV: boolean): number {
-    let sch = League.getDataScheduling(n, isN, isIV);
+  static getCantMatches(n: number, opt: TypeBaseStageOption): number {
+    let sch = League.getDataScheduling(n, opt);
     return sch.length * sch[0].length;
   }
-  static getDataScheduling(n: number, isN: boolean, isIV: boolean): arr2<number>[][] {
-    return robinRoundSchedulingFunction(n, isN, isIV);
+  static getDataScheduling(n: number, opt: TypeBaseStageOption): arr2<number>[][] {
+    return robinRoundSchedulingFunction(n, opt);
   }
 }

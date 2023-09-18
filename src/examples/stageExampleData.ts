@@ -14,8 +14,7 @@ const stageConfig1: IStagePlayoffConfig = {
 
   playoff: {
     idConfig: 'sc1-P',
-    isIV: false,
-    isNeutral: true,
+    opt: 'neutral',
     name: 'Single Elimination',
     participantsNumber: 40,
     roundHalfWeeks: [[20, 21], [24, 25], [28, 30]],
@@ -44,8 +43,7 @@ const stageConfig2: IStagePlayoffConfig = {
 
   playoff: {
     idConfig: 'sc2-P',
-    isIV: true,
-    isNeutral: true,
+    opt: 'h&a',
     name: 'Single Elimination',
     participantsNumber: 10,
     roundHalfWeeks: [[55, 57]],
@@ -77,8 +75,7 @@ const stageConfig3: IStageGroupConfig = {
 
   group: {
     idConfig: 'sc3-G',
-    isIV: false,
-    isNeutral: true,
+    opt: 'neutral',
     name: 'Group',
     participantsNumber: 10,
     turnHalfWeeks: [32, 34, 36, 38, 40, 42, 44, 46, 48],
@@ -108,8 +105,7 @@ const stageConfig4: IStageGroupConfig = {
 
   group: {
     idConfig: 'sc4-G',
-    isIV: true,
-    isNeutral: false,
+    opt: 'h&a',
     name: 'Group',
     participantsNumber: 4,
     turnHalfWeeks: [52, 54, 56, 60, 62, 64],

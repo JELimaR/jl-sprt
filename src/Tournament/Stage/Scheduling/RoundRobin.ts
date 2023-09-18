@@ -1,6 +1,8 @@
 import { arr2 } from "../../types";
 
-const robinRoundSchedulingFunction = (n: number, isN: boolean, isIV: boolean): arr2<number>[][] => {
+;
+const robinRoundSchedulingFunction = (n: number, opt: 'home' | 'h&a' | 'neutral'): arr2<number>[][] => {
+  const isN = opt == 'neutral';
   if (n < 2 || n > 20 || n % 1 !== 0) {
 		throw new Error(`no existe sch para el valor: ${n}`)
 	}
@@ -19,7 +21,8 @@ const robinRoundSchedulingFunction = (n: number, isN: boolean, isIV: boolean): a
 			out.push(raux);
 		})
 	} else {
-		if (isIV) {
+
+		if (opt == 'h&a') {
 			let aux = [...out];
 			aux.forEach((rnd: arr2<number>[]) => {
 				let raux: arr2<number>[] = [];

@@ -20,8 +20,7 @@ export default function baseStageExample() {
   }, {
     idConfig: 'L1',
     name: 'League Name',
-    isIV: false,
-    isNeutral: true,
+    opt: 'neutral',
     participantsNumber: 10,
 
     turnHalfWeeks: [25, 26, 28, 31, 35, 37, 40, 42, 44],
@@ -39,8 +38,7 @@ export default function baseStageExample() {
     {
       idConfig: 'C1',
       name: 'Cup',
-      isIV: false,
-      isNeutral: false,
+      opt: 'home',
       participantsNumber: 32,
       roundsNumber: 5,
 

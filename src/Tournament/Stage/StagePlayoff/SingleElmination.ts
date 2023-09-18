@@ -86,17 +86,18 @@ export default class SingleElmination extends BaseStage<ISingleElminationInfo, I
     // console.log('presentados para generar serie', teams.length);
     let out: JSerie[] = [];
 
-    const total: number = this.matches.length / (this.config.isIV ? 2 : 1);
+    const total: number = this.matches.length / ((this.config.opt == 'h&a') ? 2 : 1);
     for (let i = 0; i < teams.length; i += 2) {
       out.push(
         new JSerie({
           teamOne: teams[i + 0],
           teamTwo: teams[i + 1],
           id: `${this.info.id}-S${total + i/2 + 1}`,
-          isIV: this.config.isIV,
+          // isIV: this.config.isIV,
           season: this.info.season,
           hws: this.config.roundHalfWeeks[this._rounds.length],
-          isNeutral: this.config.isNeutral,
+          // isNeutral: this.config.isNeutral,
+          opt: this.config.opt
         })
       )
     }

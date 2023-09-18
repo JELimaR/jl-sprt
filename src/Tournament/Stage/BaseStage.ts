@@ -9,10 +9,12 @@ import { TypeTableMatchState } from "../Rank/JRank";
  * Pueden implementar una eliminacion simple directa o un robinround de todos contra todos.
  */
 
+export type TypeBaseStageOption = 'home' | 'h&a' | 'neutral'
 export interface IBaseStageConfig extends ITCCConfig {
   participantsNumber: number;
-  isIV: boolean;
-  isNeutral: boolean;
+  // isIV: boolean;
+  // isNeutral: boolean;
+  opt: TypeBaseStageOption;
 }
 
 export interface IBaseStageInfo extends ITCCInfo {
