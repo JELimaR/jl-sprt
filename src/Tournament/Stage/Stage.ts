@@ -4,6 +4,7 @@ import JCalendar from "../../Calendar/JCalendar";
 import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator";
 // import { TypeRanking } from "../Rank/JRank";
 import Team from "../Team";
+import { IBaseStageConfig } from "./BaseStage";
 import Bombo from "./Bombo";
 import { Event_StageEnd } from "./Event_StageEnd";
 import { Event_StageStart } from "./Event_StageStart";
@@ -21,7 +22,7 @@ type TypeDrawRulePlayoff = {}
 
 export interface IStageConfig extends ITCCConfig {
   type: 'group' | 'playoff';
-  // bsConfig: IBaseStageConfig;
+  bsConfig: IBaseStageConfig;
   // pueden ser halfweeks
   dayOfDrawDate?: {day: TypeDayOfYear, interv: TypeIntervOfDay}; // puede ser neceario solo para crear un evento que muestre un sorteo
   halfWeekOfStartDate: TypeHalfWeekOfYear;
@@ -49,10 +50,37 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
   constructor(info: I, config: C, calendar: JCalendar) {
     super(info, config);
 
-    this.getHalfWeekOfMatches().forEach((hw: TypeHalfWeekOfYear) => {
-      // const dayOfYear = JDateTime.halfWeekOfYearToDaysOfYear(hw).start;
-      // console.log(dayOfYear < config.dayOfStartDate)
-    })
+    // cada una debe ser
+    const halfWeekOfMatches = this.getHalfWeekOfMatches();
+    const halfweekOfSchedule = this.getHalfWeekOfSchedule();
+    for (let i = 0; i < halfWeekOfMatches.length; i++) {
+      const j = (this.config.type == 'playoff' && this.config.bsConfig.opt == 'h&a') ? Math.trunc(i/2) : i;
+      if (halfWeekOfMatches[i] < halfweekOfSchedule[j]) {
+        throw new Error(
+          `no se cumple que halfWeekOfMatches (${halfWeekOfMatches[i]}) es menor a halfweekOfSchedule (${halfweekOfSchedule[i]}).
+          Para ${this.info.id}.`
+          )
+      }
+
+      if (halfWeekOfMatches[i] < config.halfWeekOfStartDate || halfWeekOfMatches[i] > config.halfWeekOfEndDate) {
+        throw new Error(
+          `la hw Of Match ${halfWeekOfMatches[i]} debe estar entre la hw of start ${config.halfWeekOfStartDate} y la hw of end ${config.halfWeekOfEndDate}.
+          Para ${this.info.id}.`
+          )
+      }
+
+      if (halfweekOfSchedule[i] < config.halfWeekOfStartDate || halfweekOfSchedule[i] > config.halfWeekOfEndDate) {
+        throw new Error(
+          `la hw Of schedule ${halfweekOfSchedule[i]} debe estar entre la hw of start ${config.halfWeekOfStartDate} y la hw of end ${config.halfWeekOfEndDate}.
+          Para ${this.info.id}.`
+          )
+      }
+
+    }
+    
+    if (halfWeekOfMatches.length !== new Set(halfWeekOfMatches).size) {
+      throw new Error(`No pueden haber hw of matches repetidas`)
+    }
 
     const startEvent = new Event_StageStart({
       calendar: calendar, 

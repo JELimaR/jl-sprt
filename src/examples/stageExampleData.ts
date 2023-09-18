@@ -12,7 +12,7 @@ const stageConfig1: IStagePlayoffConfig = {
 
   qualifyConditions: [{ minRankPos: 1, maxRankPos: 40, rankId: 'rankingInicial', season: 'previus' }],
 
-  playoff: {
+  bsConfig: {
     idConfig: 'sc1-P',
     opt: 'neutral',
     name: 'Single Elimination',
@@ -41,7 +41,7 @@ const stageConfig2: IStagePlayoffConfig = {
 
   bombos: [10],
 
-  playoff: {
+  bsConfig: {
     idConfig: 'sc2-P',
     opt: 'h&a',
     name: 'Single Elimination',
@@ -73,7 +73,7 @@ const stageConfig3: IStageGroupConfig = {
 
   participantsPerGroup: [10, 10, 10, 10],
 
-  group: {
+  bsConfig: {
     idConfig: 'sc3-G',
     opt: 'neutral',
     name: 'Group',
@@ -103,7 +103,7 @@ const stageConfig4: IStageGroupConfig = {
 
   participantsPerGroup: [4, 4, 4, 3],
 
-  group: {
+  bsConfig: {
     idConfig: 'sc4-G',
     opt: 'h&a',
     name: 'Group',

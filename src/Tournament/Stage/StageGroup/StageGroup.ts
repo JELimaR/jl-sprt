@@ -4,11 +4,12 @@ import { TypeHalfWeekOfYear } from "../../../Calendar/DateTime/types";
 import Team from "../../Team";
 import JCalendar from "../../../Calendar/JCalendar";
 import Bombo from "../Bombo";
+import { RankItem } from "../../Rank/JRank";
 
 
 export interface IStageGroupConfig extends IStageConfig {
   type: 'group',
-  group: ILeagueConfig;
+  bsConfig: ILeagueConfig;
 
   // groupsNumber: number;
   participantsPerGroup: number[];
@@ -33,7 +34,7 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
         id: '' + i + 1,
         season: this.info.season,
       }
-      const GConfig: ILeagueConfig = {...this.config.group};
+      const GConfig: ILeagueConfig = {...this.config.bsConfig};
       GConfig.participantsNumber = this.config.participantsPerGroup[i];
       const group = new League(GInfo, GConfig)
       this._groups.push(group)
@@ -50,11 +51,11 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
   }
 
   getHalfWeekOfMatches(): TypeHalfWeekOfYear[] {
-    return this.config.group.turnHalfWeeks;
+    return this.config.bsConfig.turnHalfWeeks;
   }
 
   getHalfWeekOfSchedule(): TypeHalfWeekOfYear[] {
-    return this.config.group.turnHalfWeeksSchedule;
+    return this.config.bsConfig.turnHalfWeeksSchedule;
   }
 
   getSelectionPerTime(elementsNumber: number): number {
@@ -164,9 +165,13 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
   // }
 
   /**
-   * dado un array [T1,T2,T3,T4,T5,T6] el emparejamiento será:
+   * por ejemplo
+   * 1 - no pueden haber n teams que vengan de un mismo grupo anterior
+   * 2 - no pueden haber n teams  que sean de la misma feder, confed, etc.
+   * 3 - no pueden haber n teams de cierta caracteristica
    */
   drawRulesValidate(teams: Team[]): boolean {
+    const rArr: RankItem[] = teams.map(t => {return {team: t, rank: 2}})
     
     return true;
   }

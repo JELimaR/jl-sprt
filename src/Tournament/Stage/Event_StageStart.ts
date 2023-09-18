@@ -20,9 +20,8 @@ export class Event_StageStart extends JEvent {
   execute() {
     console.log(`ejecuting starting and teams draw from stage: ${this._stage.info.id}`);
     
-    // const teams = this._stage.getParticipants(globalFinishedRankingsMap); // se debe arreglar esto!
     const teams = this.getParticipants();
-    this._stage.start(teams, this.calendar);
+    this._stage.start(teams, this.calendar); // debe ser un ranking en lugar de un teams
   }
 
   getParticipants() { // cambiar Map por TypeRanking

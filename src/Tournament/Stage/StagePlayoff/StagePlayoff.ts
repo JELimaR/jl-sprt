@@ -9,7 +9,7 @@ import Bombo from "../Bombo";
 
 export interface IStagePlayoffConfig extends IStageConfig {
   type: 'playoff',
-  playoff: ISingleElminationConfig;
+  bsConfig: ISingleElminationConfig;
 }
 
 export interface IStagePlayoffInfo extends IStageInfo { }
@@ -30,7 +30,7 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
       id: '',
       season: this.info.season,
     }
-    this._playoff = new SingleElmination(SEInfo, this.config.playoff);
+    this._playoff = new SingleElmination(SEInfo, this.config.bsConfig);
   }
 
   get playoff(): SingleElmination { return this._playoff }
@@ -41,15 +41,15 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
 
   getHalfWeekOfMatches(): TypeHalfWeekOfYear[] {
     const out: TypeHalfWeekOfYear[] = [];
-    this.config.playoff.roundHalfWeeks.forEach((value: arr2<TypeHalfWeekOfYear>) => {
+    this.config.bsConfig.roundHalfWeeks.forEach((value: arr2<TypeHalfWeekOfYear>) => {
       out.push(value[0]);
-      out.push(value[1]);
+      if (this.config.bsConfig.opt == 'h&a') out.push(value[1]);
     })
     return out;
   }
 
   getHalfWeekOfSchedule(): TypeHalfWeekOfYear[] {
-    return this.config.playoff.roundHalfWeeksSchedule;
+    return this.config.bsConfig.roundHalfWeeksSchedule;
   }
 
   getSelectionPerTime(elementsNumber: number): number {

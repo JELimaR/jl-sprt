@@ -23,7 +23,9 @@ export default function stageLeagueExample() {
   const SG = new StageGroup({id: 'League', season: 168}, stageLeagueconfig, cal);
   
   exampleAdvance(cal)
-  // console.log(cal.events[cal.events.length-1])
+  
+  // console.log()
+  mostrarFecha(cal.events[0].dateTime)
   
   console.table(JRankCalculator.getTableStageGroup(SG, 'finished').map((e: TeamTableItem) => e.getInterface()))
 
@@ -44,7 +46,7 @@ const stageLeagueconfig: IStageGroupConfig = {
   name: '1st Division',
   type: 'group',
   
-  halfWeekOfStartDate: 4,
+  halfWeekOfStartDate: 9,
   dayOfDrawDate: {day: 15, interv: 185},
   halfWeekOfEndDate: 93,
   
@@ -54,13 +56,13 @@ const stageLeagueconfig: IStageGroupConfig = {
 
   qualifyConditions: [{rankId: 'rankingInicial', season: 'previus', minRankPos: 1, maxRankPos: 20}],
 
-  group: {
+  bsConfig: {
     idConfig: 'idLeague',
     name: '',
     opt: 'h&a',
     participantsNumber: 20,
     turnHalfWeeks: [
-      10, 12, 14, 16, 18, 20,
+      12, 12, 14, 16, 18, 20,
       22, 24, 26, 30, 32, 34,
       36, 38, 40, 42, 44, 46, 48,
       56, 58, 60, 62, 64, 66,
@@ -73,7 +75,7 @@ const stageLeagueconfig: IStageGroupConfig = {
       28, 30, 32, 34, 36, 38, 40,
       55, 55, 55, 56, 58, 60,
       62, 64, 66, 68, 70, 72,
-      74, 76, 78, 80, 80, 80, 83,
+      74, 76, 78, 80, 80, 80, 92,
     ],
   }
 }
