@@ -3,7 +3,7 @@ import JCalendar from "../Calendar/JCalendar";
 import { getExampleTeams } from "../Entities/ExampleData";
 import mostrarFecha from "../mostrarFechaBorrar";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
-import { JRankCalculator, RankItem, TypeRanking } from "../Tournament/Rank/JRank";
+import { JRankCalculator, RankItem, TypeRanking } from "../Tournament/Rank/Rank";
 import TeamTableItem from "../Tournament/Rank/TeamTableItem";
 import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
 import Team from "../Tournament/Team";

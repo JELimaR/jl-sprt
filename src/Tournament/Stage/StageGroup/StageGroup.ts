@@ -4,7 +4,7 @@ import { TypeHalfWeekOfYear } from "../../../Calendar/DateTime/types";
 import Team from "../../Team";
 import JCalendar from "../../../Calendar/JCalendar";
 import Bombo from "../Bombo";
-import { RankItem } from "../../Rank/JRank";
+import { RankItem } from "../../Rank/Rank";
 
 
 export interface IStageGroupConfig extends IStageConfig {

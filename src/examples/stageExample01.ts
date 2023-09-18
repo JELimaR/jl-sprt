@@ -1,7 +1,7 @@
 import { JDateTime } from "../Calendar/DateTime/JDateTime";
 import JCalendar from "../Calendar/JCalendar";
 import { getExampleTeams } from "../Entities/ExampleData";
-import { JRankCalculator, RankItem, TypeRanking } from "../Tournament/Rank/JRank";
+import { JRankCalculator, RankItem, TypeRanking } from "../Tournament/Rank/Rank";
 import StagePlayoff from "../Tournament/Stage/StagePlayoff/StagePlayoff";
 import Team from "../Tournament/Team";
 import mostrarFecha from "../mostrarFechaBorrar";

@@ -1,6 +1,6 @@
 import { IJEventInfo, JEvent } from "../../Calendar/Event/JEvent";
 import { globalFinishedRankingsMap } from "../Rank/globalFinishedRankingsMap";
-import { JRankCalculator, RankItem, TypeRanking } from "../Rank/JRank";
+import { JRankCalculator, RankItem, TypeRanking } from "../Rank/Rank";
 import TeamTableItem, {  } from "../Rank/TeamTableItem";
 import { TYPEGENERICSTAGE } from "./Stage";
 

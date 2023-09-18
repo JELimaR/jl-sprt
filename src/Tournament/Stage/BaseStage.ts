@@ -2,7 +2,7 @@ import JCalendar from "../../Calendar/JCalendar";
 import Team from "../Team";
 import JMatch from "../Match/JMatch";
 import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator";
-import { TypeTableMatchState } from "../Rank/JRank";
+import { TypeTableMatchState } from "../Rank/Rank";
 
 /**
  * En el BaseStage es donde se configuran las rondas o turnos y los partidos de un torneo.

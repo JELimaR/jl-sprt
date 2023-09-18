@@ -24,6 +24,7 @@ export type TypeTableMatchState = 'partial' | 'finished';
 export interface RankItem {
   team: Team;
   rank: number;
+  // id 
 }
 
 export type TypeRanking = {
@@ -53,8 +54,7 @@ export class JRankCalculator {
 
   static getStageRelativeRank(stage: Stage<IStageInfo, IStageConfig>): TypeRanking {
     let ttiArr: TeamTableItem[];
-    // throw new Error(`not implemented yet in RankCalculator.getStageRelativeRank`)
-
+    
     if (stage instanceof StagePlayoff) {
       ttiArr = this.getTableStagePlayoff(stage, 'finished');
     } else if (stage instanceof StageGroup) {
