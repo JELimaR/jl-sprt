@@ -19,6 +19,12 @@ export default class Bombo<T> {
 		this._elements = elements;
 		this._selectionPerTime = selectionPerTime;
 		this._state = 'reseted';
+
+    let sum = 0;
+    this._selectionPerTime.forEach(n => sum += n);
+    if (sum !== this._elements.length) {
+      throw new Error(`en Bombo constructor: suma de selectionPerTime ${sum} no es igual a la cantidad de elementos ${this._elements.length}`)
+    }
 	}
 
 	private start(): void {

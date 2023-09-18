@@ -89,19 +89,18 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
       ${halfWeekOfMatches} - En ${this.info.id}`)
     }
 
-    // // la suma de clasificados debe coincidir con los participantes!
-    // let sumRankingQualies = 0;
-    // this.config.qualifyConditions.forEach((qc: TQualyCondition) => sumRankingQualies += qc.maxRankPos - qc.minRankPos + 1);
-    // let prticipantsCount = 0;
+    // la suma de clasificados debe coincidir con los participantes de los bombos!
+    let sumRankingQualies = 0;
+    this.config.qualifyConditions.forEach((qc: TQualyCondition) => sumRankingQualies += qc.maxRankPos - qc.minRankPos + 1);
+    let participantsCount = 0;
     // if (this.config.type == 'playoff') 
-    //   prticipantsCount = this.config.bsConfig.participantsNumber;
+      // participantsCount = this.config.bsConfig.participantsNumber;
     // else {
-    //   // const config = this.config as IStageGroupConfig;
-    //   this.config.participantsPerGroup.reduce((c,))
+      this.config.bombos.forEach((b: IBomboInfo) => participantsCount += b.elemsNumber)
     // }
-    // if (sumRankingQualies !== this.config.bsConfig.participantsNumber) {
-    //   throw new Error(`no coinciden ${sumRankingQualies} y ${prticipantsCount}`)
-    // }
+    if (sumRankingQualies !== participantsCount) {
+      throw new Error(`no coinciden ${sumRankingQualies} y ${participantsCount}`)
+    }
 
     const startEvent = new Event_StageStart({
       calendar: calendar, 

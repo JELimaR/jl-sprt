@@ -109,7 +109,7 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
       auxCounter++
     })
     sorted.sort((a: Team[], b: Team[]) => b.length - a.length)
-    console.log(sorted)
+    // console.log(sorted)
     // throw new Error(`stop`)
     // this.groups.forEach((g: League, gi: number) => {
     //   let teamsGroup: Team[] = [];
@@ -141,6 +141,7 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
       })
       i++;
     }
+    sorted.sort((a: Team[], b: Team[]) => b.length - a.length)
     return sorted;
   }
   // 

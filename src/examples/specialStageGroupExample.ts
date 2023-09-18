@@ -53,7 +53,7 @@ const stageLeagueconfig: IStageGroupConfig = {
 
   bombos: [
     { elemsNumber: 13, selectionPerTime: [3, 3, 3, 2, 2] },
-    { elemsNumber: 13, selectionPerTime: [3, 2, 2, 3, 3] }
+    { elemsNumber: 13, selectionPerTime: [2, 2, 3, 3, 3] }
   ],
 
   drawRulesValidate: [],
