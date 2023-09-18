@@ -7,7 +7,7 @@ import JMatch from "../../../Match/JMatch";
 import Team from "../../../Team";
 import { arr2 } from "../../../types";
 import BaseStage, { IBaseStageConfig, IBaseStageInfo, TypeBaseStageOption } from "../../BaseStage";
-import robinRoundSchedulingFunction from "../Scheduling/RoundRobin";
+import robinRoundSchedulingFunction from "./Scheduling/RoundRobin";
 import { Turn } from "./Turn";
 
 export interface ILeagueConfig extends IBaseStageConfig {
