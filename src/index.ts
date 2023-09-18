@@ -8,13 +8,13 @@ import stageLeagueExample from './examples/stageLeagueExample';
 
 function app() {
 
-  // baseStageExample();
+  baseStageExample();
 
   stageExample01();
 
-  // stageExample02();
+  stageExample02();
 
-  // stageLeagueExample();
+  stageLeagueExample();
 
   // console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getDateTime())
   // console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getIJDateTimeCreator())

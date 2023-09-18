@@ -1,5 +1,5 @@
 import { IJEventOthersInfo, JEventOthers } from "../../../../Calendar/Event/JEvent";
-import SingleElmination from "../SingleElmination"
+import SingleElmination from "./SingleElmination"
 import Team from "../../../Team";
 
 export interface IEvent_RoundCreationAndTeamsDrawInfo extends IJEventOthersInfo {

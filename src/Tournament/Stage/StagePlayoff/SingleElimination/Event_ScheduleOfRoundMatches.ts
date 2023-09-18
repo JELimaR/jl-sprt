@@ -3,7 +3,7 @@ import { IJEventOthersInfo, JEventOthers } from "../../../../Calendar/Event/JEve
 import JMatch from "../../../Match/JMatch";
 import { JEventMatch } from "../../../Match/JEventMatch";
 import { JRound } from "./JRound";
-import SingleElmination, { ISingleElminationConfig } from '../SingleElmination';
+import SingleElmination, { ISingleElminationConfig } from './SingleElmination';
 import JSerie from "../../../Match/JSerie";
 import { TypeHalfWeekOfYear } from "../../../../Calendar/DateTime/types";
 import { arr2 } from "../../../types";

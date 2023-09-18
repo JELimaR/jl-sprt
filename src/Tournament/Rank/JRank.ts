@@ -1,14 +1,14 @@
 // import JStageGroup from '../Stage/StageGroup/JStageGroup';
-import League from '../Stage/StageGroup/League';
+import League from '../Stage/StageGroup/League/League';
 import Team from '../Team';
 import JMatch from '../Match/JMatch';
-import SingleElmination from '../Stage/StagePlayoff/SingleElmination';
+import SingleElmination from '../Stage/StagePlayoff/SingleElimination/SingleElmination';
 
 import TeamTableItem, { } from './TeamTableItem';
 import BaseStage, { IBaseStageConfig, IBaseStageInfo } from '../Stage/BaseStage';
 import StageGroup from '../Stage/StageGroup/StageGroup';
 // import StagePlayoff from '../Stage/StagePlayoff/StagePlayoff';
-import { JRound } from '../Stage/StagePlayoff/Round/JRound';
+import { JRound } from '../Stage/StagePlayoff/SingleElimination/JRound';
 import StagePlayoff from '../Stage/StagePlayoff/StagePlayoff';
 import Stage, { IStageConfig, IStageInfo } from '../Stage/Stage';
 

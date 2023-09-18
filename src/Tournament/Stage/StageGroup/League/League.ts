@@ -1,14 +1,14 @@
 // import * as utlts from 'jl-utlts';
 // const CUF = utlts.CollectionsUtilsFunctions.getInstance();
 
-import { TypeHalfWeekOfYear } from "../../../Calendar/DateTime/types";
-import JCalendar from "../../../Calendar/JCalendar";
-import JMatch from "../../Match/JMatch";
-import Team from "../../Team";
-import { arr2 } from "../../types";
-import BaseStage, { IBaseStageConfig, IBaseStageInfo, TypeBaseStageOption } from "../BaseStage";
+import { TypeHalfWeekOfYear } from "../../../../Calendar/DateTime/types";
+import JCalendar from "../../../../Calendar/JCalendar";
+import JMatch from "../../../Match/JMatch";
+import Team from "../../../Team";
+import { arr2 } from "../../../types";
+import BaseStage, { IBaseStageConfig, IBaseStageInfo, TypeBaseStageOption } from "../../BaseStage";
 import robinRoundSchedulingFunction from "../Scheduling/RoundRobin";
-import { Turn } from "./Turn/Turn";
+import { Turn } from "./Turn";
 
 export interface ILeagueConfig extends IBaseStageConfig {
   turnHalfWeeks: TypeHalfWeekOfYear[];

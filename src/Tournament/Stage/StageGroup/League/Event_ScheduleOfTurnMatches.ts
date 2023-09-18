@@ -3,7 +3,7 @@ import { IJEventOthersInfo, JEventOthers } from "../../../../Calendar/Event/JEve
 import JMatch from "../../../Match/JMatch";
 import { JEventMatch } from "../../../Match/JEventMatch";
 import { Turn } from "./Turn";
-import League from '../League';
+import League from './League';
 import { ITCCDATA } from "../../../../patterns/templateConfigCreator";
 
 

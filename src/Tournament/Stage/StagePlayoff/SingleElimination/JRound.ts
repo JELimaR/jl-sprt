@@ -2,7 +2,7 @@ import { JDateTime } from '../../../../Calendar/DateTime/JDateTime';
 import { TypeHalfWeekOfYear } from '../../../../Calendar/DateTime/types';
 import JCalendar from '../../../../Calendar/JCalendar';
 import { arr2 } from '../../../types';
-import SingleElmination from '../SingleElmination';
+import SingleElmination from './SingleElmination';
 import Team from '../../../Team';
 import JMatch from '../../../Match/JMatch';
 import JSerie from '../../../Match/JSerie';

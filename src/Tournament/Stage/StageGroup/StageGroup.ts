@@ -1,4 +1,4 @@
-import League, { ILeagueConfig, ILeagueInfo } from "./League";
+import League, { ILeagueConfig, ILeagueInfo } from "./League/League";
 import Stage, { IStageConfig, IStageInfo } from "../Stage";
 import { TypeHalfWeekOfYear } from "../../../Calendar/DateTime/types";
 import Team from "../../Team";

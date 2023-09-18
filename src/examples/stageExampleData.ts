@@ -78,7 +78,7 @@ const stageConfig3: IStageGroupConfig = {
     opt: 'neutral',
     name: 'Group',
     participantsNumber: 10,
-    turnHalfWeeks: [32, 34, 36, 38, 40, 42, 44, 46, 48],
+    turnHalfWeeks: [32, 33, 36, 38, 40, 42, 44, 46, 48],
     turnHalfWeeksSchedule: [30, 30, 30, 30, 30, 30, 30, 30, 30],
   },
   drawRulesValidate: []

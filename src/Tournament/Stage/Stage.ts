@@ -50,7 +50,7 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
   constructor(info: I, config: C, calendar: JCalendar) {
     super(info, config);
 
-    // cada una debe ser
+    // verificaciones
     const halfWeekOfMatches = this.getHalfWeekOfMatches();
     const halfweekOfSchedule = this.getHalfWeekOfSchedule();
     for (let i = 0; i < halfWeekOfMatches.length; i++) {
@@ -79,7 +79,8 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
     }
     
     if (halfWeekOfMatches.length !== new Set(halfWeekOfMatches).size) {
-      throw new Error(`No pueden haber hw of matches repetidas`)
+      throw new Error(`No pueden haber hw of matches repetidas:
+      ${halfWeekOfMatches} - En ${this.info.id}`)
     }
 
     const startEvent = new Event_StageStart({
@@ -130,18 +131,5 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
 
   abstract getSelectionPerTime(elementsNumber: number): number;
 
-  // getParticipants(globalRanksMap: Map<string, TypeRanking>) {
-  //   const teams: Team[] = [];
-  //   this.config.qualifyConditions.forEach(qc => {
-  //     const ranking = globalRanksMap.get(qc.rankId)!; // verificar correctamente
-
-  //     if (ranking.table.length < qc.maxRankPos) throw new Error(``)
-
-  //     for (let p = qc.minRankPos - 1; p < qc.maxRankPos; p++)
-  //       teams.push(ranking.table[p].team);
-  //   })
-
-  //   return teams;
-  // }
 }
 export type TYPEGENERICSTAGE = Stage<IStageInfo, IStageConfig>;

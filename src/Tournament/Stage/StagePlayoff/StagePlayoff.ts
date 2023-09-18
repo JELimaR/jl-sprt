@@ -1,5 +1,5 @@
 
-import SingleElmination, { ISingleElminationConfig, ISingleElminationInfo } from "./SingleElmination";
+import SingleElmination, { ISingleElminationConfig, ISingleElminationInfo } from "./SingleElimination/SingleElmination";
 import Stage, { IStageConfig, IStageInfo } from "../Stage";
 import { TypeHalfWeekOfYear } from "../../../Calendar/DateTime/types";
 import { arr2 } from "../../types";

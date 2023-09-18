@@ -1,13 +1,13 @@
-import { TypeHalfWeekOfYear } from '../../../Calendar/DateTime/types';
-import JCalendar from '../../../Calendar/JCalendar';
-import Team from '../../Team';
-import { JRound } from './Round/JRound';
-import JSerie from '../../Match/JSerie';
-import { JDateTime } from '../../../Calendar/DateTime/JDateTime';
-import Event_RoundCreationAndTeamsDraw from './Round/Event_RoundCreationAndTeamsDraw';
-import JMatch from '../../Match/JMatch';
-import { arr2 } from '../../types';
-import BaseStage, { IBaseStageConfig, IBaseStageInfo } from '../BaseStage';
+import { TypeHalfWeekOfYear } from '../../../../Calendar/DateTime/types';
+import JCalendar from '../../../../Calendar/JCalendar';
+import Team from '../../../Team';
+import { JRound } from './JRound';
+import JSerie from '../../../Match/JSerie';
+import { JDateTime } from '../../../../Calendar/DateTime/JDateTime';
+import Event_RoundCreationAndTeamsDraw from './Event_RoundCreationAndTeamsDraw';
+import JMatch from '../../../Match/JMatch';
+import { arr2 } from '../../../types';
+import BaseStage, { IBaseStageConfig, IBaseStageInfo } from '../../BaseStage';
 
 
 export interface ISingleElminationConfig extends IBaseStageConfig {
@@ -124,9 +124,11 @@ export default class SingleElmination extends BaseStage<ISingleElminationInfo, I
   }
 
   //
-  static teamsSortForDraw(teamRankArr: Team[]): Team[] {
+  static teamsSortForDraw(teamRankArr: Team[]/*, decres: boolean*/): Team[] {
     let out: Team[] = [];
-    const total = teamRankArr.length; // debe ser par
+    const total = teamRankArr.length;
+    if (total % 2 !== 0)
+      throw new Error(`En un playoff (single elimination), debe ser par la cantidad de teams. (En SingleElimination.teamsSortForDraw)`)
     for (let i = 0; i < total / 2; i++) {
       out.push(
         teamRankArr[total - i - 1], teamRankArr[i]
