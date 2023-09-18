@@ -1,3 +1,4 @@
+
 import { JDateTime } from "../Calendar/DateTime/JDateTime";
 import JCalendar from "../Calendar/JCalendar";
 import { getExampleTeams } from "../Entities/ExampleData";
@@ -11,7 +12,7 @@ import exampleAdvance from "./exampleAdvance";
 
 const selection = getExampleTeams(150, 'Team');
 
-export default function stageLeagueExample() {
+export default function specialStageGroupExample() {
 
   const rankItemArr: RankItem[] = selection.map((t: Team, i: number) => { return { rank: i + 1, team: t } });
   const ranking: TypeRanking = { rankId: 'rankingInicial', table: rankItemArr }
@@ -20,13 +21,13 @@ export default function stageLeagueExample() {
   const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getIJDateTimeCreator());
   mostrarFecha(cal.now)
 
-  const SG = new StageGroup({id: 'League', season: 168}, stageLeagueconfig, cal);
-  
+  const SG = new StageGroup({ id: 'League', season: 168 }, stageLeagueconfig, cal);
+
   exampleAdvance(cal)
-  
+
   // console.log()
   mostrarFecha(cal.events[0].dateTime)
-  
+
   console.table(JRankCalculator.getTableStageGroup(SG, 'finished').map((e: TeamTableItem) => e.getInterface()))
 
   console.log(SG.groups.map(l => {
@@ -42,40 +43,34 @@ export default function stageLeagueExample() {
 }
 
 const stageLeagueconfig: IStageGroupConfig = {
-  idConfig: 'firstLeague',
-  name: '1st Division',
+  idConfig: 'f06',
+  name: 'group stage',
   type: 'group',
-  
-  halfWeekOfStartDate: 9,
-  dayOfDrawDate: {day: 15, interv: 185},
-  halfWeekOfEndDate: 93,
-  
-  bombos: [{elemsNumber: 20, selectionPerTime: [20]}],
-  drawRulesValidate: [],
-  participantsPerGroup: [20],
 
-  qualifyConditions: [{rankId: 'rankingInicial', season: 'previus', minRankPos: 1, maxRankPos: 20}],
+  halfWeekOfStartDate: 95,
+  dayOfDrawDate: { day: 273, interv: 185 },
+  halfWeekOfEndDate: 105,
+
+  bombos: [
+    { elemsNumber: 13, selectionPerTime: [3, 3, 3, 2, 2] },
+    { elemsNumber: 13, selectionPerTime: [3, 2, 2, 3, 3] }
+  ],
+
+  drawRulesValidate: [],
+  participantsPerGroup: [6, 5, 5, 5, 5],
+
+  qualifyConditions: [{ rankId: 'rankingInicial', season: 'previus', minRankPos: 1, maxRankPos: 26 }],
 
   bsConfig: {
     idConfig: 'idLeague',
     name: '',
-    opt: 'h&a',
-    participantsNumber: 20,
+    opt: 'neutral',
+    participantsNumber: -1,
     turnHalfWeeks: [
-      10, 12, 14, 16, 18, 20,
-      22, 24, 26, 30, 32, 34,
-      36, 38, 40, 42, 44, 46, 48,
-      56, 58, 60, 62, 64, 66,
-      68, 70, 72, 74, 76, 78,
-      80, 82, 84, 86, 88, 90, 92,
+      95, 96, 98, 100, 102
     ],
     turnHalfWeeksSchedule: [
-      9, 9, 9, 10, 12, 14,
-      16, 18, 20, 22, 24, 26,
-      28, 30, 32, 34, 36, 38, 40,
-      55, 55, 55, 56, 58, 60,
-      62, 64, 66, 68, 70, 72,
-      74, 76, 78, 80, 80, 80, 92,
+      95, 95, 95, 95, 95
     ],
   }
 }

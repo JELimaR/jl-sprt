@@ -52,9 +52,9 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
     return this.config.bsConfig.roundHalfWeeksSchedule;
   }
 
-  getSelectionPerTime(elementsNumber: number): number {
-    return elementsNumber;
-  }
+  // getSelectionPerTime(elementsNumber: number): number {
+  //   return elementsNumber;
+  // }
 
   /**
    * Sorteo y asignacion de equipos a BaseStage!!
@@ -92,7 +92,7 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
       //   out.push(...elems);
       //   elems = bom.getNextElements();
       // }
-      let elems = bom.getAllElementsPlayoff();
+      let elems = bom.getNextElements();
       out.push(...elems);
     })
     return out;

@@ -8,7 +8,12 @@ const stageConfig1: IStagePlayoffConfig = {
   halfWeekOfStartDate: 20,
   halfWeekOfEndDate: 30,
 
-  bombos: [10, 10, 10, 10],
+  bombos: [
+    { elemsNumber: 10, selectionPerTime: [10] },
+    { elemsNumber: 10, selectionPerTime: [10] },
+    { elemsNumber: 10, selectionPerTime: [10] },
+    { elemsNumber: 10, selectionPerTime: [10] }
+  ],
 
   qualifyConditions: [{ minRankPos: 1, maxRankPos: 40, rankId: 'rankingInicial', season: 'previus' }],
 
@@ -39,7 +44,7 @@ const stageConfig2: IStagePlayoffConfig = {
 
   qualifyConditions: [{ rankId: 'sr_sc1', season: 'current', minRankPos: 1, maxRankPos: 10 }],
 
-  bombos: [10],
+  bombos: [{ elemsNumber: 10, selectionPerTime: [10] }],
 
   bsConfig: {
     idConfig: 'sc2-P',
@@ -69,7 +74,11 @@ const stageConfig3: IStageGroupConfig = {
 
   qualifyConditions: [{ rankId: 'rankingInicial', season: 'current', minRankPos: 1, maxRankPos: 40 }],
 
-  bombos: [8, 20, 12],
+  bombos: [
+    { elemsNumber: 8, selectionPerTime: [2, 2, 2, 2] },
+    { elemsNumber: 20, selectionPerTime: [5, 5, 5, 5] },
+    { elemsNumber: 12, selectionPerTime: [3, 3, 3, 3] }
+  ],
 
   participantsPerGroup: [10, 10, 10, 10],
 
@@ -99,7 +108,12 @@ const stageConfig4: IStageGroupConfig = {
 
   qualifyConditions: [{ rankId: 'sr_sc3', season: 'current', minRankPos: 1, maxRankPos: 15 }],
 
-  bombos: [4, 4, 4, 3],
+  bombos: [
+    { elemsNumber: 4, selectionPerTime: [1, 1, 1, 1] },
+    { elemsNumber: 4, selectionPerTime: [1, 1, 1, 1] },
+    { elemsNumber: 4, selectionPerTime: [1, 1, 1, 1] },
+    { elemsNumber: 3, selectionPerTime: [1, 1, 1] }
+  ],
 
   participantsPerGroup: [4, 4, 4, 3],
 

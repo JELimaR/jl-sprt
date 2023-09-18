@@ -5,9 +5,10 @@ import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator"
 // import { TypeRanking } from "../Rank/JRank";
 import Team from "../Team";
 import { IBaseStageConfig } from "./BaseStage";
-import Bombo from "./Bombo";
+import Bombo, { IBomboInfo } from "./Bombo";
 import { Event_StageEnd } from "./Event_StageEnd";
 import { Event_StageStart } from "./Event_StageStart";
+import { IStageGroupConfig } from "./StageGroup/StageGroup"; // borrar
 
 type TQualyCondition = {
   rankId: string; // puede ser un tournament u otro rank
@@ -18,7 +19,10 @@ type TQualyCondition = {
 
 type TypeDrawRulePlayoff = {}
 
-// export type TypeBomboData = { elemsNumber: number }
+export type TypeBomboData = {
+  elemsNumber: number;
+  selectionPerTime: number[];
+}
 
 export interface IStageConfig extends ITCCConfig {
   type: 'group' | 'playoff';
@@ -33,7 +37,7 @@ export interface IStageConfig extends ITCCConfig {
 
   qualifyConditions: TQualyCondition[];
 
-  bombos: number[];
+  bombos: IBomboInfo[];
 
 }
 
@@ -51,6 +55,7 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
     super(info, config);
 
     // verificaciones
+    // fechas
     const halfWeekOfMatches = this.getHalfWeekOfMatches();
     const halfweekOfSchedule = this.getHalfWeekOfSchedule();
     for (let i = 0; i < halfWeekOfMatches.length; i++) {
@@ -78,10 +83,25 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
 
     }
     
+    // no hay fechas de partidos repetidas
     if (halfWeekOfMatches.length !== new Set(halfWeekOfMatches).size) {
       throw new Error(`No pueden haber hw of matches repetidas:
       ${halfWeekOfMatches} - En ${this.info.id}`)
     }
+
+    // // la suma de clasificados debe coincidir con los participantes!
+    // let sumRankingQualies = 0;
+    // this.config.qualifyConditions.forEach((qc: TQualyCondition) => sumRankingQualies += qc.maxRankPos - qc.minRankPos + 1);
+    // let prticipantsCount = 0;
+    // if (this.config.type == 'playoff') 
+    //   prticipantsCount = this.config.bsConfig.participantsNumber;
+    // else {
+    //   // const config = this.config as IStageGroupConfig;
+    //   this.config.participantsPerGroup.reduce((c,))
+    // }
+    // if (sumRankingQualies !== this.config.bsConfig.participantsNumber) {
+    //   throw new Error(`no coinciden ${sumRankingQualies} y ${prticipantsCount}`)
+    // }
 
     const startEvent = new Event_StageStart({
       calendar: calendar, 
@@ -118,18 +138,23 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
 
     let out: Bombo<Team>[] = [];
     let tid = 0;
-    this.config.bombos.forEach((bomboData: number) => {
+    this.config.bombos.forEach((bomboData: IBomboInfo) => {
       const elements: Team[] = [];
-      for (let i = 0; i < bomboData; i++) {
+      for (let i = 0; i < bomboData.elemsNumber; i++) {
         elements.push(teams[tid]);
         tid++;
       }
-      out.push(new Bombo(elements, this.getSelectionPerTime(elements.length)));
+
+      if (this.config.type == 'playoff') {
+        out.push(new Bombo(elements, [elements.length]));
+      } else {
+        out.push(new Bombo(elements, bomboData.selectionPerTime));
+      }
     })
     return out;
   }
 
-  abstract getSelectionPerTime(elementsNumber: number): number;
+  // abstract getSelectionPerTime(elementsNumber: number): number;
 
 }
 export type TYPEGENERICSTAGE = Stage<IStageInfo, IStageConfig>;

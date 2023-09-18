@@ -58,9 +58,9 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
     return this.config.bsConfig.turnHalfWeeksSchedule;
   }
 
-  getSelectionPerTime(elementsNumber: number): number {
-    return Math.ceil(elementsNumber/this.groupsNumber);
-  }
+  // getSelectionPerTime(elementsNumber: number): number {
+  //   return Math.ceil(elementsNumber/this.groupsNumber);
+  // }
 
   /**
    * Sorteo y asignacion de equipos a BaseStage!!
@@ -143,7 +143,7 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
     }
     return sorted;
   }
-
+  // 
   private selection(bombos: Bombo<Team>[]): Array<Team[]> {
     let out: Team[][] = [];
     this.groups.forEach(() => {

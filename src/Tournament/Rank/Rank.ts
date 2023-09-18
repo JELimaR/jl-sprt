@@ -24,7 +24,7 @@ export type TypeTableMatchState = 'partial' | 'finished';
 export interface RankItem {
   team: Team;
   rank: number;
-  // id 
+  // originId
 }
 
 export type TypeRanking = {
@@ -54,7 +54,7 @@ export class JRankCalculator {
 
   static getStageRelativeRank(stage: Stage<IStageInfo, IStageConfig>): TypeRanking {
     let ttiArr: TeamTableItem[];
-    
+
     if (stage instanceof StagePlayoff) {
       ttiArr = this.getTableStagePlayoff(stage, 'finished');
     } else if (stage instanceof StageGroup) {
@@ -113,7 +113,7 @@ export class JRankCalculator {
       out = out.concat(this.getTableBase(g, 'finished'));
     })
 
-    out.sort((a,b) => simpleSortFunc(a,b,false)) // usar la media de puntos
+    out.sort((a, b) => simpleSortFunc(a, b, false)) // usar la media de puntos
 
     return out;
   }
@@ -162,7 +162,7 @@ const simpleSortFunc = (a: TeamTableItem, b: TeamTableItem, isSE: boolean) => {
     if (a.pj - b.pj !== 0) {
       return b.pj - a.pj
     }
-  } 
+  }
   if (b.pos - a.pos !== 0) {
     return a.pos - b.pos
   }
