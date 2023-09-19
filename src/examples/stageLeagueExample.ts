@@ -3,7 +3,8 @@ import JCalendar from "../Calendar/JCalendar";
 import { getExampleTeams } from "../Entities/ExampleData";
 import mostrarFecha from "../mostrarFechaBorrar";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
-import { JRankCalculator, RankItem, TypeRanking } from "../Tournament/Rank/Rank";
+import { JRankCalculator  } from "../Tournament/Rank/RankCalculator";
+import { RankItem, TypeRanking } from "../Tournament/Rank/ranking";
 import TeamTableItem from "../Tournament/Rank/TeamTableItem";
 import StageGroup, { IStageGroupConfig } from "../Tournament/Stage/StageGroup/StageGroup";
 import Team from "../Tournament/Team";
@@ -27,7 +28,7 @@ export default function stageLeagueExample() {
   // console.log()
   mostrarFecha(cal.events[0].dateTime)
   
-  console.table(JRankCalculator.getTableStageGroup(SG, 'finished').map((e: TeamTableItem) => e.getInterface()))
+  console.table(SG.getTable('finished').map((e: TeamTableItem) => e.getInterface()))
 
   console.log(SG.groups.map(l => {
     return l.teamsArr.map((t => t.id))

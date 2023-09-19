@@ -1,12 +1,15 @@
 
+// import Stage, { IStageConfig, IStageInfo } from "../Stage";
 import SingleElmination, { ISingleElminationConfig, ISingleElminationInfo } from "./SingleElimination/SingleElmination";
-import Stage, { IStageConfig, IStageInfo } from "../Stage";
 import { TypeHalfWeekOfYear } from "../../../Calendar/DateTime/types";
+import JCalendar from "../../../Calendar/JCalendar";
 import { arr2 } from "../../types";
 import Team from "../../Team";
-import JCalendar from "../../../Calendar/JCalendar";
 import Bombo from "../Bombo";
-import { RankItem } from "../../Rank/Rank";
+import { RankItem, TypeRanking, TypeTableMatchState } from "../../Rank/ranking";
+import { IStageConfig, IStageInfo } from "../Stage";
+import Stage from "../Stage";
+import TeamTableItem from "../../Rank/TeamTableItem";
 
 export interface IStagePlayoffConfig extends IStageConfig {
   type: 'playoff',
@@ -28,7 +31,7 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
     super(info, config, calendar);
 
     const SEInfo: ISingleElminationInfo = {
-      id: '',
+      id: `${info.id}_SE`,
       season: this.info.season,
     }
     this._playoff = new SingleElmination(SEInfo, this.config.bsConfig);
@@ -88,23 +91,11 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
   private selection(bombos: Bombo<RankItem>[]) {
     const out: RankItem[] = [];
     bombos.forEach((bom: Bombo<RankItem>) => {
-      // let elems = bom.getNextElements();
-      // while (elems.length > 0) {
-      //   out.push(...elems);
-      //   elems = bom.getNextElements();
-      // }
       let elems = bom.getNextElements();
       out.push(...elems);
     })
     return out;
   }
-
-  // get relativeTable(): IJTeamTableItem[] {
-  // 	return JRankCalculator.getTableStagePlayoff(this);
-  // }
-  // get rank(): ITeamTableItem[] { 
-  // 	return JRankCalculator.getTableStagePlayoff(this);
-  // }
 
   /**
    * dado un array [T1,T2,T3,T4,T5,T6] el emparejamiento será:
@@ -123,6 +114,25 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
     }
     
   	return true;
+  }
+
+  /**
+   * 
+   */
+  getTable(ttms: TypeTableMatchState): TeamTableItem[] {
+    // let out: TeamTableItem[] = []; // pasar a map
+
+    // out = this.playoff.getTable(ttms);
+
+    // playoff.rounds.forEach((r: JRound, idx: number) => {
+    //   r.losers.forEach((loser: Team) => {
+    //     let item = out.find((value: TeamTableItem) => value.team.id === loser.id)
+    //     if (item) item.pos = playoff.rounds.length + 1 - idx;
+    //   })
+    // });
+    // out.sort((a, b) => simpleSortFunc(a, b, true));
+    // return out;
+    return this.playoff.getTable(ttms);
   }
 
 }

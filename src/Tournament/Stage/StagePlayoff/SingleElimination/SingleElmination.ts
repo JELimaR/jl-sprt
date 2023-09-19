@@ -1,13 +1,15 @@
+import BaseStage, { IBaseStageConfig, IBaseStageInfo } from '../../BaseStage';
 import { TypeHalfWeekOfYear } from '../../../../Calendar/DateTime/types';
 import JCalendar from '../../../../Calendar/JCalendar';
+import { JDateTime } from '../../../../Calendar/DateTime/JDateTime';
 import Team from '../../../Team';
 import { JRound } from './JRound';
 import JSerie from '../../../Match/JSerie';
-import { JDateTime } from '../../../../Calendar/DateTime/JDateTime';
 import Event_RoundCreationAndTeamsDraw from './Event_RoundCreationAndTeamsDraw';
 import JMatch from '../../../Match/JMatch';
 import { arr2 } from '../../../types';
-import BaseStage, { IBaseStageConfig, IBaseStageInfo } from '../../BaseStage';
+import TeamTableItem from '../../../Rank/TeamTableItem';
+import { simpleSortFunc, TypeTableMatchState } from '../../../Rank/ranking';
 
 
 export interface ISingleElminationConfig extends IBaseStageConfig {
@@ -101,6 +103,21 @@ export default class SingleElmination extends BaseStage<ISingleElminationInfo, I
         })
       )
     }
+
+    return out;
+  }
+
+  getTable(ttms: TypeTableMatchState): TeamTableItem[] {
+    let out: TeamTableItem[] = this.calcTableValues(ttms);
+
+    this.rounds.forEach((r: JRound, idx: number) => {
+      r.losers.forEach((loser: Team) => {
+        let item = out.find((value: TeamTableItem) => value.team.id === loser.id)
+        if (item) item.pos = this.rounds.length + 1 - idx;
+      })
+    });
+
+    out.sort((a, b) => simpleSortFunc(a, b, true));
 
     return out;
   }

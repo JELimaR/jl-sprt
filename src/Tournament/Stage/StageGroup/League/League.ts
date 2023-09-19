@@ -2,6 +2,8 @@
 import { TypeHalfWeekOfYear } from "../../../../Calendar/DateTime/types";
 import JCalendar from "../../../../Calendar/JCalendar";
 import JMatch from "../../../Match/JMatch";
+import { TypeTableMatchState, simpleSortFunc } from "../../../Rank/ranking";
+import TeamTableItem from "../../../Rank/TeamTableItem";
 import Team from "../../../Team";
 import { arr2 } from "../../../types";
 import BaseStage, { IBaseStageConfig, IBaseStageInfo, TypeBaseStageOption } from "../../BaseStage";
@@ -129,6 +131,16 @@ export default class League extends BaseStage<ILeagueInfo, ILeagueConfig> {
 
       out.push(match);
     }
+
+    return out;
+  }
+
+  getTable(ttms: TypeTableMatchState): TeamTableItem[] {
+    let out: TeamTableItem[] = this.calcTableValues(ttms);
+
+    out.sort((a, b) => simpleSortFunc(a, b, false));
+
+    out.forEach((itti, idx) => itti.pos = idx + 1)
 
     return out;
   }

@@ -2,14 +2,14 @@ import { JDateTime } from "../../Calendar/DateTime/JDateTime";
 import { TypeDayOfYear, TypeHalfWeekOfYear, TypeIntervOfDay } from "../../Calendar/DateTime/types";
 import JCalendar from "../../Calendar/JCalendar";
 import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator";
-import { RankItem } from "../Rank/Rank";
-// import { TypeRanking } from "../Rank/JRank";
-import Team from "../Team";
+import { RankItem, TypeRanking, TypeTableMatchState } from "../Rank/ranking";
+import TeamTableItem from "../Rank/TeamTableItem";
 import { IBaseStageConfig } from "./BaseStage";
 import Bombo, { IBomboInfo } from "./Bombo";
 import { Event_StageEnd } from "./Event_StageEnd";
 import { Event_StageStart } from "./Event_StageStart";
-import { IStageGroupConfig } from "./StageGroup/StageGroup"; // borrar
+// import StageGroup, { IStageGroupConfig } from "./StageGroup/StageGroup";
+// import StagePlayoff, { IStagePlayoffConfig } from "./StagePlayoff/StagePlayoff";
 
 type TQualyCondition = {
   rankId: string; // puede ser un tournament u otro rank
@@ -154,6 +154,39 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
   }
 
   // abstract getSelectionPerTime(elementsNumber: number): number;
+  abstract getTable(ttms: TypeTableMatchState): TeamTableItem[];
+  
+  /**
+   * 
+   */
+  getRelativeRank(): TypeRanking {
+    let ttis: TeamTableItem[] = this.getTable('finished');
+
+    const rankItemArr: RankItem[] = ttis.map((tti, idx) => {
+      return {
+        team: tti.team,
+        rank: idx + 1,
+        originId: tti.bsId
+      }
+    })
+
+    return {
+      rankId: 'sr_' + this.config.idConfig,
+      // state: (stage.isFinished) ? 'final' : 'partial',
+      table: rankItemArr,
+    }
+  }
+
+  // static create(info: IStageInfo, config: IStageConfig, cal: JCalendar): Stage<any, any> {
+  //   if (config.type == 'group') {
+  //     const sconfig = config as IStageGroupConfig;
+  //     return new StageGroup(info, sconfig, cal);
+  //   } else if (config.type == 'playoff') {
+  //     const sconfig = config as IStagePlayoffConfig;
+  //     return new StagePlayoff(info, sconfig, cal);
+  //   } else {
+  //     throw new Error(`not implemented. (en StageConstructor)`)
+  //   }
+  // }
 
 }
-export type TYPEGENERICSTAGE = Stage<IStageInfo, IStageConfig>;

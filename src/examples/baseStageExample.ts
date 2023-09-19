@@ -1,7 +1,7 @@
 import { JDateTime } from "../Calendar/DateTime/JDateTime";
 import JCalendar from "../Calendar/JCalendar";
 import { getExampleTeams } from "../Entities/ExampleData";
-import { JRankCalculator } from "../Tournament/Rank/Rank";
+import { JRankCalculator } from "../Tournament/Rank/RankCalculator";
 import League from "../Tournament/Stage/StageGroup/League/League";
 import SingleElmination from "../Tournament/Stage/StagePlayoff/SingleElimination/SingleElmination";
 import mostrarFecha from "../mostrarFechaBorrar";
@@ -65,6 +65,6 @@ export default function baseStageExample() {
 
   console.log(cal.events.length);
 
-  console.table(JRankCalculator.getTableBase(league, 'finished').map(e => e.getInterface()))
-  console.table(JRankCalculator.getTableBase(singleElimination, 'finished').map(e => e.getInterface()))
+  console.table(league.getTable('finished').map(e => e.getInterface()))
+  console.table(singleElimination.getTable('finished').map(e => e.getInterface()))
 }

@@ -4,7 +4,8 @@ import { TypeHalfWeekOfYear } from "../../../Calendar/DateTime/types";
 import Team from "../../Team";
 import JCalendar from "../../../Calendar/JCalendar";
 import Bombo, { IBomboInfo } from "../Bombo";
-import { RankItem } from "../../Rank/Rank";
+import { RankItem, simpleSortFunc, TypeTableMatchState } from "../../Rank/ranking";
+import TeamTableItem from "../../Rank/TeamTableItem";
 
 
 export interface IStageGroupConfig extends IStageConfig {
@@ -23,7 +24,6 @@ export interface IStageGroupInfo extends IStageInfo { }
  * Tambien se debe generar un evento end para "dar aviso" de la finalizacion del stage
  */
 export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig> {
-
   private _groups: League[] = [];
 
   constructor(info: IStageGroupInfo, config: IStageGroupConfig, calendar: JCalendar) {
@@ -87,14 +87,13 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
       g.assign(arr, cal);
     })
   }
-
-  // no funciona bien -> esta mejorado
   /**
-   * g  
+   * G	B1	B2	B3	B4
    * 0	1	6	11	16
    * 1	2	7	12	13
    * 2	3	8	9	14
    * 3	4	5	10	15
+   * @param teams 
    */
   private teamsNoDraw(teams: RankItem[]): Team[][] {
     let sorted: RankItem[][] = [];
@@ -166,4 +165,18 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
     // return teams.length - setset.size == 0;
   }
 
+  /**
+   * 
+   */
+  getTable(ttms: TypeTableMatchState): TeamTableItem[] {
+    let out: TeamTableItem[] = []; // pasar a map
+
+    this.groups.forEach((g: League) => {
+      out = out.concat(g.getTable(ttms));
+    })
+
+    out.sort((a, b) => simpleSortFunc(a, b, false)) // usar la media de puntos
+
+    return out;
+  }
 }

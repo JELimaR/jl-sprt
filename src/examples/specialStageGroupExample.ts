@@ -4,7 +4,8 @@ import JCalendar from "../Calendar/JCalendar";
 import { getExampleTeams } from "../Entities/ExampleData";
 import mostrarFecha from "../mostrarFechaBorrar";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
-import { JRankCalculator, RankItem, TypeRanking } from "../Tournament/Rank/Rank";
+import { JRankCalculator  } from "../Tournament/Rank/RankCalculator";
+import { RankItem, TypeRanking } from "../Tournament/Rank/ranking";
 import TeamTableItem from "../Tournament/Rank/TeamTableItem";
 import StageGroup, { IStageGroupConfig } from "../Tournament/Stage/StageGroup/StageGroup";
 import Team from "../Tournament/Team";
@@ -28,7 +29,7 @@ export default function specialStageGroupExample() {
   // console.log()
   mostrarFecha(cal.events[0].dateTime)
 
-  console.table(JRankCalculator.getTableStageGroup(SG, 'finished').map((e: TeamTableItem) => e.getInterface()))
+  console.table(SG.getTable('finished').map((e: TeamTableItem) => e.getInterface()))
 
   console.log(SG.groups.map(l => {
     return l.teamsArr.map((t => t.id))
@@ -36,7 +37,7 @@ export default function specialStageGroupExample() {
   SG.groups.forEach(l => {
     console.log()
     console.log(l.info.id)
-    console.table(JRankCalculator.getTableBase(l, 'finished').map(e => e.getInterface()))
+    console.table(l.getTable('finished').map(e => e.getInterface()))
   })
 
   globalFinishedRankingsMap.forEach((ranking: TypeRanking, key: string) => {

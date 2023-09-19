@@ -2,7 +2,8 @@ import JCalendar from "../../Calendar/JCalendar";
 import Team from "../Team";
 import JMatch from "../Match/JMatch";
 import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator";
-import { TypeTableMatchState } from "../Rank/Rank";
+import TeamTableItem from "../Rank/TeamTableItem";
+import { TypeTableMatchState } from "../Rank/ranking";
 
 /**
  * En el BaseStage es donde se configuran las rondas o turnos y los partidos de un torneo.
@@ -70,23 +71,51 @@ export default abstract class BaseStage<I extends IBaseStageInfo, C extends IBas
   }
   abstract createChildren(cal: JCalendar): void;
 
-  // static teamsSortForDraw(teamRankArr: Team[], decreas: boolean): Team[] {
-  //   let out: Team[] = [];
-  //   const total = teamRankArr.length; // debe ser par
-  //   for (let i = 0; i < total/2; i++) {
-  //     if (decreas) {
-  //       out.push(
-  //         teamRankArr[total - i - 1], teamRankArr[i]
-  //       )  
-  //     } else {
-  //       out.push(
-  //         teamRankArr[i], teamRankArr[total - i - 1]
-  //       )
-  //     }
-	// 	}
-  //   return out;
-  // }
+  /**
+   * 
+   */
+  calcTableValues(ttms: TypeTableMatchState): TeamTableItem[] {
+    // para cada match, calcular los valores de la tabla de de cada team!
+    // valores: pg, pp, pg, pe, gf, ge
+    const out: TeamTableItem[] = []; // pasar a map
+    this.participants.forEach((team: Team) => out.push(new TeamTableItem(team, this.info.id)));
+    // 
+    const matchConditionFunc = BaseStage.getTableCondition(ttms);
+  
+    this.matches.forEach((m: JMatch) => {
+      if (matchConditionFunc(m) && !!m.result) {
+        let htti: TeamTableItem | undefined = out.find(t => t.team.id === m.homeTeam.id);
+        let atti: TeamTableItem | undefined = out.find(t => t.team.id === m.awayTeam.id);
+  
+        if (htti && atti) {
+          // gls HT
+          htti.addGf(m.result.teamOneScore.score);
+          htti.addGe(m.result.teamTwoScore.score);
+          // gls AT
+          atti.addGf(m.result.teamTwoScore.score);
+          atti.addGe(m.result.teamOneScore.score);
+          // add pj
+          if (m.result.teamWinner === htti.team.id) {
+            htti.addPg();
+            atti.addPp();
+          } else if (m.result.teamWinner === atti.team.id) {
+            htti.addPp();
+            atti.addPg();
+          } else {
+            htti.addPe();
+            atti.addPe();
+          }
+        } else throw new Error(`non finded`);
+      }
+    })
+  
+    return out;
+  }
 
+  /**
+   * 
+   * @param ttms 
+   */
   static getTableCondition(ttms: TypeTableMatchState): (m: JMatch) => boolean {
     switch (ttms) {
       case 'partial':
