@@ -50,7 +50,7 @@ const stageLeagueconfig: IStageGroupConfig = {
   dayOfDrawDate: {day: 15, interv: 185},
   halfWeekOfEndDate: 93,
   
-  bombos: [{elemsNumber: 20, selectionPerTime: [20]}],
+  bombos: [20],
   drawRulesValidate: [],
   participantsPerGroup: [20],
 
@@ -60,7 +60,7 @@ const stageLeagueconfig: IStageGroupConfig = {
     idConfig: 'idLeague',
     name: '',
     opt: 'h&a',
-    participantsNumber: 20,
+    participantsNumber: -1,
     turnHalfWeeks: [
       10, 12, 14, 16, 18, 20,
       22, 24, 26, 30, 32, 34,

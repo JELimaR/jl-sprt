@@ -6,6 +6,7 @@ import StageGroup, { IStageGroupConfig } from "./Stage/StageGroup/StageGroup";
 import StagePlayoff, { IStagePlayoffConfig } from "./Stage/StagePlayoff/StagePlayoff";
 import { TGS } from "./types";
 
+
 export interface ITournamentConfig extends ITCCConfig {
   stages: (IStageConfig)[];
 }
@@ -39,4 +40,11 @@ export default class Tournament extends TCC<ITournamentInfo, ITournamentConfig> 
     }
   }
 	
+}
+
+
+class TournamentPhase {
+
+  private _parallelStages: TGS[] = [];
+
 }

@@ -10,7 +10,7 @@ import StageGroup, { IStageGroupConfig } from "../Tournament/Stage/StageGroup/St
 import Team from "../Tournament/Team";
 import exampleAdvance from "./exampleAdvance";
 
-const selection = getExampleTeams(26, 'Team');
+const selection = getExampleTeams(80, 'Team');
 
 export default function specialStageGroupExample() {
 
@@ -56,15 +56,12 @@ const stageLeagueconfig: IStageGroupConfig = {
   dayOfDrawDate: { day: 273, interv: 185 },
   halfWeekOfEndDate: 105,
 
-  bombos: [
-    { elemsNumber: 13, selectionPerTime: [3, 3, 3, 2, 2] },
-    { elemsNumber: 13, selectionPerTime: [3, 2, 2, 3, 3] }
-  ],
+  bombos: [ 13, 13, 13 ],
 
   drawRulesValidate: [],
-  participantsPerGroup: [6, 5, 5, 5, 5],
+  participantsPerGroup: [8, 8, 8, 8, 7],
 
-  qualifyConditions: [{ rankId: 'rankingInicial', season: 'previus', minRankPos: 1, maxRankPos: 26 }],
+  qualifyConditions: [{ rankId: 'rankingInicial', season: 'previus', minRankPos: 1, maxRankPos: 39 }],
 
   bsConfig: {
     idConfig: 'idLeague',
@@ -72,10 +69,10 @@ const stageLeagueconfig: IStageGroupConfig = {
     opt: 'neutral',
     participantsNumber: -1,
     turnHalfWeeks: [
-      95, 96, 98, 100, 102
+      95, 96, 98, 100, 102, 103, 104
     ],
     turnHalfWeeksSchedule: [
-      95, 95, 95, 95, 95
+      95, 95, 95, 95, 95, 95, 95
     ],
   }
 }

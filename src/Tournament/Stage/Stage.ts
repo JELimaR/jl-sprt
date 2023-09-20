@@ -5,7 +5,7 @@ import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator"
 import { RankItem, TypeRanking, TypeTableMatchState } from "../Rank/ranking";
 import TeamTableItem from "../Rank/TeamTableItem";
 import { IBaseStageConfig } from "./BaseStage";
-import Bombo, { IBomboInfo } from "./Bombo";
+import Bombo from "./Bombo";
 import { Event_StageEnd } from "./Event_StageEnd";
 import { Event_StageStart } from "./Event_StageStart";
 // import StageGroup, { IStageGroupConfig } from "./StageGroup/StageGroup";
@@ -18,7 +18,7 @@ type TQualyCondition = {
   maxRankPos: number;
 }
 
-type TypeDrawRulePlayoff = {}
+export type TypeDrawRulePlayoff = {origin: 'all' | string, minCount: number}
 
 export type TypeBomboData = {
   elemsNumber: number;
@@ -38,7 +38,7 @@ export interface IStageConfig extends ITCCConfig {
 
   qualifyConditions: TQualyCondition[];
 
-  bombos: IBomboInfo[];
+  bombos: number[];
 
 }
 
@@ -93,14 +93,10 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
     // la suma de clasificados debe coincidir con los participantes de los bombos!
     let sumRankingQualies = 0;
     this.config.qualifyConditions.forEach((qc: TQualyCondition) => sumRankingQualies += qc.maxRankPos - qc.minRankPos + 1);
-    let participantsCount = 0;
-    // if (this.config.type == 'playoff') 
-      // participantsCount = this.config.bsConfig.participantsNumber;
-    // else {
-      this.config.bombos.forEach((b: IBomboInfo) => participantsCount += b.elemsNumber)
-    // }
-    if (sumRankingQualies !== participantsCount) {
-      throw new Error(`no coinciden ${sumRankingQualies} y ${participantsCount}`)
+    let bomboParticipantsCount = 0;
+    this.config.bombos.forEach((b: number) => bomboParticipantsCount += b)
+    if (sumRankingQualies !== bomboParticipantsCount) {
+      throw new Error(`no coinciden ${sumRankingQualies} y ${bomboParticipantsCount}`)
     }
 
     const startEvent = new Event_StageStart({
@@ -137,18 +133,18 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
   createBombosforDraw(teams: RankItem[]): Bombo<RankItem>[] {
     let out: Bombo<RankItem>[] = [];
     let tid = 0;
-    this.config.bombos.forEach((bomboInfo: IBomboInfo) => {
+    this.config.bombos.forEach((bomboInfo: number) => {
       const elements: RankItem[] = [];
-      for (let i = 0; i < bomboInfo.elemsNumber; i++) {
+      for (let i = 0; i < bomboInfo; i++) {
         elements.push(teams[tid]);
         tid++;
       }
 
-      if (this.config.type == 'playoff') {
-        out.push(new Bombo(elements, [elements.length]));
-      } else {
-        out.push(new Bombo(elements, bomboInfo.selectionPerTime));
-      }
+      // if (this.config.type == 'playoff') {
+        out.push(new Bombo(elements));
+      // } else {
+        // out.push(new Bombo(elements));
+      // }
     })
     return out;
   }

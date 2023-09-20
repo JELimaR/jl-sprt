@@ -1,9 +1,9 @@
 import League, { ILeagueConfig, ILeagueInfo } from "./League/League";
-import Stage, { IStageConfig, IStageInfo } from "../Stage";
+import Stage, { IStageConfig, IStageInfo, TypeDrawRulePlayoff } from "../Stage";
 import { TypeHalfWeekOfYear } from "../../../JCalendar/DateTime/types";
 import Team from "../../Team";
 import JCalendar from "../../../JCalendar/JCalendar";
-import Bombo, { IBomboInfo } from "../Bombo";
+import Bombo from "../Bombo";
 import { RankItem, simpleSortFunc, TypeTableMatchState } from "../../Rank/ranking";
 import TeamTableItem from "../../Rank/TeamTableItem";
 
@@ -40,16 +40,16 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
       this._groups.push(group)
     }
 
-    this.groups.forEach((g: League, i: number) => {
-      let sumBombo = 0;
-      this.config.bombos.forEach((ibi: IBomboInfo) => {
-        sumBombo += ibi.selectionPerTime[i] ? ibi.selectionPerTime[i] : 0;
-      })
-      if (sumBombo !== g.config.participantsNumber) {
-        throw new Error(`En StageGroup constructor:
-        La cantidad de participantes ${g.config.participantsNumber} no coincide con la cantidad definida por los bombos ${sumBombo}`)
-      }
-    })
+    let groupsParticipantsCount = 0;
+    this.groups.forEach((g) => groupsParticipantsCount += g.config.participantsNumber);
+    let bomboParticipantsCount = 0;
+    this.config.bombos.forEach((b: number) => bomboParticipantsCount += b)
+
+
+    if (bomboParticipantsCount !== groupsParticipantsCount) {
+      throw new Error(`En StageGroup constructor:
+        La cantidad de participantes ${groupsParticipantsCount} no coincide con la cantidad definida por los bombos ${bomboParticipantsCount}`)
+    }
 
   }
 
@@ -136,33 +136,53 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
       console.log('i', i)
     }
     // los grupos de mayor numeros deben ir primero
-    sorted.sort((a: RankItem[], b: RankItem[]) => b.length - a.length)
+    // sorted.sort((a: RankItem[], b: RankItem[]) => b.length - a.length)
     return sorted.map(ris => ris.map(ri => ri.team))
   }
   // 
   private selection(bombos: Bombo<RankItem>[]): Array<RankItem[]> {
     let out: RankItem[][] = [];
-    this.groups.forEach(() => {
-      let groupTeams: RankItem[] = [];
-      bombos.forEach((b: Bombo<RankItem>) => {
-        const elems = b.getNextElements();
-        elems.forEach((ri: RankItem) => { groupTeams.push(ri); })
-      })
-      out.push(groupTeams);
+    this.groups.forEach(() => { out.push([]) });
+    let gid = 0;
+    bombos.forEach((b: Bombo<RankItem>) => {
+      while (b.state !== 'finished') {
+        const elem = b.getNextElement();
+        out[gid].push(elem);
+        gid = (gid + 1) % this.groupsNumber;
+      }
     })
+
+    // this.groups.forEach(() => {
+    //   let groupTeams: RankItem[] = [];
+    //   bombos.forEach((b: Bombo<RankItem>) => {
+    //     const elems = b.getNextElements();
+    //     elems.forEach((ri: RankItem) => { groupTeams.push(ri); })
+    //   })
+    //   out.push(groupTeams);
+    // })
     return out;
   }
 
   /**
    * por ejemplo
    * 1 - no pueden haber n teams que vengan de un mismo grupo anterior
-   * 2 - no pueden haber n teams  que sean de la misma feder, confed, etc.
+   * 2 - no pueden haber n teams que sean de la misma feder, confed, etc.
    * 3 - no pueden haber n teams de cierta caracteristica
    */
   drawRulesValidate(teams: RankItem[]): boolean {
-    return true;
-    // const setset = new Set<string>(teams.map(ri => ri.originId));
-    // return teams.length - setset.size == 0;
+    let out: boolean = true;
+
+    this.config.drawRulesValidate.forEach((rule: TypeDrawRulePlayoff) => {
+      if (rule.origin == 'all') {
+        const setOfOrigins = new Set<string>(teams.map(ri => ri.originId));
+        out = out && (teams.length - setOfOrigins.size <= rule.minCount);
+      } else {
+        let count = 0;
+        teams.forEach(ri => count += ri.originId == rule.origin ? 1 : 0);
+        out = out && (count < rule.minCount)
+      }
+    })
+    return out;
   }
 
   /**

@@ -35,6 +35,8 @@ export class Event_StageStart extends JEvent {
         teams.push(ranking.table[p]);
     })
 
+    teams.sort((a,b) => a.rank - b.rank);
+
     return teams;
   }
 

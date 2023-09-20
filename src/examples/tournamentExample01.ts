@@ -2,7 +2,7 @@ import { JDateTime } from "../JCalendar/DateTime/JDateTime";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
 import { RankItem, TypeRanking } from "../Tournament/Rank/ranking";
 import exampleAdvance from "./exampleAdvance";
-import { IStageGroupConfig } from "../Tournament/Stage/StageGroup/StageGroup";
+import StageGroup, { IStageGroupConfig } from "../Tournament/Stage/StageGroup/StageGroup";
 import JCalendar from "../JCalendar/JCalendar";
 import { getExampleTeams } from "../Entities/ExampleData";
 import mostrarFecha from "../mostrarFechaBorrar";
@@ -60,9 +60,9 @@ export default function tournamentExample01() {
     const cal1 = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, season).getIJDateTimeCreator());
     mostrarFecha(cal1.now);
     initSeasonFunc(federation_014, cal1, season);
-  
+
     exampleAdvance(cal1)
-  
+
     const td1 = tournamentsMap.get(`d1i_${federation_014.id}_${season}`);
     td1?.stages.forEach((s: TGS) => {
       console.log(td1.info.id)
@@ -71,8 +71,16 @@ export default function tournamentExample01() {
     })
     const td2 = tournamentsMap.get(`d2i_${federation_014.id}_${season}`);
     td2?.stages.forEach((s: TGS) => {
+      console.log('---------------------------------------------------------------------------------')
       console.log(td2.info.id)
       console.log(s.info.id)
+      if (s instanceof StageGroup) {
+        console.log('group table:', s.info.id)
+        s.getTableOfGroups('finished').forEach(gr => {
+          console.table(gr.map(e => e.getInterface()));    
+        })
+      }
+      console.log('stage table')
       console.table(s.getTable('finished').map(e => e.getInterface()));
     })
 
@@ -80,24 +88,24 @@ export default function tournamentExample01() {
     let fedSeasonRanking: TypeRanking = globalFinishedRankingsMap.get('fr_f014i')!;
     if (season == 1986) {
       // nuevos equipos afiliados
-      selection.slice(8,22).forEach((t,i) => fedSeasonRanking.table.push({team: t, rank: i+9, originId: 'f014'}))
+      selection.slice(8, 22).forEach((t, i) => fedSeasonRanking.table.push({ team: t, rank: i + 9, originId: 'f014' }))
     }
     if (season < 1988) {
-      td1?.stages[0].getRelativeRank().table.forEach((ri,i) => fedSeasonRanking.table[i] = {...ri, originId: 'f014'});
+      td1?.stages[0].getRelativeRank().table.forEach((ri, i) => fedSeasonRanking.table[i] = { ...ri, originId: 'f014' });
       globalFinishedRankingsMap.set(fedSeasonRanking.rankId, fedSeasonRanking);
     } else {
-      td1?.stages[0].getRelativeRank().table.forEach((ri,i) => {
-        const rpos = i < 8 ? i : i+2;
-        fedSeasonRanking.table[rpos] = {...ri, rank: rpos + 1, originId: 'f014'}
+      td1?.stages[0].getRelativeRank().table.forEach((ri, i) => {
+        const rpos = i < 8 ? i : i + 2;
+        fedSeasonRanking.table[rpos] = { ...ri, rank: rpos + 1, originId: 'f014' }
       });
-      td2?.stages[0].getRelativeRank().table.forEach((ri,i) => {
+      td2?.stages[0].getRelativeRank().table.forEach((ri, i) => {
         if (i > 3)
-        fedSeasonRanking.table[i+10] = {...ri, rank: i+10+1, originId: 'f014'}
+          fedSeasonRanking.table[i + 10] = { ...ri, rank: i + 10 + 1, originId: 'f014' }
       });
-      td2?.stages[1].getRelativeRank().table.forEach((ri,i) => {
-        const rpos = i < 2 ? i+8 : i+10;
-        fedSeasonRanking.table[rpos] = {...ri, rank: rpos+1, originId: 'f014'}
-    });
+      td2?.stages[1].getRelativeRank().table.forEach((ri, i) => {
+        const rpos = i < 2 ? i + 8 : i + 10;
+        fedSeasonRanking.table[rpos] = { ...ri, rank: rpos + 1, originId: 'f014' }
+      });
 
       globalFinishedRankingsMap.set(fedSeasonRanking.rankId, fedSeasonRanking);
     }
@@ -111,7 +119,7 @@ export default function tournamentExample01() {
         d2: tconfigd2_v1
       }
     }
-    
+
   }
 
   [1986, 1987, 1988, 1989, 1990].forEach((s: number) => runSeason(s))
@@ -133,8 +141,8 @@ const sconfigd1_v1: IStageGroupConfig = {
   dayOfDrawDate: { day: 38, interv: 185 },
   halfWeekOfEndDate: 92,
 
-  bombos: [{ elemsNumber: 8, selectionPerTime: [8] }],
-  drawRulesValidate: [],
+  bombos: [8],
+  drawRulesValidate: [{ origin: 'all', minCount: 5 }],
   participantsPerGroup: [8],
 
   qualifyConditions: [{ rankId: 'fr_f014i', season: 'previus', minRankPos: 1, maxRankPos: 8 }],
@@ -169,8 +177,8 @@ const sconfigd1_v2: IStageGroupConfig = {
   dayOfDrawDate: { day: 38, interv: 185 },
   halfWeekOfEndDate: 92,
 
-  bombos: [{ elemsNumber: 10, selectionPerTime: [10] }],
-  drawRulesValidate: [],
+  bombos: [10],
+  drawRulesValidate: [{ origin: 'all', minCount: 5 }],
   participantsPerGroup: [10],
 
   qualifyConditions: [{ rankId: 'fr_f014i', season: 'previus', minRankPos: 1, maxRankPos: 10 }],
@@ -205,7 +213,7 @@ const sconfigd2_01_v1: IStageGroupConfig = {
   dayOfDrawDate: { day: 38, interv: 185 },
   halfWeekOfEndDate: 78,
 
-  bombos: [{ elemsNumber: 12, selectionPerTime: [6, 6] }],
+  bombos: [2, 2, 4, 4  ],
   drawRulesValidate: [],
   participantsPerGroup: [6, 6],
 
@@ -235,8 +243,8 @@ const sconfigd2_02_v1: IStagePlayoffConfig = {
   dayOfDrawDate: { day: 38, interv: 185 },
   halfWeekOfEndDate: 92,
 
-  bombos: [{ elemsNumber: 2, selectionPerTime: [2] }, { elemsNumber: 2, selectionPerTime: [2] }],
-  drawRulesValidate: [],
+  bombos: [2, 2],
+  drawRulesValidate: [{ origin: 'all', minCount: 0 }],
 
   qualifyConditions: [{ rankId: 'sr_d2i_f014_sg1', season: 'previus', minRankPos: 1, maxRankPos: 4 }],
 
@@ -250,7 +258,7 @@ const sconfigd2_02_v1: IStagePlayoffConfig = {
       [80, 82],
       [86, 90]
     ],
-    roundHalfWeeksSchedule: [ 80, 86 ],
+    roundHalfWeeksSchedule: [80, 86],
   }
 }
 const tconfigd2_v1: ITournamentConfig = {

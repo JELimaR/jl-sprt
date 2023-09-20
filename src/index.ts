@@ -10,6 +10,13 @@ import stageLeagueExample from './examples/stageLeagueExample';
 import tournamentExample01 from './examples/tournamentExample01';
 import tournamentExample02 from './examples/tournamentExample02';
 
+/**
+ * PENDIENTES
+ * 1 - generar las drawrules - falta probarlas
+ * 2 - un sistema para hacer un ranking de tournament
+ * 3 - combinacion de ranking, por ejemplo previo al inicio de un stage cualqueira
+ */
+
 function app() {
 
   // baseStageExample();
@@ -20,11 +27,11 @@ function app() {
 
   // stageLeagueExample();
 
-  // specialStageGroupExample();
+  specialStageGroupExample();
 
   // stageExample03()
 
-  tournamentExample01();
+  // tournamentExample01();
 
   // tournamentExample02();
 

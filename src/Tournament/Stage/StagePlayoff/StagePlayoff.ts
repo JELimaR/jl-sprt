@@ -7,7 +7,7 @@ import { arr2 } from "../../types";
 import Team from "../../Team";
 import Bombo from "../Bombo";
 import { RankItem, TypeRanking, TypeTableMatchState } from "../../Rank/ranking";
-import { IStageConfig, IStageInfo } from "../Stage";
+import { IStageConfig, IStageInfo, TypeDrawRulePlayoff } from "../Stage";
 import Stage from "../Stage";
 import TeamTableItem from "../../Rank/TeamTableItem";
 
@@ -24,7 +24,7 @@ export interface IStagePlayoffInfo extends IStageInfo { }
  * Tambien se debe generar un evento end para "dar aviso" de la finalizacion del stage
  */
 export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoffConfig> {
- 
+
   private _playoff: SingleElmination;
 
   constructor(info: IStagePlayoffInfo, config: IStagePlayoffConfig, calendar: JCalendar) {
@@ -40,7 +40,7 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
   get playoff(): SingleElmination { return this._playoff }
 
   get isFinished(): boolean {
-  	return this._playoff.isFinished;
+    return this._playoff.isFinished;
   }
 
   getHalfWeekOfMatches(): TypeHalfWeekOfYear[] {
@@ -86,10 +86,18 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
 
   private selection(bombos: Bombo<RankItem>[]) {
     const out: RankItem[] = [];
-    bombos.forEach((bom: Bombo<RankItem>) => {
-      let elems = bom.getNextElements();
-      out.push(...elems);
+    // bombos.forEach((bom: Bombo<RankItem>) => {
+    //   let elems = bom.getNextElements();
+    //   out.push(...elems);
+    // })
+
+    bombos.forEach((b: Bombo<RankItem>) => {
+      while (b.state !== 'finished') {
+        const elem = b.getNextElement();
+        out.push(elem);
+      }
     })
+
     return out;
   }
 
@@ -100,16 +108,30 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
    *    T4vsT3
    */
   drawRulesValidate(teams: RankItem[]): boolean {
-    const series: arr2<Team>[] = [];
-    for (let i = 0; i < teams.length/2; i++) {
-      let serie: arr2<Team> = [
-        teams[i].team,
-        teams[teams.length - 1 - i].team
+    const series: arr2<RankItem>[] = [];
+    for (let i = 0; i < teams.length / 2; i++) {
+      let serie: arr2<RankItem> = [
+        teams[i],
+        teams[teams.length - 1 - i]
       ];
       series.push(serie);
     }
-    
-  	return true;
+
+    let out = true;
+
+    this.config.drawRulesValidate.forEach((rule: TypeDrawRulePlayoff) => {
+
+      series.forEach((s: arr2<RankItem>) => {
+        if (rule.origin == 'all') {
+          out = out && !(s[0].originId == s[1].originId);
+        } else {
+          out = out && !(s[0].originId == rule.origin && s[0].originId == s[1].originId);          
+        }
+      })
+
+    })
+
+    return out;
   }
 
   /**
