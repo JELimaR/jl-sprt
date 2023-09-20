@@ -1,4 +1,4 @@
-import { IJEventInfo, JEvent } from "../../Calendar/Event/JEvent";
+import { IJEventInfo, JEvent } from "../../JCalendar/Event/JEvent";
 import { globalFinishedRankingsMap } from "../Rank/globalFinishedRankingsMap";
 import { RankItem } from "../Rank/ranking";
 import { TGS } from "../types";

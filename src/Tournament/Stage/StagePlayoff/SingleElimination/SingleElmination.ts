@@ -1,7 +1,7 @@
 import BaseStage, { IBaseStageConfig, IBaseStageInfo } from '../../BaseStage';
-import { TypeHalfWeekOfYear } from '../../../../Calendar/DateTime/types';
-import JCalendar from '../../../../Calendar/JCalendar';
-import { JDateTime } from '../../../../Calendar/DateTime/JDateTime';
+import { TypeHalfWeekOfYear } from '../../../../JCalendar/DateTime/types';
+import JCalendar from '../../../../JCalendar/JCalendar';
+import { JDateTime } from '../../../../JCalendar/DateTime/JDateTime';
 import Team from '../../../Team';
 import { JRound } from './JRound';
 import JSerie from '../../../Match/JSerie';
@@ -53,24 +53,16 @@ export default class SingleElmination extends BaseStage<ISingleElminationInfo, I
    */
   createChildren(cal: JCalendar): void {
 
-    // cal.addEvent(new Event_RoundCreationAndTeamsDraw({ // crear el evento de draw y round creation
-    //   dateTime: JDateTime.createFromHalfWeekOfYearAndYear(this.config.roundHalfWeeksSchedule[0], this.info.season, 'start', 12).getIJDateTimeCreator(),
-    //   calendar: cal,
-    //   playoff: this,
-    //   // teams: this.teamsArr
-    // }))
-
     for (let i = 0; i < this.config.roundsNumber; i++) {
       cal.addEvent(new Event_RoundCreationAndTeamsDraw({ // crear los eventos de draw y round creation
         dateTime: JDateTime.createFromHalfWeekOfYearAndYear(this.config.roundHalfWeeksSchedule[i], this.info.season, 'start', 12).getIJDateTimeCreator(),
         calendar: cal,
         playoff: this,
-        // teams,
       }))
     }
   }
 
-  createNewRound(teamsDrawSorted: Team[], calendar: JCalendar/*, dt: JDateTime*/) {
+  createNewRound(teamsDrawSorted: Team[], calendar: JCalendar) {
     const roundNumber: number = this._rounds.length + 1;
     const roundIndex: number = this._rounds.length;
     const round: JRound = new JRound({
@@ -80,12 +72,11 @@ export default class SingleElmination extends BaseStage<ISingleElminationInfo, I
       halfweekSchedule: this.config.roundHalfWeeksSchedule[roundIndex],
     })
 
-    round.generateMatchOfRoundScheduleEvents(calendar, this/*, dt*/);
+    round.generateMatchOfRoundScheduleEvents(calendar, this);
     this._rounds.push(round);
   }
 
   createRoundSeries(teams: Team[]): JSerie[] {
-    // console.log('presentados para generar serie', teams.length);
     let out: JSerie[] = [];
 
     const total: number = this.matches.length / ((this.config.opt == 'h&a') ? 2 : 1);
@@ -95,10 +86,8 @@ export default class SingleElmination extends BaseStage<ISingleElminationInfo, I
           teamOne: teams[i + 0],
           teamTwo: teams[i + 1],
           id: `${this.info.id}-S${total + i / 2 + 1}`,
-          // isIV: this.config.isIV,
           season: this.info.season,
           hws: this.config.roundHalfWeeks[this._rounds.length],
-          // isNeutral: this.config.isNeutral,
           opt: this.config.opt
         })
       )
@@ -141,7 +130,7 @@ export default class SingleElmination extends BaseStage<ISingleElminationInfo, I
   }
 
   //
-  static teamsSortForDraw(teamRankArr: Team[]/*, decres: boolean*/): Team[] {
+  static teamsSortForDraw(teamRankArr: Team[]): Team[] {
     let out: Team[] = [];
     const total = teamRankArr.length;
     if (total % 2 !== 0)

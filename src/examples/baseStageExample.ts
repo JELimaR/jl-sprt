@@ -1,7 +1,6 @@
-import { JDateTime } from "../Calendar/DateTime/JDateTime";
-import JCalendar from "../Calendar/JCalendar";
+import { JDateTime } from "../JCalendar/DateTime/JDateTime";
+import JCalendar from "../JCalendar/JCalendar";
 import { getExampleTeams } from "../Entities/ExampleData";
-import { JRankCalculator } from "../Tournament/Rank/RankCalculator";
 import League from "../Tournament/Stage/StageGroup/League/League";
 import SingleElmination from "../Tournament/Stage/StagePlayoff/SingleElimination/SingleElmination";
 import mostrarFecha from "../mostrarFechaBorrar";

@@ -1,4 +1,4 @@
-import { IJEventOthersInfo, JEventOthers } from "../../../../Calendar/Event/JEvent";
+import { IJEventOthersInfo, JEventOthers } from "../../../../JCalendar/Event/JEvent";
 import SingleElmination from "./SingleElmination"
 import Team from "../../../Team";
 

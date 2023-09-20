@@ -1,4 +1,4 @@
-import JCalendar from "../Calendar/JCalendar";
+import JCalendar from "../JCalendar/JCalendar";
 import mostrarFecha from "../mostrarFechaBorrar";
 
 const exampleAdvance = (cal: JCalendar) => {

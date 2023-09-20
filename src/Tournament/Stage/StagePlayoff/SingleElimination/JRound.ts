@@ -1,6 +1,6 @@
-import { JDateTime } from '../../../../Calendar/DateTime/JDateTime';
-import { TypeHalfWeekOfYear } from '../../../../Calendar/DateTime/types';
-import JCalendar from '../../../../Calendar/JCalendar';
+import { JDateTime } from '../../../../JCalendar/DateTime/JDateTime';
+import { TypeHalfWeekOfYear } from '../../../../JCalendar/DateTime/types';
+import JCalendar from '../../../../JCalendar/JCalendar';
 import { arr2 } from '../../../types';
 import SingleElmination from './SingleElmination';
 import Team from '../../../Team';

@@ -1,8 +1,8 @@
 import League, { ILeagueConfig, ILeagueInfo } from "./League/League";
 import Stage, { IStageConfig, IStageInfo } from "../Stage";
-import { TypeHalfWeekOfYear } from "../../../Calendar/DateTime/types";
+import { TypeHalfWeekOfYear } from "../../../JCalendar/DateTime/types";
 import Team from "../../Team";
-import JCalendar from "../../../Calendar/JCalendar";
+import JCalendar from "../../../JCalendar/JCalendar";
 import Bombo, { IBomboInfo } from "../Bombo";
 import { RankItem, simpleSortFunc, TypeTableMatchState } from "../../Rank/ranking";
 import TeamTableItem from "../../Rank/TeamTableItem";
@@ -31,10 +31,10 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
 
     for (let i = 0; i < config.participantsPerGroup.length; i++) {
       const GInfo: ILeagueInfo = {
-        id: 'G' + (i + 1),
+        id: info.id + '_G' + (i + 1),
         season: this.info.season,
       }
-      const GConfig: ILeagueConfig = {...this.config.bsConfig};
+      const GConfig: ILeagueConfig = { ...this.config.bsConfig };
       GConfig.participantsNumber = this.config.participantsPerGroup[i];
       const group = new League(GInfo, GConfig)
       this._groups.push(group)
@@ -53,7 +53,7 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
 
   }
 
-  get groupsNumber(): number { return this.config.participantsPerGroup.length}
+  get groupsNumber(): number { return this.config.participantsPerGroup.length }
 
   get groups(): League[] { return this._groups }
 
@@ -80,7 +80,7 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
   start(teams: RankItem[], cal: JCalendar): void {
     const participants: Team[][] = (this.config.dayOfDrawDate) ? this.teamsDraw(teams) : this.teamsNoDraw(teams);
     // console.log(participants)
-    this._groups.forEach((g: League,i: number) => {
+    this._groups.forEach((g: League, i: number) => {
       const arr = League.teamsSortForDraw(participants[i]);
       // console.log(i, [arr], g.config.participantsNumber)
       // console.log()
@@ -109,7 +109,7 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
       // const aux = Math.trunc(aksdfh/this.groupsNumber)
       const gid = (tindx + gidOffset) % this.groupsNumber;
       if (!sorted[gid]) sorted[gid] = [];
-      
+
       sorted[gid].push(t);
       auxCounter++
     })
@@ -176,6 +176,15 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
     })
 
     out.sort((a, b) => simpleSortFunc(a, b, false)) // usar la media de puntos
+
+    return out;
+  }
+
+  getTableOfGroups(ttms: TypeTableMatchState): Array<TeamTableItem[]> {
+    let out: Array<TeamTableItem[]> = [];
+    this.groups.forEach((g: League) => {
+      out.push(g.getTable(ttms));
+    })
 
     return out;
   }

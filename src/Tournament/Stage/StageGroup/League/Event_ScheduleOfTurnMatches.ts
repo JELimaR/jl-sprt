@@ -1,11 +1,9 @@
-import { JDateTime } from "../../../../Calendar/DateTime/JDateTime";
-import { IJEventOthersInfo, JEventOthers } from "../../../../Calendar/Event/JEvent";
+import { JDateTime } from "../../../../JCalendar/DateTime/JDateTime";
+import { IJEventOthersInfo, JEventOthers } from "../../../../JCalendar/Event/JEvent";
 import JMatch from "../../../Match/JMatch";
 import { JEventMatch } from "../../../Match/JEventMatch";
 import { Turn } from "./Turn";
 import League from './League';
-import { ITCCDATA } from "../../../../patterns/templateConfigCreator";
-
 
 export interface IEvent_ScheduleOfTurnMatchesInfo extends IJEventOthersInfo {
 	turn: Turn;

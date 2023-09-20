@@ -1,4 +1,4 @@
-import JCalendar from "../../Calendar/JCalendar";
+import JCalendar from "../../JCalendar/JCalendar";
 import Team from "../Team";
 import JMatch from "../Match/JMatch";
 import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator";

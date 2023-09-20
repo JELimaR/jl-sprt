@@ -1,6 +1,6 @@
-import { JDateTime } from "../../../../Calendar/DateTime/JDateTime";
-import { TypeHalfWeekOfYear } from "../../../../Calendar/DateTime/types";
-import JCalendar from "../../../../Calendar/JCalendar";
+import { JDateTime } from "../../../../JCalendar/DateTime/JDateTime";
+import { TypeHalfWeekOfYear } from "../../../../JCalendar/DateTime/types";
+import JCalendar from "../../../../JCalendar/JCalendar";
 import League from "./League";
 import JMatch from "../../../Match/JMatch";
 import { Event_ScheduleOfTurnMatches } from "./Event_ScheduleOfTurnMatches";

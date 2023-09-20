@@ -1,5 +1,5 @@
-import { JDateTime } from "../Calendar/DateTime/JDateTime";
-import JCalendar from "../Calendar/JCalendar";
+
+import JCalendar from "../JCalendar/JCalendar";
 import { ITCCConfig, ITCCInfo, TCC } from "../patterns/templateConfigCreator";
 import { IStageConfig, IStageInfo } from "./Stage/Stage";
 import StageGroup, { IStageGroupConfig } from "./Stage/StageGroup/StageGroup";

@@ -1,6 +1,6 @@
 
-import { TypeHalfWeekOfYear } from "../../../../Calendar/DateTime/types";
-import JCalendar from "../../../../Calendar/JCalendar";
+import { TypeHalfWeekOfYear } from "../../../../JCalendar/DateTime/types";
+import JCalendar from "../../../../JCalendar/JCalendar";
 import JMatch from "../../../Match/JMatch";
 import { TypeTableMatchState, simpleSortFunc } from "../../../Rank/ranking";
 import TeamTableItem from "../../../Rank/TeamTableItem";
@@ -99,7 +99,7 @@ export default class League extends BaseStage<ILeagueInfo, ILeagueConfig> {
     }
   }
 
-  createNewTurn(teamsDrawSorted: Team[], calendar: JCalendar/*, dt: JDateTime*/) {
+  createNewTurn(teamsDrawSorted: Team[], calendar: JCalendar) {
     const turnNumber: number = this._turns.length + 1;
     const turnIndex: number = this._turns.length;
     const turn: Turn = new Turn({

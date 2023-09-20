@@ -1,4 +1,4 @@
-import { IJEventInfo, JEvent } from "../../Calendar/Event/JEvent";
+import { IJEventInfo, JEvent } from "../../JCalendar/Event/JEvent";
 import JMatch from "./JMatch";
 
 export interface IJEventMatchInfo extends IJEventInfo {

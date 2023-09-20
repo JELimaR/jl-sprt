@@ -1,10 +1,9 @@
 
-import { JDateTime } from "../Calendar/DateTime/JDateTime";
-import JCalendar from "../Calendar/JCalendar";
+import { JDateTime } from "../JCalendar/DateTime/JDateTime";
+import JCalendar from "../JCalendar/JCalendar";
 import { getExampleTeams } from "../Entities/ExampleData";
 import mostrarFecha from "../mostrarFechaBorrar";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
-import { JRankCalculator  } from "../Tournament/Rank/RankCalculator";
 import { RankItem, TypeRanking } from "../Tournament/Rank/ranking";
 import TeamTableItem from "../Tournament/Rank/TeamTableItem";
 import StageGroup, { IStageGroupConfig } from "../Tournament/Stage/StageGroup/StageGroup";

@@ -1,8 +1,8 @@
 
 // import Stage, { IStageConfig, IStageInfo } from "../Stage";
 import SingleElmination, { ISingleElminationConfig, ISingleElminationInfo } from "./SingleElimination/SingleElmination";
-import { TypeHalfWeekOfYear } from "../../../Calendar/DateTime/types";
-import JCalendar from "../../../Calendar/JCalendar";
+import { TypeHalfWeekOfYear } from "../../../JCalendar/DateTime/types";
+import JCalendar from "../../../JCalendar/JCalendar";
 import { arr2 } from "../../types";
 import Team from "../../Team";
 import Bombo from "../Bombo";
@@ -55,10 +55,6 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
   getHalfWeekOfSchedule(): TypeHalfWeekOfYear[] {
     return this.config.bsConfig.roundHalfWeeksSchedule;
   }
-
-  // getSelectionPerTime(elementsNumber: number): number {
-  //   return elementsNumber;
-  // }
 
   /**
    * Sorteo y asignacion de equipos a BaseStage!!
@@ -120,18 +116,6 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
    * 
    */
   getTable(ttms: TypeTableMatchState): TeamTableItem[] {
-    // let out: TeamTableItem[] = []; // pasar a map
-
-    // out = this.playoff.getTable(ttms);
-
-    // playoff.rounds.forEach((r: JRound, idx: number) => {
-    //   r.losers.forEach((loser: Team) => {
-    //     let item = out.find((value: TeamTableItem) => value.team.id === loser.id)
-    //     if (item) item.pos = playoff.rounds.length + 1 - idx;
-    //   })
-    // });
-    // out.sort((a, b) => simpleSortFunc(a, b, true));
-    // return out;
     return this.playoff.getTable(ttms);
   }
 

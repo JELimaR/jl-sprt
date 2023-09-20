@@ -1,9 +1,9 @@
-import { JDateTime } from "../Calendar/DateTime/JDateTime";
+import { JDateTime } from "../JCalendar/DateTime/JDateTime";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
 import { RankItem, TypeRanking } from "../Tournament/Rank/ranking";
 import exampleAdvance from "./exampleAdvance";
 import { IStageGroupConfig } from "../Tournament/Stage/StageGroup/StageGroup";
-import JCalendar from "../Calendar/JCalendar";
+import JCalendar from "../JCalendar/JCalendar";
 import { getExampleTeams } from "../Entities/ExampleData";
 import mostrarFecha from "../mostrarFechaBorrar";
 import Tournament, { ITournamentConfig } from "../Tournament/Tournament";
@@ -241,7 +241,7 @@ const sconfigd2_02_v1: IStagePlayoffConfig = {
   qualifyConditions: [{ rankId: 'sr_d2i_f014_sg1', season: 'previus', minRankPos: 1, maxRankPos: 4 }],
 
   bsConfig: {
-    idConfig: 'l',
+    idConfig: 'p',
     name: '1 Div',
     opt: 'h&a',
     participantsNumber: 4,
