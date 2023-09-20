@@ -1,6 +1,6 @@
 import { JDateTime } from "../Calendar/DateTime/JDateTime";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
-import { TypeRanking } from "../Tournament/Rank/ranking";
+import { RankItem, TypeRanking } from "../Tournament/Rank/ranking";
 import exampleAdvance from "./exampleAdvance";
 import { IStageGroupConfig } from "../Tournament/Stage/StageGroup/StageGroup";
 import JCalendar from "../Calendar/JCalendar";
@@ -77,9 +77,44 @@ export default function tournamentExample01() {
     })
 
     // al final de la season hay nuevo ranking de federacion
+    let fedSeasonRanking: TypeRanking = globalFinishedRankingsMap.get('fr_f014i')!;
+    if (season == 1986) {
+      // nuevos equipos afiliados
+      selection.slice(8,22).forEach((t,i) => fedSeasonRanking.table.push({team: t, rank: i+9, originId: 'f014'}))
+    }
+    if (season < 1988) {
+      td1?.stages[0].getRelativeRank().table.forEach((ri,i) => fedSeasonRanking.table[i] = {...ri, originId: 'f014'});
+      globalFinishedRankingsMap.set(fedSeasonRanking.rankId, fedSeasonRanking);
+    } else {
+      td1?.stages[0].getRelativeRank().table.forEach((ri,i) => {
+        const rpos = i < 8 ? i : i+2;
+        fedSeasonRanking.table[rpos] = {...ri, rank: rpos + 1, originId: 'f014'}
+      });
+      td2?.stages[0].getRelativeRank().table.forEach((ri,i) => {
+        if (i > 3)
+        fedSeasonRanking.table[i+10] = {...ri, rank: i+10+1, originId: 'f014'}
+      });
+      td2?.stages[1].getRelativeRank().table.forEach((ri,i) => {
+        const rpos = i < 2 ? i+8 : i+10;
+        fedSeasonRanking.table[rpos] = {...ri, rank: rpos+1, originId: 'f014'}
+    });
+
+      globalFinishedRankingsMap.set(fedSeasonRanking.rankId, fedSeasonRanking);
+    }
+
+    console.table(globalFinishedRankingsMap.get('fr_f014i')!.table.map((e: RankItem) => { return { ...e, team: e.team.id } }));
+
+    // agrego nueva division:
+    if (season == 1987) {
+      federation_014.getDivisionsConfig = {
+        d1: tconfigd1_v2,
+        d2: tconfigd2_v1
+      }
+    }
+    
   }
 
-  [1986, 1987].forEach((s: number) => runSeason(s))
+  [1986, 1987, 1988, 1989, 1990].forEach((s: number) => runSeason(s))
 
 
 
@@ -144,14 +179,14 @@ const sconfigd1_v2: IStageGroupConfig = {
     idConfig: 'l',
     name: '1 Div',
     opt: 'h&a',
-    participantsNumber: 8,
+    participantsNumber: -1,
     turnHalfWeeks: [
-      22, 26, 30, 34, 38, 42, 44, 46,
-      68, 72, 76, 80, 84, 88, 90, 92
+      22, 26, 30, 34, 38, 42, 44, 46, 48,
+      66, 68, 72, 76, 80, 84, 88, 90, 92
     ],
     turnHalfWeeksSchedule: [
-      19, 19, 19, 19, 19, 19, 19, 19,
-      65, 65, 65, 65, 65, 65, 65, 65
+      19, 19, 19, 19, 19, 19, 19, 19, 19,
+      65, 65, 65, 65, 65, 65, 65, 65, 65
     ],
   }
 }
@@ -168,7 +203,7 @@ const sconfigd2_01_v1: IStageGroupConfig = {
 
   halfWeekOfStartDate: 18,
   dayOfDrawDate: { day: 38, interv: 185 },
-  halfWeekOfEndDate: 92,
+  halfWeekOfEndDate: 78,
 
   bombos: [{ elemsNumber: 12, selectionPerTime: [6, 6] }],
   drawRulesValidate: [],
@@ -180,14 +215,14 @@ const sconfigd2_01_v1: IStageGroupConfig = {
     idConfig: 'l',
     name: '2 Div',
     opt: 'h&a',
-    participantsNumber: 8,
+    participantsNumber: -1,
     turnHalfWeeks: [
-      22, 26, 30, 34, 38, 42, 46,
-      68, 72, 76, 80, 84, 88, 92
+      24, 28, 32, 35, 40, 44,
+      64, 70, 74, 78
     ],
     turnHalfWeeksSchedule: [
-      19, 19, 19, 19, 19, 19, 19,
-      65, 65, 65, 65, 65, 65, 65
+      19, 19, 19, 19, 19, 19,
+      61, 61, 61, 61,
     ],
   }
 }
@@ -196,14 +231,14 @@ const sconfigd2_02_v1: IStagePlayoffConfig = {
   name: '1 Div',
   type: 'playoff',
 
-  halfWeekOfStartDate: 18,
+  halfWeekOfStartDate: 79,
   dayOfDrawDate: { day: 38, interv: 185 },
   halfWeekOfEndDate: 92,
 
   bombos: [{ elemsNumber: 2, selectionPerTime: [2] }, { elemsNumber: 2, selectionPerTime: [2] }],
   drawRulesValidate: [],
 
-  qualifyConditions: [{ rankId: 'd2i_f014_sg1', season: 'previus', minRankPos: 1, maxRankPos: 4 }],
+  qualifyConditions: [{ rankId: 'sr_d2i_f014_sg1', season: 'previus', minRankPos: 1, maxRankPos: 4 }],
 
   bsConfig: {
     idConfig: 'l',
@@ -212,10 +247,10 @@ const sconfigd2_02_v1: IStagePlayoffConfig = {
     participantsNumber: 4,
     roundsNumber: 2,
     roundHalfWeeks: [
-      [22, 26],
-      [88, 92]
+      [80, 82],
+      [86, 90]
     ],
-    roundHalfWeeksSchedule: [ 65, 65 ],
+    roundHalfWeeksSchedule: [ 80, 86 ],
   }
 }
 const tconfigd2_v1: ITournamentConfig = {
