@@ -66,7 +66,7 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
    * @param cal 
    */
   start(teams: RankItem[], cal: JCalendar): void {
-    const participants: Team[] = (this.config.dayOfDrawDate) ? this.teamsDraw(teams) : teams.map(ri => ri.team);
+    const participants: Team[] = (this.config.intervalOfDrawDate) ? this.teamsDraw(teams) : teams.map(ri => ri.team);
     this._playoff.assign(participants, cal);
   }
 

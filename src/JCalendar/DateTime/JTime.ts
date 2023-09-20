@@ -1,25 +1,25 @@
-import { TypeHourOfDay, TypeIntervOfDay, TypeMinutesOfHour, INTERVSPERHOUR } from './types';
+import { TypeHourOfDay, TypeIntervalOfDay, TypeMinutesOfHour, INTERVSPERHOUR } from './types';
 
 export interface IJTime {
   minutes: number;
   hour: number;
-  interv: TypeIntervOfDay;
+  interv: TypeIntervalOfDay;
 }
 
 export class JTime {
-  private _interv: TypeIntervOfDay;
+  private _interv: TypeIntervalOfDay;
 
-  constructor(interv: TypeIntervOfDay) {
-    this._interv = interv % 300 as TypeIntervOfDay;
+  constructor(interv: TypeIntervalOfDay) {
+    this._interv = interv % 300 as TypeIntervalOfDay;
   }
 
   addInterv(): boolean {
-    this._interv = (this._interv + 1) % 300 as TypeIntervOfDay;
+    this._interv = (this._interv + 1) % 300 as TypeIntervalOfDay;
     return this._interv === 0;
   }
 
   subInterv(): boolean {
-    this._interv = (this._interv + 299) % 300 as TypeIntervOfDay;
+    this._interv = (this._interv + 299) % 300 as TypeIntervalOfDay;
     return this._interv === 299;
   }
 
@@ -31,7 +31,7 @@ export class JTime {
     };
   }
 
-  static intervFromHourOfDayAndMinutesOfHour(hour: TypeHourOfDay, mins: TypeMinutesOfHour): TypeIntervOfDay {
-    return hour * INTERVSPERHOUR + mins / 5 as TypeIntervOfDay;
+  static intervFromHourOfDayAndMinutesOfHour(hour: TypeHourOfDay, mins: TypeMinutesOfHour): TypeIntervalOfDay {
+    return hour * INTERVSPERHOUR + mins / 5 as TypeIntervalOfDay;
   }
 }

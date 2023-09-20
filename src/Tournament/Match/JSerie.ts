@@ -1,6 +1,6 @@
 
-import { JDateTime } from '../../Calendar/DateTime/JDateTime';
-import { TypeHalfWeekOfYear } from '../../Calendar/DateTime/types';
+import { JDateTime } from '../../JCalendar/DateTime/JDateTime';
+import { TypeHalfWeekOfYear } from '../../JCalendar/DateTime/types';
 import { arr2 } from '../types';
 import JResult, { IJResultInfo } from './JResult';
 import Team from '../Team';

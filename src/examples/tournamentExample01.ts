@@ -138,11 +138,11 @@ const sconfigd1_v1: IStageGroupConfig = {
   type: 'group',
 
   halfWeekOfStartDate: 18,
-  dayOfDrawDate: { day: 38, interv: 185 },
+  intervalOfDrawDate: 185,
   halfWeekOfEndDate: 92,
 
   bombos: [8],
-  drawRulesValidate: [{ origin: 'all', minCount: 5 }],
+  drawRulesValidate: [],
   participantsPerGroup: [8],
 
   qualifyConditions: [{ rankId: 'fr_f014i', season: 'previus', minRankPos: 1, maxRankPos: 8 }],
@@ -174,7 +174,7 @@ const sconfigd1_v2: IStageGroupConfig = {
   type: 'group',
 
   halfWeekOfStartDate: 18,
-  dayOfDrawDate: { day: 38, interv: 185 },
+  intervalOfDrawDate: 185,
   halfWeekOfEndDate: 92,
 
   bombos: [10],
@@ -210,7 +210,7 @@ const sconfigd2_01_v1: IStageGroupConfig = {
   type: 'group',
 
   halfWeekOfStartDate: 18,
-  dayOfDrawDate: { day: 38, interv: 185 },
+  intervalOfDrawDate: 185,
   halfWeekOfEndDate: 78,
 
   bombos: [2, 2, 4, 4  ],
@@ -240,7 +240,7 @@ const sconfigd2_02_v1: IStagePlayoffConfig = {
   type: 'playoff',
 
   halfWeekOfStartDate: 79,
-  dayOfDrawDate: { day: 38, interv: 185 },
+  intervalOfDrawDate: 185,
   halfWeekOfEndDate: 92,
 
   bombos: [2, 2],

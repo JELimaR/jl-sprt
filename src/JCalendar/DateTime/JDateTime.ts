@@ -1,4 +1,4 @@
-import { DAYSPERYEAR, TypeDayOfYear, TypeHalfWeekOfYear, TypeIntervOfDay, TypeDateAndTimeOfYear } from './types';
+import { DAYSPERYEAR, TypeDayOfYear, TypeHalfWeekOfYear, TypeIntervalOfDay, TypeDateAndTimeOfYear } from './types';
 import { IJDate, JDate } from './JDate';
 import { IJTime, JTime } from './JTime';
 
@@ -8,7 +8,7 @@ export interface IJDateTime {
 }
 
 export interface IJDateTimeCreator {
-  interv: TypeIntervOfDay;
+  interv: TypeIntervalOfDay;
   day: number;
 }
 
@@ -100,11 +100,11 @@ export class JDateTime {
       end: (start + 2) as TypeDayOfYear,
     };
   }
-  static createFromHalfWeekOfYearAndYear(hs: TypeHalfWeekOfYear, year: number, opt: 'start' | 'end' | 'middle', interv?: TypeIntervOfDay): JDateTime {
+  static createFromHalfWeekOfYearAndYear(hs: TypeHalfWeekOfYear, year: number, opt: 'start' | 'end' | 'middle', interv?: TypeIntervalOfDay): JDateTime {
     const dayOfYear: TypeDayOfYear = this.halfWeekOfYearToDaysOfYear(hs)[opt];
     return this.createFromDayOfYearAndYear(dayOfYear, year, interv);
   }
-  static createFromDayOfYearAndYear(day: TypeDayOfYear, year: number, interv: TypeIntervOfDay = 0): JDateTime {
+  static createFromDayOfYearAndYear(day: TypeDayOfYear, year: number, interv: TypeIntervalOfDay = 0): JDateTime {
     return new JDateTime({
       interv: interv,
       day: JDate.absolouteFromDayOfYearAndYear(day, year)

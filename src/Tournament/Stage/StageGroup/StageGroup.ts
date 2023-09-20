@@ -78,7 +78,7 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
    * @param cal 
    */
   start(teams: RankItem[], cal: JCalendar): void {
-    const participants: Team[][] = (this.config.dayOfDrawDate) ? this.teamsDraw(teams) : this.teamsNoDraw(teams);
+    const participants: Team[][] = (this.config.intervalOfDrawDate) ? this.teamsDraw(teams) : this.teamsNoDraw(teams);
     // console.log(participants)
     this._groups.forEach((g: League, i: number) => {
       const arr = League.teamsSortForDraw(participants[i]);

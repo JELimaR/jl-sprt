@@ -1,9 +1,9 @@
 import Team from "../../Tournament/Team";
 import { TypeCategoryList, TypeJCategory } from "../../Tournament/types";
-import { IJDateTimeCreator, JDateTime } from "../../Calendar/DateTime/JDateTime";
+import { IJDateTimeCreator, JDateTime } from "../../JCalendar/DateTime/JDateTime";
 import JInstitution from "../JInstitution";
 import LeagueSystem, { IJCupSystemCreator, ILeagueSystemCreator, JCupSystem } from "../LeagueSystem";
-import { DAYSPERYEAR, TypeDayOfYear } from "../../Calendar/DateTime/types";
+import { DAYSPERYEAR, TypeDayOfYear } from "../../JCalendar/DateTime/types";
 import JEventChangeFederationReadingConfig from "./JEventChangeFederationReadingConfig";
 import JSportOrganization, { IJSportOrganizationCreator } from "../SportOrganization";
 import { JCountry } from "../JGeogEntity";

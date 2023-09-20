@@ -1,5 +1,5 @@
 import { JDateTime } from "../../JCalendar/DateTime/JDateTime";
-import { TypeDayOfYear, TypeHalfWeekOfYear, TypeIntervOfDay } from "../../JCalendar/DateTime/types";
+import { TypeDayOfYear, TypeHalfWeekOfYear, TypeIntervalOfDay } from "../../JCalendar/DateTime/types";
 import JCalendar from "../../JCalendar/JCalendar";
 import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator";
 import { RankItem, TypeRanking, TypeTableMatchState } from "../Rank/ranking";
@@ -29,7 +29,7 @@ export interface IStageConfig extends ITCCConfig {
   type: 'group' | 'playoff';
   bsConfig: IBaseStageConfig;
   // pueden ser halfweeks
-  dayOfDrawDate?: {day: TypeDayOfYear, interv: TypeIntervOfDay}; // puede ser neceario solo para crear un evento que muestre un sorteo
+  intervalOfDrawDate?: TypeIntervalOfDay; // puede ser neceario solo para crear un evento que muestre un sorteo
   halfWeekOfStartDate: TypeHalfWeekOfYear;
   halfWeekOfEndDate: TypeHalfWeekOfYear; // agregar validaciones en BaseStage con esto
   

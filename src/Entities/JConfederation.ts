@@ -1,5 +1,3 @@
-import { IJDateTimeCreator } from "../Calendar/DateTime/JDateTime";
-import JCalendar from "../Calendar/JCalendar";
 import JFederation from "./Federation/JFederation";
 import { JContinent } from "./JGeogEntity";
 import JSportOrganization, { IJSportOrganizationCreator } from "./SportOrganization";

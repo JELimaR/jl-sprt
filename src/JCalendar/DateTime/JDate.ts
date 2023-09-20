@@ -9,7 +9,7 @@ import {
   monthsOfYearNames,
 } from './types';
 
-export type TypeHalfWeekOfWeek = 'weekend' | 'middleweek'; // pasar a types
+export type TypeHalfWeekOfWeek = 'weekend' | 'middleweek';
 
 export interface IJDate {
   dayName: string;

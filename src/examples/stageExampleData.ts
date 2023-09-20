@@ -33,7 +33,7 @@ const stageConfig2: IStagePlayoffConfig = {
   type: 'playoff',
   idConfig: 'sc2',
   name: 'Stage sc2',
-  dayOfDrawDate: { day: 174, interv: 80 },
+  intervalOfDrawDate: 80,
   halfWeekOfStartDate: 48,
   halfWeekOfEndDate: 65,
 
@@ -63,7 +63,7 @@ const stageConfig3: IStageGroupConfig = {
   type: 'group',
   idConfig: 'sc3',
   name: 'Stage sc3',
-  dayOfDrawDate: { day: 174, interv: 80 },
+  intervalOfDrawDate: 80,
   halfWeekOfStartDate: 30,
   halfWeekOfEndDate: 48,
 
@@ -93,7 +93,7 @@ const stageConfig4: IStageGroupConfig = {
   type: 'group',
   idConfig: 'sc4',
   name: 'Stage sc4',
-  dayOfDrawDate: { day: 174, interv: 80 },
+  intervalOfDrawDate: 188,
   halfWeekOfStartDate: 50,
   halfWeekOfEndDate: 64,
 

@@ -1,4 +1,4 @@
-import { IJEventOthersInfo, JEventOthers } from "../../Calendar/Event/JEvent";
+import { IJEventOthersInfo, JEventOthers } from "../../JCalendar/Event/JEvent";
 import JFederation, { TypeFederationReadingConfig } from "./JFederation";
 
 interface IJEventChangeFederationReadingConfigInfo extends IJEventOthersInfo {

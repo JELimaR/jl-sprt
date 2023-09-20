@@ -87,7 +87,7 @@ export type TypeMinutesOfHour =
   | 50
   | 55;
 
-export type TypeIntervOfDay =
+export type TypeIntervalOfDay =
   | 0
   | 1
   | 2
