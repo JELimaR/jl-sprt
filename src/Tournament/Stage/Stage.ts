@@ -1,5 +1,5 @@
 import { JDateTime } from "../../JCalendar/DateTime/JDateTime";
-import { TypeDayOfYear, TypeHalfWeekOfYear, TypeIntervalOfDay } from "../../JCalendar/DateTime/types";
+import { TypeHalfWeekOfYear, TypeIntervalOfDay } from "../../JCalendar/DateTime/types";
 import JCalendar from "../../JCalendar/JCalendar";
 import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator";
 import { RankItem, TypeRanking, TypeTableMatchState } from "../Rank/ranking";
@@ -8,33 +8,25 @@ import { IBaseStageConfig } from "./BaseStage";
 import Bombo from "./Bombo";
 import { Event_StageEnd } from "./Event_StageEnd";
 import { Event_StageStart } from "./Event_StageStart";
-// import StageGroup, { IStageGroupConfig } from "./StageGroup/StageGroup";
-// import StagePlayoff, { IStagePlayoffConfig } from "./StagePlayoff/StagePlayoff";
 
 type TQualyCondition = {
-  rankId: string; // puede ser un tournament u otro rank
+  rankId: string;
   season: 'current' | 'previus'; // innecesario?
   minRankPos: number;
   maxRankPos: number;
 }
 
-export type TypeDrawRulePlayoff = {origin: 'all' | string, minCount: number}
-
-export type TypeBomboData = {
-  elemsNumber: number;
-  selectionPerTime: number[];
-}
+export type TypeDrawRulePlayoff = { origin: 'all' | string, minCount: number }
 
 export interface IStageConfig extends ITCCConfig {
   type: 'group' | 'playoff';
   bsConfig: IBaseStageConfig;
-  // pueden ser halfweeks
-  intervalOfDrawDate?: TypeIntervalOfDay; // puede ser neceario solo para crear un evento que muestre un sorteo
+
   halfWeekOfStartDate: TypeHalfWeekOfYear;
-  halfWeekOfEndDate: TypeHalfWeekOfYear; // agregar validaciones en BaseStage con esto
-  
+  intervalOfDrawDate?: TypeIntervalOfDay; // indica a que hora se visualiza el sorteo y si corresponde realizar el mismo
+  halfWeekOfEndDate: TypeHalfWeekOfYear;
+
   drawRulesValidate: TypeDrawRulePlayoff[]; // reglas que validan un sorteo
-  // boolean que define si hay o no sorteo
 
   qualifyConditions: TQualyCondition[];
 
@@ -51,63 +43,73 @@ export interface IStageInfo extends ITCCInfo {
  * generar el end event
  */
 export default abstract class Stage<I extends IStageInfo, C extends IStageConfig> extends TCC<I, C> {
-  
+
   constructor(info: I, config: C, calendar: JCalendar) {
     super(info, config);
 
     // verificaciones
+    if (config.halfWeekOfStartDate > config.halfWeekOfEndDate) {
+      throw new Error(`La fecha de start ${config.halfWeekOfStartDate} debe ser menor a la de end ${config.halfWeekOfEndDate}.
+      (Stage.constructor)`)
+    }
     // fechas
     const halfWeekOfMatches = this.getHalfWeekOfMatches();
     const halfweekOfSchedule = this.getHalfWeekOfSchedule();
+
     for (let i = 0; i < halfWeekOfMatches.length; i++) {
-      const j = (this.config.type == 'playoff' && this.config.bsConfig.opt == 'h&a') ? Math.trunc(i/2) : i;
+      const j = (this.config.type == 'playoff' && this.config.bsConfig.opt == 'h&a') ? Math.trunc(i / 2) : i;
+      // cada turn o round debe ser programada antes de que se ejecute
       if (halfWeekOfMatches[i] < halfweekOfSchedule[j]) {
         throw new Error(
           `no se cumple que halfWeekOfMatches (${halfWeekOfMatches[i]}) es menor a halfweekOfSchedule (${halfweekOfSchedule[i]}).
-          Para ${this.info.id}.`
-          )
+          Para ${this.info.id}. (Stage.constructor)`
+        )
       }
-
+      // cada turn o round debe ser ejecutada despues del inicio y antes del fin
       if (halfWeekOfMatches[i] < config.halfWeekOfStartDate || halfWeekOfMatches[i] > config.halfWeekOfEndDate) {
         throw new Error(
           `la hw Of Match ${halfWeekOfMatches[i]} debe estar entre la hw of start ${config.halfWeekOfStartDate} y la hw of end ${config.halfWeekOfEndDate}.
-          Para ${this.info.id}.`
-          )
+          Para ${this.info.id}. (Stage.constructor)`
+        )
       }
 
+      // cada turn o round debe ser programada despues del inicio y antes del fin
       if (halfweekOfSchedule[i] < config.halfWeekOfStartDate || halfweekOfSchedule[i] > config.halfWeekOfEndDate) {
         throw new Error(
           `la hw Of schedule ${halfweekOfSchedule[i]} debe estar entre la hw of start ${config.halfWeekOfStartDate} y la hw of end ${config.halfWeekOfEndDate}.
-          Para ${this.info.id}.`
-          )
+          Para ${this.info.id}. (Stage.constructor)`
+        )
       }
-
     }
-    
-    // no hay fechas de partidos repetidas
+
+    // no debe haber fechas de matches repetidas
     if (halfWeekOfMatches.length !== new Set(halfWeekOfMatches).size) {
       throw new Error(`No pueden haber hw of matches repetidas:
-      ${halfWeekOfMatches} - En ${this.info.id}`)
+      ${halfWeekOfMatches} - En ${this.info.id}.
+      (Stage.constructor)`)
     }
 
     // la suma de clasificados debe coincidir con los participantes de los bombos!
     let sumRankingQualies = 0;
     this.config.qualifyConditions.forEach((qc: TQualyCondition) => sumRankingQualies += qc.maxRankPos - qc.minRankPos + 1);
     let bomboParticipantsCount = 0;
-    this.config.bombos.forEach((b: number) => bomboParticipantsCount += b)
+    this.config.bombos.forEach((b: number) => bomboParticipantsCount += b);
     if (sumRankingQualies !== bomboParticipantsCount) {
-      throw new Error(`no coinciden ${sumRankingQualies} y ${bomboParticipantsCount}`)
+      throw new Error(`no coinciden ${sumRankingQualies} y ${bomboParticipantsCount} (Stage.constructor)`)
     }
 
+    /**
+     * Creacion y agenda de los eventos de inio y fin del stage (Event_StageStart y Event_StageEnd)
+     */
     const startEvent = new Event_StageStart({
-      calendar: calendar, 
-      dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.halfWeekOfStartDate, info.season, 'start').getIJDateTimeCreator(), 
+      calendar: calendar,
+      dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.halfWeekOfStartDate, info.season, 'start').getIJDateTimeCreator(),
       stage: this
     })
 
     const endEvent = new Event_StageEnd({
-      calendar: calendar, 
-      dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.halfWeekOfEndDate, info.season, 'end', 299).getIJDateTimeCreator(), 
+      calendar: calendar,
+      dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.halfWeekOfEndDate, info.season, 'end', 299).getIJDateTimeCreator(),
       stage: this
     })
 
@@ -116,7 +118,6 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
   }
 
   abstract get isFinished(): boolean;
-  // abstract getState(): 'created' | 'started' | 'ended';
 
   abstract getHalfWeekOfMatches(): TypeHalfWeekOfYear[];
   abstract getHalfWeekOfSchedule(): TypeHalfWeekOfYear[];
@@ -130,28 +131,25 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
    */
   abstract start(teams: RankItem[], cal: JCalendar): void;
 
+  /**
+   * creación de los bombos para el sorteo
+   */
   createBombosforDraw(teams: RankItem[]): Bombo<RankItem>[] {
     let out: Bombo<RankItem>[] = [];
     let tid = 0;
-    this.config.bombos.forEach((bomboInfo: number) => {
+    this.config.bombos.forEach((elemsInBombo: number) => {
       const elements: RankItem[] = [];
-      for (let i = 0; i < bomboInfo; i++) {
+      for (let i = 0; i < elemsInBombo; i++) {
         elements.push(teams[tid]);
         tid++;
       }
-
-      // if (this.config.type == 'playoff') {
-        out.push(new Bombo(elements));
-      // } else {
-        // out.push(new Bombo(elements));
-      // }
+      out.push(new Bombo(elements));
     })
     return out;
   }
 
-  // abstract getSelectionPerTime(elementsNumber: number): number;
   abstract getTable(ttms: TypeTableMatchState): TeamTableItem[];
-  
+
   /**
    * 
    */
@@ -168,21 +166,7 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
 
     return {
       rankId: 'sr_' + this.config.idConfig,
-      // state: (stage.isFinished) ? 'final' : 'partial',
       table: rankItemArr,
     }
   }
-
-  // static create(info: IStageInfo, config: IStageConfig, cal: JCalendar): Stage<any, any> {
-  //   if (config.type == 'group') {
-  //     const sconfig = config as IStageGroupConfig;
-  //     return new StageGroup(info, sconfig, cal);
-  //   } else if (config.type == 'playoff') {
-  //     const sconfig = config as IStagePlayoffConfig;
-  //     return new StagePlayoff(info, sconfig, cal);
-  //   } else {
-  //     throw new Error(`not implemented. (en StageConstructor)`)
-  //   }
-  // }
-
 }
