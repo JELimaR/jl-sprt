@@ -20,24 +20,25 @@ export class Event_StageStart extends JEvent {
   execute() {
     console.log(`ejecuting starting and teams draw from stage: ${this._stage.info.id}`);
     
-    const teams = this.getParticipants();
-    this._stage.start(teams, this.calendar); // debe ser un ranking en lugar de un teams
+    const rankTable = this.getParticipants();
+    this._stage.start(rankTable, this.calendar);
   }
 
-  getParticipants() { // cambiar Map por TypeRanking
-    const teams: RankItem[] = [];
+  getParticipants() {
+    const rankTable: RankItem[] = [];
     this._stage.config.qualifyConditions.forEach(qc => {
-      const ranking = globalFinishedRankingsMap.get(qc.rankId)!; // verificar correctamente
+      const ranking = globalFinishedRankingsMap.get(qc.rankId);
 
-      if (ranking.table.length < qc.maxRankPos) throw new Error(``)
+      if (!ranking) throw new Error(`No existe ranking: ${qc.rankId}`)
+      if (ranking.table.length < qc.maxRankPos) throw new Error(`El ranking es ${ranking.table.length} y se nesecitan ${qc.maxRankPos}`)
 
       for (let p = qc.minRankPos - 1; p < qc.maxRankPos; p++)
-        teams.push(ranking.table[p]);
+        rankTable.push(ranking.table[p]);
     })
 
-    teams.sort((a,b) => a.rank - b.rank);
+    rankTable.sort((a,b) => a.rank - b.rank);
 
-    return teams;
+    return rankTable;
   }
 
 
