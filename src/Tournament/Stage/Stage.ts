@@ -1,6 +1,6 @@
-import { JDateTime } from "../../JCalendar/DateTime/JDateTime";
-import { TypeHalfWeekOfYear, TypeIntervalOfDay } from "../../JCalendar/DateTime/types";
+
 import JCalendar from "../../JCalendar/JCalendar";
+import { JDateTime, TypeHalfWeekOfYear, TypeIntervalOfDay } from "../../JCalendar/JDateTimeModule";
 import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator";
 import { RankItem, TypeRanking, TypeTableMatchState } from "../Rank/ranking";
 import TeamTableItem from "../Rank/TeamTableItem";

@@ -1,11 +1,11 @@
 import League, { ILeagueConfig, ILeagueInfo } from "./League/League";
 import Stage, { IStageConfig, IStageInfo, TypeDrawRulePlayoff } from "../Stage";
-import { TypeHalfWeekOfYear } from "../../../JCalendar/DateTime/types";
 import Team from "../../Team";
 import JCalendar from "../../../JCalendar/JCalendar";
 import Bombo from "../Bombo";
 import { RankItem, simpleSortFunc, TypeTableMatchState } from "../../Rank/ranking";
 import TeamTableItem from "../../Rank/TeamTableItem";
+import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
 
 
 export interface IStageGroupConfig extends IStageConfig {

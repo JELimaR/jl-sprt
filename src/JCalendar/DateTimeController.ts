@@ -1,5 +1,4 @@
-import { JDateTime, IJDateTimeCreator } from './DateTime/JDateTime';
-
+import { JDateTime, IJDateTimeCreator } from "./JDateTimeModule";
 
 export default class DateTimeController {
   private _now: JDateTime;

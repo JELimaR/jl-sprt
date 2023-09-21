@@ -1,6 +1,6 @@
 
-import { TypeHalfWeekOfYear } from "../JCalendar/DateTime/types";
 import JCalendar from "../JCalendar/JCalendar";
+import { TypeHalfWeekOfYear } from "../JCalendar/JDateTimeModule";
 import { ITCCConfig, ITCCInfo, TCC } from "../patterns/templateConfigCreator";
 import { IStageConfig, IStageInfo } from "./Stage/Stage";
 import StageGroup, { IStageGroupConfig } from "./Stage/StageGroup/StageGroup";
@@ -50,6 +50,7 @@ export default class Tournament extends TCC<ITournamentInfo, ITournamentConfig> 
         phasesArrAux.push(phase);
       }
       phase.addStage(stage);
+      stage.getRelativeRank()
     })
     this.config.halfWeekOfStartDate = halfWeekOfStartDate;
     this.config.halfWeekOfEndDate = halfWeekOfEndDate;

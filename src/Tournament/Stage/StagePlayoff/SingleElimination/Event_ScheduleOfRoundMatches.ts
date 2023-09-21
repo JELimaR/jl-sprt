@@ -1,12 +1,11 @@
-import { JDateTime } from "../../../../JCalendar/DateTime/JDateTime";
 import { IJEventOthersInfo, JEventOthers } from "../../../../JCalendar/Event/JEvent";
 import JMatch from "../../../Match/JMatch";
 import { JEventMatch } from "../../../Match/JEventMatch";
 import { JRound } from "./JRound";
 import SingleElmination from './SingleElmination';
 import JSerie from "../../../Match/JSerie";
-import { TypeHalfWeekOfYear } from "../../../../JCalendar/DateTime/types";
 import { arr2 } from "../../../types";
+import { JDateTime, TypeHalfWeekOfYear } from "../../../../JCalendar/JDateTimeModule";
 
 
 export interface IEvent_ScheduleOfRoundMatchesInfo extends IJEventOthersInfo {

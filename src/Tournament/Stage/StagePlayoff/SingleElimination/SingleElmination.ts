@@ -1,7 +1,5 @@
 import BaseStage, { IBaseStageConfig, IBaseStageInfo } from '../../BaseStage';
-import { TypeHalfWeekOfYear } from '../../../../JCalendar/DateTime/types';
 import JCalendar from '../../../../JCalendar/JCalendar';
-import { JDateTime } from '../../../../JCalendar/DateTime/JDateTime';
 import Team from '../../../Team';
 import { JRound } from './JRound';
 import JSerie from '../../../Match/JSerie';
@@ -10,6 +8,7 @@ import JMatch from '../../../Match/JMatch';
 import { arr2 } from '../../../types';
 import TeamTableItem from '../../../Rank/TeamTableItem';
 import { simpleSortFunc, TypeTableMatchState } from '../../../Rank/ranking';
+import { TypeHalfWeekOfYear, JDateTime } from '../../../../JCalendar/JDateTimeModule';
 
 
 export interface ISingleElminationConfig extends IBaseStageConfig {

@@ -1,6 +1,6 @@
 
-import { TypeHalfWeekOfYear } from "../../../../JCalendar/DateTime/types";
 import JCalendar from "../../../../JCalendar/JCalendar";
+import { TypeHalfWeekOfYear } from "../../../../JCalendar/JDateTimeModule";
 import JMatch from "../../../Match/JMatch";
 import { TypeTableMatchState, simpleSortFunc } from "../../../Rank/ranking";
 import TeamTableItem from "../../../Rank/TeamTableItem";

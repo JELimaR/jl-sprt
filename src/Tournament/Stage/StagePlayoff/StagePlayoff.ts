@@ -1,7 +1,6 @@
 
 // import Stage, { IStageConfig, IStageInfo } from "../Stage";
 import SingleElmination, { ISingleElminationConfig, ISingleElminationInfo } from "./SingleElimination/SingleElmination";
-import { TypeHalfWeekOfYear } from "../../../JCalendar/DateTime/types";
 import JCalendar from "../../../JCalendar/JCalendar";
 import { arr2 } from "../../types";
 import Team from "../../Team";
@@ -10,6 +9,7 @@ import { RankItem, TypeRanking, TypeTableMatchState } from "../../Rank/ranking";
 import { IStageConfig, IStageInfo, TypeDrawRulePlayoff } from "../Stage";
 import Stage from "../Stage";
 import TeamTableItem from "../../Rank/TeamTableItem";
+import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
 
 export interface IStagePlayoffConfig extends IStageConfig {
   type: 'playoff',

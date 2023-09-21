@@ -1,5 +1,3 @@
-import { JDateTime } from '../../../../JCalendar/DateTime/JDateTime';
-import { TypeHalfWeekOfYear } from '../../../../JCalendar/DateTime/types';
 import JCalendar from '../../../../JCalendar/JCalendar';
 import { arr2 } from '../../../types';
 import SingleElmination from './SingleElmination';
@@ -7,6 +5,7 @@ import Team from '../../../Team';
 import JMatch from '../../../Match/JMatch';
 import JSerie from '../../../Match/JSerie';
 import { Event_ScheduleOfRoundMatches } from './Event_ScheduleOfRoundMatches';
+import { TypeHalfWeekOfYear, JDateTime } from '../../../../JCalendar/JDateTimeModule';
 
 
 export interface IJRoundInfo {

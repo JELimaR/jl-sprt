@@ -1,12 +1,11 @@
 import Team from "../../Tournament/Team";
 import { TypeCategoryList, TypeJCategory } from "../../Tournament/types";
-import { IJDateTimeCreator, JDateTime } from "../../JCalendar/DateTime/JDateTime";
 import JInstitution from "../JInstitution";
 import LeagueSystem, { IJCupSystemCreator, ILeagueSystemCreator, JCupSystem } from "../LeagueSystem";
-import { DAYSPERYEAR, TypeDayOfYear } from "../../JCalendar/DateTime/types";
 import JEventChangeFederationReadingConfig from "./JEventChangeFederationReadingConfig";
 import JSportOrganization, { IJSportOrganizationCreator } from "../SportOrganization";
 import { JCountry } from "../JGeogEntity";
+import { DAYSPERYEAR, JDateTime, TypeDayOfYear } from "../../JCalendar/JDateTimeModule";
 
 export type TypeFederationReadingConfig = 
  | {

@@ -1,11 +1,9 @@
-
-import { JDateTime } from '../../JCalendar/DateTime/JDateTime';
-import { TypeHalfWeekOfYear } from '../../JCalendar/DateTime/types';
 import { arr2 } from '../types';
 import JResult, { IJResultInfo } from './JResult';
 import Team from '../Team';
 import JMatch from './JMatch';
 import { TypeBaseStageOption } from '../Stage/BaseStage';
+import { TypeHalfWeekOfYear, JDateTime } from '../../JCalendar/JDateTimeModule';
 
 export interface IJSerieInfo {
 	teamOne: Team;

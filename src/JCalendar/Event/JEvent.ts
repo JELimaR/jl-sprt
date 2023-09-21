@@ -2,53 +2,53 @@ import { IJDateTimeCreator, JDateTime } from "../JDateTimeModule";
 import JCalendar from "../JCalendar";
 
 export interface IJEventInfo {
-    dateTime: IJDateTimeCreator;
-    calendar: JCalendar;
+  dateTime: IJDateTimeCreator;
+  calendar: JCalendar;
 }
 
 export abstract class JEvent {
-    private _dateTime: JDateTime;
-    private _calendar: JCalendar;
+  private _dateTime: JDateTime;
+  private _calendar: JCalendar;
 
-    constructor(ec: IJEventInfo) {
-        this._dateTime = new JDateTime(ec.dateTime);
-        this._calendar = ec.calendar;
-    }
+  constructor(ec: IJEventInfo) {
+    this._dateTime = new JDateTime(ec.dateTime);
+    this._calendar = ec.calendar;
+  }
 
-    get dateTime(): JDateTime {
-        return this._dateTime;
-    }
+  get dateTime(): JDateTime {
+    return this._dateTime;
+  }
 
-    get calendar(): JCalendar {
-        return this._calendar;
-    }
+  get calendar(): JCalendar {
+    return this._calendar;
+  }
 
     /*abstract*/ advance() { // para los eventos que duran mas de un intervalo y tienen acciones y estados
-        console.log('advance event');
-    }
+    console.log('advance event');
+  }
 
-    abstract execute(): any; // execute o run o start
+  abstract execute(): any; // execute o run o start
 }
 
 export interface IJEventOthersInfo extends IJEventInfo {
-    dateTime: IJDateTimeCreator;
-    calendar: JCalendar;
+  dateTime: IJDateTimeCreator;
+  calendar: JCalendar;
 }
 
 export abstract class JEventOthers extends JEvent {
-    private _state: 'created' | 'process' | 'finished';
+  private _state: 'created' | 'process' | 'finished';
 
-    constructor(eo: IJEventOthersInfo) {
-        super(eo)
-        this._state = 'created';
-    }
+  constructor(eo: IJEventOthersInfo) {
+    super(eo)
+    this._state = 'created';
+  }
 
 
     /*abstract*/ advance() { // para los eventos que duran mas de un intervalo y tienen acciones y estados
-        console.log('advance event');
-    }
+    console.log('advance event');
+  }
 
-    abstract execute(): void;
+  abstract execute(): void;
 }
 
 
