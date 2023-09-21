@@ -1,6 +1,5 @@
-import { JDate } from "../JCalendar/DateTime/JDate";
-import { IJDateTimeCreator } from "../JCalendar/DateTime/JDateTime";
 import JCalendar from "../JCalendar/JCalendar";
+import { IJDateTimeCreator, JDate } from "../JCalendar/JDateTimeModule";
 import JGeogEntity, { JTown } from "./JGeogEntity";
 
 export interface IJSportOrganizationCreator<G extends JGeogEntity, M extends { id: string }> {

@@ -1,9 +1,9 @@
-import { JDateTime } from "../JCalendar/DateTime/JDateTime";
 import JCalendar from "../JCalendar/JCalendar";
 import { getExampleTeams } from "../Entities/ExampleData";
 import League from "../Tournament/Stage/StageGroup/League/League";
 import SingleElmination from "../Tournament/Stage/StagePlayoff/SingleElimination/SingleElmination";
 import mostrarFecha from "../mostrarFechaBorrar";
+import { JDateTime } from "../JCalendar/JDateTimeModule";
 
 export default function baseStageExample() {
 

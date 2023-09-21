@@ -1,4 +1,4 @@
-import { JDateTime } from "../JCalendar/DateTime/JDateTime";
+import { JDateTime } from "../JCalendar/JDateTimeModule";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
 import { RankItem, TypeRanking } from "../Tournament/Rank/ranking";
 import exampleAdvance from "./exampleAdvance";

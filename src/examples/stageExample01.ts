@@ -1,4 +1,3 @@
-import { JDateTime } from "../JCalendar/DateTime/JDateTime";
 import JCalendar from "../JCalendar/JCalendar";
 import { getExampleTeams } from "../Entities/ExampleData";
 import StagePlayoff from "../Tournament/Stage/StagePlayoff/StagePlayoff";
@@ -9,6 +8,7 @@ import stageExampleData from "./stageExampleData";
 import TeamTableItem from "../Tournament/Rank/TeamTableItem";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
 import { RankItem, TypeRanking } from "../Tournament/Rank/ranking";
+import { JDateTime } from "../JCalendar/JDateTimeModule";
 
 const {
   s1,

@@ -1,4 +1,4 @@
-import { JDateTime } from "./JCalendar/DateTime/JDateTime"
+import { JDateTime } from "./JCalendar/JDateTimeModule";
 
 export default function mostrarFecha(dt: JDateTime) {
   const {

@@ -16,7 +16,7 @@ import tournamentExample02 from './examples/tournamentExample02';
  * 5 - separar en modulos independientes - completados: ()
  * 6 - empezar a trabajar con las organizations
  * 7 - PHASES de tournament - falta definir las dependencias entre phases
- * 8 - todas las verificaciones deben poder realizarse con los config
+ * 8 - todas las verificaciones deben poder realizarse con los config e info
  */
 
 function app() {

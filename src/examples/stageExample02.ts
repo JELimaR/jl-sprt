@@ -1,4 +1,4 @@
-import { JDateTime } from "../JCalendar/DateTime/JDateTime";
+
 import JCalendar from "../JCalendar/JCalendar";
 import { getExampleTeams } from "../Entities/ExampleData";
 import mostrarFecha from "../mostrarFechaBorrar";
@@ -9,7 +9,7 @@ import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
 import Team from "../Tournament/Team";
 import exampleAdvance from "./exampleAdvance";
 import stageExampleData from "./stageExampleData";
-
+import { JDateTime } from "../JCalendar/JDateTimeModule";
 
 const {
   s3,

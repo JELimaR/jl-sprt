@@ -1,4 +1,3 @@
-import { JDateTime } from "../JCalendar/DateTime/JDateTime";
 import JCalendar from "../JCalendar/JCalendar";
 import { getExampleTeams } from "../Entities/ExampleData";
 import mostrarFecha from "../mostrarFechaBorrar";
@@ -8,6 +7,7 @@ import TeamTableItem from "../Tournament/Rank/TeamTableItem";
 import StageGroup, { IStageGroupConfig } from "../Tournament/Stage/StageGroup/StageGroup";
 import Team from "../Tournament/Team";
 import exampleAdvance from "./exampleAdvance";
+import { JDateTime } from "../JCalendar/JDateTimeModule";
 
 const selection = getExampleTeams(150, 'Team');
 

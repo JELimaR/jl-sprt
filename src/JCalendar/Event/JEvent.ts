@@ -1,4 +1,4 @@
-import { IJDateTimeCreator, JDateTime } from "../DateTime/JDateTime";
+import { IJDateTimeCreator, JDateTime } from "../JDateTimeModule";
 import JCalendar from "../JCalendar";
 
 export interface IJEventInfo {
