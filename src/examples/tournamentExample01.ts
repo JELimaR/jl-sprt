@@ -6,7 +6,7 @@ import StageGroup, { IStageGroupConfig } from "../Tournament/Stage/StageGroup/St
 import JCalendar from "../JCalendar/JCalendar";
 import { getExampleTeams } from "../Entities/ExampleData";
 import mostrarFecha from "../mostrarFechaBorrar";
-import Tournament, { ITournamentConfig } from "../Tournament/Tournament";
+import Tournament, { ITournamentConfig } from "../Tournament/Tournament2";
 import { TGS } from "../Tournament/types";
 import { IStagePlayoffConfig } from "../Tournament/Stage/StagePlayoff/StagePlayoff";
 
@@ -60,25 +60,34 @@ export default function tournamentExample01() {
 
     exampleAdvance(cal1)
 
+    console.log('---------------------------------------------------------------------------------')
     const td1 = tournamentsMap.get(`d1i_${federation_014.id}_${season}`);
-    td1?.stages.forEach((s: TGS) => {
+    td1?.phases.forEach(p => {
       console.log(td1.info.id)
-      console.log(s.info.id)
-      console.table(s.getTable('finished').map(e => e.getInterface()));
+      console.log(p.info.id)
+      console.table(p.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }));
+      p.stages.forEach((s: TGS) => {
+        console.log(s.info.id)
+        console.table(s.getTable('finished').map(e => e.getInterface()));
+      })
     })
+
+    console.log('---------------------------------------------------------------------------------')
     const td2 = tournamentsMap.get(`d2i_${federation_014.id}_${season}`);
-    td2?.stages.forEach((s: TGS) => {
-      console.log('---------------------------------------------------------------------------------')
+    td2?.phases.forEach(p => {
       console.log(td2.info.id)
-      console.log(s.info.id)
-      if (s instanceof StageGroup) {
-        console.log('group table:', s.info.id)
-        s.getTableOfGroups('finished').forEach(gr => {
-          console.table(gr.map(e => e.getInterface()));    
-        })
-      }
-      console.log('stage table')
-      console.table(s.getTable('finished').map(e => e.getInterface()));
+      console.log(p.info.id)
+      console.table(p.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }));
+      p.stages.forEach((s: TGS) => {
+        console.log(s.info.id)
+        if (s instanceof StageGroup) {
+          console.log('group table:', s.info.id)
+          s.getTableOfGroups('finished').forEach(gr => {
+            console.table(gr.map(e => e.getInterface()));
+          })
+        }
+        console.table(s.getTable('finished').map(e => e.getInterface()));
+      })
     })
 
     // al final de la season hay nuevo ranking de federacion
@@ -88,25 +97,25 @@ export default function tournamentExample01() {
       selection.slice(8, 22).forEach((t, i) => fedSeasonRanking.table.push({ team: t, rank: i + 9, originId: 'f014' }))
     }
     if (season < 1988) {
-      td1?.stages.get(`${td1.info.id}_s1`)!.getRelativeRank().table.forEach((ri, i) => fedSeasonRanking.table[i] = { ...ri, originId: 'f014' });
+      td1?.phases.get(`${td1.info.id}_p1`)!.getRelativeRank().table.forEach((ri, i) => fedSeasonRanking.table[i] = { ...ri, originId: 'f014' });
       globalFinishedRankingsMap.set(fedSeasonRanking.rankId, fedSeasonRanking);
     } else {
-      td1?.stages.get(`${td1.info.id}_s1`)!.getRelativeRank().table.forEach((ri, i) => {
+      td1?.phases.get(`${td1.info.id}_p1`)!.getRelativeRank().table.forEach((ri, i) => {
         const rpos = i < 8 ? i : i + 2;
         fedSeasonRanking.table[rpos] = { ...ri, rank: rpos + 1, originId: 'f014' }
       });
-      td2?.stages.get(`${td2.info.id}_s1`)!.getRelativeRank().table.forEach((ri, i) => {
+      td2?.phases.get(`${td2.info.id}_p1`)!.getRelativeRank().table.forEach((ri, i) => {
         if (i > 3)
           fedSeasonRanking.table[i + 10] = { ...ri, rank: i + 10 + 1, originId: 'f014' }
       });
-      td2?.stages.get(`${td2.info.id}_s2`)!.getRelativeRank().table.forEach((ri, i) => {
+      td2?.phases.get(`${td2.info.id}_p2`)!.getRelativeRank().table.forEach((ri, i) => {
         const rpos = i < 2 ? i + 8 : i + 10;
         fedSeasonRanking.table[rpos] = { ...ri, rank: rpos + 1, originId: 'f014' }
       });
 
       globalFinishedRankingsMap.set(fedSeasonRanking.rankId, fedSeasonRanking);
       const printDeps: string[] = []
-      td2?.phases.forEach((tp) => printDeps.push(...tp.getDependencyIds()))
+      // td2?.phases.forEach((tp) => printDeps.push(...tp.getDependencyIds()))
       console.log(printDeps)
     }
 
@@ -161,10 +170,15 @@ const sconfigd1_v1: IStageGroupConfig = {
 }
 const tconfigd1_v1: ITournamentConfig = {
   idConfig: 'd1i_f014', name: 'd1 f014',
-  halfWeekOfEndDate: 1,
-  halfWeekOfStartDate: 108,
+  start: 1,
+  end: 108,
 
-  stages: [{phase: 1, config: sconfigd1_v1}]
+  phases: [
+    {
+      n: 1, idConfig: 'd1i_f014_p1', name: 'Phase 1',
+      start: 18, end: 92, stages: [{ minRankPos: 1, config: sconfigd1_v1 }]
+    }
+  ]
 }
 /** d1_v2 */
 const sconfigd1_v2: IStageGroupConfig = {
@@ -199,10 +213,15 @@ const sconfigd1_v2: IStageGroupConfig = {
 }
 const tconfigd1_v2: ITournamentConfig = {
   idConfig: 'd1i_f014', name: 'd1 f014',
-  halfWeekOfEndDate: 1,
-  halfWeekOfStartDate: 108,
+  start: 1,
+  end: 108,
 
-  stages: [{phase: 1, config: sconfigd1_v2}]
+  phases: [
+    {
+      n: 1, idConfig: 'd1i_f014_p1', name: 'Phase 1',
+      start: 16, end: 93, stages: [{ minRankPos: 1, config: sconfigd1_v2 }]
+    }
+  ]
 }
 /** d2_v1 */
 const sconfigd2_01_v1: IStageGroupConfig = {
@@ -214,7 +233,7 @@ const sconfigd2_01_v1: IStageGroupConfig = {
   intervalOfDrawDate: 185,
   halfWeekOfEndDate: 78,
 
-  bombos: [2, 2, 4, 4  ],
+  bombos: [2, 2, 4, 4],
   drawRulesValidate: [],
   participantsPerGroup: [6, 6],
 
@@ -264,8 +283,17 @@ const sconfigd2_02_v1: IStagePlayoffConfig = {
 }
 const tconfigd2_v1: ITournamentConfig = {
   idConfig: 'd2i_f014', name: 'd2 f014',
-  halfWeekOfEndDate: 1,
-  halfWeekOfStartDate: 108,
+  start: 1,
+  end: 108,
 
-  stages: [{phase: 1, config: sconfigd2_01_v1}, {phase: 2, config: sconfigd2_02_v1}],
+  phases: [
+    {
+      n: 1, idConfig: 'd2i_f014_p1', name: 'Phase 1',
+      start: 16, end: 78, stages: [{ minRankPos: 1, config: sconfigd2_01_v1 }]
+    },
+    {
+      n: 2, idConfig: 'd2i_f014_p2', name: 'Phase 2',
+      start: 80, end: 92, stages: [{ minRankPos: 1, config: sconfigd2_02_v1 }]
+    }
+  ]
 }
