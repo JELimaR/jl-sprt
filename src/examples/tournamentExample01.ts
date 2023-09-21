@@ -14,7 +14,7 @@ import { IStagePlayoffConfig } from "../Tournament/Stage/StagePlayoff/StagePlayo
  * 5 temporadas de un sistema de liga de 2 divisiones.
  * primeras 2 con sus 8 fundadores, luego se asocian 14 instituciones más -> d1: 10 - d2: 12 (6,6).
  */
-type TypeDivisionList = { d1: ITournamentConfig, d2?: ITournamentConfig };
+type TypeDivisionList = { d1: ITournamentConfig, d2?: ITournamentConfig,  cup?: ITournamentConfig };
 const selection = getExampleTeams(150, 'Team');
 interface IFederationData {
   id: string;
@@ -32,6 +32,10 @@ const initSeasonFunc = (fede: IFederationData, cal: JCalendar, season: number) =
   if (fede.getDivisionsConfig.d2) {
     const tournamentd2 = new Tournament({ id: `d2i_${fede.id}_${season}`, season }, fede.getDivisionsConfig.d2, cal)
     tournamentsMap.set(tournamentd2.info.id, tournamentd2);
+  }
+  if (fede.getDivisionsConfig.cup) {
+    const cup = new Tournament({ id: `cup_${fede.id}_${season}`, season }, fede.getDivisionsConfig.cup, cal)
+    tournamentsMap.set(cup.info.id, cup);
   }
 }
 /**
@@ -91,6 +95,18 @@ export default function tournamentExample01() {
         console.table(s.getTable('finished').map(e => e.getInterface()));
       })
     })
+    console.log('---------------------------------------------------------------------------------')
+    const cup = tournamentsMap.get(`cup_${federation_014.id}_${season}`);
+    console.log(cup?.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }))
+    cup?.phases.forEach(p => {
+      console.log(cup.info.id)
+      console.log(p.info.id)
+      console.table(p.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }));
+      p.stages.forEach((s: TGS) => {
+        console.log(s.info.id)
+        console.table(s.getTable('finished').map(e => e.getInterface()));
+      })
+    })
 
     // al final de la season hay nuevo ranking de federacion
     let fedSeasonRanking: TypeRanking = globalFinishedRankingsMap.get('fr_f014i')!;
@@ -127,7 +143,8 @@ export default function tournamentExample01() {
     if (season == 1987) {
       federation_014.getDivisionsConfig = {
         d1: tconfigd1_v2,
-        d2: tconfigd2_v1
+        d2: tconfigd2_v1,
+        cup: tconfigc,
       }
     }
   }
@@ -257,13 +274,13 @@ const sconfigd2_01_v1: IStageGroupConfig = {
   }
 }
 const sconfigd2_02_v1: IStagePlayoffConfig = {
-  idConfig: 'd1i_f014_sp2',
+  idConfig: 'd2i_f014_sp2',
   name: '1 Div',
   type: 'playoff',
 
   hwStart: 80,
   intervalOfDrawDate: 185,
-  hwEnd: 92,
+  hwEnd: 84,
 
   bombos: [2, 2],
   drawRulesValidate: [{ origin: 'all', minCount: 0 }],
@@ -275,12 +292,65 @@ const sconfigd2_02_v1: IStagePlayoffConfig = {
     name: '1 Div',
     opt: 'h&a',
     participantsNumber: 4,
-    roundsNumber: 2,
+    roundsNumber: 1,
     roundHalfWeeks: [
       [80, 82],
-      [86, 90]
+      // [86, 90]
     ],
-    roundHalfWeeksSchedule: [80, 86],
+    roundHalfWeeksSchedule: [80],
+  }
+}
+
+const sconfigd2_03_v1: IStagePlayoffConfig = {
+  idConfig: 'd2i_f014_sp2',
+  name: '2 div - final',
+  type: 'playoff',
+
+  hwStart: 86,
+  intervalOfDrawDate: 185,
+  hwEnd: 92,
+
+  bombos: [2],
+  drawRulesValidate: [{ origin: 'all', minCount: 0 }],
+
+  qualifyConditions: [{ rankId: 'sr_d2i_f014_sp2', season: 'previus', minRankPos: 1, maxRankPos: 2 }],
+
+  bsConfig: {
+    idConfig: 'p',
+    name: '2 Div',
+    opt: 'neutral',
+    participantsNumber: 2,
+    roundsNumber: 1,
+    roundHalfWeeks: [
+      [92, 92]
+    ],
+    roundHalfWeeksSchedule: [86],
+  }
+}
+const sconfigd2_04_v1: IStagePlayoffConfig = {
+  idConfig: 'd2i_f014_sp4',
+  name: '3er puesto',
+  type: 'playoff',
+
+  hwStart: 86,
+  intervalOfDrawDate: 185,
+  hwEnd: 92,
+
+  bombos: [2],
+  drawRulesValidate: [{ origin: 'all', minCount: 0 }],
+
+  qualifyConditions: [{ rankId: 'sr_d2i_f014_sp2', season: 'previus', minRankPos: 3, maxRankPos: 4 }],
+
+  bsConfig: {
+    idConfig: 'p',
+    name: '1 Div',
+    opt: 'neutral',
+    participantsNumber: 2,
+    roundsNumber: 1,
+    roundHalfWeeks: [
+      [91, 91]
+    ],
+    roundHalfWeeksSchedule: [86],
   }
 }
 const tconfigd2_v1: ITournamentConfig = {
@@ -295,7 +365,93 @@ const tconfigd2_v1: ITournamentConfig = {
     },
     {
       n: 2, idConfig: 'd2i_f014_p2', name: 'Phase 2',
-      hwStart: 80, hwEnd: 92, stages: [{ minRankPos: 1, config: sconfigd2_02_v1 }]
+      hwStart: 80, hwEnd: 84, stages: [{ minRankPos: 1, config: sconfigd2_02_v1 }]
+    },
+    {
+      n: 3, idConfig: 'd2i_f014_p3', name: 'Phase 3',
+      hwStart: 86, hwEnd: 92, stages: [
+        { minRankPos: 1, config: sconfigd2_03_v1 },
+        { minRankPos: 3, config: sconfigd2_04_v1 }
+      ]
     }
+  ]
+}
+
+/** 
+ * Agrego torneo de copa
+ * total 22 equipos
+ * s1 - 12 y clasifican 6
+ * s2 se agregan 10 participantes que vienen de arriba!
+*/
+const sconfigc1_01: IStagePlayoffConfig = {
+  idConfig: 'c1i_f014_sp01',
+  name: 'phase preliminar',
+  type: 'playoff',
+
+  hwStart: 35,
+  intervalOfDrawDate: 185,
+  hwEnd: 50,
+
+  bombos: [12],
+  drawRulesValidate: [],
+
+  qualifyConditions: [{ rankId: 'fr_f014i', season: 'previus', minRankPos: 11, maxRankPos: 22 }],
+
+  bsConfig: {
+    idConfig: 'p',
+    name: '1 Div',
+    opt: 'h&a',
+    participantsNumber: 12,
+    roundsNumber: 1,
+    roundHalfWeeks: [
+      [41, 43]
+    ],
+    roundHalfWeeksSchedule: [40],
+  }
+}
+const sconfigc1_02: IStagePlayoffConfig = {
+  idConfig: 'c1i_f014_sp02',
+  name: 'phase playoff',
+  type: 'playoff',
+
+  hwStart: 51,
+  intervalOfDrawDate: 185,
+  hwEnd: 87,
+
+  bombos: [10, 6],
+  drawRulesValidate: [],
+
+  qualifyConditions: [
+    { rankId: 'fr_f014i', season: 'previus', minRankPos: 1, maxRankPos: 10 },
+    { rankId: 'sr_c1i_f014_sp01', season: 'previus', minRankPos: 1, maxRankPos: 6 },
+  ],
+
+  bsConfig: {
+    idConfig: 'p',
+    name: '1 Div',
+    opt: 'h&a',
+    participantsNumber: 16,
+    roundsNumber: 4,
+    roundHalfWeeks: [
+      [53, 55], [59, 61], [65, 67], [71, 73]
+    ],
+    roundHalfWeeksSchedule: [52, 56, 62, 68],
+  }
+}
+
+const tconfigc: ITournamentConfig = {
+  idConfig: 'cup_f014', name: 'cup f014',
+  hwStart: 1,
+  hwEnd: 108,
+
+  phases: [
+    {
+      n: 1, idConfig: 'cup_f014_p1', name: 'Phase 1',
+      hwStart: 30, hwEnd: 50, stages: [{ minRankPos: 11, config: sconfigc1_01 }]
+    },
+    {
+      n: 2, idConfig: 'cup_f014_p2', name: 'Phase 2',
+      hwStart: 51, hwEnd: 90, stages: [{ minRankPos: 1, config: sconfigc1_02 }]
+    },
   ]
 }
