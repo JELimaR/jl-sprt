@@ -6,8 +6,8 @@ const stageConfig1: IStagePlayoffConfig = {
   type: 'playoff',
   idConfig: 'sc1',
   name: 'Stage sc1',
-  halfWeekOfStartDate: 20,
-  halfWeekOfEndDate: 30,
+  hwStart: 20,
+  hwEnd: 30,
 
   bombos: [10, 10, 10, 10],
 
@@ -35,8 +35,8 @@ const stageConfig2: IStagePlayoffConfig = {
   idConfig: 'sc2',
   name: 'Stage sc2',
   intervalOfDrawDate: 80,
-  halfWeekOfStartDate: 48,
-  halfWeekOfEndDate: 65,
+  hwStart: 48,
+  hwEnd: 65,
 
   qualifyConditions: [{ rankId: 'sr_sc1', season: 'current', minRankPos: 1, maxRankPos: 10 }],
 
@@ -65,8 +65,8 @@ const stageConfig3: IStageGroupConfig = {
   idConfig: 'sc3',
   name: 'Stage sc3',
   intervalOfDrawDate: 80,
-  halfWeekOfStartDate: 30,
-  halfWeekOfEndDate: 48,
+  hwStart: 30,
+  hwEnd: 48,
 
   qualifyConditions: [{ rankId: 'rankingInicial', season: 'current', minRankPos: 1, maxRankPos: 40 }],
 
@@ -95,8 +95,8 @@ const stageConfig4: IStageGroupConfig = {
   idConfig: 'sc4',
   name: 'Stage sc4',
   intervalOfDrawDate: 188,
-  halfWeekOfStartDate: 50,
-  halfWeekOfEndDate: 64,
+  hwStart: 50,
+  hwEnd: 64,
 
   qualifyConditions: [{ rankId: 'sr_sc3', season: 'current', minRankPos: 1, maxRankPos: 15 }],
 

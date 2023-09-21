@@ -46,9 +46,9 @@ const stageLeagueconfig: IStageGroupConfig = {
   name: '1st Division',
   type: 'group',
   
-  halfWeekOfStartDate: 9,
+  hwStart: 9,
   intervalOfDrawDate: 204,
-  halfWeekOfEndDate: 93,
+  hwEnd: 93,
   
   bombos: [20],
   drawRulesValidate: [],

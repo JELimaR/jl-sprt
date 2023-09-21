@@ -23,9 +23,9 @@ export interface IStageConfig extends ITCCConfig {
   type: 'group' | 'playoff';
   bsConfig: IBaseStageConfig;
 
-  halfWeekOfStartDate: TypeHalfWeekOfYear;
+  hwStart: TypeHalfWeekOfYear;
   intervalOfDrawDate?: TypeIntervalOfDay; // indica a que hora se visualiza el sorteo y si corresponde realizar el mismo
-  halfWeekOfEndDate: TypeHalfWeekOfYear;
+  hwEnd: TypeHalfWeekOfYear;
 
   drawRulesValidate: TypeDrawRulePlayoff[]; // reglas que validan un sorteo
 
@@ -48,8 +48,8 @@ export default abstract class Stage<I extends IElementInfo, C extends IStageConf
      * Verificaciones 
      * ELIMINAR LAS DEPENDENCIAS DE "this"
      */
-    if (config.halfWeekOfStartDate > config.halfWeekOfEndDate) {
-      throw new Error(`La fecha de start ${config.halfWeekOfStartDate} debe ser menor a la de end ${config.halfWeekOfEndDate}.
+    if (config.hwStart > config.hwEnd) {
+      throw new Error(`La fecha de start ${config.hwStart} debe ser menor a la de end ${config.hwEnd}.
       (Stage.constructor)`)
     }
     // fechas
@@ -66,17 +66,17 @@ export default abstract class Stage<I extends IElementInfo, C extends IStageConf
         )
       }
       // cada turn o round debe ser ejecutada despues del inicio y antes del fin
-      if (halfWeekOfMatches[i] < config.halfWeekOfStartDate || halfWeekOfMatches[i] > config.halfWeekOfEndDate) {
+      if (halfWeekOfMatches[i] < config.hwStart || halfWeekOfMatches[i] > config.hwEnd) {
         throw new Error(
-          `la hw Of Match ${halfWeekOfMatches[i]} debe estar entre la hw of start ${config.halfWeekOfStartDate} y la hw of end ${config.halfWeekOfEndDate}.
+          `la hw Of Match ${halfWeekOfMatches[i]} debe estar entre la hw of start ${config.hwStart} y la hw of end ${config.hwEnd}.
           Para ${info.id}. (Stage.constructor)`
         )
       }
 
       // cada turn o round debe ser programada despues del inicio y antes del fin
-      if (halfweekOfSchedule[i] < config.halfWeekOfStartDate || halfweekOfSchedule[i] > config.halfWeekOfEndDate) {
+      if (halfweekOfSchedule[i] < config.hwStart || halfweekOfSchedule[i] > config.hwEnd) {
         throw new Error(
-          `la hw Of schedule ${halfweekOfSchedule[i]} debe estar entre la hw of start ${config.halfWeekOfStartDate} y la hw of end ${config.halfWeekOfEndDate}.
+          `la hw Of schedule ${halfweekOfSchedule[i]} debe estar entre la hw of start ${config.hwStart} y la hw of end ${config.hwEnd}.
           Para ${info.id}. (Stage.constructor)`
         )
       }
@@ -104,13 +104,13 @@ export default abstract class Stage<I extends IElementInfo, C extends IStageConf
      */
     const startEvent = new Event_StageStart({
       calendar: calendar,
-      dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.halfWeekOfStartDate, info.season, 'start').getIJDateTimeCreator(),
+      dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.hwStart, info.season, 'start').getIJDateTimeCreator(),
       stage: this
     })
 
     const endEvent = new Event_StageEnd({
       calendar: calendar,
-      dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.halfWeekOfEndDate, info.season, 'end', 299).getIJDateTimeCreator(),
+      dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.hwEnd, info.season, 'end', 299).getIJDateTimeCreator(),
       stage: this
     })
 

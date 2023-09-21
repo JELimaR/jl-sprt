@@ -52,9 +52,9 @@ const stageLeagueconfig: IStageGroupConfig = {
   name: 'group stage',
   type: 'group',
 
-  halfWeekOfStartDate: 95,
+  hwStart: 95,
   intervalOfDrawDate: 185,
-  halfWeekOfEndDate: 105,
+  hwEnd: 105,
 
   bombos: [ 13, 13, 13 ],
 

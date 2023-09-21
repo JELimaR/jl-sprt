@@ -62,6 +62,7 @@ export default function tournamentExample01() {
 
     console.log('---------------------------------------------------------------------------------')
     const td1 = tournamentsMap.get(`d1i_${federation_014.id}_${season}`);
+    console.log(td1?.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }))
     td1?.phases.forEach(p => {
       console.log(td1.info.id)
       console.log(p.info.id)
@@ -74,6 +75,7 @@ export default function tournamentExample01() {
 
     console.log('---------------------------------------------------------------------------------')
     const td2 = tournamentsMap.get(`d2i_${federation_014.id}_${season}`);
+    console.log(td2?.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }))
     td2?.phases.forEach(p => {
       console.log(td2.info.id)
       console.log(p.info.id)
@@ -97,18 +99,18 @@ export default function tournamentExample01() {
       selection.slice(8, 22).forEach((t, i) => fedSeasonRanking.table.push({ team: t, rank: i + 9, originId: 'f014' }))
     }
     if (season < 1988) {
-      td1?.phases.get(`${td1.info.id}_p1`)!.getRelativeRank().table.forEach((ri, i) => fedSeasonRanking.table[i] = { ...ri, originId: 'f014' });
+      td1?.phases/*.get(`${td1.info.id}_p1`)!*/[0].getRelativeRank().table.forEach((ri, i) => fedSeasonRanking.table[i] = { ...ri, originId: 'f014' });
       globalFinishedRankingsMap.set(fedSeasonRanking.rankId, fedSeasonRanking);
     } else {
-      td1?.phases.get(`${td1.info.id}_p1`)!.getRelativeRank().table.forEach((ri, i) => {
+      td1?.phases/*.get(`${td1.info.id}_p1`)!*/[0].getRelativeRank().table.forEach((ri, i) => {
         const rpos = i < 8 ? i : i + 2;
         fedSeasonRanking.table[rpos] = { ...ri, rank: rpos + 1, originId: 'f014' }
       });
-      td2?.phases.get(`${td2.info.id}_p1`)!.getRelativeRank().table.forEach((ri, i) => {
+      td2?.phases/*.get(`${td2.info.id}_p1`)!*/[0].getRelativeRank().table.forEach((ri, i) => {
         if (i > 3)
           fedSeasonRanking.table[i + 10] = { ...ri, rank: i + 10 + 1, originId: 'f014' }
       });
-      td2?.phases.get(`${td2.info.id}_p2`)!.getRelativeRank().table.forEach((ri, i) => {
+      td2?.phases/*.get(`${td2.info.id}_p2`)!*/[1].getRelativeRank().table.forEach((ri, i) => {
         const rpos = i < 2 ? i + 8 : i + 10;
         fedSeasonRanking.table[rpos] = { ...ri, rank: rpos + 1, originId: 'f014' }
       });
@@ -143,9 +145,9 @@ const sconfigd1_v1: IStageGroupConfig = {
   name: '1 Div',
   type: 'group',
 
-  halfWeekOfStartDate: 18,
+  hwStart: 18,
   intervalOfDrawDate: 185,
-  halfWeekOfEndDate: 92,
+  hwEnd: 92,
 
   bombos: [8],
   drawRulesValidate: [],
@@ -170,13 +172,13 @@ const sconfigd1_v1: IStageGroupConfig = {
 }
 const tconfigd1_v1: ITournamentConfig = {
   idConfig: 'd1i_f014', name: 'd1 f014',
-  start: 1,
-  end: 108,
+  hwStart: 1,
+  hwEnd: 108,
 
   phases: [
     {
       n: 1, idConfig: 'd1i_f014_p1', name: 'Phase 1',
-      start: 18, end: 92, stages: [{ minRankPos: 1, config: sconfigd1_v1 }]
+      hwStart: 18, hwEnd: 92, stages: [{ minRankPos: 1, config: sconfigd1_v1 }]
     }
   ]
 }
@@ -186,9 +188,9 @@ const sconfigd1_v2: IStageGroupConfig = {
   name: '1 Div',
   type: 'group',
 
-  halfWeekOfStartDate: 18,
+  hwStart: 18,
   intervalOfDrawDate: 185,
-  halfWeekOfEndDate: 92,
+  hwEnd: 92,
 
   bombos: [10],
   drawRulesValidate: [{ origin: 'all', minCount: 5 }],
@@ -213,13 +215,13 @@ const sconfigd1_v2: IStageGroupConfig = {
 }
 const tconfigd1_v2: ITournamentConfig = {
   idConfig: 'd1i_f014', name: 'd1 f014',
-  start: 1,
-  end: 108,
+  hwStart: 1,
+  hwEnd: 108,
 
   phases: [
     {
       n: 1, idConfig: 'd1i_f014_p1', name: 'Phase 1',
-      start: 16, end: 93, stages: [{ minRankPos: 1, config: sconfigd1_v2 }]
+      hwStart: 16, hwEnd: 93, stages: [{ minRankPos: 1, config: sconfigd1_v2 }]
     }
   ]
 }
@@ -229,9 +231,9 @@ const sconfigd2_01_v1: IStageGroupConfig = {
   name: '1 Div',
   type: 'group',
 
-  halfWeekOfStartDate: 18,
+  hwStart: 18,
   intervalOfDrawDate: 185,
-  halfWeekOfEndDate: 78,
+  hwEnd: 78,
 
   bombos: [2, 2, 4, 4],
   drawRulesValidate: [],
@@ -259,9 +261,9 @@ const sconfigd2_02_v1: IStagePlayoffConfig = {
   name: '1 Div',
   type: 'playoff',
 
-  halfWeekOfStartDate: 80,
+  hwStart: 80,
   intervalOfDrawDate: 185,
-  halfWeekOfEndDate: 92,
+  hwEnd: 92,
 
   bombos: [2, 2],
   drawRulesValidate: [{ origin: 'all', minCount: 0 }],
@@ -283,17 +285,17 @@ const sconfigd2_02_v1: IStagePlayoffConfig = {
 }
 const tconfigd2_v1: ITournamentConfig = {
   idConfig: 'd2i_f014', name: 'd2 f014',
-  start: 1,
-  end: 108,
+  hwStart: 1,
+  hwEnd: 108,
 
   phases: [
     {
       n: 1, idConfig: 'd2i_f014_p1', name: 'Phase 1',
-      start: 16, end: 78, stages: [{ minRankPos: 1, config: sconfigd2_01_v1 }]
+      hwStart: 16, hwEnd: 78, stages: [{ minRankPos: 1, config: sconfigd2_01_v1 }]
     },
     {
       n: 2, idConfig: 'd2i_f014_p2', name: 'Phase 2',
-      start: 80, end: 92, stages: [{ minRankPos: 1, config: sconfigd2_02_v1 }]
+      hwStart: 80, hwEnd: 92, stages: [{ minRankPos: 1, config: sconfigd2_02_v1 }]
     }
   ]
 }

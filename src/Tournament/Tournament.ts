@@ -36,8 +36,8 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
     config.stages.forEach((sconfig, i: number) => {
       const stage: TGS = Tournament.create({ id: `${info.id}_s${i + 1}`, season: info.season }, sconfig.config, cal);
       this._stages.set(stage.info.id, stage);
-      halfWeekOfStartDate = Math.min(halfWeekOfStartDate, stage.config.halfWeekOfStartDate) as TypeHalfWeekOfYear;
-      halfWeekOfEndDate = Math.max(halfWeekOfEndDate, stage.config.halfWeekOfEndDate) as TypeHalfWeekOfYear;
+      halfWeekOfStartDate = Math.min(halfWeekOfStartDate, stage.config.hwStart) as TypeHalfWeekOfYear;
+      halfWeekOfEndDate = Math.max(halfWeekOfEndDate, stage.config.hwEnd) as TypeHalfWeekOfYear;
       // agregar el stage a la phase correspondiente
       const phaseId = `${info.id}_ph${sconfig.phase}`;
       let phase = this._phases.get(phaseId);
@@ -108,14 +108,14 @@ class Phase {
   get halfWeekOfStartDate(): TypeHalfWeekOfYear {
     let out: TypeHalfWeekOfYear = 108;
     this._parallelStages.forEach(value => {
-      out = Math.min(out, value.stage.config.halfWeekOfStartDate) as TypeHalfWeekOfYear;
+      out = Math.min(out, value.stage.config.hwStart) as TypeHalfWeekOfYear;
     })
     return out;
   }
   get halfWeekOfEndDate(): TypeHalfWeekOfYear {
     let out: TypeHalfWeekOfYear = 1;
     this._parallelStages.forEach(value => {
-      out = Math.max(out, value.stage.config.halfWeekOfEndDate) as TypeHalfWeekOfYear;
+      out = Math.max(out, value.stage.config.hwEnd) as TypeHalfWeekOfYear;
     })
     return out;
   }
