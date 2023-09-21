@@ -47,29 +47,32 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
   constructor(info: I, config: C, calendar: JCalendar) {
     super(info, config);
 
-    // verificaciones
+    /********************************************************************************************************************************************************************************************
+     * Verificaciones 
+     * ELIMINAR LAS DEPENDENCIAS DE "this"
+     */
     if (config.halfWeekOfStartDate > config.halfWeekOfEndDate) {
       throw new Error(`La fecha de start ${config.halfWeekOfStartDate} debe ser menor a la de end ${config.halfWeekOfEndDate}.
       (Stage.constructor)`)
     }
     // fechas
-    const halfWeekOfMatches = this.getHalfWeekOfMatches();
-    const halfweekOfSchedule = this.getHalfWeekOfSchedule();
+    const halfWeekOfMatches = this.getHalfWeekOfMatches(); // ELIMINAR DEPENDENCIA DE THIS
+    const halfweekOfSchedule = this.getHalfWeekOfSchedule(); // ELIMINAR DEPENDENCIA DE THIS
 
     for (let i = 0; i < halfWeekOfMatches.length; i++) {
-      const j = (this.config.type == 'playoff' && this.config.bsConfig.opt == 'h&a') ? Math.trunc(i / 2) : i;
+      const j = (config.type == 'playoff' && config.bsConfig.opt == 'h&a') ? Math.trunc(i / 2) : i;
       // cada turn o round debe ser programada antes de que se ejecute
       if (halfWeekOfMatches[i] < halfweekOfSchedule[j]) {
         throw new Error(
           `no se cumple que halfWeekOfMatches (${halfWeekOfMatches[i]}) es menor a halfweekOfSchedule (${halfweekOfSchedule[i]}).
-          Para ${this.info.id}. (Stage.constructor)`
+          Para ${info.id}. (Stage.constructor)`
         )
       }
       // cada turn o round debe ser ejecutada despues del inicio y antes del fin
       if (halfWeekOfMatches[i] < config.halfWeekOfStartDate || halfWeekOfMatches[i] > config.halfWeekOfEndDate) {
         throw new Error(
           `la hw Of Match ${halfWeekOfMatches[i]} debe estar entre la hw of start ${config.halfWeekOfStartDate} y la hw of end ${config.halfWeekOfEndDate}.
-          Para ${this.info.id}. (Stage.constructor)`
+          Para ${info.id}. (Stage.constructor)`
         )
       }
 
@@ -77,7 +80,7 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
       if (halfweekOfSchedule[i] < config.halfWeekOfStartDate || halfweekOfSchedule[i] > config.halfWeekOfEndDate) {
         throw new Error(
           `la hw Of schedule ${halfweekOfSchedule[i]} debe estar entre la hw of start ${config.halfWeekOfStartDate} y la hw of end ${config.halfWeekOfEndDate}.
-          Para ${this.info.id}. (Stage.constructor)`
+          Para ${info.id}. (Stage.constructor)`
         )
       }
     }
@@ -85,18 +88,19 @@ export default abstract class Stage<I extends IStageInfo, C extends IStageConfig
     // no debe haber fechas de matches repetidas
     if (halfWeekOfMatches.length !== new Set(halfWeekOfMatches).size) {
       throw new Error(`No pueden haber hw of matches repetidas:
-      ${halfWeekOfMatches} - En ${this.info.id}.
+      ${halfWeekOfMatches} - En ${info.id}.
       (Stage.constructor)`)
     }
 
     // la suma de clasificados debe coincidir con los participantes de los bombos!
     let sumRankingQualies = 0;
-    this.config.qualifyConditions.forEach((qc: TQualyCondition) => sumRankingQualies += qc.maxRankPos - qc.minRankPos + 1);
+    config.qualifyConditions.forEach((qc: TQualyCondition) => sumRankingQualies += qc.maxRankPos - qc.minRankPos + 1);
     let bomboParticipantsCount = 0;
-    this.config.bombos.forEach((b: number) => bomboParticipantsCount += b);
+    config.bombos.forEach((b: number) => bomboParticipantsCount += b);
     if (sumRankingQualies !== bomboParticipantsCount) {
       throw new Error(`no coinciden ${sumRankingQualies} y ${bomboParticipantsCount} (Stage.constructor)`)
     }
+    /********************************************************************************************************************************************************************************************/
 
     /**
      * Creacion y agenda de los eventos de inio y fin del stage (Event_StageStart y Event_StageEnd)

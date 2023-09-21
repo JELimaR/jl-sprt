@@ -86,11 +86,7 @@ export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoff
 
   private selection(bombos: Bombo<RankItem>[]) {
     const out: RankItem[] = [];
-    // bombos.forEach((bom: Bombo<RankItem>) => {
-    //   let elems = bom.getNextElements();
-    //   out.push(...elems);
-    // })
-
+    
     bombos.forEach((b: Bombo<RankItem>) => {
       while (b.state !== 'finished') {
         const elem = b.getNextElement();

@@ -34,23 +34,25 @@ export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig
         id: info.id + '_G' + (i + 1),
         season: this.info.season,
       }
-      const GConfig: ILeagueConfig = { ...this.config.bsConfig };
-      GConfig.participantsNumber = this.config.participantsPerGroup[i];
+      const GConfig: ILeagueConfig = { ...config.bsConfig };
+      GConfig.participantsNumber = config.participantsPerGroup[i];
       const group = new League(GInfo, GConfig)
       this._groups.push(group)
     }
 
+    /***********************************************************************************************************************************************************
+     * VERIFICACIONES
+     */
     let groupsParticipantsCount = 0;
-    this.groups.forEach((g) => groupsParticipantsCount += g.config.participantsNumber);
+    config.participantsPerGroup.forEach((g) => groupsParticipantsCount += g);
     let bomboParticipantsCount = 0;
     this.config.bombos.forEach((b: number) => bomboParticipantsCount += b)
-
 
     if (bomboParticipantsCount !== groupsParticipantsCount) {
       throw new Error(`En StageGroup constructor:
         La cantidad de participantes ${groupsParticipantsCount} no coincide con la cantidad definida por los bombos ${bomboParticipantsCount}`)
     }
-
+    /***********************************************************************************************************************************************************/
   }
 
   get groupsNumber(): number { return this.config.participantsPerGroup.length }
