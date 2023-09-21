@@ -11,8 +11,8 @@ import { TGS } from "../Tournament/types";
 import { IStagePlayoffConfig } from "../Tournament/Stage/StagePlayoff/StagePlayoff";
 
 /**
- * 4 temporadas de un sistema de liga de 2 divisiones.
- * primeras 2 con sus 8 fundadores, luego se asocian 14 instituciones más.
+ * 5 temporadas de un sistema de liga de 2 divisiones.
+ * primeras 2 con sus 8 fundadores, luego se asocian 14 instituciones más -> d1: 10 - d2: 12 (6,6).
  */
 type TypeDivisionList = { d1: ITournamentConfig, d2?: ITournamentConfig };
 const selection = getExampleTeams(150, 'Team');
@@ -25,9 +25,6 @@ const tournamentsMap = new Map<string, Tournament>();
 
 /**
  * 
- * @param fede 
- * @param cal 
- * @param season 
  */
 const initSeasonFunc = (fede: IFederationData, cal: JCalendar, season: number) => {
   const tournamentd1 = new Tournament({ id: `d1i_${fede.id}_${season}`, season }, fede.getDivisionsConfig.d1, cal)
@@ -91,23 +88,26 @@ export default function tournamentExample01() {
       selection.slice(8, 22).forEach((t, i) => fedSeasonRanking.table.push({ team: t, rank: i + 9, originId: 'f014' }))
     }
     if (season < 1988) {
-      td1?.stages[0].getRelativeRank().table.forEach((ri, i) => fedSeasonRanking.table[i] = { ...ri, originId: 'f014' });
+      td1?.stages.get(`${td1.info.id}_s1`)!.getRelativeRank().table.forEach((ri, i) => fedSeasonRanking.table[i] = { ...ri, originId: 'f014' });
       globalFinishedRankingsMap.set(fedSeasonRanking.rankId, fedSeasonRanking);
     } else {
-      td1?.stages[0].getRelativeRank().table.forEach((ri, i) => {
+      td1?.stages.get(`${td1.info.id}_s1`)!.getRelativeRank().table.forEach((ri, i) => {
         const rpos = i < 8 ? i : i + 2;
         fedSeasonRanking.table[rpos] = { ...ri, rank: rpos + 1, originId: 'f014' }
       });
-      td2?.stages[0].getRelativeRank().table.forEach((ri, i) => {
+      td2?.stages.get(`${td2.info.id}_s1`)!.getRelativeRank().table.forEach((ri, i) => {
         if (i > 3)
           fedSeasonRanking.table[i + 10] = { ...ri, rank: i + 10 + 1, originId: 'f014' }
       });
-      td2?.stages[1].getRelativeRank().table.forEach((ri, i) => {
+      td2?.stages.get(`${td2.info.id}_s2`)!.getRelativeRank().table.forEach((ri, i) => {
         const rpos = i < 2 ? i + 8 : i + 10;
         fedSeasonRanking.table[rpos] = { ...ri, rank: rpos + 1, originId: 'f014' }
       });
 
       globalFinishedRankingsMap.set(fedSeasonRanking.rankId, fedSeasonRanking);
+      const printDeps: string[] = []
+      td2?.phases.forEach((tp) => printDeps.push(...tp.getDependencyIds()))
+      console.log(printDeps)
     }
 
     console.table(globalFinishedRankingsMap.get('fr_f014i')!.table.map((e: RankItem) => { return { ...e, team: e.team.id } }));
@@ -119,12 +119,9 @@ export default function tournamentExample01() {
         d2: tconfigd2_v1
       }
     }
-
   }
 
   [1986, 1987, 1988, 1989, 1990].forEach((s: number) => runSeason(s))
-
-
 
 }
 
@@ -164,8 +161,10 @@ const sconfigd1_v1: IStageGroupConfig = {
 }
 const tconfigd1_v1: ITournamentConfig = {
   idConfig: 'd1i_f014', name: 'd1 f014',
+  halfWeekOfEndDate: 1,
+  halfWeekOfStartDate: 108,
 
-  stages: [sconfigd1_v1]
+  stages: [{phase: 1, config: sconfigd1_v1}]
 }
 /** d1_v2 */
 const sconfigd1_v2: IStageGroupConfig = {
@@ -200,8 +199,10 @@ const sconfigd1_v2: IStageGroupConfig = {
 }
 const tconfigd1_v2: ITournamentConfig = {
   idConfig: 'd1i_f014', name: 'd1 f014',
+  halfWeekOfEndDate: 1,
+  halfWeekOfStartDate: 108,
 
-  stages: [sconfigd1_v2]
+  stages: [{phase: 1, config: sconfigd1_v2}]
 }
 /** d2_v1 */
 const sconfigd2_01_v1: IStageGroupConfig = {
@@ -239,7 +240,7 @@ const sconfigd2_02_v1: IStagePlayoffConfig = {
   name: '1 Div',
   type: 'playoff',
 
-  halfWeekOfStartDate: 79,
+  halfWeekOfStartDate: 80,
   intervalOfDrawDate: 185,
   halfWeekOfEndDate: 92,
 
@@ -263,6 +264,8 @@ const sconfigd2_02_v1: IStagePlayoffConfig = {
 }
 const tconfigd2_v1: ITournamentConfig = {
   idConfig: 'd2i_f014', name: 'd2 f014',
+  halfWeekOfEndDate: 1,
+  halfWeekOfStartDate: 108,
 
-  stages: [sconfigd2_01_v1, sconfigd2_02_v1]
+  stages: [{phase: 1, config: sconfigd2_01_v1}, {phase: 2, config: sconfigd2_02_v1}],
 }

@@ -1,6 +1,3 @@
-// import { CollectionsUtilsFunctions } from 'jl-utlts';
-// const CUF = CollectionsUtilsFunctions.getInstance();
-
 import baseStageExample from './examples/baseStageExample';
 import specialStageGroupExample from './examples/specialStageGroupExample';
 import stageExample01 from './examples/stageExample01';
@@ -15,6 +12,11 @@ import tournamentExample02 from './examples/tournamentExample02';
  * 1 - generar las drawrules - falta probarlas
  * 2 - un sistema para hacer un ranking de tournament
  * 3 - combinacion de ranking, por ejemplo previo al inicio de un stage cualqueira
+ * 4 - AGREGAR COMENTARIOS
+ * 5 - separar en modulos independientes - completados: ()
+ * 6 - empezar a trabajar con las organizations
+ * 7 - PHASES de tournament - falta definir las dependencias entre phases
+ * 8 - todas las verificaciones deben poder realizarse con los config
  */
 
 function app() {
@@ -33,7 +35,7 @@ function app() {
 
   tournamentExample01();
 
-  // tournamentExample02();
+  tournamentExample02();
 
   // console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getDateTime())
   // console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getIJDateTimeCreator())
