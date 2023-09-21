@@ -1,12 +1,12 @@
 
 // import Stage, { IStageConfig, IStageInfo } from "../Stage";
-import SingleElmination, { ISingleElminationConfig, ISingleElminationInfo } from "./SingleElimination/SingleElmination";
+import SingleElmination, { ISingleElminationConfig } from "./SingleElimination/SingleElmination";
 import JCalendar from "../../../JCalendar/JCalendar";
-import { arr2 } from "../../types";
+import { arr2, IElementInfo } from "../../types";
 import Team from "../../Team";
 import Bombo from "../Bombo";
-import { RankItem, TypeRanking, TypeTableMatchState } from "../../Rank/ranking";
-import { IStageConfig, IStageInfo, TypeDrawRulePlayoff } from "../Stage";
+import { RankItem, TypeTableMatchState } from "../../Rank/ranking";
+import { IStageConfig, TypeDrawRulePlayoff } from "../Stage";
 import Stage from "../Stage";
 import TeamTableItem from "../../Rank/TeamTableItem";
 import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
@@ -16,21 +16,19 @@ export interface IStagePlayoffConfig extends IStageConfig {
   bsConfig: ISingleElminationConfig;
 }
 
-export interface IStagePlayoffInfo extends IStageInfo { }
-
 /**
  * Debe encargarse de la creacion y de la asignacion de los equipos a cada basestage
  * Para eso, debe crear cada basestage y agendar un evento start que genera las asignaciones a partir de un draw.
  * Tambien se debe generar un evento end para "dar aviso" de la finalizacion del stage
  */
-export default class StagePlayoff extends Stage<IStagePlayoffInfo, IStagePlayoffConfig> {
+export default class StagePlayoff extends Stage<IElementInfo, IStagePlayoffConfig> {
 
   private _playoff: SingleElmination;
 
-  constructor(info: IStagePlayoffInfo, config: IStagePlayoffConfig, calendar: JCalendar) {
+  constructor(info: IElementInfo, config: IStagePlayoffConfig, calendar: JCalendar) {
     super(info, config, calendar);
 
-    const SEInfo: ISingleElminationInfo = {
+    const SEInfo: IElementInfo = {
       id: `${info.id}_SE`,
       season: this.info.season,
     }

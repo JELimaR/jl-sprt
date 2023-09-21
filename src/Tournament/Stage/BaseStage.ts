@@ -4,6 +4,7 @@ import JMatch from "../Match/JMatch";
 import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator";
 import TeamTableItem from "../Rank/TeamTableItem";
 import { TypeTableMatchState } from "../Rank/ranking";
+import { IElementInfo } from "../types";
 
 /**
  * En el BaseStage es donde se configuran las rondas o turnos y los partidos de un torneo.
@@ -18,12 +19,12 @@ export interface IBaseStageConfig extends ITCCConfig {
   opt: TypeBaseStageOption;
 }
 
-export interface IBaseStageInfo extends ITCCInfo {
-  id: string;
-  season: number;
-}
+// export interface IElementInfo extends ITCCInfo {
+//   id: string;
+//   season: number;
+// }
 
-export default abstract class BaseStage<I extends IBaseStageInfo, C extends IBaseStageConfig> extends TCC<I, C> {
+export default abstract class BaseStage<I extends IElementInfo, C extends IBaseStageConfig> extends TCC<I, C> {
 
   /**
    * Creacion de una BS. Se asigna la config y la info

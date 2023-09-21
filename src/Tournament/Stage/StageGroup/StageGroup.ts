@@ -1,11 +1,12 @@
-import League, { ILeagueConfig, ILeagueInfo } from "./League/League";
-import Stage, { IStageConfig, IStageInfo, TypeDrawRulePlayoff } from "../Stage";
+import League, { ILeagueConfig } from "./League/League";
+import Stage, { IStageConfig, TypeDrawRulePlayoff } from "../Stage";
 import Team from "../../Team";
 import JCalendar from "../../../JCalendar/JCalendar";
 import Bombo from "../Bombo";
 import { RankItem, simpleSortFunc, TypeTableMatchState } from "../../Rank/ranking";
 import TeamTableItem from "../../Rank/TeamTableItem";
 import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
+import { IElementInfo } from "../../types";
 
 
 export interface IStageGroupConfig extends IStageConfig {
@@ -16,21 +17,19 @@ export interface IStageGroupConfig extends IStageConfig {
   participantsPerGroup: number[];
 }
 
-export interface IStageGroupInfo extends IStageInfo { }
-
 /**
  * Debe encargarse de la creacion y de la asignacion de los equipos a cada basestage
  * Para eso, debe crear cada basestage y agendar un evento start que genera las asignaciones a partir de un draw.
  * Tambien se debe generar un evento end para "dar aviso" de la finalizacion del stage
  */
-export default class StageGroup extends Stage<IStageGroupInfo, IStageGroupConfig> {
+export default class StageGroup extends Stage<IElementInfo, IStageGroupConfig> {
   private _groups: League[] = [];
 
-  constructor(info: IStageGroupInfo, config: IStageGroupConfig, calendar: JCalendar) {
+  constructor(info: IElementInfo, config: IStageGroupConfig, calendar: JCalendar) {
     super(info, config, calendar);
 
     for (let i = 0; i < config.participantsPerGroup.length; i++) {
-      const GInfo: ILeagueInfo = {
+      const GInfo: IElementInfo = {
         id: info.id + '_G' + (i + 1),
         season: this.info.season,
       }

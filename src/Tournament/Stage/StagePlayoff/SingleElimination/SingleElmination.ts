@@ -1,11 +1,11 @@
-import BaseStage, { IBaseStageConfig, IBaseStageInfo } from '../../BaseStage';
+import BaseStage, { IBaseStageConfig } from '../../BaseStage';
 import JCalendar from '../../../../JCalendar/JCalendar';
 import Team from '../../../Team';
 import { JRound } from './JRound';
 import JSerie from '../../../Match/JSerie';
 import Event_RoundCreationAndTeamsDraw from './Event_RoundCreationAndTeamsDraw';
 import JMatch from '../../../Match/JMatch';
-import { arr2 } from '../../../types';
+import { arr2, IElementInfo } from '../../../types';
 import TeamTableItem from '../../../Rank/TeamTableItem';
 import { simpleSortFunc, TypeTableMatchState } from '../../../Rank/ranking';
 import { TypeHalfWeekOfYear, JDateTime } from '../../../../JCalendar/JDateTimeModule';
@@ -17,13 +17,13 @@ export interface ISingleElminationConfig extends IBaseStageConfig {
   roundHalfWeeksSchedule: TypeHalfWeekOfYear[];
 }
 
-export interface ISingleElminationInfo extends IBaseStageInfo { }
+// export interface IElementInfo extends IBaseStageInfo { }
 
-export default class SingleElmination extends BaseStage<ISingleElminationInfo, ISingleElminationConfig> { // Single elimination
+export default class SingleElmination extends BaseStage<IElementInfo, ISingleElminationConfig> { // Single elimination
 
   private _rounds: JRound[] = [];
 
-  constructor(info: ISingleElminationInfo, config: ISingleElminationConfig) { // FALTA VERIFICAR QUE CADA fechHalfWeeks sea mayor al fechHalfWeeksSchedule
+  constructor(info: IElementInfo, config: ISingleElminationConfig) { // FALTA VERIFICAR QUE CADA fechHalfWeeks sea mayor al fechHalfWeeksSchedule
     super(info, config);
   }
 

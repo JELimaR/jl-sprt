@@ -4,6 +4,7 @@ import { JDateTime, TypeHalfWeekOfYear, TypeIntervalOfDay } from "../../JCalenda
 import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator";
 import { RankItem, TypeRanking, TypeTableMatchState } from "../Rank/ranking";
 import TeamTableItem from "../Rank/TeamTableItem";
+import { IElementInfo } from "../types";
 import { IBaseStageConfig } from "./BaseStage";
 import Bombo from "./Bombo";
 import { Event_StageEnd } from "./Event_StageEnd";
@@ -34,15 +35,11 @@ export interface IStageConfig extends ITCCConfig {
 
 }
 
-export interface IStageInfo extends ITCCInfo {
-  season: number;
-}
-
 /**
  * generar el start event
  * generar el end event
  */
-export default abstract class Stage<I extends IStageInfo, C extends IStageConfig> extends TCC<I, C> {
+export default abstract class Stage<I extends IElementInfo, C extends IStageConfig> extends TCC<I, C> {
 
   constructor(info: I, config: C, calendar: JCalendar) {
     super(info, config);

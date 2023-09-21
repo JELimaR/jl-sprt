@@ -8,8 +8,8 @@ import TeamTableItem from "../Tournament/Rank/TeamTableItem";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
 import { RankItem, TypeRanking } from "../Tournament/Rank/ranking";
 import StageGroup, { IStageGroupConfig } from "../Tournament/Stage/StageGroup/StageGroup";
-import { TGS } from "../Tournament/types";
-import { IStageConfig, IStageInfo } from "../Tournament/Stage/Stage";
+import { IElementInfo, TGS } from "../Tournament/types";
+import { IStageConfig } from "../Tournament/Stage/Stage";
 import StagePlayoff, { IStagePlayoffConfig } from "../Tournament/Stage/StagePlayoff/StagePlayoff";
 import { JDateTime } from "../JCalendar/JDateTimeModule";
 
@@ -58,7 +58,7 @@ export default function stageExample03() {
   
 }
 
-function create(info: IStageInfo, config: IStageConfig, cal: JCalendar): TGS {
+function create(info: IElementInfo, config: IStageConfig, cal: JCalendar): TGS {
   // throw new Error(`sdfg  dsfg dfsg dsfg`)
     if (config.type == 'group') {
       const sconfig = config as IStageGroupConfig;

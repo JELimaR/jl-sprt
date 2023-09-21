@@ -1,5 +1,6 @@
-import { IStageGroupConfig, IStageGroupInfo } from "../Tournament/Stage/StageGroup/StageGroup";
-import { IStagePlayoffConfig, IStagePlayoffInfo } from "../Tournament/Stage/StagePlayoff/StagePlayoff";
+import { IStageGroupConfig } from "../Tournament/Stage/StageGroup/StageGroup";
+import { IStagePlayoffConfig } from "../Tournament/Stage/StagePlayoff/StagePlayoff";
+import { IElementInfo } from "../Tournament/types";
 
 const stageConfig1: IStagePlayoffConfig = {
   type: 'playoff',
@@ -24,7 +25,7 @@ const stageConfig1: IStagePlayoffConfig = {
   drawRulesValidate: []
 }
 
-const stageInfo1: IStagePlayoffInfo = {
+const stageInfo1: IElementInfo = {
   id: 'sp11986',
   season: 1986,
 }
@@ -53,7 +54,7 @@ const stageConfig2: IStagePlayoffConfig = {
   drawRulesValidate: []
 }
 
-const stageInfo2: IStagePlayoffInfo = {
+const stageInfo2: IElementInfo = {
   id: 'sp21986',
   season: 1986,
 }
@@ -84,7 +85,7 @@ const stageConfig3: IStageGroupConfig = {
   drawRulesValidate: []
 }
 
-const stageInfo3: IStageGroupInfo = {
+const stageInfo3: IElementInfo = {
   id: 'sg31986',
   season: 1986,
 }
@@ -114,7 +115,7 @@ const stageConfig4: IStageGroupConfig = {
   drawRulesValidate: []
 }
 
-const stageInfo4: IStageGroupInfo = {
+const stageInfo4: IElementInfo = {
   id: 'sg41986',
   season: 1986,
 }

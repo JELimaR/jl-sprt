@@ -3,10 +3,10 @@ import JCalendar from "../JCalendar/JCalendar";
 import { TypeHalfWeekOfYear } from "../JCalendar/JDateTimeModule";
 import { ITCCConfig, ITCCInfo, TCC } from "../patterns/templateConfigCreator";
 import { RankItem, TypeRanking } from "./Rank/ranking";
-import { IStageConfig, IStageInfo } from "./Stage/Stage";
+import { IStageConfig } from "./Stage/Stage";
 import StageGroup, { IStageGroupConfig } from "./Stage/StageGroup/StageGroup";
 import StagePlayoff, { IStagePlayoffConfig } from "./Stage/StagePlayoff/StagePlayoff";
-import { TGS } from "./types";
+import { IElementInfo, TGS } from "./types";
 
 
 export interface ITournamentConfig extends ITCCConfig {
@@ -15,16 +15,13 @@ export interface ITournamentConfig extends ITCCConfig {
   start: TypeHalfWeekOfYear;
   end: TypeHalfWeekOfYear;
 }
-export interface ITournamentInfo extends ITCCInfo {
-  season: number;
-}
 
-export default class Tournament extends TCC<ITournamentInfo, ITournamentConfig> {
+export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
 
   // private _stages: Map<string, TGS> = new Map<string, TGS>();
   private _phases: Map<string, Phase> = new Map<string, Phase>();
 
-  constructor(info: ITournamentInfo, config: ITournamentConfig, cal: JCalendar) {
+  constructor(info: IElementInfo, config: ITournamentConfig, cal: JCalendar) {
     super(info, config);
     const phasesArrAux: IPhaseConfig[] = [];
 
@@ -83,7 +80,7 @@ export default class Tournament extends TCC<ITournamentInfo, ITournamentConfig> 
   // get stages() { return this._stages }
   get phases() { return this._phases }
 
-  static create(info: IStageInfo, config: IStageConfig, cal: JCalendar): TGS {
+  static create(info: IElementInfo, config: IStageConfig, cal: JCalendar): TGS {
     if (config.type == 'group') {
       const sconfig = config as IStageGroupConfig;
       return new StageGroup(info, sconfig, cal);
@@ -109,7 +106,6 @@ interface IPhaseInfo extends ITCCInfo {
   season: number;
 }
 
-// independizar de las clases stage
 class Phase extends TCC<IPhaseInfo, IPhaseConfig> {
 
   // private _id: string;
@@ -197,7 +193,7 @@ class Phase extends TCC<IPhaseInfo, IPhaseConfig> {
 }
 
 
-function createStage(info: IStageInfo, config: IStageConfig, cal: JCalendar): TGS {
+function createStage(info: IElementInfo, config: IStageConfig, cal: JCalendar): TGS {
   if (config.type == 'group') {
     const sconfig = config as IStageGroupConfig;
     return new StageGroup(info, sconfig, cal);

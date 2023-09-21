@@ -5,8 +5,8 @@ import JMatch from "../../../Match/JMatch";
 import { TypeTableMatchState, simpleSortFunc } from "../../../Rank/ranking";
 import TeamTableItem from "../../../Rank/TeamTableItem";
 import Team from "../../../Team";
-import { arr2 } from "../../../types";
-import BaseStage, { IBaseStageConfig, IBaseStageInfo, TypeBaseStageOption } from "../../BaseStage";
+import { arr2, IElementInfo } from "../../../types";
+import BaseStage, { IBaseStageConfig, TypeBaseStageOption } from "../../BaseStage";
 import robinRoundSchedulingFunction from "./RoundRobin";
 import { Turn } from "./Turn";
 
@@ -15,9 +15,9 @@ export interface ILeagueConfig extends IBaseStageConfig {
   turnHalfWeeksSchedule: TypeHalfWeekOfYear[];
 }
 
-export interface ILeagueInfo extends IBaseStageInfo { }
+// export interface ILeagueInfo extends IBaseStageInfo { }
 
-export default class League extends BaseStage<ILeagueInfo, ILeagueConfig> {
+export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
 
   private _turns: Turn[] = [];
 
@@ -26,7 +26,7 @@ export default class League extends BaseStage<ILeagueInfo, ILeagueConfig> {
    * Quedan desconocidos los participants y por tanto no se crean los turns
    *        -> ESTOS SE CREAN EN LA ASIGNACION -> función assign()
    */
-  constructor(info: ILeagueInfo, config: ILeagueConfig) { // FALTA VERIFICAR QUE CADA fechHalfWeeks sea mayor al fechHalfWeeksSchedule
+  constructor(info: IElementInfo, config: ILeagueConfig) { // FALTA VERIFICAR QUE CADA fechHalfWeeks sea mayor al fechHalfWeeksSchedule
     super(info, config);
     this.config.turnHalfWeeks = config.turnHalfWeeks;
     this.config.turnHalfWeeksSchedule = config.turnHalfWeeksSchedule;
