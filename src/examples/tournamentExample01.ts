@@ -50,7 +50,7 @@ export default function tournamentExample01() {
         table: selection.slice(0, 8).map((e, i) => { return { team: e, rank: i + 1, originId: 'f014' } })
       }
     },
-    getDivisionsConfig: { d1: tconfigd1_v1 },
+    getDivisionsConfig: { d1: div1TournamentConfig_v1 },
   }
 
   const ranking: TypeRanking = federation_014.getRanking();
@@ -113,28 +113,25 @@ export default function tournamentExample01() {
     if (season == 1986) {
       // nuevos equipos afiliados
       selection.slice(8, 22).forEach((t, i) => fedSeasonRanking.table.push({ team: t, rank: i + 9, originId: 'f014' }))
-    }
+    }    
     if (season < 1988) {
-      td1?.phases/*.get(`${td1.info.id}_p1`)!*/[0].getRelativeRank().table.forEach((ri, i) => fedSeasonRanking.table[i] = { ...ri, originId: 'f014' });
+      td1?./*phases/*.get(`${td1.info.id}_p1`)![0].*/getRelativeRank().table.forEach((ri, i) => fedSeasonRanking.table[i] = { ...ri, originId: 'f014' });
       globalFinishedRankingsMap.set(fedSeasonRanking.rankId, fedSeasonRanking);
     } else {
-      td1?.phases/*.get(`${td1.info.id}_p1`)!*/[0].getRelativeRank().table.forEach((ri, i) => {
+      td1?./*phases/*.get(`${td1.info.id}_p1`)![0].*/getRelativeRank().table.forEach((ri, i) => {
         const rpos = i < 8 ? i : i + 2;
         fedSeasonRanking.table[rpos] = { ...ri, rank: rpos + 1, originId: 'f014' }
       });
-      td2?.phases/*.get(`${td2.info.id}_p1`)!*/[0].getRelativeRank().table.forEach((ri, i) => {
+      td2?./*phases/*.get(`${td2.info.id}_p1`)![0].*/getRelativeRank().table.forEach((ri, i) => {
         if (i > 3)
           fedSeasonRanking.table[i + 10] = { ...ri, rank: i + 10 + 1, originId: 'f014' }
       });
-      td2?.phases/*.get(`${td2.info.id}_p2`)!*/[1].getRelativeRank().table.forEach((ri, i) => {
+      td2?./*phases/*.get(`${td2.info.id}_p2`)![1].*/getRelativeRank().table.forEach((ri, i) => {
         const rpos = i < 2 ? i + 8 : i + 10;
         fedSeasonRanking.table[rpos] = { ...ri, rank: rpos + 1, originId: 'f014' }
       });
 
       globalFinishedRankingsMap.set(fedSeasonRanking.rankId, fedSeasonRanking);
-      const printDeps: string[] = []
-      // td2?.phases.forEach((tp) => printDeps.push(...tp.getDependencyIds()))
-      console.log(printDeps)
     }
 
     console.table(globalFinishedRankingsMap.get('fr_f014i')!.table.map((e: RankItem) => { return { ...e, team: e.team.id } }));
@@ -142,14 +139,19 @@ export default function tournamentExample01() {
     // agrego nueva division:
     if (season == 1987) {
       federation_014.getDivisionsConfig = {
-        d1: tconfigd1_v2,
-        d2: tconfigd2_v1,
-        cup: tconfigc,
+        d1: div1TournamentConfig_v2,
+        d2: div2TournamentConfig,
+        cup: cupTournamentConfig,
       }
     }
   }
 
-  [1986, 1987, 1988, 1989, 1990].forEach((s: number) => runSeason(s))
+  for (let season = 1980; season <= 1994; season++) {
+    console.log('********************************************************************************')
+    console.log('************************ Nueva temporada:', season, '*****************************')
+    runSeason(season)
+    console.log('********************************************************************************')
+  }
 
 }
 
@@ -157,7 +159,7 @@ export default function tournamentExample01() {
  * data
  */
 /** d1_v1 */
-const sconfigd1_v1: IStageGroupConfig = {
+const div1StageConfig_01_v1: IStageGroupConfig = {
   idConfig: 'd1i_f014_sg1',
   name: '1 Div',
   type: 'group',
@@ -187,7 +189,7 @@ const sconfigd1_v1: IStageGroupConfig = {
     ],
   }
 }
-const tconfigd1_v1: ITournamentConfig = {
+const div1TournamentConfig_v1: ITournamentConfig = {
   idConfig: 'd1i_f014', name: 'd1 f014',
   hwStart: 1,
   hwEnd: 108,
@@ -195,12 +197,12 @@ const tconfigd1_v1: ITournamentConfig = {
   phases: [
     {
       n: 1, idConfig: 'd1i_f014_p1', name: 'Phase 1',
-      hwStart: 18, hwEnd: 92, stages: [{ minRankPos: 1, config: sconfigd1_v1 }]
+      hwStart: 18, hwEnd: 92, stages: [{ minRankPos: 1, config: div1StageConfig_01_v1 }]
     }
   ]
 }
 /** d1_v2 */
-const sconfigd1_v2: IStageGroupConfig = {
+const div1StageConfig_01_v2: IStageGroupConfig = {
   idConfig: 'd1i_f014_sg1',
   name: '1 Div',
   type: 'group',
@@ -230,7 +232,7 @@ const sconfigd1_v2: IStageGroupConfig = {
     ],
   }
 }
-const tconfigd1_v2: ITournamentConfig = {
+const div1TournamentConfig_v2: ITournamentConfig = {
   idConfig: 'd1i_f014', name: 'd1 f014',
   hwStart: 1,
   hwEnd: 108,
@@ -238,12 +240,12 @@ const tconfigd1_v2: ITournamentConfig = {
   phases: [
     {
       n: 1, idConfig: 'd1i_f014_p1', name: 'Phase 1',
-      hwStart: 16, hwEnd: 93, stages: [{ minRankPos: 1, config: sconfigd1_v2 }]
+      hwStart: 16, hwEnd: 93, stages: [{ minRankPos: 1, config: div1StageConfig_01_v2 }]
     }
   ]
 }
 /** d2_v1 */
-const sconfigd2_01_v1: IStageGroupConfig = {
+const div2StageConfig_01: IStageGroupConfig = {
   idConfig: 'd2i_f014_sg1',
   name: '1 Div',
   type: 'group',
@@ -273,7 +275,7 @@ const sconfigd2_01_v1: IStageGroupConfig = {
     ],
   }
 }
-const sconfigd2_02_v1: IStagePlayoffConfig = {
+const div2StageConfig_02: IStagePlayoffConfig = {
   idConfig: 'd2i_f014_sp2',
   name: '1 Div',
   type: 'playoff',
@@ -301,8 +303,8 @@ const sconfigd2_02_v1: IStagePlayoffConfig = {
   }
 }
 
-const sconfigd2_03_v1: IStagePlayoffConfig = {
-  idConfig: 'd2i_f014_sp2',
+const div2StageConfig_03: IStagePlayoffConfig = {
+  idConfig: 'd2i_f014_sp3',
   name: '2 div - final',
   type: 'playoff',
 
@@ -327,7 +329,7 @@ const sconfigd2_03_v1: IStagePlayoffConfig = {
     roundHalfWeeksSchedule: [86],
   }
 }
-const sconfigd2_04_v1: IStagePlayoffConfig = {
+const div2StageConfig_04: IStagePlayoffConfig = {
   idConfig: 'd2i_f014_sp4',
   name: '3er puesto',
   type: 'playoff',
@@ -353,7 +355,7 @@ const sconfigd2_04_v1: IStagePlayoffConfig = {
     roundHalfWeeksSchedule: [86],
   }
 }
-const tconfigd2_v1: ITournamentConfig = {
+const div2TournamentConfig: ITournamentConfig = {
   idConfig: 'd2i_f014', name: 'd2 f014',
   hwStart: 1,
   hwEnd: 108,
@@ -361,17 +363,17 @@ const tconfigd2_v1: ITournamentConfig = {
   phases: [
     {
       n: 1, idConfig: 'd2i_f014_p1', name: 'Phase 1',
-      hwStart: 16, hwEnd: 78, stages: [{ minRankPos: 1, config: sconfigd2_01_v1 }]
+      hwStart: 16, hwEnd: 78, stages: [{ minRankPos: 1, config: div2StageConfig_01 }]
     },
     {
       n: 2, idConfig: 'd2i_f014_p2', name: 'Phase 2',
-      hwStart: 80, hwEnd: 84, stages: [{ minRankPos: 1, config: sconfigd2_02_v1 }]
+      hwStart: 80, hwEnd: 84, stages: [{ minRankPos: 1, config: div2StageConfig_02 }]
     },
     {
       n: 3, idConfig: 'd2i_f014_p3', name: 'Phase 3',
       hwStart: 86, hwEnd: 92, stages: [
-        { minRankPos: 1, config: sconfigd2_03_v1 },
-        { minRankPos: 3, config: sconfigd2_04_v1 }
+        { minRankPos: 1, config: div2StageConfig_03 },
+        { minRankPos: 3, config: div2StageConfig_04 }
       ]
     }
   ]
@@ -383,7 +385,7 @@ const tconfigd2_v1: ITournamentConfig = {
  * s1 - 12 y clasifican 6
  * s2 se agregan 10 participantes que vienen de arriba!
 */
-const sconfigc1_01: IStagePlayoffConfig = {
+const cupStageConfig_01: IStagePlayoffConfig = {
   idConfig: 'c1i_f014_sp01',
   name: 'phase preliminar',
   type: 'playoff',
@@ -409,7 +411,7 @@ const sconfigc1_01: IStagePlayoffConfig = {
     roundHalfWeeksSchedule: [40],
   }
 }
-const sconfigc1_02: IStagePlayoffConfig = {
+const cupStageConfig_02: IStagePlayoffConfig = {
   idConfig: 'c1i_f014_sp02',
   name: 'phase playoff',
   type: 'playoff',
@@ -439,7 +441,7 @@ const sconfigc1_02: IStagePlayoffConfig = {
   }
 }
 
-const tconfigc: ITournamentConfig = {
+const cupTournamentConfig: ITournamentConfig = {
   idConfig: 'cup_f014', name: 'cup f014',
   hwStart: 1,
   hwEnd: 108,
@@ -447,11 +449,11 @@ const tconfigc: ITournamentConfig = {
   phases: [
     {
       n: 1, idConfig: 'cup_f014_p1', name: 'Phase 1',
-      hwStart: 30, hwEnd: 50, stages: [{ minRankPos: 11, config: sconfigc1_01 }]
+      hwStart: 30, hwEnd: 50, stages: [{ minRankPos: 11, config: cupStageConfig_01 }]
     },
     {
       n: 2, idConfig: 'cup_f014_p2', name: 'Phase 2',
-      hwStart: 51, hwEnd: 90, stages: [{ minRankPos: 1, config: sconfigc1_02 }]
+      hwStart: 51, hwEnd: 90, stages: [{ minRankPos: 1, config: cupStageConfig_02 }]
     },
   ]
 }

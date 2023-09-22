@@ -29,7 +29,7 @@ export interface IStageConfig extends ITCCConfig {
 
   drawRulesValidate: TypeDrawRulePlayoff[]; // reglas que validan un sorteo
 
-  qualifyConditions: TQualyCondition[];
+  qualifyConditions: TQualyCondition[]; // solo puede ser ranking de: stage, federacion, o confederacion 
 
   bombos: number[];
 
