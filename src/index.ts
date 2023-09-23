@@ -17,6 +17,9 @@ import tournamentExample02 from './examples/tournamentExample02';
  * 6 - empezar a trabajar con las organizations
  * 7 - PHASES de tournament - falta definir las dependencias entre phases
  * 8 - todas las verificaciones deben poder realizarse con los config e info
+ * 9 - en la primera ronda de un SE, peude pasar que 2 del mismo grupo (origen) se enfrenten si no hay draw
+ * 10 - Crear el modulo ElementConfigVerificationModule
+ * 11 - en las quayconditions no pueden repetirse las mismas sources en un stage
  */
 
 function app() {

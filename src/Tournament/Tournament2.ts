@@ -1,11 +1,9 @@
 import JCalendar from "../JCalendar/JCalendar";
 import { TypeHalfWeekOfYear } from "../JCalendar/JDateTimeModule";
-import { ITCCConfig, ITCCInfo, TCC } from "../patterns/templateConfigCreator";
-import Phase, { IPhaseConfig, IPhaseInfo, stageMapRankForPhase01, stageMapRankForPhaseN, stageSOURCEs } from "./Phase";
+import { ITCCConfig, TCC } from "../patterns/templateConfigCreator";
+import Phase, { IPhaseConfig, IPhaseInfo, stageMapRankForPhase01, stageMapRankForPhaseN, getStageSOURCEItems, getStageFinalItems } from "./Phase";
 import { RankItem, TypeRanking } from "./Rank/ranking";
 import { IStageConfig } from "./Stage/Stage";
-import StageGroup, { IStageGroupConfig } from "./Stage/StageGroup/StageGroup";
-import StagePlayoff, { IStagePlayoffConfig } from "./Stage/StagePlayoff/StagePlayoff";
 import { IElementInfo, TGS } from "./types";
 
 
@@ -18,30 +16,29 @@ export interface ITournamentConfig extends ITCCConfig {
 
 export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
 
-  // private _stages: Map<string, TGS> = new Map<string, TGS>();
-  // private _phases: Map<string, Phase> = new Map<string, Phase>();
   private _phases: Phase[] = [];
 
   constructor(info: IElementInfo, config: ITournamentConfig, cal: JCalendar) {
     super(info, config);
-    // const phasesArrAux: IPhaseConfig[] = [];
-
     /**
     * creacion de las phases
     */
+   const previusPhaseConfigArr: IPhaseConfig[] = []
     config.phases.forEach((ipc: IPhaseConfig, i: number) => {
       ipc.n = i + 1;
       const ipi: IPhaseInfo = {
         id: `${info.id}_p${ipc.n}`,
         season: info.season,
       }
-      const previusPhaseConfig = i >= 1 ? config.phases[i - 1] : undefined;
-      const phase = new Phase(ipi, ipc, cal, previusPhaseConfig);
-      if (i !== 0) phase.previusPhase = this._phases[i - 1];
-      // this._phases.set(phase.info.id, phase);
+      if (i !== 0) previusPhaseConfigArr.push(config.phases[i - 1]);
+      // const previusPhaseConfig = i >= 1 ? config.phases[i - 1] : undefined;
+      const phase = new Phase(ipi, ipc, cal, previusPhaseConfigArr);
       this._phases.push(phase);
-      // phasesArrAux.push(phase.config)
+      if (this._phases[i-1])
+        phase.previusPhase = this._phases[i-1];
     })
+
+    // borrar console.logs
 
     if (this.info.id == 'd2i_f014_1988') {
       console.log('phase 1')
@@ -49,13 +46,13 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
       console.log(mrankphase01)
       console.log('phase 2')
 
-      const mrankphase02 = stageMapRankForPhaseN(this._phases[1].config, mrankphase01)
+      const mrankphase02 = stageMapRankForPhaseN(config.phases[1], config.phases.slice(0,0))
       console.log(stageMapRankForPhase01(this._phases[1].config))
       console.log('esto', mrankphase02)
       console.log('stages p2')
       this._phases[1].stages.forEach((s) => {
-        console.log(stageSOURCEs(s.config))
-        stageSOURCEs(s.config).forEach((value) => {
+        console.log(getStageSOURCEItems(s.config))
+        getStageSOURCEItems(s.config).forEach((value) => {
           console.log('SOURCE',
             value,
             stageMapRankForPhase01(this._phases[0].config).indexOf(value),
@@ -63,13 +60,13 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
         })
       })
       console.log('phase 3')
-      const mrankphase03 = stageMapRankForPhaseN(this._phases[2].config, mrankphase02);
+      const mrankphase03 = stageMapRankForPhaseN(config.phases[2], config.phases.slice(0,1));
       console.log(mrankphase03)
-      console.log('esto', stageMapRankForPhaseN(this._phases[2].config, stageMapRankForPhaseN(this._phases[1].config, stageMapRankForPhase01(this._phases[0].config))))
+      console.log('esto', stageMapRankForPhaseN(config.phases[2], config.phases.slice(0,1)))
       console.log('stages p3')
       this._phases[2].stages.forEach((s) => {
-        console.log(stageSOURCEs(s.config))
-        stageSOURCEs(s.config).forEach((value) => {
+        console.log(getStageSOURCEItems(s.config))
+        getStageSOURCEItems(s.config).forEach((value) => {
           console.log('SOURCE',
             value,
             stageMapRankForPhase01(this._phases[1].config).indexOf(value)
@@ -80,6 +77,21 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
       throw new Error('stop')
     }
 
+    // verifico el tamaño de las fuentes de las stages dentro del tournment
+    const stages: IStageConfig[] = [];
+    config.phases.forEach(p => stages.push(...p.stages));
+    stages.forEach((st: IStageConfig, _, arr: IStageConfig[]) => {
+    st.qualifyConditions.forEach((tq) => {
+      const sourceStage = arr.find(e => tq.rankId.slice(3,80) == e.idConfig);
+      if (sourceStage) { // esta dentro del tournament
+        if (tq.maxRankPos > getStageFinalItems(sourceStage).length) {
+          throw new Error(`
+          La stage ${st.idConfig} necesita que hayan al menos ${tq.maxRankPos} elementos en su source: ${sourceStage.idConfig}.
+          En la stage ${sourceStage.idConfig} solo genera/participan ${getStageFinalItems(sourceStage).length} en total.`)
+        }
+      }
+    })
+    })
 
 
     // let halfWeekOfStartDate: TypeHalfWeekOfYear = 108;
@@ -125,26 +137,58 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
     }
   }
 
-  // get stages() { return this._stages }
+  get stagesMap() {
+    let out: Map<string, TGS> = new Map<string, TGS>()
+    this._phases.forEach((phase: Phase) => {
+      phase.stages.forEach((stage: TGS) => {
+        out.set(stage.config.idConfig, stage)
+      })
+    })
+    return out;
+  }
   get phases() { return this._phases }
 
   // falta ver como verificar con el config que es correcto
+  // getRelativeRank(): TypeRanking {
+  //   let rankItemOut: RankItem[] = [];
+  //   for (let i = this._phases.length - 1; i >= 0; i--) {
+  //     const phase = this._phases[i];
+  //     phase.getRelativeRank().table.forEach((ri: RankItem) => {
+  //       if (!rankItemOut[ri.rank - 1]) {
+  //         rankItemOut[ri.rank - 1] = ri;
+  //       }
+  //     })
+  //   }
+
+  //   return {
+  //     rankId: 'tr_' + this.config.idConfig,
+  //     table: rankItemOut
+  //   }
+  // }
   getRelativeRank(): TypeRanking {
     let rankItemOut: RankItem[] = [];
-    for (let i = this._phases.length - 1; i >= 0; i--) {
+    let relRankData = stageMapRankForPhase01(this._phases[0].config);
+
+    for (let i = 1; i < this._phases.length; i++) {
       const phase = this._phases[i];
-      phase.getRelativeRank().table.forEach((ri: RankItem) => {
-        if (!rankItemOut[ri.rank - 1]) {
-          rankItemOut[ri.rank - 1] = ri;
-        }
-      })
+      relRankData = stageMapRankForPhaseN(phase.config, this._phases.slice(0,i-1).map(e => e.config))
     }
+
+    const stagesMap = this.stagesMap;
+    relRankData.forEach((elem, i) => {
+      const stageRank = stagesMap.get(elem.s.slice(3,80))?.getRelativeRank();
+      if (!stageRank) throw new Error(`En Tournament.getRelativeRank`)
+      rankItemOut.push({
+        originId: elem.s,
+        team: stageRank.table[elem.p-1].team,
+        rank: i+1,
+      })
+    })
 
     return {
       rankId: 'tr_' + this.config.idConfig,
       table: rankItemOut
     }
-
   }
 
 }

@@ -47,7 +47,7 @@ export default function tournamentExample01() {
     getRanking: () => {
       return {
         rankId: 'fr_f014i',
-        table: selection.slice(0, 8).map((e, i) => { return { team: e, rank: i + 1, originId: 'f014' } })
+        table: selection.slice(0, 8).map((e, i) => { return { team: e, rank: i + 1, originId: 'fr_f014' } })
       }
     },
     getDivisionsConfig: { d1: div1TournamentConfig_v1 },
@@ -66,7 +66,7 @@ export default function tournamentExample01() {
 
     console.log('---------------------------------------------------------------------------------')
     const td1 = tournamentsMap.get(`d1i_${federation_014.id}_${season}`);
-    console.log(td1?.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }))
+    console.log('td1', td1?.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }))
     td1?.phases.forEach(p => {
       console.log(td1.info.id)
       console.log(p.info.id)
@@ -79,7 +79,7 @@ export default function tournamentExample01() {
 
     console.log('---------------------------------------------------------------------------------')
     const td2 = tournamentsMap.get(`d2i_${federation_014.id}_${season}`);
-    console.log(td2?.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }))
+    console.log('td2', td2?.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }))
     td2?.phases.forEach(p => {
       console.log(td2.info.id)
       console.log(p.info.id)
@@ -97,7 +97,7 @@ export default function tournamentExample01() {
     })
     console.log('---------------------------------------------------------------------------------')
     const cup = tournamentsMap.get(`cup_${federation_014.id}_${season}`);
-    console.log(cup?.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }))
+    console.log('cup', cup?.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }))
     cup?.phases.forEach(p => {
       console.log(cup.info.id)
       console.log(p.info.id)
@@ -197,7 +197,7 @@ const div1TournamentConfig_v1: ITournamentConfig = {
   phases: [
     {
       n: 1, idConfig: 'd1i_f014_p1', name: 'Phase 1',
-      hwStart: 18, hwEnd: 92, stages: [{ minRankPos: 1, config: div1StageConfig_01_v1 }]
+      hwStart: 18, hwEnd: 92, stages: [ div1StageConfig_01_v1 ]
     }
   ]
 }
@@ -212,7 +212,7 @@ const div1StageConfig_01_v2: IStageGroupConfig = {
   hwEnd: 92,
 
   bombos: [10],
-  drawRulesValidate: [{ origin: 'all', minCount: 5 }],
+  drawRulesValidate: [],
   participantsPerGroup: [10],
 
   qualifyConditions: [{ rankId: 'fr_f014i', season: 'previus', minRankPos: 1, maxRankPos: 10 }],
@@ -240,7 +240,7 @@ const div1TournamentConfig_v2: ITournamentConfig = {
   phases: [
     {
       n: 1, idConfig: 'd1i_f014_p1', name: 'Phase 1',
-      hwStart: 16, hwEnd: 93, stages: [{ minRankPos: 1, config: div1StageConfig_01_v2 }]
+      hwStart: 16, hwEnd: 93, stages: [div1StageConfig_01_v2 ]
     }
   ]
 }
@@ -341,7 +341,7 @@ const div2StageConfig_04: IStagePlayoffConfig = {
   bombos: [2],
   drawRulesValidate: [{ origin: 'all', minCount: 0 }],
 
-  qualifyConditions: [{ rankId: 'sr_d2i_f014_sp2', season: 'previus', minRankPos: 3, maxRankPos: 4 }],
+  qualifyConditions: [{ rankId: 'sr_d2i_f014_sg1', season: 'previus', minRankPos: 11, maxRankPos: 12 }],
 
   bsConfig: {
     idConfig: 'p',
@@ -363,17 +363,17 @@ const div2TournamentConfig: ITournamentConfig = {
   phases: [
     {
       n: 1, idConfig: 'd2i_f014_p1', name: 'Phase 1',
-      hwStart: 16, hwEnd: 78, stages: [{ minRankPos: 1, config: div2StageConfig_01 }]
+      hwStart: 16, hwEnd: 78, stages: [div2StageConfig_01 ]
     },
     {
       n: 2, idConfig: 'd2i_f014_p2', name: 'Phase 2',
-      hwStart: 80, hwEnd: 84, stages: [{ minRankPos: 1, config: div2StageConfig_02 }]
+      hwStart: 80, hwEnd: 84, stages: [div2StageConfig_02 ]
     },
     {
       n: 3, idConfig: 'd2i_f014_p3', name: 'Phase 3',
       hwStart: 86, hwEnd: 92, stages: [
-        { minRankPos: 1, config: div2StageConfig_03 },
-        { minRankPos: 3, config: div2StageConfig_04 }
+        div2StageConfig_03 ,
+         div2StageConfig_04 ,
       ]
     }
   ]
@@ -449,11 +449,11 @@ const cupTournamentConfig: ITournamentConfig = {
   phases: [
     {
       n: 1, idConfig: 'cup_f014_p1', name: 'Phase 1',
-      hwStart: 30, hwEnd: 50, stages: [{ minRankPos: 11, config: cupStageConfig_01 }]
+      hwStart: 30, hwEnd: 50, stages: [cupStageConfig_01 ]
     },
     {
       n: 2, idConfig: 'cup_f014_p2', name: 'Phase 2',
-      hwStart: 51, hwEnd: 90, stages: [{ minRankPos: 1, config: cupStageConfig_02 }]
+      hwStart: 51, hwEnd: 90, stages: [cupStageConfig_02 ]
     },
   ]
 }

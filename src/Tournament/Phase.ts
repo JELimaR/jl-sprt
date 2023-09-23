@@ -9,7 +9,7 @@ import { TGS, IElementInfo } from "./types";
 
 export interface IPhaseConfig extends ITCCConfig {
   n: number;
-  stages: { minRankPos: number, config: IStageConfig }[];
+  stages: IStageConfig[];
 
   hwStart: TypeHalfWeekOfYear;
   hwEnd: TypeHalfWeekOfYear;
@@ -21,24 +21,24 @@ export interface IPhaseInfo extends ITCCInfo {
 
 export default class Phase extends TCC<IPhaseInfo, IPhaseConfig> { // esto es SortedStagesPhase
 
-  private _parallelStages: { minRankPos: number, stage: TGS }[] = [];// TGS[] = [];
-  private _previusPhaseConfig: IPhaseConfig | undefined;
+  private _parallelStages: /*{ minRankPos: number, stage: TGS }[] = [];// */TGS[] = [];
+  private _previusPhaseConfigsArr: IPhaseConfig[];;
 
   private _previusPhase: Phase | undefined;
 
-  constructor(info: IPhaseInfo, config: IPhaseConfig, cal: JCalendar, previusPhaseConfig: IPhaseConfig | undefined) {
+  constructor(info: IPhaseInfo, config: IPhaseConfig, cal: JCalendar, previusPhaseConfig: IPhaseConfig[]) {
     super(info, config)
 
     /************************************************************************************************************************************************
      * VERIFICACIONES
      */
-    config.stages.forEach((value: { minRankPos: number; config: IStageConfig; }) => {
-      if (value.config.hwStart < config.hwStart) {
-        throw new Error(`La stage ${value.config.idConfig} comienza antes (${value.config.hwStart})
-        que la phase: ${config.idConfig} comienza (${value.config.hwStart})`)
+    config.stages.forEach((stageConfig: IStageConfig) => {
+      if (stageConfig.hwStart < config.hwStart) {
+        throw new Error(`La stage ${stageConfig.idConfig} comienza antes (${stageConfig.hwStart})
+        que la phase: ${config.idConfig} comienza (${stageConfig.hwStart})`)
       }
-      if (value.config.hwEnd > config.hwEnd) {
-        throw new Error(`La stage ${value.config.idConfig} termina despues (${value.config.hwEnd})
+      if (stageConfig.hwEnd > config.hwEnd) {
+        throw new Error(`La stage ${stageConfig.idConfig} termina despues (${stageConfig.hwEnd})
         que que la phase: ${config.idConfig} termina (${config.hwEnd})`)
       }
     })
@@ -50,19 +50,21 @@ export default class Phase extends TCC<IPhaseInfo, IPhaseConfig> { // esto es So
     const duplicates = ranksDependencies.filter((rd: string) => ranksToGenerate.includes(rd));
     if (duplicates.length > 0) {
       throw new Error(`
-        Dentro de la Phase ${info.id}, existen dependencias internas entre las stages: ${duplicates.toString()}
+        Dentro de la Phase ${info.id}, eexistenxisten dependencias internas entre las stages: ${duplicates.toString()}
       `)
     }
 
+    // verificar que no se "crucen las dependencias" (S21 dep de S12 y S22 dep de S11)
+
     /************************************************************************************************************************************************/
-    config.stages.forEach((value: { minRankPos: number; config: IStageConfig; }, i: number) => {
-      const stage = createStage({ id: `${info.id}_s${i + 1}`, season: info.season }, value.config, cal);
-      this._parallelStages.push({ minRankPos: value.minRankPos, stage });
+    config.stages.forEach((stageConfig: IStageConfig, i: number) => {
+      const stage = createStage({ id: `${info.id}_s${i + 1}`, season: info.season }, stageConfig, cal);
+      this._parallelStages.push(stage);
     })
-    this._previusPhaseConfig = previusPhaseConfig;
+    this._previusPhaseConfigsArr = previusPhaseConfig;
   }
 
-  get stages(): TGS[] { return this._parallelStages.map(v => v.stage) }
+  get stages(): TGS[] { return this._parallelStages }
   set previusPhase(pp: Phase) { this._previusPhase = pp }
 
 
@@ -70,61 +72,62 @@ export default class Phase extends TCC<IPhaseInfo, IPhaseConfig> { // esto es So
   // en la phase, si estan en orden, se mantiene el orden en el rank, de lo contrario se combinan
   getRelativeRank(): TypeRanking {
     let rankItemOut: RankItem[] = [];
+    let relRankData = stageMapRankForPhaseN(this.config, this._previusPhaseConfigsArr);
+jfjjfjfjfhhdkkdkkdkdkdkdkkdjjdjjdjjdjdjdjd
+jfjjfjfjfhhdkkdkkdkdkdkdkkdjjdjjdjjdjdjdjd
 
-    let currRank = 1;
-    this._parallelStages.forEach(({ minRankPos, stage }) => {
-      const sr_rank = stage.getRelativeRank();
-      sr_rank.table.forEach((ri: RankItem, i: number) => {
-        rankItemOut.push({
-          originId: sr_rank.rankId,
-          team: ri.team,
-          rank: currRank++//ri.rank + minRankPos - 1,
-        })
+    // for (let i = 1; i < this._phases.length; i++) {
+    //   const phase = this._phases[i];
+    //   relRankData = stageMapRankForPhaseN(phase.config, this._phases.slice(0,i-1).map(e => e.config))
+    // }
+
+    const stagesMap = this.stages;
+    relRankData.forEach((elem, i) => {
+      const stageRank = stagesMap.filter(s => s.config.idConfig == elem.s.slice(3,80) )[0].getRelativeRank();
+      if (!stageRank) throw new Error(`En Tournament.getRelativeRank`)
+      rankItemOut.push({
+        originId: elem.s,
+        team: stageRank.table[elem.p-1].team,
+        rank: i+1,
       })
     })
 
-    rankItemOut.sort((a, b) => {
-      if (a.rank === b.rank)
-        throw new Error(`a.rank ${a.rank} y b.rank ${b.rank} no pueden ser iguales. (Phase.getRelativeRank)`)
-      return a.rank - b.rank
-    });
-
     return {
-      rankId: 'pr_' + this.config.idConfig,
-      table: rankItemOut,
+      rankId: 'tr_' + this.config.idConfig,
+      table: rankItemOut
     }
   }
 
-  static calcHalfWeekOfStartDate(phaseConfig: IPhaseConfig): TypeHalfWeekOfYear {
+  static calcHalfWeekOfStartDate(phaseConfig: IPhaseConfig): TypeHalfWeekOfYear { // mover a verification module
     let out: TypeHalfWeekOfYear = 108;
     phaseConfig.stages.forEach(value => {
-      out = Math.min(out, value.config.hwStart) as TypeHalfWeekOfYear;
+      out = Math.min(out, value.hwStart) as TypeHalfWeekOfYear;
     })
     return out;
   }
-  static calcHalfWeekOfEndDate(phaseConfig: IPhaseConfig): TypeHalfWeekOfYear {
+  static calcHalfWeekOfEndDate(phaseConfig: IPhaseConfig): TypeHalfWeekOfYear { // mover a verification module
     let out: TypeHalfWeekOfYear = 1;
     phaseConfig.stages.forEach(value => {
-      out = Math.max(out, value.config.hwEnd) as TypeHalfWeekOfYear;
+      out = Math.max(out, value.hwEnd) as TypeHalfWeekOfYear;
     })
     return out;
   }
 
-  // lista de los ranksIds que genera la phase
-  static getRanksToGenerateList(stages: { minRankPos: number, config: IStageConfig }[]): string[] {
+  // lista de los ranksIds que genera la phase - se puede reubicar
+  static getRanksToGenerateList(stages: IStageConfig[]): string[] {
     let out: string[] = [];
 
-    stages.forEach(({ config }) => {
+    stages.forEach((config) => {
       out.push(`sr_${config.idConfig}`) // OJO
     })
 
     return out;
   }
 
-  static getRankDependenciesList(stages: { minRankPos: number, config: IStageConfig }[]): string[] {
+  static getRankDependenciesList(stages: IStageConfig[]): string[] {
     let out: string[] = [];
 
-    stages.forEach(({ config }) => {
+    stages.forEach((config) => {
       config.qualifyConditions.forEach(tq => {
         out.push(tq.rankId);
       })
@@ -136,13 +139,13 @@ export default class Phase extends TCC<IPhaseInfo, IPhaseConfig> { // esto es So
 }
 /***************************************************************************************************************************************** */
 // lista de los rankitemsid de la phase 1
-export function stageMapRankForPhase01(phaseConfig: IPhaseConfig): {s: string, p: number}[] {
-  const out: {s: string, p: number}[] = [];
-  phaseConfig.stages.forEach(({ config }) => {
+export function stageMapRankForPhase01(phaseConfig: IPhaseConfig): { s: string, p: number }[] {
+  const out: { s: string, p: number }[] = [];
+  phaseConfig.stages.forEach((config) => {
     let stageParticipants = 0;
     config.bombos.forEach(b => stageParticipants += b);
     for (let p = 1; p <= stageParticipants; p++) {
-      const elemString = {s: `sr_${config.idConfig}`, p}; // OJO
+      const elemString = { s: `sr_${config.idConfig}`, p }; // OJO
       out.push(elemString);
     }
   })
@@ -151,67 +154,150 @@ export function stageMapRankForPhase01(phaseConfig: IPhaseConfig): {s: string, p
 }
 
 // lista de los rankitemsid de la phase n
-export function stageMapRankForPhaseN(phaseConfig: IPhaseConfig, previusElems: { s: string, p: number }[]) {
-  console.log('--------------stageMapRankForPhaseN---------------------')
-  const out: { s: string, p: number }[] = [];
-  const ranking_n1 = [...previusElems];
+/**
+ * Sea p el siguiente elemento de prevGenericRankList
+ * Sea s el siguiente stage no considerado aún
+ * mientras exista p {
+ * p no debe estar en ninguno de los prev_s
+ * 
+ * hay que verificar si p va directo o indirectamente a traves de s.
+ * si va directo, puede ir arriba o debajo
+ *  va arriba solo si hay elementos de prevGenericRankList no considerados que estan dentro de algun SOURCE (s),
+ *     debo verificar que no aparezca más adelante, dando lugar a una inconsistencia
+ *  en caso contrario va debajo, por lo que se agregan los elementos de s y se deja de conciderar
+ * si va indirectamente, hay que verificar su nivel dentro del SOURCE_s - pLevel
+ *  a partir de plevel, los elementos de SOURCE_s y los pnext deben coincidir.
+ * }
+ */
+export function stageMapRankForPhaseN(phaseConfig: IPhaseConfig /*prevGenericRankListEntry:IGenericRankItem[]*/, previus: IPhaseConfig[]) {
+  // console.log('--------------stageMapRankForPhaseN---------------------')
+  const out: IGenericRankItem[] = [];
+  if (previus.length == 0) {
+    return stageMapRankForPhase01(phaseConfig)
+  } 
+  const prevGenericRankList = stageMapRankForPhaseN(previus[0], previus.slice(0, previus.length-1))//[...prevGenericRankListEntry];
+  const notConsideredStages = [...phaseConfig.stages];
 
-  console.log(`en ranking_n1.`, ranking_n1)
-  let p = ranking_n1.shift();
-  let s = 0;
-  while (!!p) {
-    let pp: { s: string, p: number } = {...p};
-    const stageConfig = phaseConfig.stages[s]?.config;
-    if (!stageConfig) {
-      out.push(pp)
-    }
-    else {
-      // phaseConfig.stages.forEach(({ config: stageConfig }) => {
-      const SOURCE = stageSOURCEs(stageConfig);
-      if (SOURCE.filter(e => e.s == pp.s && e.p == pp.p).length == 1) {
-        // buscar el index de pp en ranking_p1
-        console.log(pp)
-        console.log('SOURCE', stageConfig.idConfig, SOURCE)
-        let ppIndx = 0;
-        SOURCE.forEach((e, i: number) => {if(e.s == pp.s && e.p == pp.p) ppIndx = i})
-        // let indxDif = SOURCE.indexOf(pp) - ranking_n1.indexOf(pp);
-        SOURCE.forEach((_, s: number) => {
-          console.log('s', s, 'ppIndx', ppIndx)
-          if (s > ppIndx) {
-            // console.log('p', phaseConfig.idConfig, 's', s, ranking_n1)
-            const ppAux = ranking_n1.shift();
-            if (!ppAux) throw new Error(`en stageMapRankForPhaseN. ${ranking_n1.length}`)
-          }
-        })
-
-        out.push(...stageFinalPosistions(stageConfig))
-
-      } else {
-        out.push(pp)
+  let pidx = 0;
+  // let ppItem: IGenericRankItem = prevGenericRankList_copy[pidx];
+  let sidx = 0;
+  // let SOURCEcurr = getStageSOURCEItems(notConsideredStages[sidx]);
+  while (pidx < prevGenericRankList.length) {
+    let ppItem: IGenericRankItem = prevGenericRankList[pidx];
+    // p no debe estar en ninguno de los prev_s
+    for (let ss = 0; ss < sidx; ss++) {
+      // console.log(phaseConfig.idConfig, ss)
+      const SOURCEprev = getStageSOURCEItems(phaseConfig.stages[ss]);
+      if (getIndexOf(SOURCEprev, ppItem) > -1) {
+        console.log('ppItem', ppItem)
+        console.log('SOURCEprev', SOURCEprev)
+        console.log('out', out)
+        throw new Error(`pp aparece en SOURCEprev`)
       }
-      // })
     }
-    p = ranking_n1.shift();
-    s++;
+    // hay que verificar si p va directo o indirectamente a traves de s.
+    const stageConfig = phaseConfig.stages[sidx];
+    if (!stageConfig) {
+      // como no hay otra s, todos van directo
+      for (let pp = pidx; pp < prevGenericRankList.length; pp++) {
+        out.push(ppItem);
+        pidx++;
+        ppItem = prevGenericRankList[pidx];
+      }
+    } else {
+      const SOURCEcurr = getStageSOURCEItems(stageConfig);
+      // hay que verificar si p va directo o indirectamente a traves de s.
+      const ppItem_SourceIndex = getIndexOf(SOURCEcurr, ppItem);
+      if (ppItem_SourceIndex == -1) { // ppItem no está en SOURCE, entonces va directo o en el siguiente SOURCE
+        //  puede ir arriba o debajo
+        // va arriba solo si hay elementos de prevGenericRankList no considerados que estan dentro de algun SOURCE (verificar en s),
+        let vaArriba = false;
+        for (let pp = pidx + 1; pp < prevGenericRankList.length && !vaArriba; pp++) {
+          const ppAux = prevGenericRankList[pp];
+          vaArriba = (getIndexOf(SOURCEcurr, ppAux) !== -1);
+        }
+        if (vaArriba) {
+          // console.log(ppItem, 'va arriba de ', SOURCEcurr);
+          // debo verificar que no aparezca más adelante, dando lugar a una inconsistencia
+          for (let ss = sidx+1; ss < phaseConfig.stages.length; ss++) {
+            const SOURCEnext = getStageSOURCEItems(phaseConfig.stages[ss]);
+            if (getIndexOf(SOURCEnext, ppItem) > -1) {
+              console.log('ppItem', ppItem);
+              console.log('SOURCEcurr', SOURCEcurr);
+              console.log('SOURCEnext', SOURCEnext);
+              throw new Error(`ppItem esta por delante de curr, pero aparece en una stage siguiente: next`);
+            }
+          }
+          out.push(ppItem);
+          pidx++;
+        } else {
+          // en caso contrario va debajo, por lo que se agregan los elementos de s y se deja de conciderar ese stage
+          out.push(...getStageFinalItems(stageConfig));
+          sidx++;
+          // out.push(ppItem);
+        }
+
+      } else { // ppItem está en SOURCE, entonces va indirectamente a traves de stage
+        // si va indirectamente, hay que verificar su nivel dentro del SOURCE_s - pLevel
+        const ppIndexInSOURCE = getIndexOf(SOURCEcurr, ppItem);
+        // a partir de plevel, los elementos de SOURCE_s y los pnext deben coincidir
+        for (let sourceItemIdx = ppIndexInSOURCE; sourceItemIdx < SOURCEcurr.length; sourceItemIdx++) {
+          const sourceItem = SOURCEcurr[sourceItemIdx];
+          const ppItemAux = prevGenericRankList[pidx];
+          if (!areEqualsGenericRankItem(sourceItem, ppItemAux)) {
+            console.log(sourceItem, ppItemAux, 'index', sourceItemIdx, pidx);
+            throw new Error(`deberían ser iguales sourceItem y el ppItem`);
+          }
+          pidx++;
+        }
+        out.push(...getStageFinalItems(stageConfig));
+        sidx++;
+
+      }
+    }
   }
 
   return out;
 }
 
-export function stageSOURCEs(stageConfig: IStageConfig) {
-  const out: { s: string, p: number }[] = [];
+interface IGenericRankItem {
+  s: string;
+  p: number;
+}
+
+interface GenericRankList {
+  list: IGenericRankItem[];
+}
+function areEqualsGenericRankItem(a: IGenericRankItem, b: IGenericRankItem): boolean {
+  return a.s == b.s && a.p == b.p;
+}
+
+function getIndexOf(list: IGenericRankItem[], item: IGenericRankItem): number {
+  if (list.filter(e => areEqualsGenericRankItem(e, item)).length > 1) {
+    throw new Error(`hay un elemento repetido`);
+  }
+  let out = -1;
+  list.forEach((e, i: number) => { if (areEqualsGenericRankItem(e, item)) out = i })
+  return out;
+
+}
+
+// mover a stages
+export function getStageSOURCEItems(stageConfig: IStageConfig) {
+  const out: IGenericRankItem[] = [];
   stageConfig.qualifyConditions.forEach(qc => {
-    for (let q = qc.minRankPos; q <= qc.maxRankPos; q++) out.push({ s: qc.rankId, p: q });
+    for (let r = qc.minRankPos; r <= qc.maxRankPos; r++) out.push({ s: qc.rankId, p: r });
   })
   return out;
 }
 
-export function stageFinalPosistions(stageConfig: IStageConfig) {
-  const out: { s: string, p: number }[] = [];
-  let stageParticipants = 0;
-  stageConfig.bombos.forEach(b => stageParticipants += b);
-  for (let p = 1; p <= stageParticipants; p++) {
-    const elem = { s: `sr_${stageConfig.idConfig}`, p }; // OJO
+export function getStageFinalItems(stageConfig: IStageConfig) {
+  const out: IGenericRankItem[] = [];
+  let participantsNumber = 0;
+  stageConfig.bombos.forEach(b => participantsNumber += b);
+
+  for (let r = 1; r <= participantsNumber; r++) {
+    const elem = { s: `sr_${stageConfig.idConfig}`, p: r }; // OJO
     out.push(elem);
   }
   return out;
