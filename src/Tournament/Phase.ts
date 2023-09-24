@@ -73,8 +73,7 @@ export default class Phase extends TCC<IPhaseInfo, IPhaseConfig> { // esto es So
   getRelativeRank(): TypeRanking {
     let rankItemOut: RankItem[] = [];
     let relRankData = stageMapRankForPhaseN(this.config, this._previusPhaseConfigsArr);
-jfjjfjfjfhhdkkdkkdkdkdkdkkdjjdjjdjjdjdjdjd
-jfjjfjfjfhhdkkdkkdkdkdkdkkdjjdjjdjjdjdjdjd
+    throw new Error(`Falta terminar Phase.getRelativeRank`)
 
     // for (let i = 1; i < this._phases.length; i++) {
     //   const phase = this._phases[i];
