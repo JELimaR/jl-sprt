@@ -6,7 +6,7 @@ import StageGroup, { IStageGroupConfig } from "../Tournament/Stage/StageGroup/St
 import JCalendar from "../JCalendar/JCalendar";
 import { getExampleTeams } from "../Entities/ExampleData";
 import mostrarFecha from "../mostrarFechaBorrar";
-import Tournament, { ITournamentConfig } from "../Tournament/Tournament2";
+import Tournament, { ITournamentConfig } from "../Tournament/Tournament";
 import { TGS } from "../Tournament/types";
 import { IStagePlayoffConfig } from "../Tournament/Stage/StagePlayoff/StagePlayoff";
 
@@ -66,24 +66,22 @@ export default function tournamentExample01() {
 
     console.log('---------------------------------------------------------------------------------')
     const td1 = tournamentsMap.get(`d1i_${federation_014.id}_${season}`);
-    console.log('td1', td1?.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }))
     td1?.phases.forEach(p => {
       console.log(td1.info.id)
       console.log(p.info.id)
-      console.table(p.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }));
       p.stages.forEach((s: TGS) => {
         console.log(s.info.id)
         console.table(s.getTable('finished').map(e => e.getInterface()));
       })
+      console.table(p.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }));
     })
+    console.log('td1', td1?.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }))
 
     console.log('---------------------------------------------------------------------------------')
     const td2 = tournamentsMap.get(`d2i_${federation_014.id}_${season}`);
-    console.log('td2', td2?.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }))
     td2?.phases.forEach(p => {
       console.log(td2.info.id)
       console.log(p.info.id)
-      console.table(p.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }));
       p.stages.forEach((s: TGS) => {
         console.log(s.info.id)
         if (s instanceof StageGroup) {
@@ -94,25 +92,27 @@ export default function tournamentExample01() {
         }
         console.table(s.getTable('finished').map(e => e.getInterface()));
       })
+      console.table(p.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }));
     })
+    console.log('td2', td2?.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }))
     console.log('---------------------------------------------------------------------------------')
     const cup = tournamentsMap.get(`cup_${federation_014.id}_${season}`);
-    console.log('cup', cup?.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }))
     cup?.phases.forEach(p => {
       console.log(cup.info.id)
       console.log(p.info.id)
-      console.table(p.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }));
       p.stages.forEach((s: TGS) => {
         console.log(s.info.id)
         console.table(s.getTable('finished').map(e => e.getInterface()));
       })
+      console.table(p.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }));
     })
+    console.log('cup', cup?.getRelativeRank().table.map(e => { return { ...e, team: e.team.id } }))
 
     // al final de la season hay nuevo ranking de federacion
     let fedSeasonRanking: TypeRanking = globalFinishedRankingsMap.get('fr_f014i')!;
     if (season == 1986) {
       // nuevos equipos afiliados
-      selection.slice(8, 22).forEach((t, i) => fedSeasonRanking.table.push({ team: t, rank: i + 9, originId: 'f014' }))
+      selection.slice(8, 22).forEach((t, i) => fedSeasonRanking.table.push({ team: t, rank: i + 9, originId: 'fr_f014' }))
     }    
     if (season < 1988) {
       td1?./*phases/*.get(`${td1.info.id}_p1`)![0].*/getRelativeRank().table.forEach((ri, i) => fedSeasonRanking.table[i] = { ...ri, originId: 'f014' });
@@ -120,15 +120,11 @@ export default function tournamentExample01() {
     } else {
       td1?./*phases/*.get(`${td1.info.id}_p1`)![0].*/getRelativeRank().table.forEach((ri, i) => {
         const rpos = i < 8 ? i : i + 2;
-        fedSeasonRanking.table[rpos] = { ...ri, rank: rpos + 1, originId: 'f014' }
-      });
-      td2?./*phases/*.get(`${td2.info.id}_p1`)![0].*/getRelativeRank().table.forEach((ri, i) => {
-        if (i > 3)
-          fedSeasonRanking.table[i + 10] = { ...ri, rank: i + 10 + 1, originId: 'f014' }
+        fedSeasonRanking.table[rpos] = { ...ri, rank: rpos + 1, originId: 'tr_' + td1.config.idConfig }
       });
       td2?./*phases/*.get(`${td2.info.id}_p2`)![1].*/getRelativeRank().table.forEach((ri, i) => {
         const rpos = i < 2 ? i + 8 : i + 10;
-        fedSeasonRanking.table[rpos] = { ...ri, rank: rpos + 1, originId: 'f014' }
+        fedSeasonRanking.table[rpos] = { ...ri, rank: rpos + 1, originId: 'tr_' + td2.config.idConfig }
       });
 
       globalFinishedRankingsMap.set(fedSeasonRanking.rankId, fedSeasonRanking);
@@ -146,7 +142,7 @@ export default function tournamentExample01() {
     }
   }
 
-  for (let season = 1980; season <= 1994; season++) {
+  for (let season = 1982; season <= 1996; season++) {
     console.log('********************************************************************************')
     console.log('************************ Nueva temporada:', season, '*****************************')
     runSeason(season)

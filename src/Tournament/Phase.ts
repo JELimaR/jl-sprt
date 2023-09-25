@@ -43,11 +43,11 @@ export default class Phase extends TCC<IPhaseInfo, IPhaseConfig> { // esto es So
       }
     })
     // las stages de la phase no pueden depender de otras stages de la phase
-    // por tanto, en las ranksToGenerate no pueden haber elementos de ranksDependencies
+    // por tanto, en las ranksToGenerateIds no pueden haber elementos de sourcesIds
     // HACER ESTA VERIFICACION EN TOURNAMENT Y LUEGO MÁS ARRIBA
-    const ranksToGenerate = Phase.getRanksToGenerateList(config.stages);
-    const ranksDependencies = Phase.getRankDependenciesList(config.stages);
-    const duplicates = ranksDependencies.filter((rd: string) => ranksToGenerate.includes(rd));
+    const ranksToGenerateIds = Phase.getRanksToGenerateIds(config.stages);
+    const sourcesIds = Phase.getSourceIds(config.stages);
+    const duplicates = sourcesIds.filter((rd: string) => ranksToGenerateIds.includes(rd));
     if (duplicates.length > 0) {
       throw new Error(`
         Dentro de la Phase ${info.id}, eexistenxisten dependencias internas entre las stages: ${duplicates.toString()}
@@ -66,33 +66,64 @@ export default class Phase extends TCC<IPhaseInfo, IPhaseConfig> { // esto es So
 
   get stages(): TGS[] { return this._parallelStages }
   set previusPhase(pp: Phase) { this._previusPhase = pp }
+  get isFinished(): boolean {
+    return this._parallelStages.every((s: TGS) => s.isFinished);
+  }
 
-
-  // faltan muchas cosas
-  // en la phase, si estan en orden, se mantiene el orden en el rank, de lo contrario se combinan
   getRelativeRank(): TypeRanking {
+    let out = this.getRelativeRank2();
+    out.table.forEach((ri, i, arr) => {
+      arr[i] = {...ri, rank: i+1}
+    })
+    
+    return out;
+  }
+  
+  // en la phase, si las stages estan en orden, se mantiene el orden en el rank, de lo contrario se combinan
+  private getRelativeRank2(): TypeRanking {
     let rankItemOut: RankItem[] = [];
-    let relRankData = stageMapRankForPhaseN(this.config, this._previusPhaseConfigsArr);
-    throw new Error(`Falta terminar Phase.getRelativeRank`)
+    let genericRank = stageMapRankForPhaseN(this.config, this._previusPhaseConfigsArr);
 
-    // for (let i = 1; i < this._phases.length; i++) {
-    //   const phase = this._phases[i];
-    //   relRankData = stageMapRankForPhaseN(phase.config, this._phases.slice(0,i-1).map(e => e.config))
-    // }
+    let previusRank: TypeRanking = { rankId: 'none', table: [] };
+    if (!!this._previusPhase) previusRank = this._previusPhase.getRelativeRank2();
 
-    const stagesMap = this.stages;
-    relRankData.forEach((elem, i) => {
-      const stageRank = stagesMap.filter(s => s.config.idConfig == elem.s.slice(3,80) )[0].getRelativeRank();
-      if (!stageRank) throw new Error(`En Tournament.getRelativeRank`)
-      rankItemOut.push({
-        originId: elem.s,
-        team: stageRank.table[elem.p-1].team,
-        rank: i+1,
-      })
+    const stagesArr = this.stages;
+    let prevR = -1;
+    genericRank.forEach((elem, i) => {
+      const stage = stagesArr.filter(s => s.config.idConfig == elem.s.slice(3, 80))[0];
+      if (!stage) {
+        if (!previusRank) throw new Error(`debería existir un previusRank para ${this.config.idConfig}. (Phase.getRelativeRank)`)
+        let finded = false;
+        let prevRankItem;
+        do {
+          prevR++;
+          prevRankItem = previusRank.table[prevR];
+          if (!prevRankItem) {
+            console.log('previusRank.table', previusRank.table);
+            console.log('index', prevR)
+            console.log(this.config.idConfig, genericRank)
+            console.log('elem', elem)
+          }
+          finded = areEqualsGenericRankItem(elem, { s: prevRankItem.originId, p: prevRankItem.rank });
+        } while (!finded)
+        rankItemOut.push({
+          originId: prevRankItem.originId,
+          team: prevRankItem.team,
+          rank: elem.p,
+        })
+        
+      } else {
+        const stageRank = stage.getRelativeRank();
+        rankItemOut.push({
+          originId: elem.s,
+          team: stageRank.table[elem.p - 1].team,
+          rank: i + 1,
+        })
+      }
     })
 
     return {
-      rankId: 'tr_' + this.config.idConfig,
+      rankId: 'pr_' + this.config.idConfig,
       table: rankItemOut
     }
   }
@@ -113,7 +144,7 @@ export default class Phase extends TCC<IPhaseInfo, IPhaseConfig> { // esto es So
   }
 
   // lista de los ranksIds que genera la phase - se puede reubicar
-  static getRanksToGenerateList(stages: IStageConfig[]): string[] {
+  static getRanksToGenerateIds(stages: IStageConfig[]): string[] {
     let out: string[] = [];
 
     stages.forEach((config) => {
@@ -123,7 +154,7 @@ export default class Phase extends TCC<IPhaseInfo, IPhaseConfig> { // esto es So
     return out;
   }
 
-  static getRankDependenciesList(stages: IStageConfig[]): string[] {
+  static getSourceIds(stages: IStageConfig[]): string[] {
     let out: string[] = [];
 
     stages.forEach((config) => {
@@ -131,15 +162,20 @@ export default class Phase extends TCC<IPhaseInfo, IPhaseConfig> { // esto es So
         out.push(tq.rankId);
       })
     })
+    
+    const conjunto = new Set(out);
+    if (conjunto.size !== out.length) {
+      throw new Error(`Los elementos del source de la stage no pueden repetirse`)
+    }
 
     return out;
   }
 
 }
 /***************************************************************************************************************************************** */
-// lista de los rankitemsid de la phase 1
-export function stageMapRankForPhase01(phaseConfig: IPhaseConfig): { s: string, p: number }[] {
-  const out: { s: string, p: number }[] = [];
+// lista de los genericRankItemsId de la phase 1
+export function stageMapRankForPhase01(phaseConfig: IPhaseConfig): IGenericRankItem[] {
+  const out: IGenericRankItem[] = [];
   phaseConfig.stages.forEach((config) => {
     let stageParticipants = 0;
     config.bombos.forEach(b => stageParticipants += b);
@@ -152,7 +188,7 @@ export function stageMapRankForPhase01(phaseConfig: IPhaseConfig): { s: string, 
   return out;
 }
 
-// lista de los rankitemsid de la phase n
+// lista de los genericRankItemsId de la phase n
 /**
  * Sea p el siguiente elemento de prevGenericRankList
  * Sea s el siguiente stage no considerado aún
@@ -168,13 +204,13 @@ export function stageMapRankForPhase01(phaseConfig: IPhaseConfig): { s: string, 
  *  a partir de plevel, los elementos de SOURCE_s y los pnext deben coincidir.
  * }
  */
-export function stageMapRankForPhaseN(phaseConfig: IPhaseConfig /*prevGenericRankListEntry:IGenericRankItem[]*/, previus: IPhaseConfig[]) {
+export function stageMapRankForPhaseN(phaseConfig: IPhaseConfig, previus: IPhaseConfig[]) {
   // console.log('--------------stageMapRankForPhaseN---------------------')
   const out: IGenericRankItem[] = [];
   if (previus.length == 0) {
     return stageMapRankForPhase01(phaseConfig)
-  } 
-  const prevGenericRankList = stageMapRankForPhaseN(previus[0], previus.slice(0, previus.length-1))//[...prevGenericRankListEntry];
+  }
+  const prevGenericRankList = stageMapRankForPhaseN(previus[previus.length - 1], previus.slice(0, previus.length - 1));
   const notConsideredStages = [...phaseConfig.stages];
 
   let pidx = 0;
@@ -195,7 +231,7 @@ export function stageMapRankForPhaseN(phaseConfig: IPhaseConfig /*prevGenericRan
       }
     }
     // hay que verificar si p va directo o indirectamente a traves de s.
-    const stageConfig = phaseConfig.stages[sidx];
+    const stageConfig = notConsideredStages[sidx];
     if (!stageConfig) {
       // como no hay otra s, todos van directo
       for (let pp = pidx; pp < prevGenericRankList.length; pp++) {
@@ -218,8 +254,8 @@ export function stageMapRankForPhaseN(phaseConfig: IPhaseConfig /*prevGenericRan
         if (vaArriba) {
           // console.log(ppItem, 'va arriba de ', SOURCEcurr);
           // debo verificar que no aparezca más adelante, dando lugar a una inconsistencia
-          for (let ss = sidx+1; ss < phaseConfig.stages.length; ss++) {
-            const SOURCEnext = getStageSOURCEItems(phaseConfig.stages[ss]);
+          for (let ss = sidx + 1; ss < notConsideredStages.length; ss++) {
+            const SOURCEnext = getStageSOURCEItems(notConsideredStages[ss]);
             if (getIndexOf(SOURCEnext, ppItem) > -1) {
               console.log('ppItem', ppItem);
               console.log('SOURCEcurr', SOURCEcurr);
@@ -251,7 +287,6 @@ export function stageMapRankForPhaseN(phaseConfig: IPhaseConfig /*prevGenericRan
         }
         out.push(...getStageFinalItems(stageConfig));
         sidx++;
-
       }
     }
   }
