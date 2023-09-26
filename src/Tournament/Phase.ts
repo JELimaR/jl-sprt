@@ -21,7 +21,7 @@ export interface IPhaseInfo extends ITCCInfo {
 
 export default class Phase extends TCC<IPhaseInfo, IPhaseConfig> { // esto es SortedStagesPhase
 
-  private _parallelStages: /*{ minRankPos: number, stage: TGS }[] = [];// */TGS[] = [];
+  private _parallelStages: TGS[] = [];
   private _previusPhaseConfigsArr: IPhaseConfig[];;
 
   private _previusPhase: Phase | undefined;
@@ -82,7 +82,7 @@ export default class Phase extends TCC<IPhaseInfo, IPhaseConfig> { // esto es So
   // en la phase, si las stages estan en orden, se mantiene el orden en el rank, de lo contrario se combinan
   private getRelativeRank2(): TypeRanking {
     let rankItemOut: RankItem[] = [];
-    let genericRank = stageMapRankForPhaseN(this.config, this._previusPhaseConfigsArr);
+    let genericRank = getGenericRankItemsSortedForPhaseN(this.config, this._previusPhaseConfigsArr);
 
     let previusRank: TypeRanking = { rankId: 'none', table: [] };
     if (!!this._previusPhase) previusRank = this._previusPhase.getRelativeRank2();
@@ -174,14 +174,14 @@ export default class Phase extends TCC<IPhaseInfo, IPhaseConfig> { // esto es So
 }
 /***************************************************************************************************************************************** */
 // lista de los genericRankItemsId de la phase 1
-export function stageMapRankForPhase01(phaseConfig: IPhaseConfig): IGenericRankItem[] {
+export function getGenericRankItemsSortedForPhase01(phaseConfig: IPhaseConfig): IGenericRankItem[] {
   const out: IGenericRankItem[] = [];
   phaseConfig.stages.forEach((config) => {
     let stageParticipants = 0;
     config.bombos.forEach(b => stageParticipants += b);
     for (let p = 1; p <= stageParticipants; p++) {
-      const elemString = { s: `sr_${config.idConfig}`, p }; // OJO
-      out.push(elemString);
+      const elem = { s: `sr_${config.idConfig}`, p }; // OJO
+      out.push(elem);
     }
   })
 
@@ -204,13 +204,15 @@ export function stageMapRankForPhase01(phaseConfig: IPhaseConfig): IGenericRankI
  *  a partir de plevel, los elementos de SOURCE_s y los pnext deben coincidir.
  * }
  */
-export function stageMapRankForPhaseN(phaseConfig: IPhaseConfig, previus: IPhaseConfig[]) {
+export function getGenericRankItemsSortedForPhaseN(phaseConfig: IPhaseConfig, previus: IPhaseConfig[]): IGenericRankItem[] {
   // console.log('--------------stageMapRankForPhaseN---------------------')
   const out: IGenericRankItem[] = [];
   if (previus.length == 0) {
-    return stageMapRankForPhase01(phaseConfig)
+    return getGenericRankItemsSortedForPhase01(phaseConfig)
   }
-  const prevGenericRankList = stageMapRankForPhaseN(previus[previus.length - 1], previus.slice(0, previus.length - 1));
+  // const prevConfig = [...previus].pop();
+  // const prevGenericRankList = getGenericRankItemSortedForPhaseN(prevConfig!, previus);
+  const prevGenericRankList = getGenericRankItemsSortedForPhaseN(previus[previus.length - 1], previus.slice(0, previus.length - 1));
   const notConsideredStages = [...phaseConfig.stages];
 
   let pidx = 0;
@@ -233,7 +235,7 @@ export function stageMapRankForPhaseN(phaseConfig: IPhaseConfig, previus: IPhase
     // hay que verificar si p va directo o indirectamente a traves de s.
     const stageConfig = notConsideredStages[sidx];
     if (!stageConfig) {
-      // como no hay otra s, todos van directo
+      // como no hay otra s, todos van directo manteniendo el orden
       for (let pp = pidx; pp < prevGenericRankList.length; pp++) {
         out.push(ppItem);
         pidx++;

@@ -1,6 +1,6 @@
 import JCalendar from "../../JCalendar/JCalendar";
 import Team from "../Team";
-import JMatch from "../Match/JMatch";
+import Match from "../Match/JMatch";
 import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator";
 import TeamTableItem from "../Rank/TeamTableItem";
 import { TypeTableMatchState } from "../Rank/ranking";
@@ -41,10 +41,10 @@ export default abstract class BaseStage<I extends IElementInfo, C extends IBaseS
 
   abstract constructorVerification(config: C): void;
 
-  abstract get matches(): JMatch[];
+  abstract get matches(): Match[];
 
   get isFinished(): boolean {
-    return this.matches.every((m: JMatch) => m.state === 'finished');
+    return this.matches.every((m: Match) => m.state === 'finished');
   }
 
   get participants(): Map<number, Team> { return this._participants }
@@ -83,7 +83,7 @@ export default abstract class BaseStage<I extends IElementInfo, C extends IBaseS
     // 
     const matchConditionFunc = BaseStage.getTableCondition(ttms);
   
-    this.matches.forEach((m: JMatch) => {
+    this.matches.forEach((m: Match) => {
       if (matchConditionFunc(m) && !!m.result) {
         let htti: TeamTableItem | undefined = out.find(t => t.team.id === m.homeTeam.id);
         let atti: TeamTableItem | undefined = out.find(t => t.team.id === m.awayTeam.id);
@@ -117,7 +117,7 @@ export default abstract class BaseStage<I extends IElementInfo, C extends IBaseS
    * 
    * @param ttms 
    */
-  static getTableCondition(ttms: TypeTableMatchState): (m: JMatch) => boolean {
+  static getTableCondition(ttms: TypeTableMatchState): (m: Match) => boolean {
     switch (ttms) {
       case 'partial':
         return (m => m.state === 'finished' || m.state === 'playing');

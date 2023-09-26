@@ -1,7 +1,7 @@
 
 import JCalendar from "../../../../JCalendar/JCalendar";
 import { TypeHalfWeekOfYear } from "../../../../JCalendar/JDateTimeModule";
-import JMatch from "../../../Match/JMatch";
+import Match from "../../../Match/JMatch";
 import { TypeTableMatchState, simpleSortFunc } from "../../../Rank/ranking";
 import TeamTableItem from "../../../Rank/TeamTableItem";
 import Team from "../../../Team";
@@ -67,10 +67,10 @@ export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
     return this._turns;
   }
 
-  get matches(): JMatch[] {
-    let out: JMatch[] = [];
+  get matches(): Match[] {
+    let out: Match[] = [];
     this._turns.forEach((f: Turn) => {
-      f.matches.forEach((m: JMatch) => out.push(m));
+      f.matches.forEach((m: Match) => out.push(m));
     })
     return out;
   }
@@ -113,17 +113,17 @@ export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
     this._turns.push(turn);
   }
 
-  createTurnMatches(teams: Team[], turnNumber: number): JMatch[] {
-    let out: JMatch[] = [];
+  createTurnMatches(teams: Team[], turnNumber: number): Match[] {
+    let out: Match[] = [];
 
     const total: number = this.matches.length;
     for (let i = 0; i < teams.length; i += 2) {
 
-      const match = new JMatch({
+      const match = new Match({
         awayTeam: teams[i],
         homeTeam: teams[i + 1],
         hw: this.config.turnHalfWeeks[turnNumber - 1],
-        temp: this.info.season,
+        season: this.info.season,
         id: `${this.info.id}-T${turnNumber}-M${total + i / 2 + 1}`,
         allowedDraw: true,
         isNeutral: this.config.opt == 'neutral'

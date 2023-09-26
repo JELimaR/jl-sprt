@@ -1,15 +1,15 @@
-import JMatch from "./Match/JMatch";
+import Match from "./Match/JMatch";
 
 export default class Team {
 	private _id: string;
-	private _matches: JMatch[] = [];
+	private _matches: Match[] = [];
 	constructor(id: string) {
 		this._id = id;
 	}
 
 	get id(): string {return this._id}
-	get matches(): JMatch[] { return this._matches }
-	addNewMatch(match: JMatch) { 
+	get matches(): Match[] { return this._matches }
+	addNewMatch(match: Match) { 
 		this._matches.push(match);
 	}
 	getTeamMatch(): TeamMatch {

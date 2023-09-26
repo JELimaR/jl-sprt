@@ -1,7 +1,7 @@
 import { arr2 } from '../types';
 import JResult, { IJResultInfo } from './JResult';
 import Team from '../Team';
-import JMatch from './JMatch';
+import Match from './JMatch';
 import { TypeBaseStageOption } from '../Stage/BaseStage';
 import { TypeHalfWeekOfYear, JDateTime } from '../../JCalendar/JDateTimeModule';
 
@@ -28,7 +28,7 @@ export default class JSerie {
 	// private _state: TypeMatchState = 'created';
 	private _teamOne: Team; // JTeamMatch
 	private _teamTwo: Team;
-	private _matches: JMatch[];
+	private _matches: Match[];
 
 	constructor(isi: IJSerieInfo) {
     this._opt = isi.opt;
@@ -42,11 +42,11 @@ export default class JSerie {
 		);
 
 		this._matches = [
-			new JMatch({
+			new Match({
 				homeTeam: this._teamOne,
 				awayTeam: this._teamTwo,
 				hw: isi.hws[0],
-				temp: isi.season,
+				season: isi.season,
 				id: `${this._id}-M1`,
 				serie: this,
 				allowedDraw: this._opt == 'h&a',
@@ -56,11 +56,11 @@ export default class JSerie {
 
 		if (this._opt == 'h&a') {
 			this._matches.push(
-				new JMatch({
+				new Match({
 					homeTeam: this._teamTwo,
 					awayTeam: this._teamOne,
 					hw: isi.hws[1],
-					temp: isi.season,
+					season: isi.season,
 					id: `${this._id}-M2`,
 					serie: this,
 					allowedDraw: true,
@@ -72,10 +72,10 @@ export default class JSerie {
 
 	get id(): string { return this._id }
 	get result(): JResult {return this._result }
-	get matches(): JMatch[] { return this._matches }
+	get matches(): Match[] { return this._matches }
 
 	get isFinished(): boolean {
-		return this._matches.every((m: JMatch) => m.state === 'finished');
+		return this._matches.every((m: Match) => m.state === 'finished');
 	}
 
 	get winner(): Team { 

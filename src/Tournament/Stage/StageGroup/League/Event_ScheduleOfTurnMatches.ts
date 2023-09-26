@@ -1,5 +1,5 @@
 import { IJEventOthersInfo, JEventOthers } from "../../../../JCalendar/Event/JEvent";
-import JMatch from "../../../Match/JMatch";
+import Match from "../../../Match/JMatch";
 import { JEventMatch } from "../../../Match/JEventMatch";
 import { Turn } from "./Turn";
 import League from './League';
@@ -26,7 +26,7 @@ export class Event_ScheduleOfTurnMatches extends JEventOthers {
 	execute() {
 		console.log(`ejecuting match scheduling for matchHWeek number: ${this._turn.num}`);
 		// el evento debe crearse en el match
-		this._turn.matches.forEach((match: JMatch) => {
+		this._turn.matches.forEach((match: Match) => {
 			const dt = JDateTime.createFromHalfWeekOfYearAndYear(
 				this._turn.halfWeek,
 				// this._leagueData.info.season,

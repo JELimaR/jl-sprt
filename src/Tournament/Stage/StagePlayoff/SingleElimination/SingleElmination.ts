@@ -4,7 +4,7 @@ import Team from '../../../Team';
 import { JRound } from './JRound';
 import JSerie from '../../../Match/JSerie';
 import Event_RoundCreationAndTeamsDraw from './Event_RoundCreationAndTeamsDraw';
-import JMatch from '../../../Match/JMatch';
+import Match from '../../../Match/JMatch';
 import { arr2, IElementInfo } from '../../../types';
 import TeamTableItem from '../../../Rank/TeamTableItem';
 import { simpleSortFunc, TypeTableMatchState } from '../../../Rank/ranking';
@@ -37,10 +37,10 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
   }
 
   get rounds(): JRound[] { return this._rounds }
-  get matches(): JMatch[] {
-    let out: JMatch[] = [];
+  get matches(): Match[] {
+    let out: Match[] = [];
     this._rounds.forEach((r: JRound) => {
-      r.matches.forEach((m: JMatch) => out.push(m));
+      r.matches.forEach((m: Match) => out.push(m));
     })
     return out;
   }

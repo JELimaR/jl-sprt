@@ -13,24 +13,26 @@ export type TypeMatchState =
 	| 'playing'
 	| 'finished';
 
-export interface IJMatchInfo {
+export interface IMatchInfo {
+	id: string;
+	hw: TypeHalfWeekOfYear;
+	season: number;
 	homeTeam: Team;
 	awayTeam: Team;
-	hw: TypeHalfWeekOfYear;
-	// config: IJLeagueConfig; // info en vez de config
-	temp: number;
-	id: string;
+
 	serie?: JSerie;
 	allowedDraw: boolean;
 	isNeutral: boolean;
 }
 
-export default class JMatch /*implements IJSubject*/  {
+export default class Match /*implements IJSubject*/  {
 	/*private static cid: number = 0;
 	private static get newId(): number {
 		JMatch.cid++;
 		return JMatch.cid;
 	}*/
+
+  private _info: IMatchInfo;
 
 	private _id: string;
 	private _date: JDateTime;
@@ -47,14 +49,15 @@ export default class JMatch /*implements IJSubject*/  {
 	private _serie?: JSerie;
 	private _allowedDraw: boolean;
 
-	constructor(imi: IJMatchInfo) {
+	constructor(imi: IMatchInfo) {
+    this._info = {...imi};
 		this._id = /*JMatch.newId;*/ imi.id;
 		this._isNeutral = imi.isNeutral;
 
 		this._homeTeam = imi.homeTeam;
 		this._awayTeam = imi.awayTeam;
 		
-		this._date = JDateTime.createFromHalfWeekOfYearAndYear( imi.hw, imi.temp, 'middle' );
+		this._date = JDateTime.createFromHalfWeekOfYearAndYear( imi.hw, imi.season, 'middle' );
 		
 		this._homeTeam.addNewMatch(this);
 		this._awayTeam.addNewMatch(this);
@@ -77,7 +80,7 @@ export default class JMatch /*implements IJSubject*/  {
 	// }
 
 	get id(): string {
-		return this._id;
+		return this._info.id;
 	}
 	get date(): JDateTime {return this._date}
 	get homeTeam(): Team {

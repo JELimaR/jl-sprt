@@ -1,7 +1,7 @@
 import JCalendar from "../JCalendar/JCalendar";
 import { TypeHalfWeekOfYear } from "../JCalendar/JDateTimeModule";
 import { ITCCConfig, TCC } from "../patterns/templateConfigCreator";
-import Phase, { IPhaseConfig, IPhaseInfo, stageMapRankForPhase01, stageMapRankForPhaseN, getStageSOURCEItems, getStageFinalItems } from "./Phase";
+import Phase, { IPhaseConfig, IPhaseInfo, getGenericRankItemsSortedForPhase01, getGenericRankItemsSortedForPhaseN, getStageSOURCEItems, getStageFinalItems } from "./Phase";
 import { RankItem, TypeRanking } from "./Rank/ranking";
 import { IStageConfig } from "./Stage/Stage";
 import { IElementInfo, TGS } from "./types";
@@ -44,12 +44,12 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
     // borrar console.logs
     if (this.info.id == 'd2i_f014_1988') {
       console.log('phase 1')
-      const mrankphase01 = stageMapRankForPhase01(this._phases[0].config);
+      const mrankphase01 = getGenericRankItemsSortedForPhase01(this._phases[0].config);
       console.log(mrankphase01)
       console.log('phase 2')
 
-      const mrankphase02 = stageMapRankForPhaseN(config.phases[1], config.phases.slice(0, 0))
-      console.log(stageMapRankForPhase01(this._phases[1].config))
+      const mrankphase02 = getGenericRankItemsSortedForPhaseN(config.phases[1], config.phases.slice(0, 0))
+      console.log(getGenericRankItemsSortedForPhase01(this._phases[1].config))
       console.log('esto', mrankphase02)
       console.log('stages p2')
       this._phases[1].stages.forEach((s) => {
@@ -57,21 +57,21 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
         getStageSOURCEItems(s.config).forEach((value) => {
           console.log('SOURCE',
             value,
-            stageMapRankForPhase01(this._phases[0].config).indexOf(value),
+            getGenericRankItemsSortedForPhase01(this._phases[0].config).indexOf(value),
           )
         })
       })
       console.log('phase 3')
-      const mrankphase03 = stageMapRankForPhaseN(config.phases[2], config.phases.slice(0, 1));
+      const mrankphase03 = getGenericRankItemsSortedForPhaseN(config.phases[2], config.phases.slice(0, 1));
       console.log(mrankphase03)
-      console.log('esto', stageMapRankForPhaseN(config.phases[2], config.phases.slice(0, 1)))
+      console.log('esto', getGenericRankItemsSortedForPhaseN(config.phases[2], config.phases.slice(0, 1)))
       console.log('stages p3')
       this._phases[2].stages.forEach((s) => {
         console.log(getStageSOURCEItems(s.config))
         getStageSOURCEItems(s.config).forEach((value) => {
           console.log('SOURCE',
             value,
-            stageMapRankForPhase01(this._phases[1].config).indexOf(value)
+            getGenericRankItemsSortedForPhase01(this._phases[1].config).indexOf(value)
           )
         })
       })

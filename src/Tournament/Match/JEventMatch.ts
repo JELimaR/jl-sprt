@@ -1,13 +1,13 @@
 import { IJEventInfo, JEvent } from "../../JCalendar/Event/JEvent";
-import JMatch from "./JMatch";
+import Match from "./JMatch";
 
 export interface IJEventMatchInfo extends IJEventInfo {
-    match: JMatch;
+    match: Match;
 }
 
 export class JEventMatch extends JEvent {
 // evento que dura algunos intervalos
-	private _match: JMatch;
+	private _match: Match;
 	constructor(emc: IJEventMatchInfo) {
 			super(emc);
 			this._match = emc.match;

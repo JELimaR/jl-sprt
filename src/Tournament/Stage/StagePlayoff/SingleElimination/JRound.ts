@@ -2,7 +2,7 @@ import JCalendar from '../../../../JCalendar/JCalendar';
 import { arr2 } from '../../../types';
 import SingleElmination from './SingleElmination';
 import Team from '../../../Team';
-import JMatch from '../../../Match/JMatch';
+import Match from '../../../Match/JMatch';
 import JSerie from '../../../Match/JSerie';
 import { Event_ScheduleOfRoundMatches } from './Event_ScheduleOfRoundMatches';
 import { TypeHalfWeekOfYear, JDateTime } from '../../../../JCalendar/JDateTimeModule';
@@ -31,10 +31,10 @@ export class JRound {
 	get num(): number { return this._num }
 	get halfWeek(): arr2<TypeHalfWeekOfYear> { return this._halfWeeks }
 	get series(): JSerie[] {return this._series }
-	get matches(): JMatch[] { 
-		let out: JMatch[] = [];
+	get matches(): Match[] { 
+		let out: Match[] = [];
 		this._series.forEach((serie: JSerie) => {
-			serie.matches.forEach((match: JMatch) => {
+			serie.matches.forEach((match: Match) => {
 				out.push(match);
 			})
 		})
@@ -55,7 +55,7 @@ export class JRound {
 	}
 
 	get isFinished(): boolean {
-		return this.matches.every((m: JMatch) => m.state === 'finished');
+		return this.matches.every((m: Match) => m.state === 'finished');
 	}
 
 	generateMatchOfRoundScheduleEvents(cal: JCalendar, playoff: SingleElmination/*, roundCreateAt: JDateTime*/): void {

@@ -1,5 +1,5 @@
 import { IJEventOthersInfo, JEventOthers } from "../../../../JCalendar/Event/JEvent";
-import JMatch from "../../../Match/JMatch";
+import Match from "../../../Match/JMatch";
 import { JEventMatch } from "../../../Match/JEventMatch";
 import { JRound } from "./JRound";
 import SingleElmination from './SingleElmination';
@@ -28,7 +28,7 @@ export class Event_ScheduleOfRoundMatches extends JEventOthers {
 		// el evento debe crearse en el match
 		const hws2: arr2<TypeHalfWeekOfYear> = this._round.halfWeek;
 		this._round.series.forEach((serie: JSerie) => {
-			serie.matches.forEach((m: JMatch, idx: number) => {
+			serie.matches.forEach((m: Match, idx: number) => {
 				const dt: JDateTime = JDateTime.createFromHalfWeekOfYearAndYear(
 					hws2[idx as 0 | 1],
 					this._playoff.info.season,
