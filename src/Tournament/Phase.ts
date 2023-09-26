@@ -15,18 +15,14 @@ export interface IPhaseConfig extends ITCCConfig {
   hwEnd: TypeHalfWeekOfYear;
 }
 
-export interface IPhaseInfo extends ITCCInfo {
-  season: number;
-}
-
-export default class Phase extends TCC<IPhaseInfo, IPhaseConfig> { // esto es SortedStagesPhase
+export default class Phase extends TCC<IElementInfo, IPhaseConfig> { // esto es SortedStagesPhase
 
   private _parallelStages: TGS[] = [];
   private _previusPhaseConfigsArr: IPhaseConfig[];;
 
   private _previusPhase: Phase | undefined;
 
-  constructor(info: IPhaseInfo, config: IPhaseConfig, cal: JCalendar, previusPhaseConfig: IPhaseConfig[]) {
+  constructor(info: IElementInfo, config: IPhaseConfig, cal: JCalendar, previusPhaseConfig: IPhaseConfig[]) {
     super(info, config)
 
     /************************************************************************************************************************************************

@@ -4,6 +4,7 @@ import stageExample01 from './examples/stageExample01';
 import stageExample02 from './examples/stageExample02';
 import stageExample03 from './examples/stageExample03';
 import stageLeagueExample from './examples/stageLeagueExample';
+import systemExample from './examples/systemExample';
 import tournamentExample01 from './examples/tournamentExample01';
 import tournamentExample02 from './examples/tournamentExample02';
 
@@ -38,7 +39,9 @@ function app() {
 
   // tournamentExample01();
 
-  tournamentExample02();
+  // tournamentExample02();
+
+  systemExample()
 
   // console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getDateTime())
   // console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getIJDateTimeCreator())

@@ -1,7 +1,7 @@
 import JCalendar from "../JCalendar/JCalendar";
 import { TypeHalfWeekOfYear } from "../JCalendar/JDateTimeModule";
 import { ITCCConfig, TCC } from "../patterns/templateConfigCreator";
-import Phase, { IPhaseConfig, IPhaseInfo, getGenericRankItemsSortedForPhase01, getGenericRankItemsSortedForPhaseN, getStageSOURCEItems, getStageFinalItems } from "./Phase";
+import Phase, { IPhaseConfig, getGenericRankItemsSortedForPhase01, getGenericRankItemsSortedForPhaseN, getStageSOURCEItems, getStageFinalItems } from "./Phase";
 import { RankItem, TypeRanking } from "./Rank/ranking";
 import { IStageConfig } from "./Stage/Stage";
 import { IElementInfo, TGS } from "./types";
@@ -26,7 +26,7 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
     let previusPhasesAgregate: IPhaseConfig[] = []
     config.phases.forEach((ipc: IPhaseConfig, i: number) => {
       ipc.n = i + 1;
-      const ipi: IPhaseInfo = {
+      const ipi: IElementInfo = {
         id: `${info.id}_p${ipc.n}`,
         season: info.season,
       }
