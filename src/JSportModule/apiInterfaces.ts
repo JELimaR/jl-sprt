@@ -1,4 +1,4 @@
-import { IConfederationData, IFederationData } from "./data/entities";
+import { IConfederationData, IFederationData } from "./data";
 
 export interface IPaginationData { }
 export interface ISportAPIController {
@@ -19,7 +19,7 @@ export interface IEntityController {
   getAllConfederations(): IConfederationData[];
   // federations
   createFederation(data: IFederationData): boolean;
-  getAllFederations(pag: IPaginationData): IFederationData[];
+  getFederations(pag: IPaginationData): IFederationData[];
   getFederationById(id: string): IFederationData;
 }
 
@@ -31,6 +31,10 @@ export interface IElementController {
  * Handlers
  */
 export interface IEntityHandler {
+   // confederations
+  getAllConfederations(): IConfederationData[];
+  getConfederationById(): IConfederationData;
+  removeConfederation(id: string): boolean;
   // federations
   addFederation(data: IFederationData): boolean;
   getAllFederations(): IFederationData[];

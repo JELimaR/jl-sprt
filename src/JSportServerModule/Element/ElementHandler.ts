@@ -1,4 +1,4 @@
-import { IElementHandler } from "../../JSportDefModule";
+import { IElementHandler } from "../../JSportModule";
 
 
 export default class ElementHandler implements IElementHandler {

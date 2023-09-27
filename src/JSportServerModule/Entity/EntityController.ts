@@ -1,5 +1,6 @@
-import { IEntityController, IPaginationData } from "../../JSportDefModule";
-import { IConfederationData, IFederationData } from "../../JSportDefModule/data/entities";
+import { IEntityController, IPaginationData } from "../../JSportModule";
+import { IConfederationData, IFederationData } from "../../JSportModule/data/entities";
+import EntityHandler from "./EntityHandler";
 
 
 
@@ -18,7 +19,8 @@ export default class EntityController implements IEntityController {
    * CONFEDERATIONS
    */
   getAllConfederations(): IConfederationData[] {
-    throw new Error("Method not implemented.");
+    const handler = EntityHandler.instance;
+    return handler.getAllConfederations();
   }
   /**
    * FEDERATIONS
@@ -26,7 +28,7 @@ export default class EntityController implements IEntityController {
   createFederation(data: IFederationData): boolean {
     throw new Error("Method not implemented.");
   }
-  getAllFederations(pag: IPaginationData): IFederationData[] {
+  getFederations(pag: IPaginationData): IFederationData[] {
     throw new Error("Method not implemented.");
   }
   getFederationById(id: string): IFederationData {

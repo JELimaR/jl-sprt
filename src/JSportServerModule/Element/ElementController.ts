@@ -1,4 +1,4 @@
-import { IElementController } from "../../JSportDefModule";
+import { IElementController } from "../../JSportModule";
 
 
 

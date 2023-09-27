@@ -1,5 +1,5 @@
-import { IEntityHandler } from "../../JSportDefModule";
-import { IFederationData } from "../../JSportDefModule/data/entities";
+import { IEntityHandler } from "../../JSportModule";
+import { IConfederationData, IFederationData } from "../../JSportModule/data/entities";
 
 
 export default class EntityHandler implements IEntityHandler {
@@ -7,16 +7,27 @@ export default class EntityHandler implements IEntityHandler {
    * Patron Singleton
    */
   private static _instance: EntityHandler;
-  private constructor() {}
+  private constructor() { }
   static get instance(): EntityHandler {
     if (!this._instance)
     this._instance = new EntityHandler();
     return this._instance;
   }
   /**
+   * CONFEDERATIONS
+   */
+  getAllConfederations(): IConfederationData[] {
+    return [];
+  }
+  getConfederationById(): IConfederationData {
+    throw new Error("Method not implemented.");
+  }
+  removeConfederation(id: string): boolean {
+    throw new Error("Method not implemented.");
+  }
+  /**
    * FEDERATIONS
    */
-
   addFederation(data: IFederationData): boolean {
     throw new Error("Method not implemented.");
   }
@@ -29,5 +40,5 @@ export default class EntityHandler implements IEntityHandler {
   removeFederation(id: string): boolean {
     throw new Error("Method not implemented.");
   }
-  
+
 }

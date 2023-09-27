@@ -149,33 +149,11 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
   }
   get phases() { return this._phases }
 
-  // falta ver como verificar con el config que es correcto
-  // getRelativeRank(): TypeRanking {
-  //   let rankItemOut: RankItem[] = [];
-  //   for (let i = this._phases.length - 1; i >= 0; i--) {
-  //     const phase = this._phases[i];
-  //     phase.getRelativeRank().table.forEach((ri: RankItem) => {
-  //       if (!rankItemOut[ri.rank - 1]) {
-  //         rankItemOut[ri.rank - 1] = ri;
-  //       }
-  //     })
-  //   }
-
-  //   return {
-  //     rankId: 'tr_' + this.config.idConfig,
-  //     table: rankItemOut
-  //   }
-  // }
   getRelativeRank(): TypeRanking {
     let rankItemOut: RankItem[] = [];
 
     let phaseRank: TypeRanking = {rankId: 'none', table: []};
-    // let relRankData = stageMapRankForPhase01(this._phases[0].config);
 
-    // for (let i = 1; i < this._phases.length; i++) {
-    //   const phase = this._phases[i];
-    //   relRankData = stageMapRankForPhaseN(phase.config, this._phases.slice(0, i - 1).map(e => e.config))
-    // }
     let pi = this._phases.length;
     while (pi >= 0 && phaseRank.rankId == 'none') {
       pi--;
@@ -192,12 +170,6 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
         rank: i + 1,
       })
     })
-
-    // const stagesMap = this.stagesMap;
-    // relRankData.forEach((elem, i) => {
-    //   const stageRank = stagesMap.get(elem.s.slice(3, 80))?.getRelativeRank();
-    //   if (!stageRank) throw new Error(`En Tournament.getRelativeRank`)
-    // })
 
     return {
       rankId: 'tr_' + this.config.idConfig,

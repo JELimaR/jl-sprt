@@ -30,7 +30,7 @@ export interface ISingleElminationConfig extends IBaseStageConfig {
 /****************************************************************************************************************************
  * Stage
  */
-type TQualyCondition = {
+export type TQualyCondition = {
   rankId: string;
   season: 'current' | 'previus'; // innecesario?
   minRankPos: number;

@@ -1,4 +1,4 @@
-import { IElementController, IEntityController, ISportFactory } from "../JSportDefModule";
+import { IElementController, IEntityController, ISportFactory } from "../JSportModule";
 import ElementController from "./Element/ElementController";
 import EntityController from "./Entity/EntityController";
 

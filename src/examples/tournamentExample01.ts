@@ -9,12 +9,13 @@ import mostrarFecha from "../mostrarFechaBorrar";
 import Tournament, { ITournamentConfig } from "../Tournament/Tournament";
 import { TGS } from "../Tournament/types";
 import { IStagePlayoffConfig } from "../Tournament/Stage/StagePlayoff/StagePlayoff";
+import { verifyTournamentConfig } from "../JSportModule";
 
 /**
  * 5 temporadas de un sistema de liga de 2 divisiones.
  * primeras 2 con sus 8 fundadores, luego se asocian 14 instituciones más -> d1: 10 - d2: 12 (6,6).
  */
-type TypeDivisionList = { d1: ITournamentConfig, d2?: ITournamentConfig,  cup?: ITournamentConfig };
+type TypeDivisionList = { d1: ITournamentConfig, d2?: ITournamentConfig, cup?: ITournamentConfig };
 const selection = getExampleTeams(150, 'Team');
 interface IFederationData {
   id: string;
@@ -113,7 +114,7 @@ export default function tournamentExample01() {
     if (season == 1986) {
       // nuevos equipos afiliados
       selection.slice(8, 22).forEach((t, i) => fedSeasonRanking.table.push({ team: t, rank: i + 9, originId: 'fr_f014' }))
-    }    
+    }
     if (season < 1988) {
       td1?./*phases/*.get(`${td1.info.id}_p1`)![0].*/getRelativeRank().table.forEach((ri, i) => fedSeasonRanking.table[i] = { ...ri, originId: 'f014' });
       globalFinishedRankingsMap.set(fedSeasonRanking.rankId, fedSeasonRanking);
@@ -148,6 +149,11 @@ export default function tournamentExample01() {
     runSeason(season)
     console.log('********************************************************************************')
   }
+
+  console.log(verifyTournamentConfig(div1TournamentConfig_v1));
+  console.log(verifyTournamentConfig(div1TournamentConfig_v2));
+  console.log(verifyTournamentConfig(div2TournamentConfig));
+  console.log(verifyTournamentConfig(cupTournamentConfig));
 
 }
 
@@ -193,7 +199,7 @@ const div1TournamentConfig_v1: ITournamentConfig = {
   phases: [
     {
       n: 1, idConfig: 'd1i_f014_p1', name: 'Phase 1',
-      hwStart: 18, hwEnd: 92, stages: [ div1StageConfig_01_v1 ]
+      hwStart: 18, hwEnd: 92, stages: [div1StageConfig_01_v1]
     }
   ]
 }
@@ -236,7 +242,7 @@ const div1TournamentConfig_v2: ITournamentConfig = {
   phases: [
     {
       n: 1, idConfig: 'd1i_f014_p1', name: 'Phase 1',
-      hwStart: 16, hwEnd: 93, stages: [div1StageConfig_01_v2 ]
+      hwStart: 16, hwEnd: 93, stages: [div1StageConfig_01_v2]
     }
   ]
 }
@@ -359,17 +365,17 @@ const div2TournamentConfig: ITournamentConfig = {
   phases: [
     {
       n: 1, idConfig: 'd2i_f014_p1', name: 'Phase 1',
-      hwStart: 16, hwEnd: 78, stages: [div2StageConfig_01 ]
+      hwStart: 16, hwEnd: 78, stages: [div2StageConfig_01]
     },
     {
       n: 2, idConfig: 'd2i_f014_p2', name: 'Phase 2',
-      hwStart: 80, hwEnd: 84, stages: [div2StageConfig_02 ]
+      hwStart: 80, hwEnd: 84, stages: [div2StageConfig_02]
     },
     {
       n: 3, idConfig: 'd2i_f014_p3', name: 'Phase 3',
       hwStart: 86, hwEnd: 92, stages: [
-        div2StageConfig_03 ,
-         div2StageConfig_04 ,
+        div2StageConfig_03,
+        div2StageConfig_04,
       ]
     }
   ]
@@ -445,11 +451,16 @@ const cupTournamentConfig: ITournamentConfig = {
   phases: [
     {
       n: 1, idConfig: 'cup_f014_p1', name: 'Phase 1',
-      hwStart: 30, hwEnd: 50, stages: [cupStageConfig_01 ]
+      hwStart: 30, hwEnd: 50, stages: [cupStageConfig_01]
     },
     {
       n: 2, idConfig: 'cup_f014_p2', name: 'Phase 2',
-      hwStart: 51, hwEnd: 90, stages: [cupStageConfig_02 ]
+      hwStart: 51, hwEnd: 90, stages: [cupStageConfig_02]
     },
   ]
 }
+
+console.log(verifyTournamentConfig(div1TournamentConfig_v1));
+console.log(verifyTournamentConfig(div1TournamentConfig_v2));
+console.log(verifyTournamentConfig(div2TournamentConfig));
+console.log(verifyTournamentConfig(cupTournamentConfig));

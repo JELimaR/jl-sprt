@@ -13,11 +13,10 @@ export class SportAPIController implements ISportAPIController {
     return this._factory.getEntityController().createFederation(data);
   }
   getAllFederations(pag: IPaginationData): IFederationData[] {
-    return this._factory.getEntityController().getAllFederations(pag);
+    return this._factory.getEntityController().getFederations(pag);
   }
   getFederationById(id: string): IFederationData {
     return this._factory.getEntityController().getFederationById(id);
   }
-
-  
+    
 }
