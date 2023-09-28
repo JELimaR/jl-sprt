@@ -1,6 +1,5 @@
-import { config } from "process";
-import { areEqualsGenericItems, getIndexOf, IGenericRank, IGenericRankItem, IGenericSource, IGenericSourceItem } from "../interfaces";
-import { IPhaseConfig, IStageConfig, ITournamentConfig } from "./elementsConfig";
+import { areEqualsGenericItems, getIndexOf, IGenericRank, IGenericRankItem, IGenericSource, IGenericSourceItem, sizeGeneric } from "../interfaces";
+import { IPhaseConfig, IStageConfig, IStagePlayoffConfig, ITournamentConfig } from "./elementsConfig";
 
 // PUEDE IR EN ALGO RELACIONADO A LOS RANKS
 /**************************************************************************************************************************************
@@ -48,6 +47,32 @@ export function getStageSourceIds(stageConfig: IStageConfig): string[] {
     throw new Error(`Los elementos del source de la stage ${stageConfig.idConfig} no pueden repetirse`);
   }
 
+  return out;
+}
+
+export function getPlayoffQualiesGroup(playoff: IStagePlayoffConfig) {
+  const divN = Math.pow(2, playoff.bsConfig.roundsNumber);
+  let qualiesNumber = playoff.bsConfig.participantsNumber/divN;
+  if (Math.trunc(qualiesNumber) !== qualiesNumber) {
+    throw new Error(`hay una ronda en la singleelimination
+    que tiene una cantidad impar de participantes: ${playoff.idConfig}`)
+  }
+  const gRank = getStageGenericRank(playoff);
+  let out: IGenericRankItem[] = [];
+  for (let i = 0; i < qualiesNumber; i++) out.push(gRank.list[i]);
+  return out;
+}
+
+export function getPlayoffNoneQualiesGroup(playoff: IStagePlayoffConfig) {
+  const divN = Math.pow(2, playoff.bsConfig.roundsNumber);
+  let qualiesNumber = playoff.bsConfig.participantsNumber/divN;
+  if (Math.trunc(qualiesNumber) !== qualiesNumber) {
+    throw new Error(`hay una ronda en la singleelimination
+    que tiene una cantidad impar de participantes: ${playoff.idConfig}`)
+  }
+  const gRank = getStageGenericRank(playoff);
+  let out: IGenericRankItem[] = [];
+  for (let i = qualiesNumber; i < sizeGeneric(gRank); i++) out.push(gRank.list[i]);
   return out;
 }
 
@@ -217,7 +242,7 @@ export function getTournamentGenericSourceItems(tournamentConfig: ITournamentCon
   };
 }
 
-export function getTournamentGenericRank(tournamentConfig: ITournamentConfig) {
+export function getTournamentGenericRank(tournamentConfig: ITournamentConfig): IGenericRank {
   const phasesLength = tournamentConfig.phases.length;
   const lastPhase = tournamentConfig.phases[phasesLength-1];
   const previusPhases = tournamentConfig.phases.slice(0, phasesLength - 1)
@@ -225,7 +250,7 @@ export function getTournamentGenericRank(tournamentConfig: ITournamentConfig) {
   const outList = getPhaseNGenericRankItemsSorted(lastPhase, previusPhases);
   return {
     rankId: `tr_${tournamentConfig.idConfig}`,
-    list: outList,
+    list: outList.list,
   };
 
 }

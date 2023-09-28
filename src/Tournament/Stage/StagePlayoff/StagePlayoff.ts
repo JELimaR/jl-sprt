@@ -1,20 +1,15 @@
 
 // import Stage, { IStageConfig, IStageInfo } from "../Stage";
-import SingleElmination, { ISingleElminationConfig } from "./SingleElimination/SingleElmination";
+import SingleElmination from "./SingleElimination/SingleElmination";
 import JCalendar from "../../../JCalendar/JCalendar";
-import { arr2, IElementInfo } from "../../types";
 import Team from "../../Team";
 import Bombo from "../Bombo";
 import { RankItem, TypeTableMatchState } from "../../Rank/ranking";
-import { IStageConfig, TypeDrawRulePlayoff } from "../Stage";
 import Stage from "../Stage";
 import TeamTableItem from "../../Rank/TeamTableItem";
 import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
+import { IElementInfo, IStagePlayoffConfig, arr2, TypeDrawRulePlayoff } from "../../../JSportModule";
 
-export interface IStagePlayoffConfig extends IStageConfig {
-  type: 'playoff',
-  bsConfig: ISingleElminationConfig;
-}
 
 /**
  * Debe encargarse de la creacion y de la asignacion de los equipos a cada basestage

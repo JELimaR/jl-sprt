@@ -1,21 +1,12 @@
-import League, { ILeagueConfig } from "./League/League";
-import Stage, { IStageConfig, TypeDrawRulePlayoff } from "../Stage";
+import League from "./League/League";
+import Stage from "../Stage";
 import Team from "../../Team";
 import JCalendar from "../../../JCalendar/JCalendar";
 import Bombo from "../Bombo";
 import { RankItem, simpleSortFunc, TypeTableMatchState } from "../../Rank/ranking";
 import TeamTableItem from "../../Rank/TeamTableItem";
 import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
-import { IElementInfo } from "../../types";
-
-
-export interface IStageGroupConfig extends IStageConfig {
-  type: 'group',
-  bsConfig: ILeagueConfig;
-
-  // groupsNumber: number;
-  participantsPerGroup: number[];
-}
+import { IElementInfo, ILeagueConfig, IStageGroupConfig, TypeDrawRulePlayoff } from "../../../JSportModule";
 
 /**
  * Debe encargarse de la creacion y de la asignacion de los equipos a cada basestage

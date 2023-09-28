@@ -1,6 +1,4 @@
-import { IStageGroupConfig } from "../Tournament/Stage/StageGroup/StageGroup";
-import { IStagePlayoffConfig } from "../Tournament/Stage/StagePlayoff/StagePlayoff";
-import { IElementInfo } from "../Tournament/types";
+import { IStagePlayoffConfig, IElementInfo, IStageGroupConfig } from "../JSportModule"
 
 const stageConfig1: IStagePlayoffConfig = {
   type: 'playoff',

@@ -8,9 +8,13 @@ export interface ISportOrganizationData {
   dateTimeCreation: IJDateTimeCreator;
 }
 
-export interface IConfederationData extends ISportOrganizationData{
+export interface IConfederationData extends ISportOrganizationData {
   federationIds: string[];
 }
 export interface IFederationData extends ISportOrganizationData {
   institutionIds: string[];
+  divisionSystem: any;
+}
+export interface IInstitutionData extends ISportOrganizationData {
+  
 }

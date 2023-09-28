@@ -37,11 +37,11 @@ function app() {
 
   // stageExample03()
 
-  // tournamentExample01();
+  tournamentExample01();
 
   // tournamentExample02();
 
-  systemExample()
+  // systemExample()
 
   // console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getDateTime())
   // console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getIJDateTimeCreator())

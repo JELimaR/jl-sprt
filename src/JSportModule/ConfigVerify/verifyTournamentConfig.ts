@@ -1,6 +1,5 @@
 
-import { getPhaseNGenericRankItemsSorted, getStageGenericRank, getStagesOfTournament, getStageSourceIds, getTournamentGenericRank, IPhaseConfig, IStageConfig, ITournamentConfig } from "../data";
-import { IGenericRank } from "../interfaces";
+import { getStageGenericRank, getStagesOfTournament, getTournamentGenericRank, IPhaseConfig, IStageConfig, ITournamentConfig } from "../data";
 import { verifyPhaseConfig } from "./verifyPhaseConfig";
 
 export function verifyTournamentConfig(config: ITournamentConfig): boolean {

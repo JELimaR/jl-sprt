@@ -1,39 +1,13 @@
 
 import JCalendar from "../../JCalendar/JCalendar";
 import { JDateTime, TypeHalfWeekOfYear, TypeIntervalOfDay } from "../../JCalendar/JDateTimeModule";
-import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator";
+import { IElementInfo, IStageConfig, TCC, TQualyCondition } from "../../JSportModule";
 import { RankItem, TypeRanking, TypeTableMatchState } from "../Rank/ranking";
 import TeamTableItem from "../Rank/TeamTableItem";
-import { IElementInfo } from "../types";
-import { IBaseStageConfig } from "./BaseStage";
 import Bombo from "./Bombo";
 import { Event_StageEnd } from "./Event_StageEnd";
 import { Event_StageStart } from "./Event_StageStart";
 
-type TQualyCondition = {
-  rankId: string;
-  season: 'current' | 'previus'; // innecesario?
-  minRankPos: number;
-  maxRankPos: number;
-}
-
-export type TypeDrawRulePlayoff = { origin: 'all' | string, minCount: number }
-
-export interface IStageConfig extends ITCCConfig {
-  type: 'group' | 'playoff';
-  bsConfig: IBaseStageConfig;
-
-  hwStart: TypeHalfWeekOfYear;
-  intervalOfDrawDate?: TypeIntervalOfDay; // indica a que hora se visualiza el sorteo y si corresponde realizar el mismo
-  hwEnd: TypeHalfWeekOfYear;
-
-  drawRulesValidate: TypeDrawRulePlayoff[]; // reglas que validan un sorteo
-
-  qualifyConditions: TQualyCondition[]; // solo puede ser ranking de: stage, federacion, o confederacion 
-
-  bombos: number[];
-
-}
 
 /**
  * generar el start event

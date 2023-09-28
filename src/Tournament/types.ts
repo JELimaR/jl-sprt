@@ -1,5 +1,5 @@
-import { ITCCInfo } from "../patterns/templateConfigCreator";
-import Stage, { IStageConfig } from "./Stage/Stage";
+import { IElementInfo, IStageConfig, ITCCInfo } from "../JSportModule";
+import Stage from "./Stage/Stage";
 
 export interface arr2<T> {
 	0: T,
@@ -12,7 +12,3 @@ export const CATEGORIES: TypeJCategory[] = ['S', 'S23', 'S21', 'S19', 'S17', 'S1
 export type TypeCategoryList<T> = { [K in TypeJCategory]?: T};
 
 export type TGS = Stage<IElementInfo, IStageConfig>;
-
-export interface IElementInfo extends ITCCInfo {
-  season: number;
-}

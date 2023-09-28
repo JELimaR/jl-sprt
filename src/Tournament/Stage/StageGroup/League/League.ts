@@ -1,19 +1,14 @@
 
 import JCalendar from "../../../../JCalendar/JCalendar";
 import { TypeHalfWeekOfYear } from "../../../../JCalendar/JDateTimeModule";
+import { arr2, IElementInfo, ILeagueConfig, TypeBaseStageOption } from "../../../../JSportModule";
 import Match from "../../../Match/JMatch";
 import { TypeTableMatchState, simpleSortFunc } from "../../../Rank/ranking";
 import TeamTableItem from "../../../Rank/TeamTableItem";
 import Team from "../../../Team";
-import { arr2, IElementInfo } from "../../../types";
-import BaseStage, { IBaseStageConfig, TypeBaseStageOption } from "../../BaseStage";
+import BaseStage from "../../BaseStage";
 import robinRoundSchedulingFunction from "./RoundRobin";
 import { Turn } from "./Turn";
-
-export interface ILeagueConfig extends IBaseStageConfig {
-  turnHalfWeeks: TypeHalfWeekOfYear[];
-  turnHalfWeeksSchedule: TypeHalfWeekOfYear[];
-}
 
 // export interface ILeagueInfo extends IBaseStageInfo { }
 

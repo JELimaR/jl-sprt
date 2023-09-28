@@ -7,11 +7,11 @@ import stageExampleData from "./stageExampleData";
 import TeamTableItem from "../Tournament/Rank/TeamTableItem";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
 import { RankItem, TypeRanking } from "../Tournament/Rank/ranking";
-import StageGroup, { IStageGroupConfig } from "../Tournament/Stage/StageGroup/StageGroup";
-import { IElementInfo, TGS } from "../Tournament/types";
-import { IStageConfig } from "../Tournament/Stage/Stage";
-import StagePlayoff, { IStagePlayoffConfig } from "../Tournament/Stage/StagePlayoff/StagePlayoff";
+import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
+import {  TGS } from "../Tournament/types";
+import StagePlayoff from "../Tournament/Stage/StagePlayoff/StagePlayoff";
 import { JDateTime } from "../JCalendar/JDateTimeModule";
+import { IElementInfo, IStageConfig, IStageGroupConfig, IStagePlayoffConfig } from "../JSportModule";
 
 const {
   s1,

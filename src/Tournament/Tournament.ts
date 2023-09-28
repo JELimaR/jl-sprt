@@ -1,18 +1,8 @@
 import JCalendar from "../JCalendar/JCalendar";
-import { TypeHalfWeekOfYear } from "../JCalendar/JDateTimeModule";
-import { ITCCConfig, TCC } from "../patterns/templateConfigCreator";
-import Phase, { IPhaseConfig, getGenericRankItemsSortedForPhase01, getGenericRankItemsSortedForPhaseN, getStageSOURCEItems, getStageFinalItems } from "./Phase";
+import { IElementInfo, IPhaseConfig, IStageConfig, ITournamentConfig, TCC } from "../JSportModule";
+import Phase, { getGenericRankItemsSortedForPhase01, getGenericRankItemsSortedForPhaseN, getStageSOURCEItems, getStageFinalItems } from "./Phase";
 import { RankItem, TypeRanking } from "./Rank/ranking";
-import { IStageConfig } from "./Stage/Stage";
-import { IElementInfo, TGS } from "./types";
-
-
-export interface ITournamentConfig extends ITCCConfig {
-  phases: IPhaseConfig[];
-
-  hwStart: TypeHalfWeekOfYear;
-  hwEnd: TypeHalfWeekOfYear;
-}
+import { TGS } from "./types";
 
 export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
 

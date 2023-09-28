@@ -1,5 +1,5 @@
 import { TypeHalfWeekOfYear, TypeIntervalOfDay } from "../../JCalendar/JDateTimeModule";
-import { ITCCConfig, ITCCInfo } from "../../patterns/templateConfigCreator";
+import { ITCCConfig, ITCCInfo } from "../patterns/templateConfigCreator";
 import { arr2 } from "./types";
 
 export interface IElementInfo extends ITCCInfo {

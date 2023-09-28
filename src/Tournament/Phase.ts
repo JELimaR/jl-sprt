@@ -1,19 +1,10 @@
 import JCalendar from "../JCalendar/JCalendar";
 import { TypeHalfWeekOfYear } from "../JCalendar/JDateTimeModule";
-import { ITCCConfig, ITCCInfo, TCC } from "../patterns/templateConfigCreator";
+import { IElementInfo, IPhaseConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, TCC } from "../JSportModule";
 import { TypeRanking, RankItem } from "./Rank/ranking";
-import { IStageConfig } from "./Stage/Stage";
-import StageGroup, { IStageGroupConfig } from "./Stage/StageGroup/StageGroup";
-import StagePlayoff, { IStagePlayoffConfig } from "./Stage/StagePlayoff/StagePlayoff";
-import { TGS, IElementInfo } from "./types";
-
-export interface IPhaseConfig extends ITCCConfig {
-  n: number;
-  stages: IStageConfig[];
-
-  hwStart: TypeHalfWeekOfYear;
-  hwEnd: TypeHalfWeekOfYear;
-}
+import StageGroup from "./Stage/StageGroup/StageGroup";
+import StagePlayoff from "./Stage/StagePlayoff/StagePlayoff";
+import { TGS } from "./types";
 
 export default class Phase extends TCC<IElementInfo, IPhaseConfig> { // esto es SortedStagesPhase
 

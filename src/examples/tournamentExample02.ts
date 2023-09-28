@@ -1,12 +1,12 @@
 import { getExampleTeams } from "../Entities/ExampleData";
 import JCalendar from "../JCalendar/JCalendar";
 import { JDateTime } from "../JCalendar/JDateTimeModule";
+import { IStageGroupConfig, IStagePlayoffConfig, ITournamentConfig } from "../JSportModule";
 import mostrarFecha from "../mostrarFechaBorrar";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
 import { TypeRanking } from "../Tournament/Rank/ranking";
-import StageGroup, { IStageGroupConfig } from "../Tournament/Stage/StageGroup/StageGroup";
-import { IStagePlayoffConfig } from "../Tournament/Stage/StagePlayoff/StagePlayoff";
-import Tournament, { ITournamentConfig } from "../Tournament/Tournament";
+import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
+import Tournament from "../Tournament/Tournament";
 import exampleAdvance from "./exampleAdvance";
 
 // se generan 14 rankings.

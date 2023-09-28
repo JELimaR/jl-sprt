@@ -1,7 +1,7 @@
-import { ITournamentConfig } from "../Tournament/Tournament";
-import { TypeJCategory } from "../Tournament/types";
 
 // cambiar league system por division system
+
+import { ITournamentConfig, TypeJCategory } from "../JSportModule";
 
 interface IJCupConfig {
   tournamentConfig: ITournamentConfig;

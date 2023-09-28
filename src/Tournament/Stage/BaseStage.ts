@@ -1,28 +1,14 @@
 import JCalendar from "../../JCalendar/JCalendar";
 import Team from "../Team";
 import Match from "../Match/JMatch";
-import { ITCCConfig, ITCCInfo, TCC } from "../../patterns/templateConfigCreator";
 import TeamTableItem from "../Rank/TeamTableItem";
 import { TypeTableMatchState } from "../Rank/ranking";
-import { IElementInfo } from "../types";
+import { IBaseStageConfig, IElementInfo, TCC } from "../../JSportModule";
 
 /**
  * En el BaseStage es donde se configuran las rondas o turnos y los partidos de un torneo.
  * Pueden implementar una eliminacion simple directa o un robinround de todos contra todos.
  */
-
-export type TypeBaseStageOption = 'home' | 'h&a' | 'neutral'
-export interface IBaseStageConfig extends ITCCConfig {
-  participantsNumber: number;
-  // isIV: boolean;
-  // isNeutral: boolean;
-  opt: TypeBaseStageOption;
-}
-
-// export interface IElementInfo extends ITCCInfo {
-//   id: string;
-//   season: number;
-// }
 
 export default abstract class BaseStage<I extends IElementInfo, C extends IBaseStageConfig> extends TCC<I, C> {
 

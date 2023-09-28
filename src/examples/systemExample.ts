@@ -1,7 +1,7 @@
 
 import JCalendar from "../JCalendar/JCalendar";
 import { JDateTime } from "../JCalendar/JDateTimeModule";
-import { verifyBaseStageConfig, verifyLeagueConfig, verifySingleEliminationConfig, verifyStageConfig, verifyStageGroupConfig, verifyStagePlayoffConfig } from "../JSportModule";
+import { verifyBaseStageConfig, verifyLeagueConfig, verifySingleEliminationConfig, verifyStageGroupConfig, verifyStagePlayoffConfig } from "../JSportModule";
 import SportServerAPI from "../JSportServerModule";
 import mostrarFecha from "../mostrarFechaBorrar";
 import stageExampleData from "./stageExampleData";
@@ -27,7 +27,6 @@ export default function systemExample() {
   console.log(verifyBaseStageConfig(s4.config.bsConfig))
   console.log(verifyLeagueConfig(s4.config.bsConfig))
 
-  console.log(verifyStageConfig(s1.config))
   console.log(verifyStagePlayoffConfig(s1.config))
   console.log(verifyStageGroupConfig(s4.config))
 

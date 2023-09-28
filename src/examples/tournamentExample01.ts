@@ -2,14 +2,15 @@ import { JDateTime } from "../JCalendar/JDateTimeModule";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
 import { RankItem, TypeRanking } from "../Tournament/Rank/ranking";
 import exampleAdvance from "./exampleAdvance";
-import StageGroup, { IStageGroupConfig } from "../Tournament/Stage/StageGroup/StageGroup";
+import StageGroup  from "../Tournament/Stage/StageGroup/StageGroup";
 import JCalendar from "../JCalendar/JCalendar";
 import { getExampleTeams } from "../Entities/ExampleData";
 import mostrarFecha from "../mostrarFechaBorrar";
-import Tournament, { ITournamentConfig } from "../Tournament/Tournament";
+import Tournament from "../Tournament/Tournament";
 import { TGS } from "../Tournament/types";
-import { IStagePlayoffConfig } from "../Tournament/Stage/StagePlayoff/StagePlayoff";
-import { verifyTournamentConfig } from "../JSportModule";
+import { getPlayoffNoneQualiesGroup, getPlayoffQualiesGroup, getStageGenericRank, IStageGroupConfig, IStagePlayoffConfig, ITournamentConfig, verifyTournamentConfig } from "../JSportModule";
+import { StageGraph, StageNode } from "../JSportModule/data/StageGraph";
+import { IGenericRank, IGenericRankItem } from "../JSportModule/interfaces";
 
 /**
  * 5 temporadas de un sistema de liga de 2 divisiones.
@@ -23,6 +24,7 @@ interface IFederationData {
   getDivisionsConfig: TypeDivisionList;
 }
 const tournamentsMap = new Map<string, Tournament>();
+let graph = new StageGraph();
 
 /**
  * 
@@ -30,13 +32,16 @@ const tournamentsMap = new Map<string, Tournament>();
 const initSeasonFunc = (fede: IFederationData, cal: JCalendar, season: number) => {
   const tournamentd1 = new Tournament({ id: `d1i_${fede.id}_${season}`, season }, fede.getDivisionsConfig.d1, cal)
   tournamentsMap.set(tournamentd1.info.id, tournamentd1);
+  tournamentd1.stagesMap.forEach(s => graph.addNode(new StageNode({config: s.config, tid: tournamentd1.config.idConfig})))
   if (fede.getDivisionsConfig.d2) {
     const tournamentd2 = new Tournament({ id: `d2i_${fede.id}_${season}`, season }, fede.getDivisionsConfig.d2, cal)
     tournamentsMap.set(tournamentd2.info.id, tournamentd2);
+    tournamentd2.stagesMap.forEach(s => graph.addNode(new StageNode({config: s.config, tid: tournamentd2.config.idConfig})))
   }
   if (fede.getDivisionsConfig.cup) {
     const cup = new Tournament({ id: `cup_${fede.id}_${season}`, season }, fede.getDivisionsConfig.cup, cal)
     tournamentsMap.set(cup.info.id, cup);
+    cup.stagesMap.forEach(s => graph.addNode(new StageNode({config: s.config, tid: cup.config.idConfig})))
   }
 }
 /**
@@ -143,7 +148,7 @@ export default function tournamentExample01() {
     }
   }
 
-  for (let season = 1982; season <= 1996; season++) {
+  for (let season = 1986; season <= 1990; season++) {
     console.log('********************************************************************************')
     console.log('************************ Nueva temporada:', season, '*****************************')
     runSeason(season)
@@ -154,6 +159,49 @@ export default function tournamentExample01() {
   console.log(verifyTournamentConfig(div1TournamentConfig_v2));
   console.log(verifyTournamentConfig(div2TournamentConfig));
   console.log(verifyTournamentConfig(cupTournamentConfig));
+
+  graph.nodes.forEach((node: StageNode ) => {
+    console.log(node.config.idConfig)
+    console.log(node.getData())
+  })
+  console.log(JSON.stringify(graph.edges.get('d2i_f014_sg1-d2i_f014_sp4'), null, 2))
+
+  /**
+   * algoritmo para encontrar los destinos de cada item de la stage para cada tournament como destino.
+   * verificacion de que los items no tengan más de un destino dentro del tournament.
+   * se puede verificar tambien otras cosas con respecto a los destinos.
+   */
+  const node = graph.getNodeById('d2i_f014_sg1');
+  graph.getDestinationsOfNodeByTournament(node).forEach((tournamentNodeDestinations: StageNode[], key: string) => {
+    console.log('---------------------------------------------------------------------------------------')
+    console.log('key', key);
+    const genericRank: IGenericRank = getStageGenericRank(node.config);
+    const destinyUnion: IGenericRankItem[] = [];
+    tournamentNodeDestinations.forEach((destiny: StageNode) => {
+      const destinyItems: IGenericRankItem[] = [];
+      destiny.config.qualifyConditions.forEach((tqc) => {
+        if (tqc.rankId == `sr_${node.config.idConfig}`) {
+          for (let p = tqc.minRankPos; p <= tqc.maxRankPos; p++) {
+            destinyItems.push(genericRank.list[p-1]);
+          }
+        }
+      })
+      console.log(destiny.config.idConfig);
+      console.log(destinyItems);
+      destinyUnion.push(...destinyItems);
+    })
+
+    const setUnion = new Set(destinyUnion);
+    console.log(setUnion)
+    console.log(destinyUnion)
+    if (destinyUnion.length === setUnion.size) {
+      console.log('iguales')
+    }
+
+    // console.log(tournamentDestinations.map(e => e.getData().config.qualifyConditions));
+  })
+  console.log(getPlayoffQualiesGroup( graph.getNodeById('d2i_f014_sp2').config as IStagePlayoffConfig ))
+  console.log(getPlayoffNoneQualiesGroup( graph.getNodeById('d2i_f014_sp2').config as IStagePlayoffConfig ))
 
 }
 
@@ -317,7 +365,10 @@ const div2StageConfig_03: IStagePlayoffConfig = {
   bombos: [2],
   drawRulesValidate: [{ origin: 'all', minCount: 0 }],
 
-  qualifyConditions: [{ rankId: 'sr_d2i_f014_sp2', season: 'previus', minRankPos: 1, maxRankPos: 2 }],
+  qualifyConditions: [
+    // { rankId: 'sr_d2i_f014_sg1', season: 'previus', minRankPos: 5, maxRankPos: 5 },
+    { rankId: 'sr_d2i_f014_sp2', season: 'previus', minRankPos: 1, maxRankPos: 2 },
+  ],
 
   bsConfig: {
     idConfig: 'p',
@@ -343,7 +394,7 @@ const div2StageConfig_04: IStagePlayoffConfig = {
   bombos: [2],
   drawRulesValidate: [{ origin: 'all', minCount: 0 }],
 
-  qualifyConditions: [{ rankId: 'sr_d2i_f014_sg1', season: 'previus', minRankPos: 11, maxRankPos: 12 }],
+  qualifyConditions: [{ rankId: 'sr_d2i_f014_sg1', season: 'previus', minRankPos: 7, maxRankPos: 8 }],
 
   bsConfig: {
     idConfig: 'p',

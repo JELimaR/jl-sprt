@@ -5,10 +5,11 @@ import mostrarFecha from "../mostrarFechaBorrar";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
 import { RankItem, TypeRanking } from "../Tournament/Rank/ranking";
 import TeamTableItem from "../Tournament/Rank/TeamTableItem";
-import StageGroup, { IStageGroupConfig } from "../Tournament/Stage/StageGroup/StageGroup";
+import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
 import Team from "../Tournament/Team";
 import exampleAdvance from "./exampleAdvance";
 import { JDateTime } from "../JCalendar/JDateTimeModule";
+import { IStageGroupConfig } from "../JSportModule";
 
 const selection = getExampleTeams(80, 'Team');
 

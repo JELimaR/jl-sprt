@@ -2,8 +2,8 @@ import { arr2 } from '../types';
 import JResult, { IJResultInfo } from './JResult';
 import Team from '../Team';
 import Match from './JMatch';
-import { TypeBaseStageOption } from '../Stage/BaseStage';
 import { TypeHalfWeekOfYear, JDateTime } from '../../JCalendar/JDateTimeModule';
+import { TypeBaseStageOption } from '../../JSportModule';
 
 export interface IJSerieInfo {
 	teamOne: Team;

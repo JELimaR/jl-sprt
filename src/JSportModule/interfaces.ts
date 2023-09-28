@@ -21,12 +21,6 @@ export interface IGenericSource {
   list: IGenericSourceItem[];
 }
 
-// function toString(item: IGenericRankItem | IGenericSourceItem) {
-//   let s: string;
-//   if (item.t == 'r') s = item.origin;
-//   else s = item.source;
-//   return `${s}_${String(item.pos).padStart(4)}`
-// }
 function toString(item: IGenericRankItem) {return `${item.origin}_${String(item.pos).padStart(4, '0')}`}
 
 export function areEqualsGenericItems(a: IGenericRankItem, b: IGenericRankItem): boolean {
@@ -41,4 +35,8 @@ export function getIndexOf(generic: IGenericRank | IGenericSource, item: IGeneri
   generic.list.forEach((e: IGenericRankItem, i: number) => { if (areEqualsGenericItems(e, item)) out = i })
   return out;
 
+}
+
+export function sizeGeneric(generic: IGenericRank | IGenericSource): number {
+	return generic.list.length;
 }
