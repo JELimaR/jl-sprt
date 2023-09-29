@@ -1,4 +1,5 @@
 import baseStageExample from './examples/baseStageExample';
+import graphExample from './examples/graphExample';
 import specialStageGroupExample from './examples/specialStageGroupExample';
 import stageExample01 from './examples/stageExample01';
 import stageExample02 from './examples/stageExample02';
@@ -37,11 +38,13 @@ function app() {
 
   // stageExample03()
 
-  tournamentExample01();
+  // tournamentExample01();
 
   // tournamentExample02();
 
   // systemExample()
+
+  graphExample();
 
   // console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getDateTime())
   // console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getIJDateTimeCreator())

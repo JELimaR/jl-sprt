@@ -1,5 +1,5 @@
 
-import { IJObserver, IJSubject } from "../../patterns/observer";
+import { IJObserver, IJSubject } from "../../JSportModule/patterns/observer";
 import { IJEventInfo, JEvent } from "./JEvent";
 
 export interface IEvent_CreatorInfo extends IJEventInfo {

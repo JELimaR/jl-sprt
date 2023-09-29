@@ -50,6 +50,9 @@ export function getStageSourceIds(stageConfig: IStageConfig): string[] {
   return out;
 }
 
+/*****
+ * mover funciones y mejorarlas!
+ */
 export function getPlayoffQualiesGroup(playoff: IStagePlayoffConfig) {
   const divN = Math.pow(2, playoff.bsConfig.roundsNumber);
   let qualiesNumber = playoff.bsConfig.participantsNumber/divN;

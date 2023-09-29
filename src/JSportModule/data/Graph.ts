@@ -1,4 +1,4 @@
-import { ITCCConfig } from "../../patterns/templateConfigCreator";
+import { ITCCConfig } from "../patterns/templateConfigCreator";
 
 export abstract class Graph<N extends Node<ITCCConfig>, R extends Relation<N>> {
   nodes: Map<string, N> = new Map<string, N>();
