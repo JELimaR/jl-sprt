@@ -1,30 +1,29 @@
-import { TypeBaseStageOption } from "./JSportModule";
-import { StageNode } from "./nodes";
+import { TypeBaseStageOption } from "../JSportModule";
+import { IStageNodeData, StageNode } from "./nodes";
 
-export abstract class RealStageNode extends StageNode {
-  constructor(
-    sid: string,
-    participants: number,
-    public opt: TypeBaseStageOption,
-  ) {
-    super(sid, participants);
+export interface IRealStageNodeData extends IStageNodeData {
+  opt: TypeBaseStageOption;
+}
+export abstract class RealStageNode<D extends IRealStageNodeData> extends StageNode<D> {
+  constructor(data: D) {
+    super(data);
   }
 }
-
-export class StageGroupNode extends RealStageNode {
-  constructor(
-    sid: string,
-    participants: number,
-    opt: TypeBaseStageOption,
-    public groupsNumber: number,
-  ) {
-    super(sid, participants, opt);
+/**
+ * GROUP
+ */
+export interface IStageGroupNodeData extends IRealStageNodeData {
+  groupsNumber: number;
+}
+export class StageGroupNode extends RealStageNode<IStageGroupNodeData> {
+  constructor(data: IStageGroupNodeData) {
+    super(data);
     // bien definido si no da errror
-    calculateParticipantsPerGroupArray(this.participants, this.groupsNumber);
+    calculateParticipantsPerGroupArray(this.data.participants, this.data.groupsNumber);
   }
 
   getParticipantsPerGroup(): number[] {
-    return calculateParticipantsPerGroupArray(this.participants, this.groupsNumber);
+    return calculateParticipantsPerGroupArray(this.data.participants, this.data.groupsNumber);
   }
 
   getRanksGroups(): number[] {
@@ -43,29 +42,29 @@ export class StageGroupNode extends RealStageNode {
     let out = 0;
     out = this.getParticipantsPerGroup()[0];
     out = (out % 2 == 0) ? out - 1 : out;
-    if (this.opt == 'h&a') out *= 2;
+    if (this.data.opt == 'h&a') out *= 2;
     return out;
   }
 }
-
-export class StagePlayoffNode extends RealStageNode {
-  constructor(
-    sid: string,
-    participants: number,
-    opt: TypeBaseStageOption,
-    public roundsNumber: number,
-  ) {
-    super(sid, participants, opt);
+/**
+ * PLAYOFF
+ */
+export interface IStagePlayoffNodeData extends IRealStageNodeData {
+  roundsNumber: number;
+}
+export class StagePlayoffNode extends RealStageNode<IStagePlayoffNodeData> {
+  constructor(data: IStagePlayoffNodeData) {
+    super(data);
     // bien definido si:
-    if (Math.trunc(participants / 2 ** this.roundsNumber) !== (participants / 2 ** this.roundsNumber))
-      throw new Error(`no se puede haber ${roundsNumber} rounds
-      para la cantidad de participantes proporcionada: ${participants}`)
+    if (Math.trunc(data.participants / 2 ** data.roundsNumber) !== (data.participants / 2 ** data.roundsNumber))
+      throw new Error(`no se puede haber ${data.roundsNumber} rounds
+      para la cantidad de participantes proporcionada: ${data.participants}`)
   }
 
   getRanksGroups(): number[] {
     let out: number[] = [];
-    let ws = this.participants / 2;
-    for (let r = 0; r < this.roundsNumber; r++) {
+    let ws = this.data.participants / 2;
+    for (let r = 0; r < this.data.roundsNumber; r++) {
       out.unshift(ws);
       ws /= 2;
     }
@@ -74,8 +73,8 @@ export class StagePlayoffNode extends RealStageNode {
   }
 
   getHwsNumber(): number {
-    let out = this.roundsNumber;
-    if (this.opt == 'h&a') out *= 2;
+    let out = this.data.roundsNumber;
+    if (this.data.opt == 'h&a') out *= 2;
     return out;
   }
 }
