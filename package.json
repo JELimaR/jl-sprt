@@ -28,7 +28,9 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
+    "canvas": "^2.11.2",
     "graphology": "^0.25.4",
+    "graphology-canvas": "^0.4.1",
     "graphology-types": "^0.24.7",
     "jl-utlts": "^1.2.0"
   }

@@ -29,3 +29,9 @@ export class TransferStageNode extends NoneStageNode<IStageNodeData> {
     return [this.data.participants];
   }
 }
+
+export class FinalTransferStageNode extends NoneStageNode<IStageNodeData> {
+  getRanksGroups(): number[] {
+    return [this.data.participants];
+  }
+}

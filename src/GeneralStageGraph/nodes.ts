@@ -32,22 +32,32 @@ export abstract class ANode<D extends IANodeData> {
 export interface IInitialNodeData extends IANodeData {
   id: 'ini';
   nodeLvl: 0;
-  rankGroups: IGenericRank[];
+  qualyRank: IGenericRank;
+  rankGroups: number[];
+
 }
 export class InitialNode extends ANode<IInitialNodeData> {
   constructor(data: IInitialNodeData) {
     super(data);
+    const rankGroupsTotal = data.rankGroups.reduce((partialSum, a) => partialSum + a, 0);
+    if (rankGroupsTotal !== sizeGeneric(data.qualyRank)) {
+      console.log('rankGroups', data.rankGroups);
+      console.log('qualyRank', data.qualyRank)
+      throw new Error(
+        `data.rankGroups ${data.rankGroups} debe tener la misma cantidad de elementos que el GenericRank: ${sizeGeneric(data.qualyRank)}`
+      )
+    }
   }
 
   getRanksGroups(): number[] {
-    return this.data.rankGroups.map(igr => sizeGeneric(igr));
+    return this.data.rankGroups;
   }
 }
 
 export interface IFinalNodeData extends IANodeData {
   id: 'fin';
   nodeLvl: 0;
-  rankGroups: IGenericRank[];
+  // rankGroups: IGenericRank[];
 }
 export class FinalNode extends ANode<IFinalNodeData> {
   constructor(data: IFinalNodeData) {
@@ -55,7 +65,7 @@ export class FinalNode extends ANode<IFinalNodeData> {
   }
 
   getRanksGroups(): number[] {
-    return this.data.rankGroups.map(igr => sizeGeneric(igr));
+    return [];
   }
 }
 
@@ -85,10 +95,12 @@ export abstract class StageNode<D extends IStageNodeData> extends ANode<D> {
 
 }
 /******************************************************************************************************************* */
-export interface IRankGroupNode extends IANodeData {}
+export interface IRankGroupNode extends IANodeData {
+  gNumber: number;
+}
 export class RankGroupNode extends ANode<IRankGroupNode> {
 
   getRanksGroups(): number[] {
-    throw new Error("Method not implemented.");
+    return [this.data.gNumber];
   }
 }

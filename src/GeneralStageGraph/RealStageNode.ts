@@ -84,7 +84,8 @@ export class StagePlayoffNode extends RealStageNode<IStagePlayoffNodeData> {
 
 
 export const calculateParticipantsPerGroupArray = (pn: number, gn: number): number[] => {
-  if (pn / gn < 3) throw new Error(`parts number: ${pn} and groups: ${gn}`)
+  if (pn / gn < 3) throw new Error(`parts number: ${pn} and groups: ${gn}. Pocos participantes por grupo (menos de 3)`)
+  if (pn / gn > 20) throw new Error(`parts number: ${pn} and groups: ${gn}. Muchos participantes por grupo (mas de 20)`)
   let out: number[] = [];
 
   const divUp = Math.ceil(pn / gn);
