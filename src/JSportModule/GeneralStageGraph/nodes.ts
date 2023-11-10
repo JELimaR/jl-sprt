@@ -1,4 +1,4 @@
-import { IGenericRank, sizeGeneric } from "../JSportModule/interfaces";
+import { IGenericRank, sizeGeneric } from "../interfaces";
 
 export interface IANodeData {
   id: string;

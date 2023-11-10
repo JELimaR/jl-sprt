@@ -9,7 +9,6 @@ import mostrarFecha from "../mostrarFechaBorrar";
 import Tournament from "../Tournament/Tournament";
 import { TGS } from "../Tournament/types";
 import { getPlayoffNoneQualiesGroup, getPlayoffQualiesGroup, getStageGenericRank, IStageGroupConfig, IStagePlayoffConfig, ITournamentConfig, verifyTournamentConfig } from "../JSportModule";
-import { StageGraph, StageNode } from "../JSportModule/data/StageGraph";
 import { IGenericRank, IGenericRankItem } from "../JSportModule/interfaces";
 
 /**
@@ -24,7 +23,6 @@ interface IFederationData {
   getDivisionsConfig: TypeDivisionList;
 }
 const tournamentsMap = new Map<string, Tournament>();
-let graph = new StageGraph();
 
 /**
  * 
@@ -32,16 +30,16 @@ let graph = new StageGraph();
 const initSeasonFunc = (fede: IFederationData, cal: JCalendar, season: number) => {
   const tournamentd1 = new Tournament({ id: `d1i_${fede.id}_${season}`, season }, fede.getDivisionsConfig.d1, cal)
   tournamentsMap.set(tournamentd1.info.id, tournamentd1);
-  tournamentd1.stagesMap.forEach(s => graph.addNode(new StageNode({config: s.config, tid: tournamentd1.config.idConfig})))
+  // tournamentd1.stagesMap.forEach(s => graph.addNode(new StageNode({config: s.config, tid: tournamentd1.config.idConfig})))
   if (fede.getDivisionsConfig.d2) {
     const tournamentd2 = new Tournament({ id: `d2i_${fede.id}_${season}`, season }, fede.getDivisionsConfig.d2, cal)
     tournamentsMap.set(tournamentd2.info.id, tournamentd2);
-    tournamentd2.stagesMap.forEach(s => graph.addNode(new StageNode({config: s.config, tid: tournamentd2.config.idConfig})))
+    // tournamentd2.stagesMap.forEach(s => graph.addNode(new StageNode({config: s.config, tid: tournamentd2.config.idConfig})))
   }
   if (fede.getDivisionsConfig.cup) {
     const cup = new Tournament({ id: `cup_${fede.id}_${season}`, season }, fede.getDivisionsConfig.cup, cal)
     tournamentsMap.set(cup.info.id, cup);
-    cup.stagesMap.forEach(s => graph.addNode(new StageNode({config: s.config, tid: cup.config.idConfig})))
+    // cup.stagesMap.forEach(s => graph.addNode(new StageNode({config: s.config, tid: cup.config.idConfig})))
   }
 }
 /**
@@ -160,48 +158,48 @@ export default function tournamentExample01() {
   console.log(verifyTournamentConfig(div2TournamentConfig));
   console.log(verifyTournamentConfig(cupTournamentConfig));
 
-  graph.nodes.forEach((node: StageNode ) => {
-    console.log(node.config.idConfig)
-    console.log(node.getData())
-  })
-  console.log(JSON.stringify(graph.edges.get('d2i_f014_sg1-d2i_f014_sp4'), null, 2))
+  // graph.nodes.forEach((node: StageNode ) => {
+  //   console.log(node.config.idConfig)
+  //   console.log(node.getData())
+  // })
+  // console.log(JSON.stringify(graph.edges.get('d2i_f014_sg1-d2i_f014_sp4'), null, 2))
 
   /**
    * algoritmo para encontrar los destinos de cada item de la stage para cada tournament como destino.
    * verificacion de que los items no tengan más de un destino dentro del tournament.
    * se puede verificar tambien otras cosas con respecto a los destinos.
    */
-  const node = graph.getNodeById('d2i_f014_sg1');
-  graph.getDestinationsOfNodeByTournament(node).forEach((tournamentNodeDestinations: StageNode[], key: string) => {
-    console.log('---------------------------------------------------------------------------------------')
-    console.log('key', key);
-    const genericRank: IGenericRank = getStageGenericRank(node.config);
-    const destinyUnion: IGenericRankItem[] = [];
-    tournamentNodeDestinations.forEach((destiny: StageNode) => {
-      const destinyItems: IGenericRankItem[] = [];
-      destiny.config.qualifyConditions.forEach((tqc) => {
-        if (tqc.rankId == `sr_${node.config.idConfig}`) {
-          for (let p = tqc.minRankPos; p <= tqc.maxRankPos; p++) {
-            destinyItems.push(genericRank.list[p-1]);
-          }
-        }
-      })
-      console.log(destiny.config.idConfig);
-      console.log(destinyItems);
-      destinyUnion.push(...destinyItems);
-    })
+  // const node = graph.getNodeById('d2i_f014_sg1');
+  // graph.getDestinationsOfNodeByTournament(node).forEach((tournamentNodeDestinations: StageNode[], key: string) => {
+  //   console.log('---------------------------------------------------------------------------------------')
+  //   console.log('key', key);
+  //   const genericRank: IGenericRank = getStageGenericRank(node.config);
+  //   const destinyUnion: IGenericRankItem[] = [];
+  //   tournamentNodeDestinations.forEach((destiny: StageNode) => {
+  //     const destinyItems: IGenericRankItem[] = [];
+  //     destiny.config.qualifyConditions.forEach((tqc) => {
+  //       if (tqc.rankId == `sr_${node.config.idConfig}`) {
+  //         for (let p = tqc.minRankPos; p <= tqc.maxRankPos; p++) {
+  //           destinyItems.push(genericRank.list[p-1]);
+  //         }
+  //       }
+  //     })
+  //     console.log(destiny.config.idConfig);
+  //     console.log(destinyItems);
+  //     destinyUnion.push(...destinyItems);
+  //   })
 
-    const setUnion = new Set(destinyUnion);
-    console.log(setUnion)
-    console.log(destinyUnion)
-    if (destinyUnion.length === setUnion.size) {
-      console.log('iguales')
-    }
+  //   const setUnion = new Set(destinyUnion);
+  //   console.log(setUnion)
+  //   console.log(destinyUnion)
+  //   if (destinyUnion.length === setUnion.size) {
+  //     console.log('iguales')
+  //   }
 
-    // console.log(tournamentDestinations.map(e => e.getData().config.qualifyConditions));
-  })
-  console.log(getPlayoffQualiesGroup( graph.getNodeById('d2i_f014_sp2').config as IStagePlayoffConfig ))
-  console.log(getPlayoffNoneQualiesGroup( graph.getNodeById('d2i_f014_sp2').config as IStagePlayoffConfig ))
+  //   // console.log(tournamentDestinations.map(e => e.getData().config.qualifyConditions));
+  // })
+  // console.log(getPlayoffQualiesGroup( graph.getNodeById('d2i_f014_sp2').config as IStagePlayoffConfig ))
+  // console.log(getPlayoffNoneQualiesGroup( graph.getNodeById('d2i_f014_sp2').config as IStagePlayoffConfig ))
 
 }
 

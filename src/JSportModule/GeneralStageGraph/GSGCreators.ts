@@ -1,6 +1,6 @@
-import { count } from "console";
-import { TypeBaseStageOption } from "../JSportModule";
-import { IGenericRank } from "../JSportModule/interfaces";
+
+import { TypeBaseStageOption } from "..";
+import { IGenericRank } from "../interfaces";
 import { GeneralStageGraph, PhaseNode } from "./GeneralStageGraph";
 import { FinalNode, InitialNode, IStageNodeData, RankGroupNode, StageNode } from "./nodes";
 import { TableStageNode, TransferStageNode } from "./NoneStageNode";

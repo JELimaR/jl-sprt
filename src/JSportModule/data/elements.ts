@@ -3,13 +3,6 @@ import { IElementInfo, IPhaseConfig, IStageConfig, IStageGroupConfig, IStagePlay
 /****************************************************************************************************************************
  * BaseStage
  */
-// export interface IBaseStageData {}
-
-
-// League
-// export interface ILeagueData {}
-// SingleElimination
-// export interface ISingleElminationData {}
 
 /****************************************************************************************************************************
  * Stage

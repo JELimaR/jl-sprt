@@ -1,4 +1,5 @@
-import { TypeBaseStageOption } from "../JSportModule";
+
+import { TypeBaseStageOption } from "../data";
 import { IStageNodeData, StageNode } from "./nodes";
 
 export interface IRealStageNodeData extends IStageNodeData {

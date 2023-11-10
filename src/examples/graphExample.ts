@@ -1,13 +1,13 @@
 
 import { renderToPNG } from 'graphology-canvas/node';
-import { GeneralStageGraph, NodeAttributes, PhaseNode } from "../GeneralStageGraph/GeneralStageGraph";
-import { getExampleGenericRankItems, getInitialRanksGroupsExample } from "../GeneralStageGraph/graphData01";
 import { IGenericRank, IGenericRankItem } from "../JSportModule/interfaces";
-import { FinalNode, InitialNode, IStageNodeData, RankGroupNode, StageNode } from "../GeneralStageGraph/nodes";
-import { TransferStageNode } from "../GeneralStageGraph/NoneStageNode";
-import { IStageGroupNodeData, RealStageNode, StageGroupNode, StagePlayoffNode } from "../GeneralStageGraph/RealStageNode";
 import { TypeBaseStageOption } from "../JSportModule";
-import { createGSG, TInitialCreator, TPhaseCreator } from '../GeneralStageGraph/GSGCreators';
+import { GeneralStageGraph, NodeAttributes, PhaseNode } from '../JSportModule/GeneralStageGraph/GeneralStageGraph';
+import { TInitialCreator, TPhaseCreator, createGSG } from '../JSportModule/GeneralStageGraph/GSGCreators';
+import { StageNode, IStageNodeData, RankGroupNode } from '../JSportModule/GeneralStageGraph/nodes';
+import { RealStageNode, StageGroupNode, StagePlayoffNode } from '../JSportModule/GeneralStageGraph/RealStageNode';
+import { getExampleGenericRankItems } from './graphData01';
+import { TableStageNode, TransferStageNode } from '../JSportModule/GeneralStageGraph/NoneStageNode';
 
 export default function graphExample() {
 
@@ -66,8 +66,8 @@ export default function graphExample() {
   console.log(finalStage.getRanksGroups())
   // console.log(phases);
   console.log('nodes', gsg._graph.nodes())
-  console.log('edges', gsg._graph.edges())
-  // console.log(gsg._graph)
+  // console.log('edges', gsg._graph.edges())
+  console.log(JSON.parse(JSON.stringify(gsg._graph)).edges)
   // console.log(gsg._graph.edge('ini', 'r_ini_1'))
   // console.log('sources', gsg.getSourceNeigbhors('p01_s01'))
   // console.log('targets', gsg.getTargetNeigbhors('p01_s01'))
@@ -118,20 +118,29 @@ function renderGSG(gsg: GeneralStageGraph) {
       reducer: (_, node: string, attributes: NodeAttributes) => {
         let color = '#0A0A0A';
         let size = 40;
-        color = attributes.getId() == 'ini' ? '#00FF00' : color;
-        color = attributes.getId() == 'fin' ? '#FF0000' : color;
-        color = attributes instanceof RankGroupNode ? '#909090' : color;
-        size = attributes instanceof RankGroupNode ? 25 : size;
+        color = attributes.getId() == 'ini' ? '#29524A' : color;
+        color = attributes.getId() == 'fin' ? '#4E0110' : color;
 
-        color = attributes instanceof RealStageNode ? '#0505F0' : color;
+        if (attributes instanceof RankGroupNode) {
+          color = '#06070E';
+          size = 25;
+        } else if (attributes instanceof StageGroupNode) {
+          color = '#03254E';
+        } else if(attributes instanceof StagePlayoffNode) {
+          color = '#6184D8';
+        } else if(attributes instanceof TransferStageNode) {
+          color = '#C5AFA0';
+        } else if(attributes instanceof TableStageNode) {
+          color = '#E9BCB7';
+        }
 
         return { ...mapPositions.get(node), size, color: color };
       }
     },
     edges: {
-      defaultColor: '#FF0000',
+      defaultColor: '#0A090C',
       reducer: () => {
-        return { directed: true }
+        return { directed: true, label: 'o' }
       }
     }
   }, () => { console.log('done') })
