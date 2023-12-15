@@ -1,4 +1,4 @@
-import Match from "./Match/JMatch";
+import Match from "../../Tournament/Match/JMatch"; // importar de otro lugar
 
 export default class Team {
 	private _id: string;

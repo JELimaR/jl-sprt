@@ -1,7 +1,10 @@
 import graphology, { DirectedGraph } from "graphology";
-import { ANode, FinalNode, IANodeData, IStageNodeData, RankGroupNode, StageNode } from "./nodes";
+import { allSimplePaths } from "graphology-simple-path";
+import { IGenericRankItem } from "../data/Ranking/interfaces";
+import { Ranking } from "../data/Ranking/Ranking";
+import { ANode, FinalNode, IANodeData, InitialNode, IStageNodeData, RankGroupNode, StageNode } from "./nodes";
 import { TableStageNode } from "./NoneStageNode";
-import { StageGroupNode } from "./RealStageNode";
+import { RealStageNode, StageGroupNode } from "./RealStageNode";
 
 export type NodeAttributes = ANode<IANodeData>;
 
@@ -27,10 +30,12 @@ export class GeneralStageGraph /*extends DirectedGraph<NodeAttributes>*/ {
   addNode(attributes: NodeAttributes): string {
     let out = this._graph.addNode(attributes.getId(), attributes);
 
+    // si no se trata de rankgroupnode o finalnode, se crean los rankgroupnodes asociados.
     if (!(attributes instanceof RankGroupNode || attributes instanceof FinalNode)) {
-      attributes.getRanksGroups().forEach((value: number, i: number) => {
+      attributes.getRanksGroups().forEach((value: Ranking, i: number) => {
         const rgn: RankGroupNode = new RankGroupNode({
-          id: `r_${attributes.getId()}_${i + 1}`, nodeLvl: attributes.data.nodeLvl, gNumber: value,
+          id: `r_${attributes.getId()}_${i + 1}`, nodeLvl: attributes.data.nodeLvl,/* gNumber: value.size,*/
+          sourceData: value,
         })
         this._graph.addNode(rgn.getId(), rgn);
 
@@ -45,7 +50,7 @@ export class GeneralStageGraph /*extends DirectedGraph<NodeAttributes>*/ {
    * Devuelve en un arreglo los vecinos que son fuentes de target
    * @param target 
    */
-  getSourceNeigbhors(targetEntry: TYPE_IdOrAttr): NodeAttributes[] {
+  getSourceNeighbors(targetEntry: TYPE_IdOrAttr): NodeAttributes[] {
     const target = this.getNode(targetEntry);
     let out: string[] = [];
     this._graph.directedNeighbors(target.getId()).forEach((dirNeig: string) => {
@@ -56,7 +61,7 @@ export class GeneralStageGraph /*extends DirectedGraph<NodeAttributes>*/ {
     return out.map((id: string) => this.getNode(id));
   }
 
-  getTargetNeigbhors(sourceEntry: TYPE_IdOrAttr):  NodeAttributes[] {
+  getTargetNeigbhors(sourceEntry: TYPE_IdOrAttr): NodeAttributes[] {
     const source = this.getNode(sourceEntry)
     let out: string[] = [];
     this._graph.directedNeighbors(source.getId()).forEach((dirNeig: string) => {
@@ -95,7 +100,7 @@ export class GeneralStageGraph /*extends DirectedGraph<NodeAttributes>*/ {
       }
     }
     if (targetIsRGN) {
-      const sources = this.getSourceNeigbhors(targetNode);
+      const sources = this.getSourceNeighbors(targetNode);
       if (sources.length > 0) {
         throw new Error(`target: ${target} es rankgroup y ya tiene al menos un source: ${source}`)
       }
@@ -103,45 +108,69 @@ export class GeneralStageGraph /*extends DirectedGraph<NodeAttributes>*/ {
 
     // si el targetNode es TableStageNode, el source debe "venir" de un StageGroupNode
     if (targetNode instanceof TableStageNode) {
-      const sourceSources = this.getSourceNeigbhors(sourceNode);
+      const sourceSources = this.getSourceNeighbors(sourceNode);
       sourceSources.forEach((dirNeig: NodeAttributes) => {
         if (dirNeig instanceof StageGroupNode)
           throw new Error(`dn: ${dirNeig.getId()} source: ${source} target: ${target}`)
       })
     }
-    // let ok = true;
-
-    // if (!sourceAtributes.isStage) {
-    //   // si source es rank, entonces ambos deben ser del mismo tipo
-    //   if (sourceAtributes.type != targetAtributes.type) {
-    //     throw new Error(``);
-    //   }
-    //   // si source es rank del tipo E, entonces el target que es un stage debe tener un level mayor
-    //   if (sourceAtributes.type == 'E') {
-    //     if (sourceAtributes.sLevel >= targetAtributes.sLevel) {
-    //       throw new Error(``);
-    //     } else {
-    //       if (sourceAtributes.sLevel !== targetAtributes.sLevel) {
-    //         throw new Error(``);
-    //       }
-    //     }
-    //   }
-    //    // si source es rank del tipo Q, entonces el target que es un stage debe ser de subtype stg o non
-    //    if (sourceAtributes.type == 'Q') {
-    //      const stage = targetAtributes as IStageNode;
-    //      if (stage.subType == 'tab') {
-    //        throw new Error(``)
-    //      }
-    //    }
-    // } else {
-    //   // si source es stage
-
-    // }
-
 
     return this._graph.addDirectedEdge(sourceNode.getId(), targetNode.getId()/*, attributes*/);
   }
 
+  getAllSimplePath(start: TYPE_IdOrAttr, end: TYPE_IdOrAttr) {
+    let out: NodePath[] = [];
+    const startNode = this.getNode(start);
+    const endNode = this.getNode(end);
+
+    const asp = allSimplePaths(this._graph, startNode.getId(), endNode.getId());
+
+    asp.forEach((pathIds: string[]) => {
+      const nodePath: NodeAttributes[] = [];
+      pathIds.forEach((id: string) => nodePath.push(this.getNode(id)));
+      out.push(new NodePath(nodePath));
+    })
+
+    return out;
+  }
+
+  getHwsNumberMinimum() {
+    const asp = this.getAllSimplePath('ini', 'fin');
+    const hwsOfAlSimplePath = asp.map(np => np.getHwsNumber());
+
+    return Math.max(...hwsOfAlSimplePath)
+  }
+
+  getHwsNumberPerPhase(): number {
+    let hwsPhase = 0;
+    this._phases.forEach((p) => {
+      hwsPhase += p.getHwsNumber();
+    })
+    return hwsPhase;
+  }
+
+  // funciones para asignar los teams al tournament
+  getInitialRankings(): Ranking[] {
+    const iniNode = this.getNode('ini');
+    return iniNode.getRanksGroups();
+  }
+
+  getQualyRankList(): IGenericRankItem[] {
+    const iniNode = this.getNode('ini');
+    if (iniNode instanceof InitialNode) {
+      return iniNode.data.qualyRankList;
+    } else {
+      throw new Error(`En GeneralStageGraph.getQualyRankList`)
+    }
+  }
+
+
+
+
+  /**
+   * 
+   * @param callBackFunc 
+   */
   forEachDirectedEdgeCustom(callBackFunc: (sourceAtributes: NodeAttributes, targetAtributes: NodeAttributes) => void) {
     this._graph.forEachDirectedEdge((edge: string, attr: EdgeAttributes, source: string, target: string) => {
       const sourceAtributes = this._graph.getNodeAttributes(source);
@@ -150,6 +179,20 @@ export class GeneralStageGraph /*extends DirectedGraph<NodeAttributes>*/ {
     })
   }
 
+}
+
+export class NodePath {
+  constructor(public nodes: NodeAttributes[]) { }
+
+  getHwsNumber() {
+    let out = 0;
+    this.nodes.forEach((node: NodeAttributes) => {
+      if (node instanceof RealStageNode) {
+        out += node.getHwsNumber();
+      }
+    })
+    return out;
+  }
 }
 
 export class PhaseNode {
@@ -162,8 +205,8 @@ export class PhaseNode {
       graph.getNode(sn);
     })
     this.graph._phases.push(this);
-
   }
+
   getTargetRanksGroups() {
     const out: RankGroupNode[] = [];
     this.stages.forEach((sn: StageNode<IStageNodeData>) => {
@@ -178,7 +221,7 @@ export class PhaseNode {
   getSourceRanksGroups() {
     const out: RankGroupNode[] = [];
     this.stages.forEach((stageNode: StageNode<IStageNodeData>) => {
-      const rgArr = this.graph.getSourceNeigbhors(stageNode);
+      const rgArr = this.graph.getSourceNeighbors(stageNode);
       rgArr.forEach((rg: NodeAttributes) => {
         // const rg = this.graph.getNodeAttributes(value);
         out.push(rg as RankGroupNode)
@@ -187,6 +230,14 @@ export class PhaseNode {
     })
 
     return out;
+  }
+
+  getHwsNumber(): number {
+    let hwsPhase: number[] = [];
+    this.stages.forEach(s => {
+      hwsPhase.push((s instanceof RealStageNode) ? s.getHwsNumber() : 0)
+    })
+    return Math.max(...hwsPhase);
   }
 }
 

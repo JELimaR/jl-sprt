@@ -3,21 +3,22 @@ import JCalendar from "../JCalendar/JCalendar";
 import { getExampleTeams } from "../Entities/ExampleData";
 import mostrarFecha from "../mostrarFechaBorrar";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
-import { RankItem, TypeRanking } from "../Tournament/Rank/ranking";
-import TeamTableItem from "../Tournament/Rank/TeamTableItem";
 import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
-import Team from "../Tournament/Team";
 import exampleAdvance from "./exampleAdvance";
 import { JDateTime } from "../JCalendar/JDateTimeModule";
 import { IStageGroupConfig } from "../JSportModule";
+import { IRankItem } from "../JSportModule/data/Ranking/interfaces";
+import Team from "../JSportModule/data/Team";
+import { Ranking, TypeRanking } from "../JSportModule/data/Ranking/Ranking";
+import TeamTableItem from "../JSportModule/data/Ranking/TeamTableItem";
 
 const selection = getExampleTeams(80, 'Team');
 
 export default function specialStageGroupExample() {
 
-  const rankItemArr: RankItem[] = selection.map((t: Team, i: number) => { return { rank: i + 1, team: t, originId: `C${(i % 13) + 1}` } });
-  const ranking: TypeRanking = { rankId: 'rankingInicial', table: rankItemArr }
-  globalFinishedRankingsMap.set(ranking.rankId, ranking);
+  const rankItemArr: IRankItem[] = selection.map((t: Team, i: number) => { return { pos: i + 1, team: t, origin: `C${(i % 13) + 1}` } });
+  const ranking: TypeRanking = { context: 'rankingInicial', items: rankItemArr, teams: rankItemArr.map(e => e.team) }
+  globalFinishedRankingsMap.set(ranking.context, Ranking.fromTypeRanking(ranking));
 
   const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getIJDateTimeCreator());
   mostrarFecha(cal.now)
@@ -40,9 +41,9 @@ export default function specialStageGroupExample() {
     console.table(l.getTable('finished').map(e => e.getInterface()))
   })
 
-  globalFinishedRankingsMap.forEach((ranking: TypeRanking, key: string) => {
+  globalFinishedRankingsMap.forEach((ranking: Ranking, key: string) => {
     if (key !== 'rankingInicial') {
-      console.table(ranking.table.map((e: RankItem) => { return { ...e, team: e.team.id } }));
+      console.table(ranking.getRankTable().map((e: IRankItem) => { return { ...e, team: e.team.id } }));
     }
   })
 

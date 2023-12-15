@@ -1,6 +1,6 @@
 import { IJEventOthersInfo, JEventOthers } from "../../../../JCalendar/Event/JEvent";
+import Team from "../../../../JSportModule/data/Team";
 import SingleElmination from "./SingleElmination"
-import Team from "../../../Team";
 
 export interface IEvent_RoundCreationAndTeamsDrawInfo extends IJEventOthersInfo {
   playoff: SingleElmination;
@@ -17,7 +17,8 @@ export default class Event_RoundCreationAndTeamsDraw extends JEventOthers {
 
   execute(): void {
     const thisRoundNumber = this._playoff.rounds.length + 1;
-    console.log(`ejecuting creation of Round number: ${thisRoundNumber}, from: ${this._playoff.info.id}`);
+    console.log(`ejecuting creation of Round number: ${thisRoundNumber}, from: ${this._playoff.info.id}
+    ${JSON.stringify(this.dateTime.getDateTime().date.halfWeekOfYear)}`);
 
     const winners = this.getLastRoundWinners();
     const teams: Team[] = SingleElmination.teamsSortForDraw(winners);

@@ -1,13 +1,15 @@
 
 import { TypeBaseStageOption } from "..";
-import { IGenericRank } from "../interfaces";
+import { IGenericRankItem } from "../data/Ranking/interfaces";
+import { Ranking } from "../data/Ranking/Ranking";
 import { GeneralStageGraph, PhaseNode } from "./GeneralStageGraph";
 import { FinalNode, InitialNode, IStageNodeData, RankGroupNode, StageNode } from "./nodes";
 import { TableStageNode, TransferStageNode } from "./NoneStageNode";
 import { StageGroupNode, StagePlayoffNode } from "./RealStageNode";
 
 export type TInitialCreator = {
-  genericRank: IGenericRank;
+  tournamentId: string;
+  qualyrankList: IGenericRankItem[];
   rankGroupNumbers: number[];
 };
 export type TStageNodeCreator = {
@@ -35,9 +37,10 @@ function createInitialNode(tic: TInitialCreator) {
   // initial node
   const initialNode = new InitialNode({
     id: 'ini',
+    tournamentId: tic.tournamentId,
     nodeLvl: 0,
     rankGroups: tic.rankGroupNumbers,
-    qualyRank: tic.genericRank,
+    qualyRankList: tic.qualyrankList,
   });
   return initialNode;
 }
@@ -62,10 +65,9 @@ export function createGSG(iniCreator: TInitialCreator, phaseCreatorArr: TPhaseCr
   // creo las phases
   let currPhaseIndex = 0;
   let prevPhaseRGs = gsg.getTargetNeigbhors(initialNode) as RankGroupNode[];
-  console.log('prevPhaseRGs', prevPhaseRGs);
-  
+
   while (currPhaseIndex < phaseCreatorArr.length) {
-    console.log(currPhaseIndex);
+    // console.log(currPhaseIndex);
     const currPhaseCreator = phaseCreatorArr[currPhaseIndex];
     const phase = createPhaseNodes(gsg, currPhaseCreator, prevPhaseRGs, currPhaseIndex)
 
@@ -78,7 +80,7 @@ export function createGSG(iniCreator: TInitialCreator, phaseCreatorArr: TPhaseCr
   const finalNode = createFinalNode();
   gsg.addNode(finalNode);
   prevPhaseRGs.forEach((rgn: RankGroupNode) => {
-    console.log(rgn)
+    // console.log(rgn)
     gsg.addDirectedEdge(rgn, finalNode);
   })
 
@@ -130,8 +132,12 @@ function createStage(sid: string, stageCreator: TStageNodeCreator, stageRGs: Ran
   const nodeData: IStageNodeData = {
     id: sid,
     nodeLvl: 0,
-    participants: stageRGs.reduce((partialSum, a) => partialSum + a.data.gNumber, 0)
+    participants: stageRGs.reduce((partialSum, a) => partialSum + a.data.sourceData.size, 0)
   };
+
+  const rankings: Ranking[] = [];
+  stageRGs.forEach(rg => rankings.push(...rg.getRanksGroups()))
+
   switch (stageCreator.type) {
     case 'group':
       out = new StageGroupNode({
@@ -148,15 +154,20 @@ function createStage(sid: string, stageCreator: TStageNodeCreator, stageRGs: Ran
       })
       break;
     case 'transfer':
+      // solo debe haber un rg?
       out = new TransferStageNode({
-        ...nodeData,
-      })
+        ...nodeData
+      },
+        rankings
+      )
       break;
     case 'table':
       out = new TableStageNode({
         ...nodeData,
         qNumber: stageCreator.value
-      })
+      },
+        rankings
+      )
       break;
     default:
       throw new Error(`no existe stagenode del tipo: ${stageCreator}`)

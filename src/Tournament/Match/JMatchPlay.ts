@@ -1,5 +1,5 @@
+import { TeamMatch } from "../../JSportModule/data/Team";
 import JResult from "./JResult";
-import { TeamMatch } from "../Team";
 
 
 export default class JMatchPlay {

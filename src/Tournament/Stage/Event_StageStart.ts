@@ -1,6 +1,6 @@
 import { IJEventInfo, JEvent } from "../../JCalendar/Event/JEvent";
+import { IRankItem } from "../../JSportModule/data/Ranking/interfaces";
 import { globalFinishedRankingsMap } from "../Rank/globalFinishedRankingsMap";
-import { RankItem } from "../Rank/ranking";
 import { TGS } from "../types";
 
 export interface IEvent_StageStartInfo extends IJEventInfo {
@@ -25,18 +25,36 @@ export class Event_StageStart extends JEvent {
   }
 
   getParticipants() {
-    const rankTable: RankItem[] = [];
+    const rankTable: IRankItem[] = [];
     this._stage.config.qualifyConditions.forEach(qc => {
       const ranking = globalFinishedRankingsMap.get(qc.rankId);
 
-      if (!ranking) throw new Error(`No existe ranking: ${qc.rankId}`)
-      if (ranking.table.length < qc.maxRankPos) throw new Error(`El ranking es ${ranking.table.length} y se nesecitan ${qc.maxRankPos}`)
+      if (!ranking) {
+        console.log(`rankings`, globalFinishedRankingsMap.keys())
+        throw new Error(`No existe ranking: ${qc.rankId}`)
+      }
+      if (ranking.size < qc.maxRankPos) {throw new Error(`El ranking es ${ranking.size} y se nesecitan ${qc.maxRankPos}`)}
 
-      for (let p = qc.minRankPos - 1; p < qc.maxRankPos; p++)
-        rankTable.push(ranking.table[p]);
+      for (let p = qc.minRankPos; p <= qc.maxRankPos; p++)
+        rankTable.push(ranking.getFromPosition(p));
     })
+    // verificar que no hayan teams repetidos
+    const setIds = new Set(rankTable.map(ri => ri.team.id));
+    if (setIds.size !== rankTable.length) {
+      console.log('teams')
+      console.log(rankTable.map(ri => ri.team.id))
 
-    rankTable.sort((a,b) => a.rank - b.rank);
+      this._stage.config.qualifyConditions.forEach(qc => {
+        console.log(qc)
+        const ranking = globalFinishedRankingsMap.get(qc.rankId);
+        // console.log(ranking?.getRankTable().map(e => { return {...e, team: e.team.id}}))
+        console.log(ranking?.getGenericRankItems())
+
+      })
+      throw new Error(``)
+    }
+
+    rankTable.sort((a,b) => a.pos - b.pos);
 
     return rankTable;
   }

@@ -1,14 +1,14 @@
 import BaseStage from '../../BaseStage';
 import JCalendar from '../../../../JCalendar/JCalendar';
-import Team from '../../../Team';
 import { JRound } from './JRound';
 import JSerie from '../../../Match/JSerie';
 import Event_RoundCreationAndTeamsDraw from './Event_RoundCreationAndTeamsDraw';
 import Match from '../../../Match/JMatch';
-import TeamTableItem from '../../../Rank/TeamTableItem';
-import { simpleSortFunc, TypeTableMatchState } from '../../../Rank/ranking';
+import { TypeTableMatchState } from '../../../Rank/ranking';
 import { TypeHalfWeekOfYear, JDateTime } from '../../../../JCalendar/JDateTimeModule';
 import { IElementInfo, ISingleElminationConfig } from '../../../../JSportModule';
+import Team from '../../../../JSportModule/data/Team';
+import TeamTableItem, { simpleSortFunc } from '../../../../JSportModule/data/Ranking/TeamTableItem';
 
 // export interface IElementInfo extends IBaseStageInfo { }
 

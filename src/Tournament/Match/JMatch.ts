@@ -2,7 +2,7 @@ import JSerie from './JSerie';
 import JMatchPlay from './JMatchPlay';
 import JResult, { IJResultInfo } from './JResult';
 import { TypeHalfWeekOfYear, JDateTime } from '../../JCalendar/JDateTimeModule';
-import Team from '../Team';
+import Team from '../../JSportModule/data/Team';
 
 export type TypeMatchState =
 	| 'created'

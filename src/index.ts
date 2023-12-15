@@ -6,8 +6,6 @@ import stageExample02 from './examples/stageExample02';
 import stageExample03 from './examples/stageExample03';
 import stageLeagueExample from './examples/stageLeagueExample';
 import systemExample from './examples/systemExample';
-import tournamentExample01 from './examples/tournamentExample01';
-import tournamentExample02 from './examples/tournamentExample02';
 
 /**
  * PENDIENTES
@@ -37,10 +35,6 @@ function app() {
   // specialStageGroupExample();
 
   // stageExample03()
-
-  // tournamentExample01();
-
-  // tournamentExample02();
 
   // systemExample()
 

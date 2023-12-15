@@ -5,6 +5,7 @@ export interface IGenericRankItem {
   pos: number;
 }
 
+// eliminar esta
 export interface IGenericRank {
   rankId: string;
   list: IGenericRankItem[];

@@ -1,4 +1,4 @@
-import Team from "../Tournament/Team";
+import Team from "../JSportModule/data/Team";
 import { TypeCategoryList, TypeJCategory } from "../Tournament/types";
 
 export class JInstallation {

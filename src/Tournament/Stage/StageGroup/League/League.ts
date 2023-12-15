@@ -1,11 +1,10 @@
 
 import JCalendar from "../../../../JCalendar/JCalendar";
-import { TypeHalfWeekOfYear } from "../../../../JCalendar/JDateTimeModule";
 import { arr2, IElementInfo, ILeagueConfig, TypeBaseStageOption } from "../../../../JSportModule";
+import TeamTableItem, { simpleSortFunc } from "../../../../JSportModule/data/Ranking/TeamTableItem";
+import Team from "../../../../JSportModule/data/Team";
 import Match from "../../../Match/JMatch";
-import { TypeTableMatchState, simpleSortFunc } from "../../../Rank/ranking";
-import TeamTableItem from "../../../Rank/TeamTableItem";
-import Team from "../../../Team";
+import { TypeTableMatchState } from "../../../Rank/ranking";
 import BaseStage from "../../BaseStage";
 import robinRoundSchedulingFunction from "./RoundRobin";
 import { Turn } from "./Turn";
@@ -47,7 +46,7 @@ export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
     );
     if (sch.length !== config.turnHalfWeeks.length) {
       throw new Error(`cantidad de wks incorrecta
-      se esperaban: ${sch.length} y se presentan: ${config.turnHalfWeeks.length}`);
+      se esperaban: ${sch.length} y se presentan: ${config.turnHalfWeeks.length} turnHalfWeeks`);
     }
     if (
       config.turnHalfWeeks.length !== config.turnHalfWeeksSchedule.length

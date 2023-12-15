@@ -2,13 +2,14 @@
 // import Stage, { IStageConfig, IStageInfo } from "../Stage";
 import SingleElmination from "./SingleElimination/SingleElmination";
 import JCalendar from "../../../JCalendar/JCalendar";
-import Team from "../../Team";
 import Bombo from "../Bombo";
-import { RankItem, TypeTableMatchState } from "../../Rank/ranking";
+import { TypeTableMatchState } from "../../Rank/ranking";
 import Stage from "../Stage";
-import TeamTableItem from "../../Rank/TeamTableItem";
 import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
 import { IElementInfo, IStagePlayoffConfig, arr2, TypeDrawRulePlayoff } from "../../../JSportModule";
+import { IRankItem } from "../../../JSportModule/data/Ranking/interfaces";
+import Team from "../../../JSportModule/data/Team";
+import TeamTableItem from "../../../JSportModule/data/Ranking/TeamTableItem";
 
 
 /**
@@ -58,18 +59,18 @@ export default class StagePlayoff extends Stage<IElementInfo, IStagePlayoffConfi
    * @param teams 
    * @param cal 
    */
-  start(teams: RankItem[], cal: JCalendar): void {
+  start(teams: IRankItem[], cal: JCalendar): void {
     const participants: Team[] = (this.config.intervalOfDrawDate) ? this.teamsDraw(teams) : teams.map(ri => ri.team);
     this._playoff.assign(participants, cal);
   }
 
-  private teamsDraw(teams: RankItem[]) {
-    let sorted: RankItem[] = [];
+  private teamsDraw(teams: IRankItem[]) {
+    let sorted: IRankItem[] = [];
     let i = 0; // conteo de la cantidad de intentos para un draw valido
     let isValid = false;
     const bombos = this.createBombosforDraw(teams);
     while (!isValid && i < 1000) { // mientras no encuentre un orden valido y no haya llegado a 1000 intentos
-      bombos.forEach((bom: Bombo<RankItem>) => { bom.reset(); })
+      bombos.forEach((bom: Bombo<IRankItem>) => { bom.reset(); })
       sorted = this.selection(bombos);
       isValid = this.drawRulesValidate(sorted);
       i++;
@@ -77,10 +78,10 @@ export default class StagePlayoff extends Stage<IElementInfo, IStagePlayoffConfi
     return sorted.map(ri => ri.team);
   }
 
-  private selection(bombos: Bombo<RankItem>[]) {
-    const out: RankItem[] = [];
+  private selection(bombos: Bombo<IRankItem>[]) {
+    const out: IRankItem[] = [];
     
-    bombos.forEach((b: Bombo<RankItem>) => {
+    bombos.forEach((b: Bombo<IRankItem>) => {
       while (b.state !== 'finished') {
         const elem = b.getNextElement();
         out.push(elem);
@@ -96,10 +97,10 @@ export default class StagePlayoff extends Stage<IElementInfo, IStagePlayoffConfi
    *    T5vsT2
    *    T4vsT3
    */
-  drawRulesValidate(teams: RankItem[]): boolean {
-    const series: arr2<RankItem>[] = [];
+  drawRulesValidate(teams: IRankItem[]): boolean {
+    const series: arr2<IRankItem>[] = [];
     for (let i = 0; i < teams.length / 2; i++) {
-      let serie: arr2<RankItem> = [
+      let serie: arr2<IRankItem> = [
         teams[i],
         teams[teams.length - 1 - i]
       ];
@@ -110,11 +111,11 @@ export default class StagePlayoff extends Stage<IElementInfo, IStagePlayoffConfi
 
     this.config.drawRulesValidate.forEach((rule: TypeDrawRulePlayoff) => {
 
-      series.forEach((s: arr2<RankItem>) => {
+      series.forEach((s: arr2<IRankItem>) => {
         if (rule.origin == 'all') {
-          out = out && !(s[0].originId == s[1].originId);
+          out = out && !(s[0].origin == s[1].origin);
         } else {
-          out = out && !(s[0].originId == rule.origin && s[0].originId == s[1].originId);          
+          out = out && !(s[0].origin == rule.origin && s[0].origin == s[1].origin);          
         }
       })
 

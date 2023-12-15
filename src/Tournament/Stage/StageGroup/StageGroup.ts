@@ -1,12 +1,13 @@
 import League from "./League/League";
 import Stage from "../Stage";
-import Team from "../../Team";
 import JCalendar from "../../../JCalendar/JCalendar";
 import Bombo from "../Bombo";
-import { RankItem, simpleSortFunc, TypeTableMatchState } from "../../Rank/ranking";
-import TeamTableItem from "../../Rank/TeamTableItem";
 import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
 import { IElementInfo, ILeagueConfig, IStageGroupConfig, TypeDrawRulePlayoff } from "../../../JSportModule";
+import { IRankItem } from "../../../JSportModule/data/Ranking/interfaces";
+import Team from "../../../JSportModule/data/Team";
+import TeamTableItem, { simpleSortFunc } from "../../../JSportModule/data/Ranking/TeamTableItem";
+import { TypeTableMatchState } from "../../Rank/ranking";
 
 /**
  * Debe encargarse de la creacion y de la asignacion de los equipos a cada basestage
@@ -69,7 +70,7 @@ export default class StageGroup extends Stage<IElementInfo, IStageGroupConfig> {
    * @param teams 
    * @param cal 
    */
-  start(teams: RankItem[], cal: JCalendar): void {
+  start(teams: IRankItem[], cal: JCalendar): void {
     const participants: Team[][] = (this.config.intervalOfDrawDate) ? this.teamsDraw(teams) : this.teamsNoDraw(teams);
     // console.log(participants)
     this._groups.forEach((g: League, i: number) => {
@@ -87,12 +88,12 @@ export default class StageGroup extends Stage<IElementInfo, IStageGroupConfig> {
    * 3	4	5	10	15
    * @param teams 
    */
-  private teamsNoDraw(teams: RankItem[]): Team[][] {
-    let sorted: RankItem[][] = [];
+  private teamsNoDraw(teams: IRankItem[]): Team[][] {
+    let sorted: IRankItem[][] = [];
     // teams = League.teamsSortForDraw(teams, false);
     let gidOffset = 0;
     let auxCounter = 0;
-    teams.forEach((t: RankItem, tindx: number) => {
+    teams.forEach((t: IRankItem, tindx: number) => {
       // console.log('g', tindx % this.groups.length)
       if (auxCounter == this.groupsNumber) {
         auxCounter = 0;
@@ -106,22 +107,22 @@ export default class StageGroup extends Stage<IElementInfo, IStageGroupConfig> {
       auxCounter++
     })
     // los grupos de mayor numeros deben ir primero
-    sorted.sort((a: RankItem[], b: RankItem[]) => b.length - a.length)
+    sorted.sort((a: IRankItem[], b: IRankItem[]) => b.length - a.length)
     return sorted.map(ris => ris.map(ri => ri.team))
   }
 
 
-  private teamsDraw(teams: RankItem[]): Team[][] {
-    let sorted: RankItem[][] = [];
+  private teamsDraw(teams: IRankItem[]): Team[][] {
+    let sorted: IRankItem[][] = [];
     let i = 0; // conteo de la cantidad de intentos para un draw valido
     let isValid = false;
     const bombos = this.createBombosforDraw(teams);
     while (!isValid && i < 1000) { // mientras no encuentre un orden valido y no haya llegado a 1000 intentos
-      bombos.forEach((bom: Bombo<RankItem>) => { bom.reset(); })
+      bombos.forEach((bom: Bombo<IRankItem>) => { bom.reset(); })
       sorted = this.selection(bombos);
 
       isValid = true;
-      sorted.forEach((tarr: RankItem[]) => {
+      sorted.forEach((tarr: IRankItem[]) => {
         if (!this.drawRulesValidate(tarr)) isValid = false;
       })
       i++;
@@ -132,11 +133,11 @@ export default class StageGroup extends Stage<IElementInfo, IStageGroupConfig> {
     return sorted.map(ris => ris.map(ri => ri.team))
   }
   // 
-  private selection(bombos: Bombo<RankItem>[]): Array<RankItem[]> {
-    let out: RankItem[][] = [];
+  private selection(bombos: Bombo<IRankItem>[]): Array<IRankItem[]> {
+    let out: IRankItem[][] = [];
     this.groups.forEach(() => { out.push([]) });
     let gid = 0;
-    bombos.forEach((b: Bombo<RankItem>) => {
+    bombos.forEach((b: Bombo<IRankItem>) => {
       while (b.state !== 'finished') {
         const elem = b.getNextElement();
         out[gid].push(elem);
@@ -161,16 +162,16 @@ export default class StageGroup extends Stage<IElementInfo, IStageGroupConfig> {
    * 2 - no pueden haber n teams que sean de la misma feder, confed, etc.
    * 3 - no pueden haber n teams de cierta caracteristica
    */
-  drawRulesValidate(teams: RankItem[]): boolean {
+  drawRulesValidate(teams: IRankItem[]): boolean {
     let out: boolean = true;
 
     this.config.drawRulesValidate.forEach((rule: TypeDrawRulePlayoff) => {
       if (rule.origin == 'all') {
-        const setOfOrigins = new Set<string>(teams.map(ri => ri.originId));
+        const setOfOrigins = new Set<string>(teams.map(ri => ri.origin));
         out = out && (teams.length - setOfOrigins.size <= rule.minCount);
       } else {
         let count = 0;
-        teams.forEach(ri => count += ri.originId == rule.origin ? 1 : 0);
+        teams.forEach(ri => count += ri.origin == rule.origin ? 1 : 0);
         out = out && (count < rule.minCount)
       }
     })

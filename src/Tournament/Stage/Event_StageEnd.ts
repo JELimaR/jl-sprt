@@ -1,6 +1,6 @@
 import { IJEventInfo, JEvent } from "../../JCalendar/Event/JEvent";
+import { Ranking } from "../../JSportModule/data/Ranking/Ranking";
 import { globalFinishedRankingsMap } from "../Rank/globalFinishedRankingsMap";
-import { TypeRanking } from "../Rank/ranking";
 import { TGS } from "../types";
 
 export interface IEvent_StageEndInfo extends IJEventInfo {
@@ -22,7 +22,7 @@ export class Event_StageEnd extends JEvent {
 
     if (!this._stage.isFinished) throw new Error(`la stage ${this._stage.info.id} no esta terminada`)
  
-    let ranking: TypeRanking = this._stage.getRelativeRank();
-    globalFinishedRankingsMap.set(ranking.rankId, ranking);
+    let ranking: Ranking = this._stage.getRelativeRank();
+    globalFinishedRankingsMap.set(ranking.context, ranking);
   }
 }

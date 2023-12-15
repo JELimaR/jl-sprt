@@ -1,7 +1,7 @@
 import { CollectionsUtilsFunctions } from 'jl-utlts';
 import { IFederationData } from '../JSportModule';
+import Team from '../JSportModule/data/Team';
 import { IGenericRank } from '../JSportModule/interfaces';
-import Team from '../Tournament/Team';
 import { arr2 } from '../Tournament/types';
 import JFederation from './Federation/JFederation';
 

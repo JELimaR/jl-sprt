@@ -2,8 +2,10 @@
 import JCalendar from "../../JCalendar/JCalendar";
 import { JDateTime, TypeHalfWeekOfYear, TypeIntervalOfDay } from "../../JCalendar/JDateTimeModule";
 import { IElementInfo, IStageConfig, TCC, TQualyCondition } from "../../JSportModule";
-import { RankItem, TypeRanking, TypeTableMatchState } from "../Rank/ranking";
-import TeamTableItem from "../Rank/TeamTableItem";
+import { IRankItem } from "../../JSportModule/data/Ranking/interfaces";
+import { Ranking } from "../../JSportModule/data/Ranking/Ranking";
+import TeamTableItem from "../../JSportModule/data/Ranking/TeamTableItem";
+import { TypeTableMatchState } from "../Rank/ranking";
 import Bombo from "./Bombo";
 import { Event_StageEnd } from "./Event_StageEnd";
 import { Event_StageStart } from "./Event_StageStart";
@@ -97,23 +99,23 @@ export default abstract class Stage<I extends IElementInfo, C extends IStageConf
   abstract getHalfWeekOfMatches(): TypeHalfWeekOfYear[];
   abstract getHalfWeekOfSchedule(): TypeHalfWeekOfYear[];
 
-  abstract drawRulesValidate(team: RankItem[]): boolean;
+  abstract drawRulesValidate(team: IRankItem[]): boolean;
 
   /**
    * Sorteo y asignacion de equipos a BaseStage!!
    * @param teams 
    * @param cal 
    */
-  abstract start(teams: RankItem[], cal: JCalendar): void;
+  abstract start(teams: IRankItem[], cal: JCalendar): void;
 
   /**
    * creación de los bombos para el sorteo
    */
-  createBombosforDraw(teams: RankItem[]): Bombo<RankItem>[] {
-    let out: Bombo<RankItem>[] = [];
+  createBombosforDraw(teams: IRankItem[]): Bombo<IRankItem>[] {
+    let out: Bombo<IRankItem>[] = [];
     let tid = 0;
     this.config.bombos.forEach((elemsInBombo: number) => {
-      const elements: RankItem[] = [];
+      const elements: IRankItem[] = [];
       for (let i = 0; i < elemsInBombo; i++) {
         elements.push(teams[tid]);
         tid++;
@@ -128,20 +130,21 @@ export default abstract class Stage<I extends IElementInfo, C extends IStageConf
   /**
    * 
    */
-  getRelativeRank(): TypeRanking {
+  getRelativeRank(): Ranking {
     let ttis: TeamTableItem[] = this.getTable('finished');
 
-    const rankItemArr: RankItem[] = ttis.map((tti, idx) => {
+    const rankItemArr: IRankItem[] = ttis.map((tti, idx) => {
       return {
         team: tti.team,
-        rank: idx + 1,
-        originId: tti.bsId
+        pos: idx + 1,
+        origin: tti.bsId
       }
     })
 
-    return {
-      rankId: 'sr_' + this.config.idConfig,
-      table: rankItemArr,
-    }
+    return Ranking.fromTypeRanking({
+      context: `rs_${this.config.idConfig}`,
+      items: rankItemArr,
+      teams: rankItemArr.map(item => item.team),
+    })
   }
 }

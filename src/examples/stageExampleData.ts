@@ -36,7 +36,7 @@ const stageConfig2: IStagePlayoffConfig = {
   hwStart: 48,
   hwEnd: 65,
 
-  qualifyConditions: [{ rankId: 'sr_sc1', season: 'current', minRankPos: 1, maxRankPos: 10 }],
+  qualifyConditions: [{ rankId: 'rs_sc1', season: 'current', minRankPos: 1, maxRankPos: 10 }],
 
   bombos: [10],
 
@@ -96,7 +96,7 @@ const stageConfig4: IStageGroupConfig = {
   hwStart: 50,
   hwEnd: 64,
 
-  qualifyConditions: [{ rankId: 'sr_sc3', season: 'current', minRankPos: 1, maxRankPos: 15 }],
+  qualifyConditions: [{ rankId: 'rs_sc3', season: 'current', minRankPos: 1, maxRankPos: 15 }],
 
   bombos: [4,4,4,3],
 

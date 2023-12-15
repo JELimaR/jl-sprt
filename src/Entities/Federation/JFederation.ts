@@ -1,4 +1,3 @@
-import Team from "../../Tournament/Team";
 import { TypeCategoryList, TypeJCategory } from "../../Tournament/types";
 import JInstitution from "../JInstitution";
 import LeagueSystem, { IJCupSystemCreator, ILeagueSystemCreator, JCupSystem } from "../LeagueSystem";
@@ -6,6 +5,7 @@ import JEventChangeFederationReadingConfig from "./JEventChangeFederationReading
 import JSportOrganization, { IJSportOrganizationCreator } from "../SportOrganization";
 import { JCountry } from "../JGeogEntity";
 import { DAYSPERYEAR, JDateTime, TypeDayOfYear } from "../../JCalendar/JDateTimeModule";
+import Team from "../../JSportModule/data/Team";
 
 export type TypeFederationReadingConfig = 
  | {
