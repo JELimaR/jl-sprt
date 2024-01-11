@@ -1,13 +1,14 @@
 import Team from "../Team";
+// especifico de futbol -- cambiar el nombre del archivo
 
 export interface ITeamTableItem {
   pos: number;
-  pj: number;
-  pg: number;
-  pe: number;
-  pp: number;
+  P: number;
+  W: number;
+  D: number;
+  L: number;
   gf: number;
-  ge: number;
+  ga: number;
   sg: number;
   ps: number;
   pm: number;
@@ -17,12 +18,12 @@ export interface ITeamTableItem {
 export default class TeamTableItem {
   private _team: Team;
   private _pos: number = 1;
-  private _pg: number = 0;
-  private _pe: number = 0;
-  private _pp: number = 0;
+  private _W: number = 0;
+  private _D: number = 0;
+  private _L: number = 0;
 
   private _gf: number = 0;
-  private _ge: number = 0;
+  private _ga: number = 0;
 
   private _bsId: string;
 
@@ -36,39 +37,39 @@ export default class TeamTableItem {
   set pos(pos: number) { this._pos = pos };
   get pos(): number { return this._pos };
 
-  get pj(): number {
-    return this._pg + this._pe + this._pp;
+  get P(): number {
+    return this._W + this._D + this._L;
   }
-  get pg(): number {
-    return this._pg;
+  get W(): number {
+    return this._W;
   }
-  get pe(): number {
-    return this._pe;
+  get D(): number {
+    return this._D;
   }
-  get pp(): number {
-    return this._pp;
+  get L(): number {
+    return this._L;
   }
   get gf(): number {
     return this._gf;
   }
   get ge(): number {
-    return this._ge;
+    return this._ga;
   }
   get sg(): number {
-    return this._gf - this._ge;
+    return this._gf - this._ga;
   }
   get pm(): number {
-    return this.pj == 0 ? 0 : Math.round(this.ps/this.pj*1000)/1000
+    return this.P == 0 ? 0 : Math.round(this.ps/this.P*1000)/1000
   }
   get ps(): number {
-    return 3 * this._pg + this._pe;
+    return 3 * this._W + this._D;
   }
-  addPg() { this._pg++ }
-  addPe() { this._pe++ }
-  addPp() { this._pp++ }
+  addWM() { this._W++ }
+  addDM() { this._D++ }
+  addLM() { this._L++ }
 
   addGf(g: number) { this._gf += g }
-  addGe(g: number) { this._ge += g }
+  addGe(g: number) { this._ga += g }
 
   get team(): Team {
     return this._team;
@@ -77,12 +78,12 @@ export default class TeamTableItem {
   getInterface(): ITeamTableItem {
     return {
       pos: this.pos,
-      pj: this.pj,
-      pg: this.pg,
-      pe: this.pe,
-      pp: this.pp,
+      P: this.P,
+      W: this.W,
+      D: this.D,
+      L: this.L,
       gf: this.gf,
-      ge: this.ge,
+      ga: this.ge,
       sg: this.sg,
       ps: this.ps,
       pm: this.pm,
@@ -93,8 +94,8 @@ export default class TeamTableItem {
 
 export const simpleSortFunc = (a: TeamTableItem, b: TeamTableItem, isSE: boolean) => {
   if (isSE) {
-    if (a.pj - b.pj !== 0) {
-      return b.pj - a.pj
+    if (a.P - b.P !== 0) {
+      return b.P - a.P
     }
   }
   if (b.pos - a.pos !== 0) {

@@ -2,17 +2,6 @@ import { TQualyCondition } from "../elementsConfig";
 import Team from "../Team";
 import { IGenericRankItem, IRankItem } from "./interfaces";
 
-// export interface IGenericRankItem {
-//   origin: string;
-//   pos: number;
-// }
-
-// export interface IRankItem {
-//   origin: string;
-//   pos: number;
-//   team: Team;
-// }
-
 export type TypeRanking = {
   context: string;
   items: IGenericRankItem[];
