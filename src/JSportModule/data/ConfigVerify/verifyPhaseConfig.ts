@@ -1,5 +1,5 @@
 
-import { getPhaseRankToGenerateIds, getPhaseSourceIds, IPhaseConfig, IStageConfig } from "../data";
+import { getPhaseRankToGenerateIds, getPhaseSourceIds, IPhaseConfig, IStageConfig } from "../../data";
 
 export function verifyPhaseConfig(config: IPhaseConfig): boolean {
   // las stages deben comenzar luego del comienzo de la phase

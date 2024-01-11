@@ -1,6 +1,6 @@
-import { TypeHalfWeekOfYear } from "../../JCalendar/JDateTimeModule";
-import { arr2, getStageGenericRank, getStageGenericSource, ILeagueConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, TQualyCondition } from "../data";
-import { sizeGeneric } from "../interfaces";
+import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
+import { arr2, getStageGenericRank, getStageGenericSource, ILeagueConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, TQualyCondition } from "../../data";
+import { sizeGeneric } from "../../interfaces";
 import { verifyBaseStageConfig } from "./verifyBaseStageConfig";
 
 export function verifyStageConfig(config: IStageConfig): boolean {

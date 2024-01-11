@@ -1,6 +1,5 @@
 import { TypeHalfWeekOfYear } from "../../JCalendar/JDateTimeModule";
-import { verifyStageConfig } from "../ConfigVerify";
-import { IPhaseConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, ITournamentConfig, TQualyCondition } from "../data";
+import { IPhaseConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, ITournamentConfig, TQualyCondition, verifyStageConfig } from "../data";
 import { IGenericRankItem } from "../data/Ranking/interfaces";
 import { Ranking } from "../data/Ranking/Ranking";
 import { GeneralStageGraph, PhaseNode } from "./GeneralStageGraph";

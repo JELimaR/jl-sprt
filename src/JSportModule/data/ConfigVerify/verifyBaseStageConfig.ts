@@ -1,6 +1,6 @@
-import { TypeHalfWeekOfYear } from "../../JCalendar/JDateTimeModule";
-import robinRoundSchedulingFunction from "../../Tournament/Stage/StageGroup/League/RoundRobin"; // ojo con esta import
-import { arr2, IBaseStageConfig, ILeagueConfig, ISingleElminationConfig } from "../data";
+import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
+import robinRoundSchedulingFunction from "../../../Tournament/Stage/StageGroup/League/RoundRobin"; // ojo con esta import
+import { arr2, IBaseStageConfig, ILeagueConfig, ISingleElminationConfig } from "../../data";
 
 export function verifyBaseStageConfig(config: IBaseStageConfig): boolean {
   const aux = config as ISingleElminationConfig;
