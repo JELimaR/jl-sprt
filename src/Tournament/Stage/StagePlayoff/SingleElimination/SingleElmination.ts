@@ -4,11 +4,11 @@ import { JRound } from './JRound';
 import JSerie from '../../../Match/JSerie';
 import Event_RoundCreationAndTeamsDraw from './Event_RoundCreationAndTeamsDraw';
 import Match from '../../../Match/JMatch';
-import { TypeTableMatchState } from '../../../Rank/ranking';
-import { TypeHalfWeekOfYear, JDateTime } from '../../../../JCalendar/JDateTimeModule';
+import { JDateTime } from '../../../../JCalendar/JDateTimeModule';
 import { IElementInfo, ISingleElminationConfig } from '../../../../JSportModule';
 import Team from '../../../../JSportModule/data/Team';
 import TeamTableItem, { simpleSortFunc } from '../../../../JSportModule/data/Ranking/TeamTableItem';
+import { TypeTableMatchState } from '../../../../JSportModule/data/Ranking/interfaces';
 
 // export interface IElementInfo extends IBaseStageInfo { }
 

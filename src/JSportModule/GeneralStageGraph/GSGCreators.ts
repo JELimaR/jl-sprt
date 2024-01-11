@@ -176,6 +176,6 @@ function createStage(sid: string, stageCreator: TStageNodeCreator, stageRGs: Ran
   return out;
 }
 
-const stringPad = (n: number, pad: number = 2) => {
+export const stringPad = (n: number, pad: number = 2) => {
   return `${String(n).padStart(pad, '0')}`
 }

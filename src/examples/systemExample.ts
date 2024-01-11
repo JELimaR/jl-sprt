@@ -1,7 +1,6 @@
 
 import JCalendar from "../JCalendar/JCalendar";
 import { JDateTime } from "../JCalendar/JDateTimeModule";
-import { verifyBaseStageConfig, verifyLeagueConfig, verifySingleEliminationConfig, verifyStageGroupConfig, verifyStagePlayoffConfig } from "../JSportModule";
 import SportServerAPI from "../JSportServerModule";
 import mostrarFecha from "../mostrarFechaBorrar";
 import stageExampleData from "./stageExampleData";
@@ -17,17 +16,5 @@ export default function systemExample() {
   mostrarFecha(cal.now)
 
   const ssapi = SportServerAPI();
-  console.log(ssapi)
-  console.log(ssapi.getAllConfederations())
-
-  console.log(verifyBaseStageConfig)
-
-  console.log(verifyBaseStageConfig(s1.config.bsConfig))
-  console.log(verifySingleEliminationConfig(s1.config.bsConfig))
-  console.log(verifyBaseStageConfig(s4.config.bsConfig))
-  console.log(verifyLeagueConfig(s4.config.bsConfig))
-
-  console.log(verifyStagePlayoffConfig(s1.config))
-  console.log(verifyStageGroupConfig(s4.config))
 
 }

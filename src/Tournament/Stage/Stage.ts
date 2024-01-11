@@ -2,10 +2,9 @@
 import JCalendar from "../../JCalendar/JCalendar";
 import { JDateTime, TypeHalfWeekOfYear, TypeIntervalOfDay } from "../../JCalendar/JDateTimeModule";
 import { IElementInfo, IStageConfig, TCC, TQualyCondition } from "../../JSportModule";
-import { IRankItem } from "../../JSportModule/data/Ranking/interfaces";
+import { IRankItem, TypeTableMatchState } from "../../JSportModule/data/Ranking/interfaces";
 import { Ranking } from "../../JSportModule/data/Ranking/Ranking";
 import TeamTableItem from "../../JSportModule/data/Ranking/TeamTableItem";
-import { TypeTableMatchState } from "../Rank/ranking";
 import Bombo from "./Bombo";
 import { Event_StageEnd } from "./Event_StageEnd";
 import { Event_StageStart } from "./Event_StageStart";

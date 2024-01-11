@@ -1,8 +1,10 @@
 import { TypeHalfWeekOfYear } from "../../JCalendar/JDateTimeModule";
+import { verifyStageConfig } from "../ConfigVerify";
 import { IPhaseConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, ITournamentConfig, TQualyCondition } from "../data";
 import { IGenericRankItem } from "../data/Ranking/interfaces";
 import { Ranking } from "../data/Ranking/Ranking";
 import { GeneralStageGraph, PhaseNode } from "./GeneralStageGraph";
+import { stringPad } from "./GSGCreators";
 import { InitialNode, IStageNodeData, RankGroupNode, StageNode } from "./nodes";
 import { IRealStageNodeData, RealStageNode, StageGroupNode, StagePlayoffNode } from "./RealStageNode";
 
@@ -40,7 +42,7 @@ export function tournamentFromGSG(entry: ITournamentFromGSGData): ITournamentCon
   })
 
   return {
-    name: '', idConfig: (entry.gsg.getNode('ini') as InitialNode).data.tournamentId,
+    name: '', idConfig: entry.gsg.getTournamentId(),
     hwStart: entry.schedList[0], hwEnd: entry.matchList[entry.matchList.length -1],
     phases
   }
@@ -57,6 +59,7 @@ function phaseFromPhaseNode(phaseNode: PhaseNode, entry: ITournamentFromGSGData)
     })
     if (stageNode instanceof RealStageNode) {
       const sc = stageFromStageNode(stageNode, entry);
+      verifyStageConfig(sc);
       stages.push(sc);
     }
   })
@@ -75,6 +78,9 @@ function phaseFromPhaseNode(phaseNode: PhaseNode, entry: ITournamentFromGSGData)
   }
 }
 
+/**
+ * Crea un IStageConfig a partir de un stageNode
+ */
 function stageFromStageNode(stageNode: RealStageNode<IRealStageNodeData>, entry: ITournamentFromGSGData): IStageConfig {
   let group: IStageGroupConfig;
   let playoff: IStagePlayoffConfig;
@@ -82,9 +88,6 @@ function stageFromStageNode(stageNode: RealStageNode<IRealStageNodeData>, entry:
   // halfweeks de schedule de matches y matches
   const HALFWEEKS = halfWeeksForStageAssignation(entry.matchList, stageNode.getHwsNumber());
   const HALFWEEKS_SCHEDULE = halfWeeksForStageAssignation(entry.schedList, stageNode.getHwsNumber());
-
-  // console.log(HALFWEEKS);
-  // console.log('stageFromStageNode', stageNode.getId())
 
   // lista de los source y bombos
   const sourcesRankGroup = entry.gsg.getSourceNeighbors(stageNode) as RankGroupNode[];
@@ -117,14 +120,14 @@ function stageFromStageNode(stageNode: RealStageNode<IRealStageNodeData>, entry:
       
       qualifyConditions,
 
-      intervalOfDrawDate: 149,
+      intervalOfDrawDate: 149, // falta
 
       bsConfig: {
-        idConfig: stageNode.data.id + '_g01',
+        name: 'G01',
+        idConfig: `${stageNode.data.id}_g`,
         opt: stageNode.data.opt,
         turnHalfWeeks: stageNode.getHwsFromList(HALFWEEKS),
         turnHalfWeeksSchedule: HALFWEEKS_SCHEDULE,
-        name: 'GG01',
         participantsNumber: -1,
       }
     }
@@ -140,28 +143,30 @@ function stageFromStageNode(stageNode: RealStageNode<IRealStageNodeData>, entry:
       
       qualifyConditions,
 
-      intervalOfDrawDate: 149,
-
+      intervalOfDrawDate: 149, // falta
 
       bsConfig: {
+        name: 'GG01',
         idConfig: stageNode.data.id + '_g01',
         opt: stageNode.data.opt,
         roundHalfWeeks: stageNode.getHwsFromList(HALFWEEKS),
         roundHalfWeeksSchedule: stageNode.getSchedHwsFromList(HALFWEEKS_SCHEDULE),
         roundsNumber: stageNode.data.roundsNumber,
-        name: 'GG01',
         participantsNumber: stageNode.data.participants,
       }
     }
     return playoff;
   } else {
-    throw new Error(`Tipo de stage node invalido. (stageFromStageNode)`)
+    throw new Error(`Tipo de stage node invalido. (stageFromStageNode -- tournamentFromGSG)`)
   }
-
-  
 }
 
-
+/**
+ * halfWeeksForStageAssignation genera un array de halfweeks para asignar a un stage,
+ * con la cantidad solicitada a partir de un array con las halfweeks disponibles
+ * @param hwsList: opciones disponibles
+ * @param count: cantidad solicitada o necesaria 
+ */
 function halfWeeksForStageAssignation(hwsList: TypeHalfWeekOfYear[], count: number): TypeHalfWeekOfYear[] {
 	const listLength = hwsList.length;
 	const STEP = count/listLength;

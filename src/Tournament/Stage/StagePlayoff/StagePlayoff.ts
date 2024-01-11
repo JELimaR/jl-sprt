@@ -3,11 +3,10 @@
 import SingleElmination from "./SingleElimination/SingleElmination";
 import JCalendar from "../../../JCalendar/JCalendar";
 import Bombo from "../Bombo";
-import { TypeTableMatchState } from "../../Rank/ranking";
 import Stage from "../Stage";
 import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
 import { IElementInfo, IStagePlayoffConfig, arr2, TypeDrawRulePlayoff } from "../../../JSportModule";
-import { IRankItem } from "../../../JSportModule/data/Ranking/interfaces";
+import { IRankItem, TypeTableMatchState } from "../../../JSportModule/data/Ranking/interfaces";
 import Team from "../../../JSportModule/data/Team";
 import TeamTableItem from "../../../JSportModule/data/Ranking/TeamTableItem";
 

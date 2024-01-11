@@ -1,9 +1,9 @@
 import JCalendar from "../../JCalendar/JCalendar";
 import Match from "../Match/JMatch";
-import { TypeTableMatchState } from "../Rank/ranking";
 import { IBaseStageConfig, IElementInfo, TCC } from "../../JSportModule";
 import Team from "../../JSportModule/data/Team";
 import TeamTableItem from "../../JSportModule/data/Ranking/TeamTableItem";
+import { TypeTableMatchState } from "../../JSportModule/data/Ranking/interfaces";
 
 /**
  * En el BaseStage es donde se configuran las rondas o turnos y los partidos de un torneo.
@@ -62,37 +62,39 @@ export default abstract class BaseStage<I extends IElementInfo, C extends IBaseS
    * 
    */
   calcTableValues(ttms: TypeTableMatchState): TeamTableItem[] {
-    // para cada match, calcular los valores de la tabla de de cada team!
-    // valores: pg, pp, pg, pe, gf, ge
-    const out: TeamTableItem[] = []; // pasar a map
+    // para cada match, calcular los valores de la tabla de cada team!
+    const out: TeamTableItem[] = [];
     this.participants.forEach((team: Team) => out.push(new TeamTableItem(team, this.info.id)));
     // 
     const matchConditionFunc = BaseStage.getTableCondition(ttms);
   
     this.matches.forEach((m: Match) => {
       if (matchConditionFunc(m) && !!m.result) {
-        let htti: TeamTableItem | undefined = out.find(t => t.team.id === m.homeTeam.id);
-        let atti: TeamTableItem | undefined = out.find(t => t.team.id === m.awayTeam.id);
+        let homeTTI: TeamTableItem | undefined = out.find(t => t.team.id === m.homeTeam.id);
+        let awayTTI: TeamTableItem | undefined = out.find(t => t.team.id === m.awayTeam.id);
   
-        if (htti && atti) {
-          // gls HT
-          htti.addGf(m.result.teamOneScore.score);
-          htti.addGe(m.result.teamTwoScore.score);
-          // gls AT
-          atti.addGf(m.result.teamTwoScore.score);
-          atti.addGe(m.result.teamOneScore.score);
-          // add pj
-          if (m.result.teamWinner === htti.team.id) {
-            htti.addPg();
-            atti.addPp();
-          } else if (m.result.teamWinner === atti.team.id) {
-            htti.addPp();
-            atti.addPg();
+        if (homeTTI && awayTTI) {
+          // gls HomeTeam
+          homeTTI.addGf(m.result.teamOneScore.score);
+          homeTTI.addGe(m.result.teamTwoScore.score);
+          // gls AwayTeam
+          awayTTI.addGf(m.result.teamTwoScore.score);
+          awayTTI.addGe(m.result.teamOneScore.score);
+          // add played matches
+          if (m.result.teamWinner === homeTTI.team.id) { // para generalizar se debe modificar esto
+            homeTTI.addWM();
+            awayTTI.addLM();
+          } else if (m.result.teamWinner === awayTTI.team.id) {
+            homeTTI.addLM();
+            awayTTI.addWM();
           } else {
-            htti.addPe();
-            atti.addPe();
+            homeTTI.addDM();
+            awayTTI.addDM();
           }
-        } else throw new Error(`non finded`);
+        } else {
+          throw new Error(`non finded
+          En BaseStage.calcTableValues`);
+        }
       }
     })
   

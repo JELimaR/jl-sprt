@@ -46,6 +46,10 @@ export class GeneralStageGraph /*extends DirectedGraph<NodeAttributes>*/ {
     return out;
   }
 
+  getTournamentId(): string {
+    return (this.getNode('ini') as InitialNode).data.tournamentId;
+  }
+
   /**
    * Devuelve en un arreglo los vecinos que son fuentes de target
    * @param target 

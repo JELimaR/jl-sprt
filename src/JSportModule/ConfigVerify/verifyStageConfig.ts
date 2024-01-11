@@ -1,15 +1,14 @@
 import { TypeHalfWeekOfYear } from "../../JCalendar/JDateTimeModule";
 import { arr2, getStageGenericRank, getStageGenericSource, ILeagueConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, TQualyCondition } from "../data";
 import { sizeGeneric } from "../interfaces";
-import { verifyLeagueConfig, verifySingleEliminationConfig } from "./verifyBaseStageConfig";
+import { verifyBaseStageConfig } from "./verifyBaseStageConfig";
 
-/*export */function verifyStageConfig(config: IStageConfig): boolean { // quitar el export
+export function verifyStageConfig(config: IStageConfig): boolean {
   if (config.hwStart > config.hwEnd) {
     throw new Error(`La fecha de start ${config.hwStart} debe ser menor a la de end ${config.hwEnd}.
-    (Stage.constructor)`)
+    (verifyStageConfig)`)
   }
   // fechas
-  // llevar esto a una funcion aparte
   let halfWeekOfMatches: TypeHalfWeekOfYear[] = [];
   let halfweekOfSchedule: TypeHalfWeekOfYear[] = [];
   if (config.type == 'playoff') {
@@ -31,14 +30,14 @@ import { verifyLeagueConfig, verifySingleEliminationConfig } from "./verifyBaseS
     if (halfWeekOfMatches[i] < halfweekOfSchedule[j]) {
       throw new Error(
         `no se cumple que halfWeekOfMatches (${halfWeekOfMatches[i]}) es menor a halfweekOfSchedule (${halfweekOfSchedule[i]}).
-        Para ${config.idConfig}. (Stage.constructor)`
+        Para ${config.idConfig}. (verifyStageConfig)`
       )
     }
     // cada turn o round debe jugarse despues del inicio y antes del fin de la stage
     if (halfWeekOfMatches[i] < config.hwStart || halfWeekOfMatches[i] > config.hwEnd) {
       throw new Error(
         `la hw Of Match ${halfWeekOfMatches[i]} debe estar entre la hw of start ${config.hwStart} y la hw of end ${config.hwEnd}.
-        Para ${config.idConfig}. (Stage.constructor)`
+        Para ${config.idConfig}. (verifyStageConfig)`
       )
     }
 
@@ -46,7 +45,7 @@ import { verifyLeagueConfig, verifySingleEliminationConfig } from "./verifyBaseS
     if (halfweekOfSchedule[i] < config.hwStart || halfweekOfSchedule[i] > config.hwEnd) {
       throw new Error(
         `la hw Of schedule ${halfweekOfSchedule[i]} debe estar entre la hw of start ${config.hwStart} y la hw of end ${config.hwEnd}.
-        Para ${config.idConfig}. (Stage.constructor)`
+        Para ${config.idConfig}. (verifyStageConfig)`
       )
     }
   }
@@ -55,7 +54,7 @@ import { verifyLeagueConfig, verifySingleEliminationConfig } from "./verifyBaseS
   if (halfWeekOfMatches.length !== new Set(halfWeekOfMatches).size) {
     throw new Error(`No pueden haber hw of matches repetidas:
     ${halfWeekOfMatches} - En ${config.idConfig}.
-    (Stage.constructor)`)
+    (verifyStageConfig)`)
   }
 
   // la suma de clasificados a la stage debe coincidir con los participantes de los bombos!
@@ -64,7 +63,7 @@ import { verifyLeagueConfig, verifySingleEliminationConfig } from "./verifyBaseS
   let bomboParticipantsCount = 0;
   config.bombos.forEach((b: number) => bomboParticipantsCount += b);
   if (sumRankingQualies !== bomboParticipantsCount) {
-    throw new Error(`no coinciden ${sumRankingQualies} y ${bomboParticipantsCount} (Stage.constructor)`)
+    throw new Error(`no coinciden ${sumRankingQualies} y ${bomboParticipantsCount} (verifyStageConfig)`)
   }
 
   // el tamaño del GenericRank de la stage debe ser igual al tamaño del SourceRank
@@ -74,22 +73,30 @@ import { verifyLeagueConfig, verifySingleEliminationConfig } from "./verifyBaseS
     debe ser igual al tamaño del SourceRank (${sizeGeneric(getStageGenericRank(config))}). (verifyStageConfig)`)
   }
 
+  // especificas
+  if (config.type == 'group') {
+    const sgConfig = config as IStageGroupConfig;
+    verifyStageGroupConfig(sgConfig);
+  } else {
+    const spConfig = config as IStagePlayoffConfig;
+    verifyStagePlayoffConfig(spConfig);
+  }
+
   return true;
 }
 /**********************************************************************************************************************************************************************
  * 
  */
-export function verifyStageGroupConfig(config: IStageGroupConfig): boolean {
-  verifyStageConfig(config);
+function verifyStageGroupConfig(config: IStageGroupConfig): boolean {
 
-  let groupsParticipantsCount = 0;
-  config.participantsPerGroup.forEach((g) => groupsParticipantsCount += g);
-  let bomboParticipantsCount = 0;
-  config.bombos.forEach((b: number) => bomboParticipantsCount += b)
+  let groupsParticipantsCount = sumArr(config.participantsPerGroup);
+  let bomboParticipantsCount = sumArr(config.bombos);
 
   if (bomboParticipantsCount !== groupsParticipantsCount) {
-    throw new Error(`En StageGroup constructor:
-    La cantidad de participantes de los grupos ${groupsParticipantsCount} no coincide con la cantidad definida por los bombos ${bomboParticipantsCount}`)
+    throw new Error(
+      `La cantidad de participantes de los grupos ${groupsParticipantsCount} no coincide
+      con la cantidad definida por los bombos ${bomboParticipantsCount}
+      (verifyStageGroupConfig)`)
   }
 
   config.participantsPerGroup.forEach((gp: number) => {
@@ -97,7 +104,7 @@ export function verifyStageGroupConfig(config: IStageGroupConfig): boolean {
       ...config.bsConfig,
       participantsNumber: gp,
     }
-    verifyLeagueConfig(gConfig);
+    verifyBaseStageConfig(gConfig);
   })
 
   return true;
@@ -106,8 +113,25 @@ export function verifyStageGroupConfig(config: IStageGroupConfig): boolean {
 /**********************************************************************************************************************************************************************
  * 
  */
-export function verifyStagePlayoffConfig(config: IStagePlayoffConfig): boolean {
-  verifyStageConfig(config);
-  verifySingleEliminationConfig(config.bsConfig);
+function verifyStagePlayoffConfig(config: IStagePlayoffConfig): boolean {
+
+  let payoffParticipantsCount = config.bsConfig.participantsNumber;
+  let bomboParticipantsCount = sumArr(config.bombos);
+
+  if (bomboParticipantsCount !== payoffParticipantsCount) {
+    throw new Error(
+      `La cantidad de participantes ${payoffParticipantsCount} no coincide
+      con la cantidad definida por los bombos ${bomboParticipantsCount}
+      (verifyStagePlayoffConfig)`)
+  }
+
+  verifyBaseStageConfig(config.bsConfig);
   return true;
+}
+
+/**********************************************************************************************************************************************************************/
+function sumArr(arr: number[]) {
+  let out = 0;
+  arr.forEach(n => out += n);
+  return out;
 }
