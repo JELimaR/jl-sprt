@@ -1,12 +1,6 @@
+import { DateToString } from "./JCalendar";
 import { JDateTime } from "./JCalendar/JDateTimeModule";
 
 export default function mostrarFecha(dt: JDateTime) {
-  const {
-    date: {
-      dayOfMonth, monthName, dayName, year, halfWeekOfYear
-    },
-    time: {
-      hour, minutes
-    }, } = dt.getDateTime()
-  console.log(dayName, dayOfMonth, monthName, year, '-', `${hour}:${minutes} - hw: ${halfWeekOfYear}`)
+  console.log(DateToString.DateTime_ddd_DD_mmm_YYYY_HHMM_HW(dt));
 }
