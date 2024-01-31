@@ -1,9 +1,8 @@
 
 import JCalendar from "../../../../JCalendar/JCalendar";
-import { arr2, IElementInfo, ILeagueConfig, TypeBaseStageOption } from "../../../../JSportModule";
-import { TypeTableMatchState } from "../../../../JSportModule/data/Ranking/interfaces";
-import TeamTableItem, { simpleSortFunc } from "../../../../JSportModule/data/Ranking/TeamTableItem";
+import { arr2, IElementInfo, ILeagueConfig, TypeBaseStageOption, TypeTableMatchState } from "../../../../JSportModule";
 import Team from "../../../../JSportModule/data/Team";
+import TeamTableItem, { simpleSortFunc } from "../../../../JSportModule/Ranking/TeamTableItem";
 import Match from "../../../Match/JMatch";
 import BaseStage from "../../BaseStage";
 import robinRoundSchedulingFunction from "./RoundRobin";

@@ -1,4 +1,4 @@
-import Team from "../Team";
+import Team from "../data/Team";
 
 export type TypeTableMatchState = 'partial' | 'finished';
 

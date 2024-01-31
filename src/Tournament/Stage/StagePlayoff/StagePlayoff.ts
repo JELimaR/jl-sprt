@@ -6,9 +6,9 @@ import Bombo from "../Bombo";
 import Stage from "../Stage";
 import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
 import { IElementInfo, IStagePlayoffConfig, arr2, TypeDrawRulePlayoff } from "../../../JSportModule";
-import { IRankItem, TypeTableMatchState } from "../../../JSportModule/data/Ranking/interfaces";
+import { IRankItem, TypeTableMatchState } from "../../../JSportModule";
 import Team from "../../../JSportModule/data/Team";
-import TeamTableItem from "../../../JSportModule/data/Ranking/TeamTableItem";
+import TeamTableItem from "../../../JSportModule/Ranking/TeamTableItem";
 
 
 /**

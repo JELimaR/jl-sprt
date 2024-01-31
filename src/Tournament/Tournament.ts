@@ -1,6 +1,6 @@
 import JCalendar from "../JCalendar/JCalendar";
 import { IElementInfo, IPhaseConfig, IStageConfig, ITournamentConfig, TCC } from "../JSportModule";
-import { Ranking, TypeRanking } from "../JSportModule/data/Ranking/Ranking";
+import { Ranking, TypeRanking } from "../JSportModule";
 import Phase from "./Phase";
 import { TGS } from "./types";
 

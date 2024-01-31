@@ -1,7 +1,5 @@
-import { IGenericRankItem } from "../data/Ranking/interfaces";
-import { Ranking } from "../data/Ranking/Ranking";
-import { IGenericRank, sizeGeneric } from "../interfaces";
-import { GeneralStageGraph } from "./GeneralStageGraph";
+import { IGenericRankItem } from "../Ranking";
+import { Ranking } from "../Ranking";
 
 export interface IANodeData {
   id: string;

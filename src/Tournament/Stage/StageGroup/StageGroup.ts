@@ -3,10 +3,9 @@ import Stage from "../Stage";
 import JCalendar from "../../../JCalendar/JCalendar";
 import Bombo from "../Bombo";
 import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
-import { IElementInfo, ILeagueConfig, IStageGroupConfig, TypeDrawRulePlayoff } from "../../../JSportModule";
-import { IRankItem, TypeTableMatchState } from "../../../JSportModule/data/Ranking/interfaces";
+import { IElementInfo, ILeagueConfig, IRankItem, IStageGroupConfig, TypeDrawRulePlayoff, TypeTableMatchState } from "../../../JSportModule";
 import Team from "../../../JSportModule/data/Team";
-import TeamTableItem, { simpleSortFunc } from "../../../JSportModule/data/Ranking/TeamTableItem";
+import TeamTableItem, { simpleSortFunc } from "../../../JSportModule/Ranking/TeamTableItem";
 
 /**
  * Debe encargarse de la creacion y de la asignacion de los equipos a cada basestage

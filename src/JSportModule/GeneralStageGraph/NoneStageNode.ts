@@ -1,4 +1,4 @@
-import { Ranking } from "../data/Ranking/Ranking";
+import { Ranking } from "../Ranking";
 import { IStageNodeData, StageNode } from "./nodes";
 
 export abstract class NoneStageNode<D extends IStageNodeData> extends StageNode<D> {

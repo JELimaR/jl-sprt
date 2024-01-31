@@ -1,8 +1,8 @@
 import JCalendar from "../JCalendar/JCalendar";
 import { TypeHalfWeekOfYear } from "../JCalendar/JDateTimeModule";
 import { IElementInfo, IPhaseConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, TCC } from "../JSportModule";
-import { IGenericRankItem } from "../JSportModule/data/Ranking/interfaces";
-import { Ranking, TypeRanking } from "../JSportModule/data/Ranking/Ranking";
+import { IGenericRankItem } from "../JSportModule";
+import { Ranking, TypeRanking } from "../JSportModule";
 import { globalFinishedRankingsMap } from "./Rank/globalFinishedRankingsMap";
 import StageGroup from "./Stage/StageGroup/StageGroup";
 import StagePlayoff from "./Stage/StagePlayoff/StagePlayoff";

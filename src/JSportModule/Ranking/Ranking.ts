@@ -1,5 +1,5 @@
-import { TQualyCondition } from "../elementsConfig";
-import Team from "../Team";
+import { TQualyCondition } from "../data/elementsConfig";
+import Team from "../data/Team";
 import { IGenericRankItem, IRankItem } from "./interfaces";
 
 export type TypeRanking = {

@@ -1,7 +1,7 @@
 
 import { TypeBaseStageOption } from "..";
-import { IGenericRankItem } from "../data/Ranking/interfaces";
-import { Ranking } from "../data/Ranking/Ranking";
+import { IGenericRankItem } from "../Ranking/";
+import { Ranking } from "../Ranking";
 import { GeneralStageGraph, PhaseNode } from "./GeneralStageGraph";
 import { FinalNode, InitialNode, IStageNodeData, RankGroupNode, StageNode } from "./nodes";
 import { TableStageNode, TransferStageNode } from "./NoneStageNode";

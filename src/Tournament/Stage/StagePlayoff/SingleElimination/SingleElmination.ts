@@ -7,8 +7,8 @@ import Match from '../../../Match/JMatch';
 import { JDateTime } from '../../../../JCalendar/JDateTimeModule';
 import { IElementInfo, ISingleElminationConfig } from '../../../../JSportModule';
 import Team from '../../../../JSportModule/data/Team';
-import TeamTableItem, { simpleSortFunc } from '../../../../JSportModule/data/Ranking/TeamTableItem';
-import { TypeTableMatchState } from '../../../../JSportModule/data/Ranking/interfaces';
+import TeamTableItem, { simpleSortFunc } from '../../../../JSportModule/Ranking/TeamTableItem';
+import { TypeTableMatchState } from '../../../../JSportModule/';
 
 // export interface IElementInfo extends IBaseStageInfo { }
 

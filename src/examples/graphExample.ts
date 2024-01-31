@@ -1,23 +1,17 @@
 
-import { renderToPNG } from 'graphology-canvas/node';
-import { GeneralStageGraph, NodeAttributes, PhaseNode } from '../JSportModule/GeneralStageGraph/GeneralStageGraph';
 import { TInitialCreator, TPhaseCreator, createGSG } from '../JSportModule/GeneralStageGraph/GSGCreators';
-import { StageNode, IStageNodeData, RankGroupNode, InitialNode } from '../JSportModule/GeneralStageGraph/nodes';
-import { getExampleRankItemsListOrdered, getFederationRankings, getInitialRankingExample,  } from './graphData01';
+import { getExampleRankItemsListOrdered, getFederationRankings, getInitialRankingExample, } from './graphData01';
 import { tournamentFromGSG } from '../JSportModule/GeneralStageGraph/tournamentFromGSG';
 import Tournament from '../Tournament/Tournament';
 import JCalendar from '../JCalendar/JCalendar';
 import exampleAdvance from './exampleAdvance';
 import { globalFinishedRankingsMap } from '../Tournament/Rank/globalFinishedRankingsMap';
-import { Ranking } from '../JSportModule/data/Ranking/Ranking';
-import { IGenericRankItem } from '../JSportModule/data/Ranking/interfaces';
+import { Ranking } from '../JSportModule/Ranking';
+import { IGenericRankItem } from '../JSportModule/Ranking';
 import Team from '../JSportModule/data/Team';
-import Phase from '../Tournament/Phase';
 import { renderGSGtoPNG } from '../JSportModule/GeneralStageGraph/renderGSGtoPNG';
 
 export default function graphExample() {
-
-  // console.log(new StagePlayoffNode({ id: 'o', nodeLvl: 0, opt: 'h&a', participants: 128, roundsNumber: 7 }).getRanksGroups().map(e => e.getInterface().items))
 
   console.log('--------------------graph example--------------------------')
   const iniCreator: TInitialCreator = {
@@ -88,6 +82,7 @@ export default function graphExample() {
 
 
   const tournamentConfig = tournamentFromGSG({
+    name: 'graph tournament',
     gsg,
     matchList: [22, 24, 30, 32, 40, 42, 44, 48, 50, 52, 56, 58, 62, 64, 70, 72, 80],
     schedList: [20, 20, 25, 25, 40, 40, 40, 46, 46, 46, 53, 53, 62, 62, 68, 68, 73],
@@ -98,10 +93,10 @@ export default function graphExample() {
   const cal = new JCalendar({ day: 1568688, interv: 0 });
   const tournament = new Tournament({ id: 'dfki', season: 1988 }, tournamentConfig, cal)
 
-  /*************************************************************************** */
+  /************************************************************************************************************************************ */
   console.log('-------------------------------------------------------------')
   const fedRankings = getFederationRankings(14);
-  fedRankings.forEach((franking: Ranking ) => globalFinishedRankingsMap.set(franking.context, franking));
+  fedRankings.forEach((franking: Ranking) => globalFinishedRankingsMap.set(franking.context, franking));
 
   // asignar teams
   const iniRankings = gsg.getInitialRankings()
@@ -114,7 +109,7 @@ export default function graphExample() {
     const teams: Team[] = [];
     rank.getGenericRankItems().forEach((value: IGenericRankItem, index: number) => {
       const sourceItem = gsg.getQualyRankList()[currIdx];
-      
+
       // console.log(value);
       // console.log('sourceItem', sourceItem);
 
@@ -124,13 +119,13 @@ export default function graphExample() {
         // console.log(sourceItem.origin)
         throw new Error(``);
       }
-      
+
       const team = sourceRanking.getFromPosition(sourceItem.pos).team;
       teams.push(team);
 
       currIdx++;
     })
-    
+
     rank.addTeams(teams);
     ini_ttiidd_ranking.items.push(...rank.getGenericRankItems())
     ini_ttiidd_ranking.teams.push(...teams)
@@ -156,7 +151,7 @@ export default function graphExample() {
   // throw new Error(`stop`)
 
   console.table(rankingToTable(tournament.getRelativeRank()))
-  
+
   // gsg._phases.forEach((pn: PhaseNode) => {
   //   // const tr: TypeRanking = { context: 'p' + (pn.phaseNumber + 1), items: [], teams: [] };
   //   console.log(pn.phaseNumber + 1)
@@ -169,5 +164,5 @@ export default function graphExample() {
 }
 /************************************************************************************************************** */
 function rankingToTable(rank: Ranking) {
-  return rank.getRankTable().map(e => {return { ...e, team: e.team.id }})
+  return rank.getRankTable().map(e => { return { ...e, team: e.team.id } })
 }

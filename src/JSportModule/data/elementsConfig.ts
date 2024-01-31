@@ -1,6 +1,6 @@
 import { TypeHalfWeekOfYear, TypeIntervalOfDay } from "../../JCalendar/JDateTimeModule";
 import { ITCCConfig, ITCCInfo } from "../patterns/templateConfigCreator";
-import { IGenericRankItem, IRankItem } from "./Ranking/interfaces";
+import { IGenericRankItem, IRankItem } from "../Ranking";
 import { arr2 } from "./types";
 
 export interface IElementInfo extends ITCCInfo {

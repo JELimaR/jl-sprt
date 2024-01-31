@@ -8,11 +8,9 @@ import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
 import {  TGS } from "../Tournament/types";
 import StagePlayoff from "../Tournament/Stage/StagePlayoff/StagePlayoff";
 import { JDateTime } from "../JCalendar/JDateTimeModule";
-import { IElementInfo, IStageConfig, IStageGroupConfig, IStagePlayoffConfig } from "../JSportModule";
+import { IElementInfo, IRankItem, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, Ranking } from "../JSportModule";
 import Team from "../JSportModule/data/Team";
-import { IRankItem } from "../JSportModule/data/Ranking/interfaces";
-import { Ranking } from "../JSportModule/data/Ranking/Ranking";
-import TeamTableItem from "../JSportModule/data/Ranking/TeamTableItem";
+import TeamTableItem from "../JSportModule/Ranking/TeamTableItem";
 
 const {
   s1,

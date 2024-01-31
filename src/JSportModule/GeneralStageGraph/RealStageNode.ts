@@ -1,15 +1,13 @@
 
-import { TypeHalfWeekOfYear } from "../../JCalendar/JDateTimeModule";
-import { arr2, TypeBaseStageOption } from "../data";
-import { IGenericRankItem } from "../data/Ranking/interfaces";
-import { Ranking } from "../data/Ranking/Ranking";
-import { GeneralStageGraph } from "./GeneralStageGraph";
+import { TypeHalfWeekOfYear, TypeIntervalOfDay } from "../../JCalendar/JDateTimeModule";
+import { arr2, TypeBaseStageOption, TypeDrawRulePlayoff } from "../data";
+import { Ranking } from "../Ranking";
 import { IStageNodeData, StageNode } from "./nodes";
 
 export interface IRealStageNodeData extends IStageNodeData {
   opt: TypeBaseStageOption;
   bombos?: number[];
-  draw?: true;
+  draw?: {interv: TypeIntervalOfDay, rules: TypeDrawRulePlayoff[]};
   // rank
 }
 export abstract class RealStageNode<D extends IRealStageNodeData> extends StageNode<D> {

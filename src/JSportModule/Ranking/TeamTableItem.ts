@@ -1,4 +1,4 @@
-import Team from "../Team";
+import Team from "../data/Team";
 // especifico de futbol -- cambiar el nombre del archivo
 
 export interface ITeamTableItem {
@@ -35,7 +35,7 @@ export default class TeamTableItem {
   get bsId(): string { return this._bsId }
 
   set pos(pos: number) { this._pos = pos };
-  get pos(): number { return this._pos };
+  // get pos(): number { return this._pos };
 
   get P(): number {
     return this._W + this._D + this._L;
@@ -77,7 +77,7 @@ export default class TeamTableItem {
 
   getInterface(): ITeamTableItem {
     return {
-      pos: this.pos,
+      pos: this._pos,
       P: this.P,
       W: this.W,
       D: this.D,

@@ -6,10 +6,10 @@ import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
 import exampleAdvance from "./exampleAdvance";
 import { JDateTime } from "../JCalendar/JDateTimeModule";
 import { IStageGroupConfig } from "../JSportModule";
-import { IRankItem } from "../JSportModule/data/Ranking/interfaces";
-import { Ranking, TypeRanking } from "../JSportModule/data/Ranking/Ranking";
+import { IRankItem } from "../JSportModule/Ranking";
+import { Ranking, TypeRanking } from "../JSportModule/Ranking";
 import Team from "../JSportModule/data/Team";
-import TeamTableItem from "../JSportModule/data/Ranking/TeamTableItem";
+import TeamTableItem from "../JSportModule/Ranking/TeamTableItem";
 
 const selection = getExampleTeams(150, 'Team');
 

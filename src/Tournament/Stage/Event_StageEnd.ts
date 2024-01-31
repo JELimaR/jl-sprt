@@ -1,5 +1,5 @@
 import { IJEventInfo, JEvent } from "../../JCalendar/Event/JEvent";
-import { Ranking } from "../../JSportModule/data/Ranking/Ranking";
+import { Ranking } from "../../JSportModule";
 import { globalFinishedRankingsMap } from "../Rank/globalFinishedRankingsMap";
 import { TGS } from "../types";
 

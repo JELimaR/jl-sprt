@@ -1,13 +1,12 @@
 import { TypeHalfWeekOfYear } from "../../JCalendar/JDateTimeModule";
-import { IPhaseConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, ITournamentConfig, TQualyCondition, verifyStageConfig } from "../data";
-import { IGenericRankItem } from "../data/Ranking/interfaces";
-import { Ranking } from "../data/Ranking/Ranking";
+import { IPhaseConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, ITournamentConfig, TQualyCondition, verifyStageConfig, verifyTournamentConfig } from "../data";
+import { Ranking, IGenericRankItem } from "../Ranking";
 import { GeneralStageGraph, PhaseNode } from "./GeneralStageGraph";
-import { stringPad } from "./GSGCreators";
-import { InitialNode, IStageNodeData, RankGroupNode, StageNode } from "./nodes";
+import { IStageNodeData, RankGroupNode, StageNode } from "./nodes";
 import { IRealStageNodeData, RealStageNode, StageGroupNode, StagePlayoffNode } from "./RealStageNode";
 
 interface ITournamentFromGSGData {
+  name: string;
   gsg: GeneralStageGraph;
   matchList: TypeHalfWeekOfYear[];
   schedList: TypeHalfWeekOfYear[];
@@ -21,8 +20,24 @@ interface ITournamentFromGSGData {
  * 
  */
 export function tournamentFromGSG(entry: ITournamentFromGSGData): ITournamentConfig {
+  let out: ITournamentConfig;
   // console.log('algo')
-  
+  // * verificar si está bien definido (el utlimo de la primera lista de rank puede llegar al primero de la ultima lista de rank)
+  const lastIniRN = entry.gsg.getTargetNeigbhors('ini')[entry.gsg.getTargetNeigbhors('ini').length - 1];
+  const firstFinRN = entry.gsg.getSourceNeighbors('fin')[0];
+  const simplePathArr = entry.gsg.getAllSimplePath(lastIniRN, firstFinRN);
+  if (simplePathArr.length <= 0) {
+    throw new Error(`No se cumple la siguiente verificación:
+    * verificar si está bien definido (el utlimo de la primera lista de rank puede llegar al primero de la ultima lista de rank).
+    Es decir, el que inicialmente está calificado más abajo no puede llegar al primer lugar.
+    En tournamentFromGSG`);
+  }
+
+  /* 
+   * generar tournament config
+   */
+
+  // * para cada phaseNode crear su IPhaseConfig si corresponde
   const phases: IPhaseConfig[] = [];
   let startIdx = 0;
   let endIdx = 0;
@@ -40,11 +55,15 @@ export function tournamentFromGSG(entry: ITournamentFromGSGData): ITournamentCon
     }
   })
 
-  return {
-    name: '', idConfig: entry.gsg.getTournamentId(),
+  // creacion y verificacion
+  out = {
+    name: entry.name, idConfig: entry.gsg.getTournamentId(),
     hwStart: entry.schedList[0], hwEnd: entry.matchList[entry.matchList.length -1],
     phases
   }
+
+  verifyTournamentConfig(out);
+  return out;
   
 }
 
@@ -122,7 +141,7 @@ function stageFromStageNode(stageNode: RealStageNode<IRealStageNodeData>, entry:
       intervalOfDrawDate: 149, // falta
 
       bsConfig: {
-        name: 'G01',
+        name: 'GG',
         idConfig: `${stageNode.data.id}_g`,
         opt: stageNode.data.opt,
         turnHalfWeeks: stageNode.getHwsFromList(HALFWEEKS),
@@ -138,15 +157,15 @@ function stageFromStageNode(stageNode: RealStageNode<IRealStageNodeData>, entry:
 
       bombos,
       
-      drawRulesValidate: [], // falta
+      drawRulesValidate: stageNode.data.draw?.rules || [],
       
       qualifyConditions,
 
-      intervalOfDrawDate: 149, // falta
+      intervalOfDrawDate: stageNode.data.draw?.interv,
 
       bsConfig: {
-        name: 'GG01',
-        idConfig: stageNode.data.id + '_g01',
+        name: 'CC',
+        idConfig: stageNode.data.id + '_p',
         opt: stageNode.data.opt,
         roundHalfWeeks: stageNode.getHwsFromList(HALFWEEKS),
         roundHalfWeeksSchedule: stageNode.getSchedHwsFromList(HALFWEEKS_SCHEDULE),

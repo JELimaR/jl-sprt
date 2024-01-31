@@ -6,10 +6,9 @@ import exampleAdvance from "./exampleAdvance";
 import stageExampleData from "./stageExampleData";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
 import { JDateTime } from "../JCalendar/JDateTimeModule";
-import { IRankItem } from "../JSportModule/data/Ranking/interfaces";
-import { Ranking, TypeRanking } from "../JSportModule/data/Ranking/Ranking";
 import Team from "../JSportModule/data/Team";
-import TeamTableItem from "../JSportModule/data/Ranking/TeamTableItem";
+import TeamTableItem from "../JSportModule/Ranking/TeamTableItem";
+import { IRankItem, TypeRanking, Ranking } from "../JSportModule";
 
 const {
   s1,

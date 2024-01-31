@@ -1,7 +1,7 @@
-import graphology, { DirectedGraph } from "graphology";
+import { DirectedGraph } from "graphology";
 import { allSimplePaths } from "graphology-simple-path";
-import { IGenericRankItem } from "../data/Ranking/interfaces";
-import { Ranking } from "../data/Ranking/Ranking";
+import { IGenericRankItem } from "../Ranking";
+import { Ranking } from "../Ranking";
 import { ANode, FinalNode, IANodeData, InitialNode, IStageNodeData, RankGroupNode, StageNode } from "./nodes";
 import { TableStageNode } from "./NoneStageNode";
 import { RealStageNode, StageGroupNode } from "./RealStageNode";
@@ -10,7 +10,7 @@ export type NodeAttributes = ANode<IANodeData>;
 
 type EdgeAttributes = {}
 
-type TYPE_IdOrAttr = unknown | NodeAttributes;
+type TYPE_IdOrAttr = string | NodeAttributes;
 
 export class GeneralStageGraph /*extends DirectedGraph<NodeAttributes>*/ {
   _graph: DirectedGraph<NodeAttributes>;
@@ -20,7 +20,7 @@ export class GeneralStageGraph /*extends DirectedGraph<NodeAttributes>*/ {
   }
 
   getNode(entry: TYPE_IdOrAttr): NodeAttributes {
-    const id = entry instanceof ANode ? entry.getId() : entry;
+    const id: string = entry instanceof ANode ? entry.getId() : entry;
     if (!this._graph.hasNode(id)) {
       throw new Error(`No existe nodo con id: ${id}`);
     }

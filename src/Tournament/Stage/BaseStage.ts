@@ -1,9 +1,8 @@
 import JCalendar from "../../JCalendar/JCalendar";
 import Match from "../Match/JMatch";
-import { IBaseStageConfig, IElementInfo, TCC } from "../../JSportModule";
+import { IBaseStageConfig, IElementInfo, TCC, TypeTableMatchState } from "../../JSportModule";
 import Team from "../../JSportModule/data/Team";
-import TeamTableItem from "../../JSportModule/data/Ranking/TeamTableItem";
-import { TypeTableMatchState } from "../../JSportModule/data/Ranking/interfaces";
+import TeamTableItem from "../../JSportModule/Ranking/TeamTableItem";
 
 /**
  * En el BaseStage es donde se configuran las rondas o turnos y los partidos de un torneo.

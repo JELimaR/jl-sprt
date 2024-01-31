@@ -1,5 +1,5 @@
 import { getExampleTeams } from "../Entities/ExampleData";
-import { Ranking, TypeRanking } from "../JSportModule/data/Ranking/Ranking";
+import { Ranking, TypeRanking } from "../JSportModule";
 import { IGenericRank, IGenericRankItem } from "../JSportModule/interfaces";
 
 export function getFederationRankings(count: number): Map<string, Ranking> {
