@@ -36,6 +36,10 @@ export class ExampleTeamTableItem extends A_TeamTableItem<TExampleMatchTeamResul
     throw new Error("Method not implemented.");
   }
 
+  getSortFunc() {
+    return exampleSimpleSortFunc;
+  }
+
   getInterface(): IA_TeamTableItem<TExampleMatchTeamResult, TExampleMatchPuntuation> {
     let out = super.getInterface();
     // return out;

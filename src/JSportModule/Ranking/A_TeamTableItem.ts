@@ -72,6 +72,8 @@ export abstract class A_TeamTableItem<Res extends string, Punt extends string> {
     return this._team;
   }
 
+  abstract getSortFunc(): (a: A_TeamTableItem<Res, Punt>, b: A_TeamTableItem<Res, Punt>, isSE: boolean) => number;
+
   getInterface(): IA_TeamTableItem<Res, Punt> {
     return {
       pos: this.pos,
