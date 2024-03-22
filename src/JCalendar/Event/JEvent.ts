@@ -10,6 +10,7 @@ export abstract class JEvent {
   private _dateTime: JDateTime;
   private _calendar: JCalendar;
 
+  // constructor(ec: IJEventInfo, calendar: JCalendar) {
   constructor(ec: IJEventInfo) {
     this._dateTime = new JDateTime(ec.dateTime);
     this._calendar = ec.calendar;

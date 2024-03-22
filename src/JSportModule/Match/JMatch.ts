@@ -13,13 +13,14 @@ export type TypeMatchState =
 	| 'playing'
 	| 'finished';
 
+// depende de res y punt
 export interface IMatchInfo {
 	id: string;
 	hw: TypeHalfWeekOfYear;
 	season: number;
 	homeTeam: Team; // cambiar por id
 	awayTeam: Team; // cambiar por id
-  state: TypeHalfWeekOfYear;
+  // state: TypeMatchState;
   
 	serie?: JSerie;
 	allowedDraw: boolean;

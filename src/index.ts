@@ -20,6 +20,7 @@ import systemExample from './examples/systemExample';
  * 9 - en la primera ronda de un SE, puede pasar que 2 del mismo grupo (origen) se enfrenten si no hay draw
  * 10 - Crear el modulo ElementConfigVerificationModule -- en progreso
  * 11 - en las quayconditions no pueden repetirse las mismas sources en un stage
+ * 12 - Los IEventsInfo deben ser solo info
  */
 
 function app() {

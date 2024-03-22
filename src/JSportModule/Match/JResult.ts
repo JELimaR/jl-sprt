@@ -3,7 +3,7 @@ type TypeTotalScore = {
   team: string;
   score: number;
 }
-
+// no se usa pero depende de res y punt
 export type TypeTeamResultInfo = {
   id: string;
   GF: number;
