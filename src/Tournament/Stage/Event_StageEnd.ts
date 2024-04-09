@@ -18,9 +18,10 @@ export class Event_StageEnd extends JEvent {
   }
 
   execute() {
-    console.log(`ejecuting finishing stage: ${this._stage.info.id}`);
+    console.log(`ejecuting finishing stage: ${this._stage.info.id} (${this._stage.info.season})`);
 
-    if (!this._stage.isFinished) throw new Error(`la stage ${this._stage.info.id} no esta terminada`)
+    if (!this._stage.isFinished)
+      throw new Error(`la stage ${this._stage.info.id} no esta terminada (${this._stage.info.season})`)
  
     let ranking: Ranking = this._stage.getRelativeRank();
     globalFinishedRankingsMap.set(ranking.context, ranking);

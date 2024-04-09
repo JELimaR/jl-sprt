@@ -6,7 +6,7 @@ import { IStageNodeData, RankGroupNode, StageNode } from "./nodes";
 import { IRealStageNodeData, RealStageNode, StageGroupNode, StagePlayoffNode } from "./RealStageNode";
 
 interface ITournamentFromGSGData {
-  name: string;
+  configId: string;
   gsg: GeneralStageGraph;
   matchList: TypeHalfWeekOfYear[];
   schedList: TypeHalfWeekOfYear[];
@@ -57,7 +57,7 @@ export function tournamentFromGSG(entry: ITournamentFromGSGData): ITournamentCon
 
   // creacion y verificacion
   out = {
-    name: entry.name, idConfig: entry.gsg.getTournamentId(),
+    name: entry.configId, idConfig: entry.gsg.getTournamentId(),
     hwStart: entry.schedList[0], hwEnd: entry.matchList[entry.matchList.length -1],
     phases
   }

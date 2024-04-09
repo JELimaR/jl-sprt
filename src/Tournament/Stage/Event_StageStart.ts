@@ -18,7 +18,7 @@ export class Event_StageStart extends JEvent {
   }
 
   execute() {
-    console.log(`ejecuting starting and teams draw from stage: ${this._stage.info.id}`);
+    console.log(`ejecuting starting and teams draw from stage: ${this._stage.info.id}  (${this._stage.info.season})`);
     
     const rankTable = this.getParticipants();
     this._stage.start(rankTable, this.calendar);

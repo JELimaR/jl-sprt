@@ -1,4 +1,4 @@
-import { IJDateTimeCreator } from "../../JCalendar/JDateTimeModule";
+import { IJDateTimeCreator } from "../../JCalendar";
 
 export interface ISportOrganizationData {
   id: string;
@@ -13,7 +13,8 @@ export interface IConfederationData extends ISportOrganizationData {
 }
 export interface IFederationData extends ISportOrganizationData {
   institutionIds: string[];
-  divisionSystem: any;
+  leagueSystem: any;
+  cupSystem: any;
 }
 export interface IInstitutionData extends ISportOrganizationData {
   

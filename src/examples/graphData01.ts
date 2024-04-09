@@ -2,11 +2,11 @@ import { getExampleTeams } from "../Entities/ExampleData";
 import { Ranking, TypeRanking } from "../JSportModule";
 import { IGenericRank, IGenericRankItem } from "../JSportModule/interfaces";
 
-export function getFederationRankings(count: number): Map<string, Ranking> {
+export function getFederationRankings(count: number, teams: number = 45): Map<string, Ranking> {
   let out: Map<string, Ranking> = new Map<string, Ranking>();
   for (let fede = 1; fede <= count; fede++) {
     const fid = `F${String(fede).padStart(3, '0')}`;
-    const fteams = getExampleTeams(45, fid);
+    const fteams = getExampleTeams(teams, fid);
     let ftr: TypeRanking = { context: 'fr_' + fid, items: [], teams: [] };
     fteams.forEach((t, i) => ftr.items.push({ origin: fid, pos: i + 1 }))
     const franking = Ranking.fromTypeRanking(ftr);

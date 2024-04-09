@@ -1,11 +1,12 @@
 
-import { TypeBaseStageOption } from "..";
+import { TypeBaseStageOption, TypeDrawRulePlayoff } from "..";
 import { IGenericRankItem } from "../Ranking/";
 import { Ranking } from "../Ranking";
 import { GeneralStageGraph, PhaseNode } from "./GeneralStageGraph";
 import { FinalNode, InitialNode, IStageNodeData, RankGroupNode, StageNode } from "./nodes";
-import { TableStageNode, TransferStageNode } from "./NoneStageNode";
+import { ReOrderStageNode, TableStageNode, TransferStageNode } from "./NoneStageNode";
 import { StageGroupNode, StagePlayoffNode } from "./RealStageNode";
+import { TypeIntervalOfDay } from "../../JCalendar";
 
 export type TInitialCreator = {
   tournamentId: string;
@@ -16,8 +17,10 @@ export type TStageNodeCreator = {
   type: 'group' | 'playoff';
   value: number;
   opt: TypeBaseStageOption;
+  draw?: {interv: TypeIntervalOfDay, rules: TypeDrawRulePlayoff[]};
+  bombos?: number[];
 } | {
-  type: 'transfer' | 'table';
+  type: 'transfer' | 'table' | 'reOrder';
   value: number;
 };
 export type TPhaseCreator = {
@@ -56,7 +59,7 @@ function createFinalNode() {
 
 export function createGSG(iniCreator: TInitialCreator, phaseCreatorArr: TPhaseCreator[]) {
 
-  const gsg = new GeneralStageGraph();
+  const gsg = new GeneralStageGraph(iniCreator.tournamentId);
 
   // creo initialNode
   const initialNode = createInitialNode(iniCreator);
@@ -102,7 +105,7 @@ function createPhaseNodes(gsg: GeneralStageGraph, phaseCreator: TPhaseCreator, p
     }
 
     // creamos y agregamos el stage al gsg
-    const sid = `p${stringPad(currPhaseIndex + 1, 2)}_s${stringPad(index + 1, 2)}`;
+    const sid = `${gsg.id}_p${stringPad(currPhaseIndex + 1, 2)}_s${stringPad(index + 1, 2)}`;
     const stageNode = createStage(sid, value.stage, stageRGs);
     gsg.addNode(stageNode);
 
@@ -143,14 +146,18 @@ function createStage(sid: string, stageCreator: TStageNodeCreator, stageRGs: Ran
       out = new StageGroupNode({
         ...nodeData,
         groupsNumber: stageCreator.value,
-        opt: stageCreator.opt
+        opt: stageCreator.opt,
+        draw: stageCreator.draw,
+        bombos: stageCreator.bombos,
       })
       break;
     case 'playoff':
       out = new StagePlayoffNode({
         ...nodeData,
         roundsNumber: stageCreator.value,
-        opt: stageCreator.opt
+        opt: stageCreator.opt,
+        draw: stageCreator.draw,
+        bombos: stageCreator.bombos,
       })
       break;
     case 'transfer':
@@ -169,8 +176,15 @@ function createStage(sid: string, stageCreator: TStageNodeCreator, stageRGs: Ran
         rankings
       )
       break;
+    // case 'reOrder':
+    //   out = new ReOrderStageNode({
+    //     ...nodeData,
+    //     qNumber: stageCreator.value
+    //   },
+    //     rankings
+    //   )
     default:
-      throw new Error(`no existe stagenode del tipo: ${stageCreator}`)
+      throw new Error(`no existe stagenode del tipo: ${stageCreator}. En GSGCreator.createStage`)
   }
 
   return out;

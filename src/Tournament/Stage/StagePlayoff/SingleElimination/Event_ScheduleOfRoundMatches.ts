@@ -1,11 +1,11 @@
 import { IJEventOthersInfo, JEventOthers } from "../../../../JCalendar/Event/JEvent";
-import Match from "../../../Match/JMatch";
-import { JEventMatch } from "../../../Match/JEventMatch";
 import { JRound } from "./JRound";
 import SingleElmination from './SingleElmination';
-import JSerie from "../../../Match/JSerie";
 import { arr2 } from "../../../types";
 import { JDateTime, TypeHalfWeekOfYear } from "../../../../JCalendar/JDateTimeModule";
+import JSerie from "../../../../JSportModule/Match/JSerie";
+import Match from "../../../../JSportModule/Match/JMatch";
+import { JEventMatch } from "../../../../JSportModule/Match/JEventMatch";
 
 
 export interface IEvent_ScheduleOfRoundMatchesInfo extends IJEventOthersInfo {

@@ -1,8 +1,8 @@
 import JCalendar from "../../../../JCalendar/JCalendar";
 import League from "./League";
-import Match from "../../../Match/JMatch";
 import { Event_ScheduleOfTurnMatches } from "./Event_ScheduleOfTurnMatches";
 import { JDateTime, TypeHalfWeekOfYear } from "../../../../JCalendar/JDateTimeModule";
+import Match from "../../../../JSportModule/Match/JMatch";
 
 export interface ITurnInfo {
 	num: number;

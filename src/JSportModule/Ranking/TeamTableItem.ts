@@ -35,7 +35,7 @@ export default class TeamTableItem {
   get bsId(): string { return this._bsId }
 
   set pos(pos: number) { this._pos = pos };
-  // get pos(): number { return this._pos };
+  get pos(): number { return this._pos };
 
   get P(): number {
     return this._W + this._D + this._L;
@@ -92,7 +92,7 @@ export default class TeamTableItem {
   }
 }
 
-export const simpleSortFunc = (a: TeamTableItem, b: TeamTableItem, isSE: boolean) => {
+export const simpleSortFunc = (a: TeamTableItem, b: TeamTableItem, isSE: boolean): number => {
   if (isSE) {
     if (a.P - b.P !== 0) {
       return b.P - a.P

@@ -14,6 +14,9 @@ export abstract class JEvent {
   constructor(ec: IJEventInfo) {
     this._dateTime = new JDateTime(ec.dateTime);
     this._calendar = ec.calendar;
+    if (this._calendar.now.absolute >= this._dateTime.absolute) {
+      throw new Error(`${this._calendar.now.absolute} es mayor a el día del evento ${this._dateTime.absolute}`)
+    }
   }
 
   get dateTime(): JDateTime {

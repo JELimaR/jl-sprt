@@ -82,7 +82,7 @@ export default function graphExample() {
 
 
   const tournamentConfig = tournamentFromGSG({
-    name: 'graph tournament',
+    configId: 'graph tournament',
     gsg,
     matchList: [22, 24, 30, 32, 40, 42, 44, 48, 50, 52, 56, 58, 62, 64, 70, 72, 80],
     schedList: [20, 20, 25, 25, 40, 40, 40, 46, 46, 46, 53, 53, 62, 62, 68, 68, 73],
@@ -90,7 +90,7 @@ export default function graphExample() {
 
   console.log(tournamentConfig)
 
-  const cal = new JCalendar({ day: 1568688, interv: 0 });
+  const cal = new JCalendar({ day: 1987*378, interv: 0 });
   const tournament = new Tournament({ id: 'dfki', season: 1988 }, tournamentConfig, cal)
 
   /************************************************************************************************************************************ */
@@ -139,9 +139,10 @@ export default function graphExample() {
   //                   LOS TOURNAMENTS
   //   *******************************************************************************************
   // `)
-  console.log(globalFinishedRankingsMap.keys())
+  console.log('globalFinishedRankingsMap keys\n', globalFinishedRankingsMap.keys())
   // throw new Error(`stop`)
   exampleAdvance(cal)
+  console.log('globalFinishedRankingsMap.get(ini_first_tournament)')
   console.table(rankingToTable(globalFinishedRankingsMap.get('ini_first_tournament')!))
 
   // tournament.phases.forEach((p: Phase) => {
@@ -150,6 +151,7 @@ export default function graphExample() {
 
   // throw new Error(`stop`)
 
+  console.log('tournament.getRelativeRank')
   console.table(rankingToTable(tournament.getRelativeRank()))
 
   // gsg._phases.forEach((pn: PhaseNode) => {

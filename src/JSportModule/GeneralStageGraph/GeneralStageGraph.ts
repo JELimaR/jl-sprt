@@ -13,11 +13,15 @@ type EdgeAttributes = {}
 type TYPE_IdOrAttr = string | NodeAttributes;
 
 export class GeneralStageGraph /*extends DirectedGraph<NodeAttributes>*/ {
+  _id: string;
   _graph: DirectedGraph<NodeAttributes>;
   _phases: PhaseNode[] = [];
-  constructor() {
+  constructor(id: string) {
+    this._id = id;
     this._graph = new DirectedGraph<NodeAttributes>();
   }
+
+  get id(): string { return this._id}
 
   getNode(entry: TYPE_IdOrAttr): NodeAttributes {
     const id: string = entry instanceof ANode ? entry.getId() : entry;

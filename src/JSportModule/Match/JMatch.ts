@@ -23,6 +23,7 @@ export interface IMatchInfo {
   // state: TypeMatchState;
   
 	serie?: JSerie;
+  result?: IJResultInfo;
 	allowedDraw: boolean;
 	isNeutral: boolean;
 }
@@ -109,6 +110,7 @@ export default class Match  {
 			this._homeTeam.getTeamMatch(),
 			this._awayTeam.getTeamMatch()
 		);
+    this._info.result = this._playing.result?.getResultInfo()
 	}
 
 	advance() {
