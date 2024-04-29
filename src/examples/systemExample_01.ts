@@ -7,9 +7,10 @@ import { IFederationData, IGenericRankItem, IRankItem, ITournamentConfig, Rankin
 import Team from "../JSportModule/data/Team";
 import { GeneralStageGraph } from "../JSportModule/GeneralStageGraph/GeneralStageGraph";
 import { createGSG, TInitialCreator, TPhaseCreator } from "../JSportModule/GeneralStageGraph/GSGCreators";
-import { tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
+import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
 import SportServerAPI from "../JSportServerModule";
 import mostrarFecha from "../mostrarFechaBorrar";
+import { asignarTeams2 } from "../Tournament/asignarTeams2";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
 import Tournament from "../Tournament/Tournament";
 import exampleAdvance from "./exampleAdvance";
@@ -46,7 +47,7 @@ class FednAux {
         origin: this._id, pos: i + 1, team: inst
       }
     })
-    return Ranking.fromRankItemArr(`fr_${this._id}`, rankArr)
+    return Ranking.fromRankItemArr(`fr_S_${this._id}`, rankArr)
   }
 
   updateRanking(rank: Ranking) {
@@ -73,7 +74,8 @@ const federation = new FednAux({
   id: fid, areaAsosiatedId: 'A_C001', founderIds: [], institutionIds: [], headquarters: 'hq_F001',
   dateTimeCreation: { day: 1118 * 378 + 19, interv: 120 },
   leagueSystem: {},
-  cupSystem: {}
+  cupSystem: {},
+  rankings: {}
 }, fteams.slice(0, 8))
 
 /*********************************************************************************** */
@@ -91,32 +93,41 @@ export default function systemExample_01() {
     const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, Y, 168).getIJDateTimeCreator());
     mostrarFecha(cal.now)
     // defino los configs
-    let t1_config: ITournamentConfig;
-    let t2_config: ITournamentConfig | undefined;
-    let gsg_1: GeneralStageGraph;
-    let gsg_2: GeneralStageGraph | undefined;
+    let t1_data: ITournamentFromGSGData;
+    let t2_data: ITournamentFromGSGData | undefined;
+    // let gsg_1: GeneralStageGraph;
+    // let gsg_2: GeneralStageGraph | undefined;
 
     if (Y < 1161) {
-      t1_config = config_1156;
-      gsg_1 = gsg_1156;
+      t1_data = config_1156;
+      // gsg_1 = gsg_1156;
     } else {
       // los nuevos equipos pasan a integrar el ranking de la federacion
-      t1_config = config_1161;
-      gsg_1 = gsg_1161;
-      t2_config = config_1161_2d
-      gsg_2 = gsg_1161_2d
+      t1_data = config_1161;
+      // gsg_1 = gsg_1161;
+      t2_data = config_1161_2d
+      // gsg_2 = gsg_1161_2d
     }
+
+    // if (t2_data) {
+    //   console.log(t1_data)
+    //   console.log(gsg_1._phases)
+    //   console.log(t2_data)
+    //   console.log(gsg_2!._phases)
+    //   throw new Error(`parar`)
+    // }
 
 
     // creo los tournaments y creo su ranking inicial
-    let t1 = new Tournament({ id: 'L1', season: Y }, t1_config, cal)
+    let t1 = Tournament.create({ id: 'L1', season: Y }, t1_data, cal)
     console.log(t1.config)
     let t2: Tournament | undefined;
-    asignarTeams(gsg_1)
-    if (t2_config) {
-      t2 = new Tournament({ id: 'L2', season: Y }, t2_config, cal)
+    // asignarTeams(gsg_1)
+    asignarTeams2(t1)
+    if (t2_data) {
+      t2 = Tournament.create({ id: 'L2', season: Y }, t2_data, cal)
       console.log(t2.config)
-      asignarTeams(gsg_2!)
+      asignarTeams2(t2)
     }
 
     // avance
@@ -181,57 +192,19 @@ export default function systemExample_01() {
 
 }
 
-
-const asignarTeams = (gsg: GeneralStageGraph) => {
-  // asignar teams
-  const iniRankings = gsg.getInitialRankings()
-  let currIdx = 0;
-
-  const ini_ttiidd_ranking = iniRankings[0].getInterface();
-  ini_ttiidd_ranking.items = [];
-  iniRankings.forEach((rank: Ranking, ri: number) => {
-    // console.log(ri, rank);
-    const teams: Team[] = [];
-    rank.getGenericRankItems().forEach((value: IGenericRankItem, index: number) => {
-      const sourceItem = gsg.getQualyRankList()[currIdx];
-
-      // console.log(value);
-      // console.log('sourceItem', sourceItem);
-
-      const sourceRanking = globalFinishedRankingsMap.get(sourceItem.origin);
-      if (!sourceRanking) {
-        // console.log(globalFinishedRankingsMap.keys())
-        // console.log(sourceItem.origin)
-        throw new Error(``);
-      }
-
-      const team = sourceRanking.getFromPosition(sourceItem.pos).team;
-      teams.push(team);
-
-      currIdx++;
-    })
-
-    rank.addTeams(teams);
-    ini_ttiidd_ranking.items.push(...rank.getGenericRankItems())
-    ini_ttiidd_ranking.teams.push(...teams)
-
-  })
-  globalFinishedRankingsMap.set(iniRankings[0].context, Ranking.fromTypeRanking(ini_ttiidd_ranking));
-}
-
 /************************************************************************************************************ */
 // año 1156 a 1160
 const iniCreator_1156: TInitialCreator = {
-  tournamentId: 'fr_F001_D01',
+  tournamentId: 'S_F001_D01',
   qualyrankList: [
-    { origin: 'fr_F001', pos: 1 },
-    { origin: 'fr_F001', pos: 2 },
-    { origin: 'fr_F001', pos: 3 },
-    { origin: 'fr_F001', pos: 4 },
-    { origin: 'fr_F001', pos: 5 },
-    { origin: 'fr_F001', pos: 6 },
-    { origin: 'fr_F001', pos: 7 },
-    { origin: 'fr_F001', pos: 8 },
+    { origin: 'fr_S_F001', pos: 1 },
+    { origin: 'fr_S_F001', pos: 2 },
+    { origin: 'fr_S_F001', pos: 3 },
+    { origin: 'fr_S_F001', pos: 4 },
+    { origin: 'fr_S_F001', pos: 5 },
+    { origin: 'fr_S_F001', pos: 6 },
+    { origin: 'fr_S_F001', pos: 7 },
+    { origin: 'fr_S_F001', pos: 8 },
   ],
   rankGroupNumbers: [8]
 };
@@ -245,29 +218,29 @@ const phaseCreatorArr_1156: TPhaseCreator[] = [
   }
 ]
 
-const gsg_1156 = createGSG(iniCreator_1156, phaseCreatorArr_1156);
-const config_1156: ITournamentConfig = tournamentFromGSG({
-  configId: 'Lig',
-  gsg: gsg_1156,
+const config_1156: ITournamentFromGSGData = {
+  name: 'Lig',
+  gsgData: {initialCreator: iniCreator_1156, phaseArr: phaseCreatorArr_1156},
   matchList: [28, 32, 36, 40, 44, 48, 52, 70, 74, 78, 82, 86, 90, 94],
-  schedList: [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16]
-})
+  schedList: [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
+  qualyRules: []
+}
 
 /************************************************************************************************************ */
 // año 1161
 const iniCreator_1161: TInitialCreator = {
-  tournamentId: 'fr_F001_D01',
+  tournamentId: 'S_F001_D01',
   qualyrankList: [
-    { origin: 'fr_F001', pos: 1 },
-    { origin: 'fr_F001', pos: 2 },
-    { origin: 'fr_F001', pos: 3 },
-    { origin: 'fr_F001', pos: 4 },
-    { origin: 'fr_F001', pos: 5 },
-    { origin: 'fr_F001', pos: 6 },
-    { origin: 'fr_F001', pos: 7 },
-    { origin: 'fr_F001', pos: 8 },
-    { origin: 'fr_F001', pos: 9 },
-    { origin: 'fr_F001', pos: 10 },
+    { origin: 'fr_S_F001', pos: 1 },
+    { origin: 'fr_S_F001', pos: 2 },
+    { origin: 'fr_S_F001', pos: 3 },
+    { origin: 'fr_S_F001', pos: 4 },
+    { origin: 'fr_S_F001', pos: 5 },
+    { origin: 'fr_S_F001', pos: 6 },
+    { origin: 'fr_S_F001', pos: 7 },
+    { origin: 'fr_S_F001', pos: 8 },
+    { origin: 'fr_S_F001', pos: 9 },
+    { origin: 'fr_S_F001', pos: 10 },
   ],
   rankGroupNumbers: [10]
 };
@@ -281,25 +254,28 @@ const phaseCreatorArr_1161: TPhaseCreator[] = [
   }
 ]
 
-const gsg_1161 = createGSG(iniCreator_1161, phaseCreatorArr_1161);
-const config_1161: ITournamentConfig = tournamentFromGSG({
-  configId: 'Lig',
-  gsg: gsg_1161,
+const config_1161: ITournamentFromGSGData = {
+  name: 'Lig',
+  gsgData: {initialCreator: iniCreator_1161, phaseArr: phaseCreatorArr_1161},
   matchList: [28, 32, 36, 40, 44, 48, 52, 56, 60, 70, 74, 78, 82, 86, 90, 94, 98, 102],
-  schedList: [16, 16, 16, 16, 16, 16, 16, 16, 16, 62, 62, 62, 62, 62, 62, 62, 62, 62]
-})
+  schedList: [16, 16, 16, 16, 16, 16, 16, 16, 16, 62, 62, 62, 62, 62, 62, 62, 62, 62],
+  qualyRules: [
+    {minRankPos: 1, maxRankPos: 1},
+    {minRankPos: 9, maxRankPos: 10},
+  ]
+};
 // 2 div
 const iniCreator_1161_2d: TInitialCreator = {
-  tournamentId: 'fr_F001_D02',
+  tournamentId: 'S_F001_D02',
   qualyrankList: [
-    { origin: 'fr_F001', pos: 11 },
-    { origin: 'fr_F001', pos: 12 },
-    { origin: 'fr_F001', pos: 13 },
-    { origin: 'fr_F001', pos: 14 },
-    { origin: 'fr_F001', pos: 15 },
-    { origin: 'fr_F001', pos: 16 },
-    { origin: 'fr_F001', pos: 17 },
-    { origin: 'fr_F001', pos: 18 },
+    { origin: 'fr_S_F001', pos: 11 },
+    { origin: 'fr_S_F001', pos: 12 },
+    { origin: 'fr_S_F001', pos: 13 },
+    { origin: 'fr_S_F001', pos: 14 },
+    { origin: 'fr_S_F001', pos: 15 },
+    { origin: 'fr_S_F001', pos: 16 },
+    { origin: 'fr_S_F001', pos: 17 },
+    { origin: 'fr_S_F001', pos: 18 },
   ],
   rankGroupNumbers: [8]
 };
@@ -314,17 +290,20 @@ const phaseCreatorArr_1161_2d: TPhaseCreator[] = [
   {
     id: 2,
     stages: [
-      { count: 1, stage: { type: 'transfer', value: 1 } },
+      { count: 1, stage: { type: 'transfer' } },
       { count: 2, stage: { type: 'playoff', opt: 'neutral', value: 1 } },
-      { count: 5, stage: { type: 'transfer', value: 1 } },
+      { count: 5, stage: { type: 'transfer' } },
     ]
   }
 ]
 
-const gsg_1161_2d = createGSG(iniCreator_1161_2d, phaseCreatorArr_1161_2d);
-const config_1161_2d: ITournamentConfig = tournamentFromGSG({
-  configId: 'Lig2',
-  gsg: gsg_1161_2d,
+const config_1161_2d: ITournamentFromGSGData = {
+  name: 'Lig2',
+  gsgData: {initialCreator: iniCreator_1161_2d, phaseArr: phaseCreatorArr_1161_2d},
   matchList: [30, 34, 38, 42, 46, 50, 54, 64, 68, 72, 76, 80, 84, 88, 91],
-  schedList: [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 89]
-})
+  schedList: [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 89],
+  qualyRules: [
+    {minRankPos: 1, maxRankPos: 1},
+    {minRankPos: 1, maxRankPos: 2},
+  ]
+}

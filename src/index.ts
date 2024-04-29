@@ -1,4 +1,5 @@
 import baseStageExample from './examples/baseStageExample';
+import fede_inst_Example from './examples/fede_inst_Example';
 import graphExample from './examples/graphExample';
 import specialStageGroupExample from './examples/specialStageGroupExample';
 import stageExample01 from './examples/stageExample01';
@@ -39,7 +40,9 @@ function app() {
   
   // graphExample();
   
-  systemExample_01()
+  // systemExample_01()
+
+  fede_inst_Example()
 
   // console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getDateTime())
   // console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getIJDateTimeCreator())

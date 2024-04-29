@@ -20,8 +20,10 @@ export type TStageNodeCreator = {
   draw?: {interv: TypeIntervalOfDay, rules: TypeDrawRulePlayoff[]};
   bombos?: number[];
 } | {
-  type: 'transfer' | 'table' | 'reOrder';
+  type: 'table' | 'reOrder';
   value: number;
+} | {
+  type: 'transfer';
 };
 export type TPhaseCreator = {
   id: number;
@@ -95,10 +97,10 @@ function createPhaseNodes(gsg: GeneralStageGraph, phaseCreator: TPhaseCreator, p
   verifyPhaseCreator(phaseCreator, prevPhaseRGs);
   let prevPhaseRGsIndex = 0;
   const stageNodeArr: StageNode<IStageNodeData>[] = [];
-  phaseCreator.stages.forEach((value: { count: number; stage: TStageNodeCreator; }, index: number) => {
+  phaseCreator.stages.forEach((elem: { count: number; stage: TStageNodeCreator; }, index: number) => {
     // create stagenode
     const stageRGs: RankGroupNode[] = [];
-    for (let i = 0; i < value.count; i++) {
+    for (let i = 0; i < elem.count; i++) {
       const rg = prevPhaseRGs[prevPhaseRGsIndex];
       stageRGs.push(rg);
       prevPhaseRGsIndex++;
@@ -106,7 +108,7 @@ function createPhaseNodes(gsg: GeneralStageGraph, phaseCreator: TPhaseCreator, p
 
     // creamos y agregamos el stage al gsg
     const sid = `${gsg.id}_p${stringPad(currPhaseIndex + 1, 2)}_s${stringPad(index + 1, 2)}`;
-    const stageNode = createStage(sid, value.stage, stageRGs);
+    const stageNode = createStage(sid, elem.stage, stageRGs);
     gsg.addNode(stageNode);
 
     // agregamos los source al stage node
@@ -122,6 +124,8 @@ function createPhaseNodes(gsg: GeneralStageGraph, phaseCreator: TPhaseCreator, p
 const verifyPhaseCreator = (phaseCreator: TPhaseCreator, prevPhaseRGs: RankGroupNode[]) => {
   const phaseSourcesRequired = phaseCreator.stages.reduce((partialSum, a) => partialSum + a.count, 0);
   if (phaseSourcesRequired !== prevPhaseRGs.length) {
+    console.log('phaseCreator', phaseCreator)
+    console.log('prevPhaseRGs', JSON.stringify(prevPhaseRGs, null, 2))
     throw new Error(
       `La phase ${phaseCreator.id} requiere de ${phaseSourcesRequired} rank groups de la phase anterior.
       mientras que la phase anterior genera un total de ${prevPhaseRGs.length} rank groups.

@@ -1,5 +1,6 @@
 import { ISportFactory, IPaginationData, ISportAPIController } from "./apiInterfaces";
-import { IConfederationData, IFederationData } from "./data/entities";
+import { IFederationData } from "./data";
+import { IConfederationData } from "./data/entities";
 
 export class SportAPIController implements ISportAPIController {
   private _factory: ISportFactory;

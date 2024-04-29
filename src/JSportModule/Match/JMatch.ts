@@ -57,8 +57,8 @@ export default class Match  {
 		this._date = JDateTime.createFromHalfWeekOfYearAndYear( imi.hw, imi.season, 'middle' );
 		
     // solucionar en Team.ts
-		// this._homeTeam.addNewMatch(this);
-		// this._awayTeam.addNewMatch(this);
+		this._homeTeam.addNewMatch(this);
+		this._awayTeam.addNewMatch(this);
 
 		this._allowedDraw = imi.allowedDraw;
 

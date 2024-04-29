@@ -1,1 +1,5 @@
 export * from './Federation'
+export * from './GeogEntity'
+export * from './Institution'
+export * from './LeagueSystem'
+export * from './SportOrganization'

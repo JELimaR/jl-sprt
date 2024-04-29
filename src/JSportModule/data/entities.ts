@@ -1,4 +1,6 @@
 import { IJDateTimeCreator } from "../../JCalendar";
+import { ICupSystemCreator, ILeagueSystemCreator } from "./Entities/LeagueSystem";
+import { TypeCategoryList } from "./types";
 
 export interface ISportOrganizationData {
   id: string;
@@ -6,16 +8,13 @@ export interface ISportOrganizationData {
   founderIds: string[];
   headquarters: string;
   dateTimeCreation: IJDateTimeCreator;
+  // memberIds: string[];
 }
 
 export interface IConfederationData extends ISportOrganizationData {
   federationIds: string[];
 }
-export interface IFederationData extends ISportOrganizationData {
-  institutionIds: string[];
-  leagueSystem: any;
-  cupSystem: any;
-}
+
 export interface IInstitutionData extends ISportOrganizationData {
   
 }

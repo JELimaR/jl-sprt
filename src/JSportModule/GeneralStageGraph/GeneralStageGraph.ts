@@ -172,6 +172,22 @@ export class GeneralStageGraph /*extends DirectedGraph<NodeAttributes>*/ {
     }
   }
 
+  // funciones para determinar el ranking final del tournament
+  getFinalRankings(): Ranking[] {
+    const finNode = this.getNode('fin') as FinalNode;
+    const out: Ranking[] = [];
+    const arr: RankGroupNode[] = [];
+    this.getSourceNeighbors(finNode).forEach((na: NodeAttributes) => {
+      if (na instanceof RankGroupNode) {
+        arr.push(na)
+      } else {
+        throw new Error(`
+        En GeneralStageGraph.getFinalRankings`)
+      }
+    })
+    arr.forEach((rgn: RankGroupNode) => out.push(...rgn.getRanksGroups()));
+    return out
+  }
 
 
 

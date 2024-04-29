@@ -19,7 +19,7 @@ export default function specialStageGroupExample() {
   const ranking: TypeRanking = { context: 'rankingInicial', items: rankItemArr, teams: rankItemArr.map(e => e.team) }
   globalFinishedRankingsMap.set(ranking.context, Ranking.fromTypeRanking(ranking));
 
-  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getIJDateTimeCreator());
+  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 168).getIJDateTimeCreator());
   mostrarFecha(cal.now)
 
   const SG = new StageGroup({ id: 'League', season: 168 }, stageLeagueconfig, cal);

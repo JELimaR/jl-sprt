@@ -22,7 +22,7 @@ export default function stageLeagueExample() {
   const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getIJDateTimeCreator());
   mostrarFecha(cal.now)
 
-  const SG = new StageGroup({id: 'League', season: 168}, stageLeagueconfig, cal);
+  const SG = new StageGroup({id: 'League', season: 1987}, stageLeagueconfig, cal);
   
   exampleAdvance(cal)
   

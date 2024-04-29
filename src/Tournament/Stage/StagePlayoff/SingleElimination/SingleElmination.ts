@@ -29,6 +29,10 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
 
   }
 
+  get isFinished(): boolean {
+    return super.isFinished && this._rounds.length == this.config.roundsNumber
+  }
+
   get rounds(): JRound[] { return this._rounds }
   get matches(): Match[] {
     let out: Match[] = [];

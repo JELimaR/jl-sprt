@@ -16,6 +16,12 @@ export class Ranking {
   private _final: boolean = false; // ver como se debe hacer
 
   private constructor(tr: TypeRanking) {
+    if (tr.teams.length !== 0 && tr.items.length !== tr.teams.length) {
+      console.log(tr)
+      throw new Error(`El ranking ${tr.context} no se puede crear debido a que la cantidad de
+      items: ${tr.items.length} no es igual a la cantidad de teams: ${tr.teams.length}
+      Ranking.contructor`)
+    }
     this._context = tr.context;
     this._items = tr.items;
     this._teams = tr.teams;

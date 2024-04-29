@@ -1,5 +1,5 @@
-import { IEntityHandler } from "../../JSportModule";
-import { IConfederationData, IFederationData } from "../../JSportModule/data/entities";
+import { IEntityHandler, IFederationData } from "../../JSportModule";
+import { IConfederationData } from "../../JSportModule/data/entities";
 
 
 export default class EntityHandler implements IEntityHandler {

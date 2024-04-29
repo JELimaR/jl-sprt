@@ -59,8 +59,9 @@ export function generateFederations(n: number): IFederationData[] {
       founderIds: fteams.slice(0,5).map(t => t.id),
       headquarters: `ct${String(fede).padStart(3, '0')}`,
       institutionIds: fteams.map(t => t.id),
-      leagueSystem: [16],
-      cupSystem: [15]
+      leagueSystem: {},
+      cupSystem: {},
+      rankings: {}
     });
   }
   return out;

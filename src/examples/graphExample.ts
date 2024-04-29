@@ -1,7 +1,7 @@
 
 import { TInitialCreator, TPhaseCreator, createGSG } from '../JSportModule/GeneralStageGraph/GSGCreators';
 import { getExampleRankItemsListOrdered, getFederationRankings, getInitialRankingExample, } from './graphData01';
-import { tournamentFromGSG } from '../JSportModule/GeneralStageGraph/tournamentFromGSG';
+import { ITournamentFromGSGData, tournamentFromGSG } from '../JSportModule/GeneralStageGraph/tournamentFromGSG';
 import Tournament from '../Tournament/Tournament';
 import JCalendar from '../JCalendar/JCalendar';
 import exampleAdvance from './exampleAdvance';
@@ -10,6 +10,7 @@ import { Ranking } from '../JSportModule/Ranking';
 import { IGenericRankItem } from '../JSportModule/Ranking';
 import Team from '../JSportModule/data/Team';
 import { renderGSGtoPNG } from '../JSportModule/GeneralStageGraph/renderGSGtoPNG';
+import { asignarTeams2 } from '../Tournament/asignarTeams2';
 
 export default function graphExample() {
 
@@ -24,38 +25,38 @@ export default function graphExample() {
     {
       id: 1,
       stages: [
-        { count: 1, stage: { type: 'transfer', value: 1 } },
-        { count: 1, stage: { type: 'transfer', value: 1 } },
+        { count: 1, stage: { type: 'transfer' } },
+        { count: 1, stage: { type: 'transfer' } },
         { count: 1, stage: { type: 'playoff', value: 1, opt: 'h&a' } },
       ]
     },
     {
       id: 2,
       stages: [
-        { count: 1, stage: { type: 'transfer', value: 1 } },
+        { count: 1, stage: { type: 'transfer' } },
         { count: 2, stage: { type: 'playoff', value: 1, opt: 'h&a' } },
-        { count: 1, stage: { type: 'transfer', value: 1 } },
+        { count: 1, stage: { type: 'transfer' } },
       ]
     },
     {
       id: 3,
       stages: [
         { count: 2, stage: { type: 'group', value: 8, opt: 'h&a' } },
-        { count: 2, stage: { type: 'transfer', value: 1 } },
+        { count: 2, stage: { type: 'transfer' } },
       ]
     },
     {
       id: 4,
       stages: [
         { count: 2, stage: { type: 'playoff', value: 3, opt: 'h&a' } },
-        { count: 4, stage: { type: 'transfer', value: 1 } },
+        { count: 4, stage: { type: 'transfer' } },
       ]
     },
     {
       id: 5,
       stages: [
         { count: 1, stage: { type: 'playoff', value: 1, opt: 'neutral' } },
-        { count: 7, stage: { type: 'transfer', value: 1 } },
+        { count: 7, stage: { type: 'transfer' } },
       ]
     }
   ];
@@ -81,17 +82,18 @@ export default function graphExample() {
   // console.log('targets', gsg.getTargetNeigbhors('p01_s01'))
 
 
-  const tournamentConfig = tournamentFromGSG({
-    configId: 'graph tournament',
-    gsg,
+  const tournamentFromGSGData: ITournamentFromGSGData = {
+    name: 'graph tournament',
+    gsgData: { initialCreator: iniCreator, phaseArr: phaseCreatorArr },
     matchList: [22, 24, 30, 32, 40, 42, 44, 48, 50, 52, 56, 58, 62, 64, 70, 72, 80],
     schedList: [20, 20, 25, 25, 40, 40, 40, 46, 46, 46, 53, 53, 62, 62, 68, 68, 73],
-  });
+    qualyRules: []
+  };
 
-  console.log(tournamentConfig)
+  console.log(tournamentFromGSGData)
 
-  const cal = new JCalendar({ day: 1987*378, interv: 0 });
-  const tournament = new Tournament({ id: 'dfki', season: 1988 }, tournamentConfig, cal)
+  const cal = new JCalendar({ day: 1987 * 378, interv: 0 });
+  const tournament = Tournament.create({ id: 'dfki', season: 1988 }, tournamentFromGSGData, cal)
 
   /************************************************************************************************************************************ */
   console.log('-------------------------------------------------------------')
@@ -99,39 +101,7 @@ export default function graphExample() {
   fedRankings.forEach((franking: Ranking) => globalFinishedRankingsMap.set(franking.context, franking));
 
   // asignar teams
-  const iniRankings = gsg.getInitialRankings()
-  let currIdx = 0;
-
-  const ini_ttiidd_ranking = iniRankings[0].getInterface();
-  ini_ttiidd_ranking.items = [];
-  iniRankings.forEach((rank: Ranking, ri: number) => {
-    console.log(ri, rank);
-    const teams: Team[] = [];
-    rank.getGenericRankItems().forEach((value: IGenericRankItem, index: number) => {
-      const sourceItem = gsg.getQualyRankList()[currIdx];
-
-      // console.log(value);
-      // console.log('sourceItem', sourceItem);
-
-      const sourceRanking = globalFinishedRankingsMap.get(sourceItem.origin);
-      if (!sourceRanking) {
-        // console.log(globalFinishedRankingsMap.keys())
-        // console.log(sourceItem.origin)
-        throw new Error(``);
-      }
-
-      const team = sourceRanking.getFromPosition(sourceItem.pos).team;
-      teams.push(team);
-
-      currIdx++;
-    })
-
-    rank.addTeams(teams);
-    ini_ttiidd_ranking.items.push(...rank.getGenericRankItems())
-    ini_ttiidd_ranking.teams.push(...teams)
-
-  })
-  globalFinishedRankingsMap.set(iniRankings[0].context, Ranking.fromTypeRanking(ini_ttiidd_ranking));
+  asignarTeams2(tournament)
 
   // console.log(`
   //   *******************************************************************************************
@@ -142,8 +112,15 @@ export default function graphExample() {
   console.log('globalFinishedRankingsMap keys\n', globalFinishedRankingsMap.keys())
   // throw new Error(`stop`)
   exampleAdvance(cal)
-  console.log('globalFinishedRankingsMap.get(ini_first_tournament)')
-  console.table(rankingToTable(globalFinishedRankingsMap.get('ini_first_tournament')!))
+  console.log('globalFinishedRankingsMap keys\n', globalFinishedRankingsMap.keys())
+  globalFinishedRankingsMap.forEach((ranking: Ranking, key: string) => {
+    if (key == 'ini_first_tournament') {
+      console.log(key)
+      console.table(rankingToTable(ranking))
+    }
+  })
+  // console.log('globalFinishedRankingsMap.get(ini_first_tournament)')
+  // console.table(rankingToTable(globalFinishedRankingsMap.get('ini_first_tournament')!))
 
   // tournament.phases.forEach((p: Phase) => {
   //   console.table(rankingToTable(p.getRelativeRank()))

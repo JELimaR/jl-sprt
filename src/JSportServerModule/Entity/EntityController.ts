@@ -1,5 +1,5 @@
-import { IEntityController, IPaginationData } from "../../JSportModule";
-import { IConfederationData, IFederationData } from "../../JSportModule/data/entities";
+import { IEntityController, IFederationData, IPaginationData } from "../../JSportModule";
+import { IConfederationData } from "../../JSportModule/data/entities";
 import EntityHandler from "./EntityHandler";
 
 

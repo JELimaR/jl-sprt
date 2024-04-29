@@ -56,6 +56,10 @@ export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
 
   }
 
+  get isFinished(): boolean {
+    return super.isFinished && this._turns.length == this.config.turnHalfWeeks.length
+  }
+
   get turns(): Turn[] {
     return this._turns;
   }

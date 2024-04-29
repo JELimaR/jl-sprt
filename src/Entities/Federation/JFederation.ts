@@ -1,6 +1,6 @@
 import { TypeCategoryList, TypeJCategory } from "../../Tournament/types";
 import JInstitution from "../JInstitution";
-import LeagueSystem, { ICupSystemCreator, ILeagueSystemCreator, JCupSystem } from "../../JSportModule/data/Entities/LeagueSystem";
+import LeagueSystem, { ICupSystemCreator, ILeagueSystemCreator, CupSystem } from "../../JSportModule/data/Entities/LeagueSystem";
 import JEventChangeFederationReadingConfig from "./JEventChangeFederationReadingConfig";
 import JSportOrganization, { IJSportOrganizationCreator } from "../SportOrganization";
 import { JCountry } from "../JGeogEntity";
@@ -36,9 +36,9 @@ export default class JFederation extends JSportOrganization<JCountry, JInstituti
   private _cupSystemConfg: TypeCategoryList<ICupSystemCreator> = {};
   // tournaments
   private _currentLeagueSystem: TypeCategoryList<LeagueSystem> = {};
-  private _currenCupSystem: TypeCategoryList<JCupSystem> = {};
+  private _currenCupSystem: TypeCategoryList<CupSystem> = {};
   private _historicLeagueSystem: TypeCategoryList<LeagueSystem>[] = [];
-  private _historicCupSystem: TypeCategoryList<JCupSystem>[] = [];
+  private _historicCupSystem: TypeCategoryList<CupSystem>[] = [];
 
   //
   private _teams: TypeCategoryList<Team> = {};
