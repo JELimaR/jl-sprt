@@ -1,114 +1,114 @@
-import { TypeCategoryList, TypeJCategory } from "../../Tournament/types";
-import JInstitution from "../JInstitution";
-import LeagueSystem, { ICupSystemCreator, ILeagueSystemCreator, CupSystem } from "../../JSportModule/data/Entities/LeagueSystem";
-import JEventChangeFederationReadingConfig from "./JEventChangeFederationReadingConfig";
-import JSportOrganization, { IJSportOrganizationCreator } from "../SportOrganization";
-import { JCountry } from "../JGeogEntity";
-import { DAYSPERYEAR, JDateTime, TypeDayOfYear } from "../../JCalendar/JDateTimeModule";
-import Team from "../../JSportModule/data/Team";
+// import { TypeCategoryList, TypeJCategory } from "../../Tournament/types";
+// // import JInstitution from "../JInstitution";
+// import LeagueSystem, { ICupSystemCreator, ILeagueSystemCreator, CupSystem } from "../../JSportModule/data/Entities/LeagueSystem";
+// import JEventChangeFederationReadingConfig from "./JEventChangeFederationReadingConfig";
+// import JSportOrganization, { IJSportOrganizationCreator } from "../SportOrganization";
+// import { JCountry } from "../JGeogEntity";
+// import { DAYSPERYEAR, JDateTime, TypeDayOfYear } from "../../JCalendar/JDateTimeModule";
+// import Team from "../../JSportModule/data/Team";
 
-export type TypeFederationReadingConfig = 
- | {
-   type: 'c',
-   config: ICupSystemCreator
- }
- | {
-  type: 'l',
-  config: ILeagueSystemCreator
-}
+// export type TypeFederationReadingConfig = 
+//  | {
+//    type: 'c',
+//    config: ICupSystemCreator
+//  }
+//  | {
+//   type: 'l',
+//   config: ILeagueSystemCreator
+// }
 
-export interface IJFederationCreator extends IJSportOrganizationCreator<JCountry, JInstitution> {
-  id: string;
-  // country: JCountry; // JCountry
-  // founders: JInstitution[];
-  // headquarters: any; // JTown
-  // dateTimeCreator: IJDateTimeCreator;
-}
+// export interface IJFederationCreator extends IJSportOrganizationCreator<JCountry, JInstitution> {
+//   id: string;
+//   // country: JCountry; // JCountry
+//   // founders: JInstitution[];
+//   // headquarters: any; // JTown
+//   // dateTimeCreator: IJDateTimeCreator;
+// }
 
-export default class JFederation extends JSportOrganization<JCountry, JInstitution> {
-  private _id: string;
+// export default class JFederation extends JSportOrganization<JCountry, JInstitution> {
+//   private _id: string;
 
-  /**
-   * comps
-   */
-  // config
-  private _leagueSystemConfig: TypeCategoryList<ILeagueSystemCreator> = {};
-  private _cupSystemConfg: TypeCategoryList<ICupSystemCreator> = {};
-  // tournaments
-  private _currentLeagueSystem: TypeCategoryList<LeagueSystem> = {};
-  private _currenCupSystem: TypeCategoryList<CupSystem> = {};
-  private _historicLeagueSystem: TypeCategoryList<LeagueSystem>[] = [];
-  private _historicCupSystem: TypeCategoryList<CupSystem>[] = [];
+//   /**
+//    * comps
+//    */
+//   // config
+//   private _leagueSystemConfig: TypeCategoryList<ILeagueSystemCreator> = {};
+//   private _cupSystemConfg: TypeCategoryList<ICupSystemCreator> = {};
+//   // tournaments
+//   private _currentLeagueSystem: TypeCategoryList<LeagueSystem> = {};
+//   private _currenCupSystem: TypeCategoryList<CupSystem> = {};
+//   private _historicLeagueSystem: TypeCategoryList<LeagueSystem>[] = [];
+//   private _historicCupSystem: TypeCategoryList<CupSystem>[] = [];
 
-  //
-  private _teams: TypeCategoryList<Team> = {};
+//   //
+//   private _teams: TypeCategoryList<Team> = {};
   
-  // _calendar: JCalendar;
+//   // _calendar: JCalendar;
   
-  constructor(ifc: IJFederationCreator) {
-    super(ifc)
-    this._id = ifc.id;
-  }
-  get id(): string {return this._id}
+//   constructor(ifc: IJFederationCreator) {
+//     super(ifc)
+//     this._id = ifc.id;
+//   }
+//   get id(): string {return this._id}
 
-  createTeam(category: TypeJCategory) {
-    if (!this._teams[category])
-      throw new Error(`la inst ${this._id} ya cuenta con un team en la categoria: ${category}`);
+//   createTeam(category: TypeJCategory) {
+//     // if (!this._teams[category])
+//     //   throw new Error(`la inst ${this._id} ya cuenta con un team en la categoria: ${category}`);
       
-    let tid: string = `${this._id}-${category}`
-    this._teams[category] = new Team(tid);
-  }
-  getFederationTeamPerCategory(category: TypeJCategory): Team | undefined { return this._teams[category] }
+//     // let tid: string = `${this._id}-${category}`
+//     // this._teams[category] = new Team(tid);
+//   }
+//   getFederationTeamPerCategory(category: TypeJCategory): Team | undefined { return this._teams[category] }
 
-  getInstitutionTeamsPerCategory(cat: TypeJCategory): Team[] {
-    let out: Team[] = [];
-    this.members.forEach((inst: JInstitution) => {
-      const team: Team | undefined = inst.getInstitutionPerCategory(cat);
-      if (team) out.push(team);
-    })
-    return out;
-  }
+//   getInstitutionTeamsPerCategory(cat: TypeJCategory): Team[] {
+//     let out: Team[] = [];
+//     this.members.forEach((inst: JInstitution) => {
+//       const team: Team | undefined = inst.getInstitutionPerCategory(cat);
+//       if (team) out.push(team);
+//     })
+//     return out;
+//   }
 
-  setleagueSystem(ilsc: ILeagueSystemCreator ): void { 
-    this._leagueSystemConfig[ilsc.category] = ilsc;
-  }
-  setCupSystem(icsc: ICupSystemCreator ): void { 
-    this._cupSystemConfg[icsc.category] = icsc;
-  }
+//   setleagueSystem(ilsc: ILeagueSystemCreator ): void { 
+//     this._leagueSystemConfig[ilsc.category] = ilsc;
+//   }
+//   setCupSystem(icsc: ICupSystemCreator ): void { 
+//     this._cupSystemConfg[icsc.category] = icsc;
+//   }
 
-  changeLeagueSystemConfig(ilsc: ILeagueSystemCreator): void {
-    const currentlsConfig: ILeagueSystemCreator | undefined = this._leagueSystemConfig[ilsc.category];
-    if (!currentlsConfig) {
-      this.setleagueSystem(ilsc);
-    } else {
-      /**
-       * crear un evento para el ultimo día de la season siguiente para cambiar el ls o de la misma season segun:
-       * cambio de formato y no de prom y rel number asi como del participants number
-       * */ 
-      let forNextSeason: boolean = true;
-      if (currentlsConfig.divisions.length === ilsc.divisions.length) {
-        console.log('mismo tamaño');
-      }
-      const year = this.calendar.now.getDateTime().date.year + (forNextSeason ? 0 : 1);// 0 o 1
-      this.calendar.addEvent( new JEventChangeFederationReadingConfig({
-        dateTime: JDateTime.createFromDayOfYearAndYear(DAYSPERYEAR as TypeDayOfYear, year).getIJDateTimeCreator(),
-        calendar: this.calendar,
-        fed: this,
-        config: {type: 'l', config: ilsc},
-      }))
-    }
-  }
+//   changeLeagueSystemConfig(ilsc: ILeagueSystemCreator): void {
+//     const currentlsConfig: ILeagueSystemCreator | undefined = this._leagueSystemConfig[ilsc.category];
+//     if (!currentlsConfig) {
+//       this.setleagueSystem(ilsc);
+//     } else {
+//       /**
+//        * crear un evento para el ultimo día de la season siguiente para cambiar el ls o de la misma season segun:
+//        * cambio de formato y no de prom y rel number asi como del participants number
+//        * */ 
+//       let forNextSeason: boolean = true;
+//       if (currentlsConfig.divisions.length === ilsc.divisions.length) {
+//         console.log('mismo tamaño');
+//       }
+//       const year = this.calendar.now.getDateTime().date.year + (forNextSeason ? 0 : 1);// 0 o 1
+//       this.calendar.addEvent( new JEventChangeFederationReadingConfig({
+//         dateTime: JDateTime.createFromDayOfYearAndYear(DAYSPERYEAR as TypeDayOfYear, year).getIJDateTimeCreator(),
+//         calendar: this.calendar,
+//         fed: this,
+//         config: {type: 'l', config: ilsc},
+//       }))
+//     }
+//   }
 
-  changeCupSystemConfig(icsc: ICupSystemCreator): void {
+//   changeCupSystemConfig(icsc: ICupSystemCreator): void {
 
-    const year = this.calendar.now.getDateTime().date.year;
-    this.calendar.addEvent( new JEventChangeFederationReadingConfig({
-      dateTime: JDateTime.createFromDayOfYearAndYear(DAYSPERYEAR as TypeDayOfYear, year).getIJDateTimeCreator(),
-      calendar: this.calendar,
-      fed: this,
-      config: {type: 'c', config: icsc},
-    }))
+//     const year = this.calendar.now.getDateTime().date.year;
+//     this.calendar.addEvent( new JEventChangeFederationReadingConfig({
+//       dateTime: JDateTime.createFromDayOfYearAndYear(DAYSPERYEAR as TypeDayOfYear, year).getIJDateTimeCreator(),
+//       calendar: this.calendar,
+//       fed: this,
+//       config: {type: 'c', config: icsc},
+//     }))
 
-  }
+//   }
 
-}
+// }

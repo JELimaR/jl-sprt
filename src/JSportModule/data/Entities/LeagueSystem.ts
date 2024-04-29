@@ -99,15 +99,15 @@ export default class LeagueSystem {
     return out;
   }
 
-  // getGenericRankOrdered() {
-  //   let out: IGenericRankItem[] = []
-  //   this._competitions.forEach((idc: IDivisionConfig) => {
-  //     out.push(
-  //       ...idc.fromGSGData.gsgData.initialCreator.qualyrankList
-  //     )
-  //   })
-  //   return out;
-  // }
+  getGenericRankOrdered() {
+    let out: IGenericRankItem[] = []
+    this._competitions.forEach((idc: IDivisionConfig) => {
+      out.push(
+        ...idc.fromGSGData.gsgData.initialCreator.qualyrankList
+      )
+    })
+    return out;
+  }
 
   static getLeagueSystemTransitionCondition(prev: IDivisionCondition[], next: IDivisionCondition[]): IDivisionCondition[] {
     const D1 = prev.length;

@@ -1,5 +1,5 @@
 import JCalendar from "../JCalendar/JCalendar";
-import { getExampleTeams } from "../Entities/ExampleData";
+import { getExampleTeams } from "./ExampleData";
 import mostrarFecha from "../mostrarFechaBorrar";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
 import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";

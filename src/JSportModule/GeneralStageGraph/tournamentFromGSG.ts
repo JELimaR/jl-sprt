@@ -54,7 +54,7 @@ export function tournamentFromGSG(entry: ITournamentFromGSGData): ITournamentCon
   const phases: IPhaseConfig[] = [];
   let startIdx = 0;
   let endIdx = 0;
-  gsg._phases.forEach((phaseNode: PhaseNode) => {
+  gsg.phases.forEach((phaseNode: PhaseNode) => {
     startIdx = endIdx;
     endIdx += phaseNode.getHwsNumber();
     if (startIdx != endIdx) {

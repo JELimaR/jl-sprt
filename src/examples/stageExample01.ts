@@ -1,5 +1,5 @@
 import JCalendar from "../JCalendar/JCalendar";
-import { getExampleTeams } from "../Entities/ExampleData";
+import { getExampleTeams } from "./ExampleData";
 import StagePlayoff from "../Tournament/Stage/StagePlayoff/StagePlayoff";
 import mostrarFecha from "../mostrarFechaBorrar";
 import exampleAdvance from "./exampleAdvance";

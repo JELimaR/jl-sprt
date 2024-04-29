@@ -13,15 +13,17 @@ type EdgeAttributes = {}
 type TYPE_IdOrAttr = string | NodeAttributes;
 
 export class GeneralStageGraph /*extends DirectedGraph<NodeAttributes>*/ {
-  _id: string;
-  _graph: DirectedGraph<NodeAttributes>;
-  _phases: PhaseNode[] = [];
+  private _id: string;
+  private _graph: DirectedGraph<NodeAttributes>;
+  private _phases: PhaseNode[] = [];
   constructor(id: string) {
     this._id = id;
     this._graph = new DirectedGraph<NodeAttributes>();
   }
 
   get id(): string { return this._id}
+  get graph(): DirectedGraph<NodeAttributes> { return this._graph }
+  get phases(): PhaseNode[] { return this._phases }
 
   getNode(entry: TYPE_IdOrAttr): NodeAttributes {
     const id: string = entry instanceof ANode ? entry.getId() : entry;
@@ -228,7 +230,7 @@ export class PhaseNode {
     stages.forEach((sn: StageNode<IStageNodeData>) => {
       graph.getNode(sn);
     })
-    this.graph._phases.push(this);
+    this.graph.phases.push(this);
   }
 
   getTargetRanksGroups() {

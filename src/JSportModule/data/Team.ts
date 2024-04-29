@@ -1,19 +1,35 @@
 import Match from "../Match/JMatch";
+import { Federation, Institution } from "./Entities";
+import { TypeCategory } from "./types";
+
+export interface ITeamData {
+
+}
+
+export interface ITeamCreator {
+  entity: Institution | Federation;
+  category: TypeCategory;
+  matches: Math[];
+}
 
 export default class Team {
-	private _id: string;
+	// private _id: string;
 	private _matches: Match[] = [];
-	constructor(id: string) {
-		this._id = id;
+  private _entity: Institution | Federation
+  private _category: TypeCategory
+	constructor(itc: ITeamCreator) {
+    this._entity = itc.entity
+    this._category = itc.category
 	}
 
-	get id(): string {return this._id}
+	get id(): string {return `${this._category}_${this._entity.id}`}
+  get entity(): Institution | Federation { return this._entity }
 	get matches(): Match[] { return this._matches }
 	addNewMatch(match: Match) { 
 		this._matches.push(match);
 	}
 	getTeamMatch(): TeamMatch {
-		return new TeamMatch(this._id);
+		return new TeamMatch(this.id);
 	}
 }
 

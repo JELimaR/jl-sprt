@@ -6,7 +6,7 @@ import { StageGroupNode, StagePlayoffNode } from "./RealStageNode";
 
 export function renderGSGtoPNG(gsg: GeneralStageGraph) {
   /**DIBUJO */
-  const XSTEP = 200 / (4 + gsg._phases.length * 2);
+  const XSTEP = 200 / (4 + gsg.phases.length * 2);
   // defino el ini y sus targets
   const mapPositions = new Map<string, { x: number, y: number }>()
   let XNOW = XSTEP - 100;
@@ -21,7 +21,7 @@ export function renderGSGtoPNG(gsg: GeneralStageGraph) {
   })
 
   // defino para cada phase y sus targets
-  gsg._phases.forEach((pn: PhaseNode) => {
+  gsg.phases.forEach((pn: PhaseNode) => {
     XNOW += XSTEP;
     const YSTEP1 = 200 / (pn.stages.length + 1);
     pn.stages.forEach((sn: StageNode<IStageNodeData>, idx: number) => {
@@ -41,7 +41,7 @@ export function renderGSGtoPNG(gsg: GeneralStageGraph) {
   mapPositions.set('fin', { x: XNOW + XSTEP, y: 0 })
 
 
-  renderToPNG(gsg._graph, './graph.png', {
+  renderToPNG(gsg.graph, './graph.png', {
     nodes: {
       defaultColor: '#0000FF',
       reducer: (_, node: string, attributes: NodeAttributes) => {

@@ -21,8 +21,11 @@ export class Institution {
     if (this._teams[category])
       throw new Error(`la inst ${this._id} ya cuenta con un team en la categoria: ${category}`);
 
-    let tid: string = `${category}-${this._id}`
-    this._teams[category] = new Team(tid);
+    this._teams[category] = new Team({
+      category: category,
+      entity: this,
+      matches: []
+    });
   }
 
   getTeam(category: TypeCategory): Team | undefined {

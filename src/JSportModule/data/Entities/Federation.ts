@@ -1,6 +1,6 @@
 import { globalFinishedRankingsMap } from "../../../Tournament/Rank/globalFinishedRankingsMap";
 import { ITournamentFromGSGData } from "../../GeneralStageGraph/tournamentFromGSG";
-import { IRankItem, Ranking } from "../../Ranking";
+import { IGenericRankItem, IRankItem, Ranking } from "../../Ranking";
 import { ISportOrganizationData } from "../entities";
 import Team from "../Team";
 import { CATEGORIES, getCategoryList, TypeCategory, TypeCategoryList } from "../types";
@@ -53,7 +53,7 @@ export class Federation extends SportOrganization<Country, Institution> {
     })
   }
 
-  private getRankList(category: TypeCategory) {
+  private getRankList(category: TypeCategory): Team[] {
     let rankList: Team[];
     if (this._rankings[category]) {
       rankList = [...this._rankings[category] as Team[]];
@@ -86,13 +86,21 @@ export class Federation extends SportOrganization<Country, Institution> {
   // actualizar el leaguesistem
   updateLeagueSystem(ls: LeagueSystem) {
     const category: TypeCategory = ls._category;
+    let franking = this.getRanking(category)
     let categoryTeams = this.getRankList(category);
 
-    if (ls.getTeamsCount() > categoryTeams.length) {
+    if (ls.getTeamsCount() > franking.size) {
       throw new Error(`El league system requiere: ${ls.getTeamsCount()} teams, mientras que
-      para la categoria (${category}) hay "incriptos" un total de ${categoryTeams.length} teams.
-      EN Federation.updateLeagueSystem`)
+      para la categoria (${category}) hay "incriptos" un total de ${franking.size} teams.
+      En Federation.updateLeagueSystem`)
     }
+    ls.getGenericRankOrdered().forEach((igri: IGenericRankItem, idx: number) => {
+      const item = franking.getGenericRankItems()[idx]
+      if (!(item.origin == igri.origin && item.pos == igri.pos)) {
+        throw new Error(`${item.origin}, ${item.pos}, ${igri.origin}, ${igri.pos}, 
+        En Federation.updateLeagueSystem`)
+      }
+    })
     this._leagueSystem[category] = ls;
   }
 
@@ -116,7 +124,7 @@ export class Federation extends SportOrganization<Country, Institution> {
     let rankList: Team[] = this.getRankList(category);
     const out: IRankItem[] = rankList.map((team: Team, i: number) => {
       return {
-        origin: this.id, pos: i + 1, team: team
+        origin: `fr_${category}_${this.id}`, pos: i + 1, team: team
       }
     })
     return Ranking.fromRankItemArr(`fr_${category}_${this.id}`, out)
@@ -152,11 +160,11 @@ export class Federation extends SportOrganization<Country, Institution> {
           if (iripos <= p) {
             // console.log('pro', iripos, p)
             teams[pos - p] = iri.team;
-          // los que desceienden
+            // los que desceienden
           } else if (iripos > NR.getGenericRankItems().length - r) {
             // console.log('rel', iripos, r)
             teams[pos + r] = iri.team;
-          // los demas
+            // los demas
           } else {
             teams[pos] = iri.team
           }
@@ -172,38 +180,43 @@ export class Federation extends SportOrganization<Country, Institution> {
       }
       // console.log('teams despues', teams)
       // console.log('------------------------------------------------------')
+      // console.log(teams.map(t => t?.id))
 
-      this.f2(Ranking.fromRankItemArr('F', teams.map((t, i) => {
+      this.f2(teams.map((t) => {
         if (!t) {
           console.log(teams)
           throw new Error(`FALTA PULIR`)
         }
-        return { origin: 's', pos: i + 1, team: t }
-      })), category)
+        return t
+      }), category)
     }
   }
 
   // usar getRanking
-  private f2(rank: Ranking, category: TypeCategory) {
+
+  private f2(teamsArr: Team[], category: TypeCategory) {
     const rankList: Team[] = [...this.getRankList(category)]
     const teamsPrevList = [...rankList];
-    const teamsArr = rank.getRankTable().map(iri => iri.team)
     for (let i = 0; i < teamsArr.length; i++) {
       // no se enceuntra una institucion con un id de teams
-      const inst = this.members.get(teamsArr[i].id.split('-')[1])
+      const inst = this.members.get(teamsArr[i].entity.id)
       if (!!inst) {
-        rankList[i] = inst.getTeam(category)!;
+        rankList[i] = teamsArr[i]//inst.getTeam(category)!;
       } else {
-        console.table(rank.getRankTable())
+        // console.table(rank.getRankTable())
+        console.log(rankList)
         console.log(inst, 'En updateRanking')
         throw new Error(``)
       }
     }
+    console.log()
+    this._rankings['S'] = rankList;
+    // throw new Error(`stop`)
     // verifico que todos siguen estando
     teamsPrevList.forEach((elem: Team) => {
-      if (!this.members.get(elem.id.split('-')[1])) {
-        console.log(this._rankings[category]!.map(e => e.id.split('-')[1]))
-        throw new Error(`en la lista de instituciones no se incluye el elemento: ${elem.id.split('-')[1]}.
+      if (!this.members.get(elem.entity.id)) {
+        console.log(this._rankings[category]!.map(e => e.entity.id))
+        throw new Error(`en la lista de instituciones no se incluye el elemento: ${elem.entity.id}.
         En Federation.updateRanking`)
       }
     })

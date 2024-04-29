@@ -3,7 +3,7 @@
  * se crea IJTorunamentConfig como ejemplo
  */
 
-import { getExampleTeams } from "../Entities/ExampleData";
+import { getExampleTeams } from "../examples/ExampleData";
 import { calculateParticipantsPerGroupArray } from "./validationFunctions";
 
 const selection = getExampleTeams(32).map((t, idx) => { return { team: t, rank: idx + 1 } })

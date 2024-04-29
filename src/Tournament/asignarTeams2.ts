@@ -9,8 +9,6 @@ import Tournament from "./Tournament";
  * @param tournament 
  */
 
-
-
 export const asignarTeams2 = (tournament: Tournament) => {
   const items: IGenericRankItem[] = [];
   const teams: Team[] = [];
@@ -85,7 +83,7 @@ export const asignarTeams2 = (tournament: Tournament) => {
     items: items,
     teams: teams,
   });
-  console.log(out.getInterface())
+  // console.log(out.getInterface())
   // throw new Error(`stop`)
   // globalFinishedRankingsMap.set(iniRankings[0].context, Ranking.fromTypeRanking(ini_ttiidd_ranking));
   globalFinishedRankingsMap.set(out.context, out)

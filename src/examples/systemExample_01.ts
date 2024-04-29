@@ -1,5 +1,5 @@
 
-import { getExampleTeams } from "../Entities/ExampleData";
+import { getExampleTeams } from "./ExampleData";
 import { JEvent } from "../JCalendar/Event/JEvent";
 import JCalendar from "../JCalendar/JCalendar";
 import { IJDateTimeCreator, JDateTime } from "../JCalendar/JDateTimeModule";

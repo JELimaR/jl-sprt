@@ -12,6 +12,7 @@ import { asignarTeams2 } from "../Tournament/asignarTeams2";
 import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
 import Tournament from "../Tournament/Tournament";
 import exampleAdvance from "./exampleAdvance";
+import { getFederationCreators, getInstitutionCreators } from "./ExampleData";
 
 /**
  * Sistema con una unica federation
@@ -144,40 +145,6 @@ export default function fede_inst_Example() {
   console.log('next', next)
 }
 
-const getFederationCreators = (count: number) => {
-  let out: IFederationCreator[] = [];
-
-  for (let fede = 1; fede <= count; fede++) {
-    const fid = `F${String(fede).padStart(3, '0')}`;
-    const cid = `C${String(fede).padStart(3, '0')}`;
-    const tid = `T${String(Math.round(fede * 321 * Math.random() + 187 * Math.random())).padStart(8, '0')}`;
-
-    out.push({
-      id: fid, areaAsosiated: new Country({ id: cid }),
-      fundationDay: Math.round(378 * (1888 + 24 * Math.random()) + 378 * Math.random()),
-      founders: [], headquarters: new Town({ id: tid }), institutions: [],
-      cupSystem: {}, leagueSystem: {}, rankings: {}
-    });
-  }
-
-  return out;
-}
-
-const getInstitutionCreators = (count: number, cid: string) => {
-  let out: IInstitutionCreator[] = [];
-  for (let ii = 1; ii <= count; ii++) {
-    const iid = `${cid}_I${String(ii).padStart(3, '0')}`;
-    const tid = `T${String(Math.round(ii * 321 * Math.random() + 187 * Math.random())).padStart(8, '0')}`;
-
-    out.push({
-      id: iid
-    })
-
-  }
-
-  return out;
-}
-
 /************************************************************************************************************ */
 // año 1156 a 1160
 const iniCreator_1156: TInitialCreator = {
@@ -207,8 +174,8 @@ const phaseCreatorArr_1156: TPhaseCreator[] = [
 const config_1156: ITournamentFromGSGData = {
   name: 'Lig',
   gsgData: { initialCreator: iniCreator_1156, phaseArr: phaseCreatorArr_1156 },
-  matchList: [28, 32, 36, 40, 44, 48, 52, 70, 74, 78, 82, 86, 90, 94],
-  schedList: [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
+  matchList: [28, 32, 36, 40, 44, 48, 52, 70, 74, 78, 82, 86, 90, 94, 98, 99, 100],
+  schedList: [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
   qualyRules: [
     // { minRankPos: 1, maxRankPos: 1 }
   ]
@@ -294,7 +261,9 @@ const phaseCreatorArr_1161_2d: TPhaseCreator[] = [
     id: 2,
     stages: [
       { count: 1, stage: { type: 'transfer' } },
-      { count: 2, stage: { type: 'playoff', opt: 'neutral', value: 1 } },
+      { count: 2, stage: { type: 'playoff', opt: 'neutral', value: 1, draw: {interv: 14, rules: [{
+        origin: 'FGF', minCount: 1
+      }]} } },
       { count: 5, stage: { type: 'transfer' } },
     ]
   }

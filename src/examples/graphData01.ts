@@ -1,4 +1,4 @@
-import { getExampleTeams } from "../Entities/ExampleData";
+import { getExampleTeams } from "./ExampleData";
 import { Ranking, TypeRanking } from "../JSportModule";
 import { IGenericRank, IGenericRankItem } from "../JSportModule/interfaces";
 
