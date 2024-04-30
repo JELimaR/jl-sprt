@@ -1,3 +1,4 @@
+import { IDivisionCondition } from ".";
 import { globalFinishedRankingsMap } from "../../../Tournament/Rank/globalFinishedRankingsMap";
 import { ITournamentFromGSGData } from "../../GeneralStageGraph/tournamentFromGSG";
 import { IGenericRankItem, IRankItem, Ranking } from "../../Ranking";
@@ -53,14 +54,44 @@ export class Federation extends SportOrganization<Country, Institution> {
     })
   }
 
-  private getRankList(category: TypeCategory): Team[] {
-    let rankList: Team[];
-    if (this._rankings[category]) {
-      rankList = [...this._rankings[category] as Team[]];
-    } else {
-      rankList = [];
+  getDivTourId(category: TypeCategory, level: number): string {
+    if (0 >= level && level >= 100) {
+      throw new Error(`
+      En Federation.getDivTourId`)
     }
-    return rankList
+    return `${category}_${this.id}_D${String(level).padStart(2, '0')}`
+  }
+  getDivGenericRank(category: TypeCategory, conditions: IDivisionCondition[]) {
+    let out: Array<IGenericRankItem[]> = [];
+    let pos = 0;
+    const IGRIList = this.getRanking(category).getGenericRankItems();
+    conditions.forEach((cond: IDivisionCondition) => {
+      const items: IGenericRankItem[] = []
+      for (let i = pos; i < pos + cond.N && i < IGRIList.length; i++) {
+        items.push(IGRIList[i])
+      }
+      if (items.length !== cond.N) {
+        console.log(IGRIList.length)
+        console.log(items.length)
+        console.log(cond)
+        throw new Error(`
+        En Federation.getDivGenericRank`)
+      }
+      out.push(items)
+      pos += cond.N
+    })
+    return out;
+  }
+
+  private getRankList(category: TypeCategory): Team[] {
+    let out: Team[];
+    const rankList = this._rankings[category]
+    if (rankList) {
+      out = [...rankList];
+    } else {
+      out = [];
+    }
+    return out
   }
 
   // la institution pasa a formar parte de una categoria, implica que empieza a competir en dicha categoria
@@ -130,96 +161,82 @@ export class Federation extends SportOrganization<Country, Institution> {
     return Ranking.fromRankItemArr(`fr_${category}_${this.id}`, out)
   }
 
-  // FALTA PULIR
-  updateRanking(category: TypeCategory) {
+  // Se actualizan los rankings por categoria de la federation al final de temporada
+  updateRankings() {
+    CATEGORIES.forEach((cat: TypeCategory) => {
+      this.updateRankingsPerCategory(cat)
+    })
+  }
+  private updateRankingsPerCategory(category: TypeCategory) {
     const ls = this._leagueSystem[category];
-    const rankListCategory = this.getRankList(category)
-    const teams: (Team | undefined)[] = [...Array(rankListCategory.length).keys()].map((_) => undefined)
-    const divRankings: Ranking[] = []
+    const teamListCategory = this.getRankList(category)
     let pos = 0
     if (!!ls) {
       ls.getDivisionConfigList().forEach((idc: IDivisionConfig) => {
-        const trank = globalFinishedRankingsMap.get('tr_' + idc.fromGSGData.gsgData.initialCreator.tournamentId)
-        if (!!trank) {
-          divRankings.push(trank)
-        } else {
-          throw new Error(`No se debe actualizar hasta el final de temporada`)
-        }
-
-      })
-
-      ls.getDivisionConfigList().forEach((idc: IDivisionConfig, i: number) => {
-        const NR = divRankings[i];
+        const trank = globalFinishedRankingsMap.get(`tr_${this.getDivTourId(category, idc.level)}`)
         const p = idc.condition.p
         const r = idc.condition.r
+        // Si no existe el rank es porque no terminó el tournament
+        if (!trank) {
+          console.log('keys', globalFinishedRankingsMap.keys())
+          throw new Error(`No se debe actualizar hasta el final de temporada
+          En Federation.updateRankingsPerCategory`)
+        }
 
-        NR.getRankTable().forEach((iri: IRankItem, iriIdx: number) => {
+        trank.getRankTable().forEach((iri: IRankItem, iriIdx: number) => {
           // console.log(iri.team)
           const iripos = iriIdx + 1;
           // los que ascienden
           if (iripos <= p) {
             // console.log('pro', iripos, p)
-            teams[pos - p] = iri.team;
+            teamListCategory[pos - p] = iri.team;
             // los que desceienden
-          } else if (iripos > NR.getGenericRankItems().length - r) {
+          } else if (iripos > trank.size - r) {
             // console.log('rel', iripos, r)
-            teams[pos + r] = iri.team;
+            teamListCategory[pos + r] = iri.team;
             // los demas
           } else {
-            teams[pos] = iri.team
+            teamListCategory[pos] = iri.team
           }
 
           pos++
         })
-      })
-      // console.log('--------------------------')
-      // console.log('teams antes', teams)
-      // console.log('rankListCategory', rankListCategory)
-      for (let i = pos; i < rankListCategory.length; i++) {
-        teams[i] = rankListCategory[i]
-      }
-      // console.log('teams despues', teams)
-      // console.log('------------------------------------------------------')
-      // console.log(teams.map(t => t?.id))
 
-      this.f2(teams.map((t) => {
-        if (!t) {
-          console.log(teams)
-          throw new Error(`FALTA PULIR`)
-        }
-        return t
-      }), category)
+      })
+
+
+      this.setTeamInRanking(teamListCategory, category)
     }
   }
-
-  // usar getRanking
-
-  private f2(teamsArr: Team[], category: TypeCategory) {
-    const rankList: Team[] = [...this.getRankList(category)]
-    const teamsPrevList = [...rankList];
-    for (let i = 0; i < teamsArr.length; i++) {
-      // no se enceuntra una institucion con un id de teams
-      const inst = this.members.get(teamsArr[i].entity.id)
-      if (!!inst) {
-        rankList[i] = teamsArr[i]//inst.getTeam(category)!;
-      } else {
-        // console.table(rank.getRankTable())
-        console.log(rankList)
-        console.log(inst, 'En updateRanking')
-        throw new Error(``)
-      }
+  private setTeamInRanking(teamsArr: Team[], category: TypeCategory) {
+    const teamsPrevList = [...this.getRankList(category)];
+    // verifico que no haya repetidos
+    const teamsMap = new Map(teamsArr.map(t => [t.id, t]))
+    if (teamsMap.size !== teamsArr.length) {
+      console.log(teamsArr.map(t => t.id))
+      throw new Error(`Hay elementos que se repiten en teamsArr.
+      En Federation.setTeamInRanking`)
     }
-    console.log()
-    this._rankings['S'] = rankList;
-    // throw new Error(`stop`)
+    // verifico que existe cada institution
+    teamsArr.forEach((team: Team) => {
+      const inst = this.members.get(team.entity.id)
+      if (!inst) {
+        console.log(team)
+        throw new Error(`Al actualizar el teamRanking se intenta agregar el team ${team.id},
+        pero la insttution ${team.entity.id} no es miembro de la federation: ${this.id}
+        En Federation.setTeamInRanking`)
+      }
+    })
     // verifico que todos siguen estando
-    teamsPrevList.forEach((elem: Team) => {
-      if (!this.members.get(elem.entity.id)) {
-        console.log(this._rankings[category]!.map(e => e.entity.id))
-        throw new Error(`en la lista de instituciones no se incluye el elemento: ${elem.entity.id}.
+    teamsPrevList.forEach((team: Team) => {
+      if (!teamsMap.get(team.id)) {
+        console.log(this.getRankList(category).map(t => t.entity.id))
+        throw new Error(`en la lista de instituciones no se incluye el elemento: ${team.entity.id}.
         En Federation.updateRanking`)
       }
     })
+
+    this._rankings[category] = teamsArr;
   }
 
 }

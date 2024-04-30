@@ -35,7 +35,7 @@ export class Ranking {
 
   get size(): number { return this._items.length }
 
-  getGenericRankItems(): IGenericRankItem[] { return [...this._items] }
+  getGenericRankItems(): IGenericRankItem[] { return this._items.map(it => { return {origin: it.origin, pos: it.pos} }) }
 
   getRankTable(): IRankItem[] {
     let out: IRankItem[] = [];

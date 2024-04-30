@@ -45,12 +45,10 @@ export default function fede_inst_Example() {
   console.log('federationFileLS')
   console.log(federationFileLS)
 
-  // const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1146).getIJDateTimeCreator());
-  // mostrarFecha(cal.now)
-
+  let cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1154, 168).getIJDateTimeCreator());
   for (let Y = 1154; Y <= 1166; Y++) {
     console.log('-------------------------------', Y, '------------------------------------')
-    const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, Y, 168).getIJDateTimeCreator());
+    cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, Y, 168).getIJDateTimeCreator());
     mostrarFecha(cal.now)
     // actualizo la cantidad institutions
     // nuevas institutions asociadas a una federation
@@ -105,10 +103,7 @@ export default function fede_inst_Example() {
     })
 
     // actualizacion de ranking
-    federation.updateRanking('S')
-
-
-
+    federation.updateRankings()
   }
 
   const lsArr: LeagueSystem[] = []
@@ -143,6 +138,9 @@ export default function fede_inst_Example() {
   console.log('prev', prev)
   console.log('transi', transi)
   console.log('next', next)
+
+  // console.log(federation.getDivGenericRank('S', prev))
+  console.log(federation.getDivGenericRank('S', lsArr[1].getDivisionConfigList().map(e => e.condition)))
 }
 
 /************************************************************************************************************ */
@@ -177,7 +175,7 @@ const config_1156: ITournamentFromGSGData = {
   matchList: [28, 32, 36, 40, 44, 48, 52, 70, 74, 78, 82, 86, 90, 94, 98, 99, 100],
   schedList: [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
   qualyRules: [
-    // { minRankPos: 1, maxRankPos: 1 }
+    { minRankPos: 1, maxRankPos: 1 }
   ]
 }
 federationFileLS.set(1156, {
@@ -187,13 +185,8 @@ federationFileLS.set(1156, {
     divisions: [{
       level: 1,
       fromGSGData: config_1156,
-      condition: {
-        N: 8,
-        p: 0,
-        r: 0
-      }
+      condition: { N: 8, p: 0, r: 0 }
     }],
-    // postRegular: []
   }
 })
 /************************************************************************************************************ */
@@ -230,8 +223,8 @@ const config_1161: ITournamentFromGSGData = {
   matchList: [28, 32, 36, 40, 44, 48, 52, 56, 60, 70, 74, 78, 82, 86, 90, 94, 98, 102],
   schedList: [16, 16, 16, 16, 16, 16, 16, 16, 16, 62, 62, 62, 62, 62, 62, 62, 62, 62],
   qualyRules: [
-    // { minRankPos: 1, maxRankPos: 1 },
-    // { minRankPos: 9, maxRankPos: 10 },
+    { minRankPos: 1, maxRankPos: 1 },
+    { minRankPos: 9, maxRankPos: 10 },
   ]
 };
 // 2 div
@@ -261,9 +254,15 @@ const phaseCreatorArr_1161_2d: TPhaseCreator[] = [
     id: 2,
     stages: [
       { count: 1, stage: { type: 'transfer' } },
-      { count: 2, stage: { type: 'playoff', opt: 'neutral', value: 1, draw: {interv: 14, rules: [{
-        origin: 'FGF', minCount: 1
-      }]} } },
+      {
+        count: 2, stage: {
+          type: 'playoff', opt: 'neutral', value: 1, draw: {
+            interv: 14, rules: [{
+              origin: 'FGF', minCount: 1
+            }]
+          }
+        }
+      },
       { count: 5, stage: { type: 'transfer' } },
     ]
   }
@@ -275,8 +274,8 @@ const config_1161_2d: ITournamentFromGSGData = {
   matchList: [30, 34, 38, 42, 46, 50, 54, 64, 68, 72, 76, 80, 84, 88, 91],
   schedList: [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 89],
   qualyRules: [
-    // { minRankPos: 1, maxRankPos: 1 },
-    // { minRankPos: 1, maxRankPos: 2 },
+    { minRankPos: 1, maxRankPos: 1 },
+    { minRankPos: 1, maxRankPos: 2 },
   ]
 }
 const transi = LeagueSystem.getLeagueSystemTransitionCondition(
@@ -295,21 +294,12 @@ federationFileLS.set(1161, {
     divisions: [{
       level: 1,
       fromGSGData: config_1161,
-      condition: {
-        N: 10,
-        p: 0,
-        r: 2
-      }
+      condition: { N: 10, p: 0, r: 2 }
     }, {
       level: 2,
       fromGSGData: config_1161_2d,
-      condition: {
-        N: 8,
-        p: 2,
-        r: 0
-      }
+      condition: { N: 8, p: 2, r: 0 }
     }],
-    // postRegular: []
   }
 })
 // esto se debe hacer antes/agregar antes
@@ -322,7 +312,6 @@ federationFileLS.set(1160, {
       fromGSGData: config_1156,
       condition: transi[0]
     }],
-    // postRegular: []
   }
 })
 federationFileLS.forEach((list: TypeCategoryList<ILeagueSystemCreator>) => {
