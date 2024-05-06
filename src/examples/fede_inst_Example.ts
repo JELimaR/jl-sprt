@@ -175,7 +175,7 @@ const config_1156: ITournamentFromGSGData = {
   matchList: [28, 32, 36, 40, 44, 48, 52, 70, 74, 78, 82, 86, 90, 94, 98, 99, 100],
   schedList: [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
   qualyRules: [
-    { minRankPos: 1, maxRankPos: 1 }
+    // { minRankPos: 1, maxRankPos: 1 }
   ]
 }
 federationFileLS.set(1156, {
@@ -223,8 +223,8 @@ const config_1161: ITournamentFromGSGData = {
   matchList: [28, 32, 36, 40, 44, 48, 52, 56, 60, 70, 74, 78, 82, 86, 90, 94, 98, 102],
   schedList: [16, 16, 16, 16, 16, 16, 16, 16, 16, 62, 62, 62, 62, 62, 62, 62, 62, 62],
   qualyRules: [
-    { minRankPos: 1, maxRankPos: 1 },
-    { minRankPos: 9, maxRankPos: 10 },
+    // { minRankPos: 1, maxRankPos: 1 },
+    // { minRankPos: 9, maxRankPos: 10 },
   ]
 };
 // 2 div
@@ -274,8 +274,8 @@ const config_1161_2d: ITournamentFromGSGData = {
   matchList: [30, 34, 38, 42, 46, 50, 54, 64, 68, 72, 76, 80, 84, 88, 91],
   schedList: [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 89],
   qualyRules: [
-    { minRankPos: 1, maxRankPos: 1 },
-    { minRankPos: 1, maxRankPos: 2 },
+    // { minRankPos: 1, maxRankPos: 1 },
+    // { minRankPos: 1, maxRankPos: 2 },
   ]
 }
 const transi = LeagueSystem.getLeagueSystemTransitionCondition(

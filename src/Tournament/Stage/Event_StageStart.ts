@@ -1,3 +1,4 @@
+import { isSetIterator } from "util/types";
 import { IJEventInfo, JEvent } from "../../JCalendar/Event/JEvent";
 import { IRankItem } from "../../JSportModule";
 import { globalFinishedRankingsMap } from "../Rank/globalFinishedRankingsMap";
@@ -25,6 +26,9 @@ export class Event_StageStart extends JEvent {
     console.log(`ejecuting starting and teams draw from stage: ${this._stage.info.id}  (${this._stage.info.season})`);
     
     const rankTable = this.getParticipants();
+    rankTable.forEach((iri: IRankItem) => {
+      iri.team.addStage(this._stage)
+    })
     this._stage.start(rankTable, this.calendar);
   }
 
@@ -55,7 +59,8 @@ export class Event_StageStart extends JEvent {
         console.log(ranking?.getGenericRankItems())
 
       })
-      throw new Error(``)
+      throw new Error(`
+      en Event_StageStart.getParticipants`)
     }
 
     rankTable.sort((a,b) => a.pos - b.pos);

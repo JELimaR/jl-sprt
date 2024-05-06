@@ -7,7 +7,7 @@ import Bombo from "./Bombo";
 import { Event_StageEnd } from "./Event_StageEnd";
 import { Event_StageStart } from "./Event_StageStart";
 
-
+export type TGS = Stage<IElementInfo, IStageConfig>;
 /**
  * generar el start event
  * generar el end event

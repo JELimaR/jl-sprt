@@ -6,7 +6,7 @@ import { Ranking, TypeRanking } from "../JSportModule";
 import { globalFinishedRankingsMap } from "./Rank/globalFinishedRankingsMap";
 import StageGroup from "./Stage/StageGroup/StageGroup";
 import StagePlayoff from "./Stage/StagePlayoff/StagePlayoff";
-import { TGS } from "./types";
+import { TGS } from "./Stage/Stage";
 
 export default class Phase extends TCC<IElementInfo, IPhaseConfig> { // esto es SortedStagesPhase
 

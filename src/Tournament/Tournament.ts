@@ -4,7 +4,7 @@ import { Ranking } from "../JSportModule";
 import { createGSG } from "../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
 import Phase from "./Phase";
-import { TGS } from "./types";
+import { TGS } from "./Stage/Stage";
 
 export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
 
