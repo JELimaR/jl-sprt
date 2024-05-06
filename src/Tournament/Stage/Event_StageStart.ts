@@ -1,7 +1,7 @@
 import { IJEventInfo, JEvent } from "../../JCalendar/Event/JEvent";
 import { IRankItem } from "../../JSportModule";
 import { globalFinishedRankingsMap } from "../Rank/globalFinishedRankingsMap";
-import { TGS } from "../types";
+import { TGS } from "./Stage";
 
 export interface IEvent_StageStartInfo extends IJEventInfo {
 	stage: TGS;
@@ -13,8 +13,12 @@ export interface IEvent_StageStartInfo extends IJEventInfo {
 export class Event_StageStart extends JEvent {
   private _stage: TGS;
   constructor(ie_ssi: IEvent_StageStartInfo) {
-    super(ie_ssi);
-    this._stage = ie_ssi.stage;
+    try {
+      super(ie_ssi);
+      this._stage = ie_ssi.stage;
+    } catch (error) {
+      throw error
+    }
   }
 
   execute() {

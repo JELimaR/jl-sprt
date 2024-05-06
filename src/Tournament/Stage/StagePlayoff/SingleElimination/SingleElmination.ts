@@ -1,6 +1,6 @@
 import BaseStage from '../../BaseStage';
 import JCalendar from '../../../../JCalendar/JCalendar';
-import { JRound } from './JRound';
+import { Round } from './Round';
 import Event_RoundCreationAndTeamsDraw from './Event_RoundCreationAndTeamsDraw';
 import { JDateTime } from '../../../../JCalendar/JDateTimeModule';
 import { IElementInfo, ISingleElminationConfig } from '../../../../JSportModule';
@@ -14,7 +14,7 @@ import JSerie from '../../../../JSportModule/Match/JSerie';
 
 export default class SingleElmination extends BaseStage<IElementInfo, ISingleElminationConfig> { // Single elimination
 
-  private _rounds: JRound[] = [];
+  private _rounds: Round[] = [];
 
   constructor(info: IElementInfo, config: ISingleElminationConfig) { // FALTA VERIFICAR QUE CADA fechHalfWeeks sea mayor al fechHalfWeeksSchedule
     super(info, config);
@@ -33,10 +33,10 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
     return super.isFinished && this._rounds.length == this.config.roundsNumber
   }
 
-  get rounds(): JRound[] { return this._rounds }
+  get rounds(): Round[] { return this._rounds }
   get matches(): Match[] {
     let out: Match[] = [];
-    this._rounds.forEach((r: JRound) => {
+    this._rounds.forEach((r: Round) => {
       r.matches.forEach((m: Match) => out.push(m));
     })
     return out;
@@ -50,8 +50,19 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
   createChildren(cal: JCalendar): void {
 
     for (let i = 0; i < this.config.roundsNumber; i++) {
+      let dt = JDateTime.createFromHalfWeekOfYearAndYear(
+        this.config.roundHalfWeeksSchedule[i],
+        this.info.season, 'start')
+      if (cal.now.absolute >= dt.absolute) {
+        dt = cal.now;
+        dt.addInterv(1);
+        if (cal.now.absolute - dt.absolute > 50) {
+          throw new Error(`stop
+          En Round.generateMatchOfRoundScheduleEvents`)
+        }
+      }
       cal.addEvent(new Event_RoundCreationAndTeamsDraw({ // crear los eventos de draw y round creation
-        dateTime: JDateTime.createFromHalfWeekOfYearAndYear(this.config.roundHalfWeeksSchedule[i], this.info.season, 'start', 12).getIJDateTimeCreator(),
+        dateTime: dt.getIJDateTimeCreator(),
         calendar: cal,
         playoff: this,
       }))
@@ -61,7 +72,7 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
   createNewRound(teamsDrawSorted: Team[], calendar: JCalendar) {
     const roundNumber: number = this._rounds.length + 1;
     const roundIndex: number = this._rounds.length;
-    const round: JRound = new JRound({
+    const round: Round = new Round({
       num: roundNumber,
       series: this.createRoundSeries(teamsDrawSorted!),
       halfweeks: this.config.roundHalfWeeks[roundIndex],
@@ -95,7 +106,7 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
   getTable(ttms: TypeTableMatchState): TeamTableItem[] {
     let out: TeamTableItem[] = this.calcTableValues(ttms);
 
-    this.rounds.forEach((r: JRound, idx: number) => {
+    this.rounds.forEach((r: Round, idx: number) => {
       r.losers.forEach((loser: Team) => {
         let item = out.find((value: TeamTableItem) => value.team.id === loser.id)
         if (item) item.pos = this.rounds.length + 1 - idx;

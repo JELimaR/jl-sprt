@@ -38,6 +38,7 @@ export /*default*/ class Turn {
 			league.info.season,
 			'start'
 		);
+    dt.addInterv();
 		cal.addEvent(
 			new Event_ScheduleOfTurnMatches({
 				dateTime: dt.getIJDateTimeCreator(),

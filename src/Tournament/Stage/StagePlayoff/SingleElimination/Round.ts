@@ -1,27 +1,27 @@
 import JCalendar from '../../../../JCalendar/JCalendar';
-import { arr2 } from '../../../types';
 import SingleElmination from './SingleElmination';
 import { Event_ScheduleOfRoundMatches } from './Event_ScheduleOfRoundMatches';
 import { TypeHalfWeekOfYear, JDateTime } from '../../../../JCalendar/JDateTimeModule';
 import Team from '../../../../JSportModule/data/Team';
 import JSerie from '../../../../JSportModule/Match/JSerie';
 import Match from '../../../../JSportModule/Match/JMatch';
+import { arr2 } from '../../../../JSportModule';
 
 
-export interface IJRoundInfo {
+export interface IRoundInfo {
 	num: number;
 	halfweeks: arr2<TypeHalfWeekOfYear>;
 	halfweekSchedule: TypeHalfWeekOfYear;
 	series: JSerie[];
 }
 
-export class JRound {
+export class Round {
 	private _num: number;
 	private _series: JSerie[] = [];
 	private _halfWeeks: arr2<TypeHalfWeekOfYear>;
 	private _halfweekSchedule: TypeHalfWeekOfYear;
 
-	constructor(ri: IJRoundInfo) {
+	constructor(ri: IRoundInfo) {
 		this._num = ri.num;
 		this._halfWeeks = ri.halfweeks;
 		this._halfweekSchedule = ri.halfweekSchedule;
@@ -58,16 +58,21 @@ export class JRound {
 		return this.matches.every((m: Match) => m.state === 'finished');
 	}
 
-	generateMatchOfRoundScheduleEvents(cal: JCalendar, playoff: SingleElmination/*, roundCreateAt: JDateTime*/): void {
+	generateMatchOfRoundScheduleEvents(cal: JCalendar, playoff: SingleElmination): void {
 		let dt = JDateTime.createFromHalfWeekOfYearAndYear(
 			this._halfweekSchedule,
 			playoff.info.season,
-			'middle'
+			'start', 0
 		);
-		// if (roundCreateAt.absolute > dt.absolute) {
-		// 	dt = roundCreateAt.copy();
-		// 	dt.addInterv(1);
-		// }
+		if (cal.now.absolute >= dt.absolute) {
+			dt = cal.now;
+			dt.addInterv(1);
+      if (cal.now.absolute - dt.absolute > 50) {
+
+        throw new Error(`stop
+        En Round.generateMatchOfRoundScheduleEvents`)
+      }
+		}
 		cal.addEvent(
 			new Event_ScheduleOfRoundMatches({
 				dateTime: dt.getIJDateTimeCreator(),

@@ -1,26 +1,31 @@
-import { IJEventOthersInfo, JEventOthers } from "../../../../JCalendar/Event/JEvent";
-import { JRound } from "./JRound";
+import { IJEventInfo, JEvent } from "../../../../JCalendar/Event/JEvent";
+import { Round } from "./Round";
 import SingleElmination from './SingleElmination';
-import { arr2 } from "../../../types";
+import { arr2 } from '../../../../JSportModule';
 import { JDateTime, TypeHalfWeekOfYear } from "../../../../JCalendar/JDateTimeModule";
 import JSerie from "../../../../JSportModule/Match/JSerie";
 import Match from "../../../../JSportModule/Match/JMatch";
 import { JEventMatch } from "../../../../JSportModule/Match/JEventMatch";
 
 
-export interface IEvent_ScheduleOfRoundMatchesInfo extends IJEventOthersInfo {
-	round: JRound;
+export interface IEvent_ScheduleOfRoundMatchesInfo extends IJEventInfo {
+	round: Round;
 	playoff: SingleElmination;
 }
   
-export class Event_ScheduleOfRoundMatches extends JEventOthers {
+export class Event_ScheduleOfRoundMatches extends JEvent {
 	// evento que implica una configuracion necesaria
-	_round: JRound;
+	_round: Round;
 	_playoff: SingleElmination;
 	constructor(efc: IEvent_ScheduleOfRoundMatchesInfo) {
-		super(efc);
-		this._round = efc.round;
-		this._playoff = efc.playoff;
+    try {
+      super(efc);
+      this._round = efc.round;
+      this._playoff = efc.playoff;
+    } catch (error) {
+      console.log(efc)
+      throw error
+    }
 	}
 
 	execute() {

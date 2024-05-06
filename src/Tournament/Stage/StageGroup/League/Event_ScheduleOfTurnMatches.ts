@@ -1,26 +1,30 @@
-import { IJEventOthersInfo, JEventOthers } from "../../../../JCalendar/Event/JEvent";
+import { IJEventInfo, JEvent } from "../../../../JCalendar/Event/JEvent";
 import { Turn } from "./Turn";
 import League from './League';
 import { JDateTime } from "../../../../JCalendar/JDateTimeModule";
 import Match from "../../../../JSportModule/Match/JMatch";
 import { JEventMatch } from "../../../../JSportModule/Match/JEventMatch";
 
-export interface IEvent_ScheduleOfTurnMatchesInfo extends IJEventOthersInfo {
+export interface IEvent_ScheduleOfTurnMatchesInfo extends IJEventInfo {
 	turn: Turn;
 	// leagueData: ITCCDATA<ILeagueInfo, ILeagueConfig>;
 	league: League;
 }
   
-export class Event_ScheduleOfTurnMatches extends JEventOthers {
+export class Event_ScheduleOfTurnMatches extends JEvent {
 	// evento que implica una configuracion necesaria
 	_turn: Turn;
 	// _leagueData: ITCCDATA<ILeagueInfo, ILeagueConfig>
 	_league: League;
 	constructor(efc: IEvent_ScheduleOfTurnMatchesInfo) {
-		super(efc);
-		this._turn = efc.turn;
-		// this._leagueData = efc.leagueData;
-		this._league = efc.league;
+    try {
+      super(efc);
+      this._turn = efc.turn;
+      this._league = efc.league;
+    } catch(error) {
+      console.log(efc)
+      throw error
+    }
 	}
 
 	execute() {

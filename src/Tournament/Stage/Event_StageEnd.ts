@@ -1,7 +1,7 @@
 import { IJEventInfo, JEvent } from "../../JCalendar/Event/JEvent";
 import { Ranking } from "../../JSportModule";
 import { globalFinishedRankingsMap } from "../Rank/globalFinishedRankingsMap";
-import { TGS } from "../types";
+import { TGS } from "./Stage";
 
 export interface IEvent_StageEndInfo extends IJEventInfo {
 	stage: TGS;

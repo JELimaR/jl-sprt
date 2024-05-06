@@ -1,18 +1,23 @@
-import { IJEventOthersInfo, JEventOthers } from "../../../../JCalendar/Event/JEvent";
+import { IJEventInfo, JEvent } from "../../../../JCalendar/Event/JEvent";
 import Team from "../../../../JSportModule/data/Team";
 import SingleElmination from "./SingleElmination"
 
-export interface IEvent_RoundCreationAndTeamsDrawInfo extends IJEventOthersInfo {
+export interface IEvent_RoundCreationAndTeamsDrawInfo extends IJEventInfo {
   playoff: SingleElmination;
 }
 
 /* Evento en el cual se generan las rounds y se definen los teams de la siguiente ronda */
-export default class Event_RoundCreationAndTeamsDraw extends JEventOthers {
+export default class Event_RoundCreationAndTeamsDraw extends JEvent {
   private _playoff: SingleElmination;
   
   constructor(erctdi: IEvent_RoundCreationAndTeamsDrawInfo) {
-    super(erctdi);
-    this._playoff = erctdi.playoff;
+    try {
+      super(erctdi);
+      this._playoff = erctdi.playoff;
+    } catch(error) {
+      console.log(erctdi)
+      throw error
+    }
   }
 
   execute(): void {
