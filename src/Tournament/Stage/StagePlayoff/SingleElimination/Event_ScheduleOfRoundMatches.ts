@@ -3,9 +3,9 @@ import { Round } from "./Round";
 import SingleElmination from './SingleElmination';
 import { arr2 } from '../../../../JSportModule';
 import { JDateTime, TypeHalfWeekOfYear } from "../../../../JCalendar/JDateTimeModule";
-import JSerie from "../../../../JSportModule/Match/JSerie";
-import Match from "../../../../JSportModule/Match/JMatch";
-import { JEventMatch } from "../../../../JSportModule/Match/JEventMatch";
+import JSerie from "../../../../JSportModule/Match/Serie";
+import Match from "../../../../JSportModule/Match/Match";
+import { JEventMatch } from "../../../../JSportModule/Match/EventMatch";
 
 
 export interface IEvent_ScheduleOfRoundMatchesInfo extends IJEventInfo {

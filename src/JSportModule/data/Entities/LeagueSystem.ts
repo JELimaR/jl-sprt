@@ -2,8 +2,7 @@
 // cambiar league system por division system
 
 import { createStandardGSGDataFromNParticipants } from "../../GeneralStageGraph/createStandardGSGDataFromNParticipants";
-import { TPhaseCreator } from "../../GeneralStageGraph/GSGCreators";
-import { calcParticipantsNumber, ITournamentFromGSGData, tournamentFromGSG } from "../../GeneralStageGraph/tournamentFromGSG";
+import { ITournamentFromGSGData, tournamentFromGSG } from "../../GeneralStageGraph/tournamentFromGSG";
 import { IGenericRankItem } from "../../interfaces";
 import { TypeCategory } from "../types";
 import { verifyDivisionArr } from "./verifyLeagueSystem";
@@ -53,9 +52,9 @@ export interface ILeagueSystemCreator {
 // hay uno por season
 export default class LeagueSystem {
 
-  _isTransition: boolean;
-  _category: TypeCategory;
-  _competitions: IDivisionConfig[] = [];
+  private _isTransition: boolean;
+  private _category: TypeCategory;
+  private _competitions: IDivisionConfig[] = [];
   // _postSeason: IDivisionConfig[] = [];
 
   constructor(ilsc: ILeagueSystemCreator) {
@@ -88,6 +87,8 @@ export default class LeagueSystem {
       return idc;
     })
   }
+
+  get category(): TypeCategory { return this._category }
 
   getDivisionConfigList(): IDivisionConfig[] {
     return [...this._competitions]

@@ -4,15 +4,15 @@ import { TypeCategoryList } from "./types";
 
 export interface ISportOrganizationData {
   id: string;
-  areaAsosiatedId: string;
-  founderIds: string[];
-  headquarters: string;
-  dateTimeCreation: IJDateTimeCreator;
+  area: string;
+  fds: string[];
+  hqs: string; // headquarters
+  dtC: IJDateTimeCreator;
   // memberIds: string[];
 }
 
 export interface IConfederationData extends ISportOrganizationData {
-  federationIds: string[];
+  feds: string[];
 }
 
 export interface IInstitutionData extends ISportOrganizationData {

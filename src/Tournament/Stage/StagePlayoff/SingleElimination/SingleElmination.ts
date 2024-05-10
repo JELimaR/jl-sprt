@@ -7,8 +7,8 @@ import { IElementInfo, ISingleElminationConfig } from '../../../../JSportModule'
 import Team from '../../../../JSportModule/data/Team';
 import TeamTableItem, { simpleSortFunc } from '../../../../JSportModule/Ranking/TeamTableItem';
 import { TypeTableMatchState } from '../../../../JSportModule/';
-import Match from '../../../../JSportModule/Match/JMatch';
-import JSerie from '../../../../JSportModule/Match/JSerie';
+import Match from '../../../../JSportModule/Match/Match';
+import JSerie from '../../../../JSportModule/Match/Serie';
 
 // export interface IElementInfo extends IBaseStageInfo { }
 

@@ -1,20 +1,20 @@
-import { TeamMatch } from "../../JSportModule/data/Team";
-import JResult from "./JResult";
+import { TeamMatch } from "../data/Team";
+import Result from "./Result";
 
 
 export default class JMatchPlay {
 	_time: number;
-	_result: JResult | undefined;
-  _globalResult: JResult | undefined;
+	_result: Result | undefined;
+  _globalResult: Result | undefined;
   _teamOne: TeamMatch | undefined;
   _teamTwo: TeamMatch | undefined;
 
-	constructor(globalResult?: JResult) {
+	constructor(globalResult?: Result) {
 		this._time = -1;	
     this._globalResult = globalResult;
 	}
 	get time(): number { return this._time; }
-	get result(): JResult | undefined {
+	get result(): Result | undefined {
 		return this._result;
 	}
 
@@ -22,7 +22,7 @@ export default class JMatchPlay {
     this._time = 0;
     this._teamOne = one;
     this._teamTwo = two;
-    this._result = new JResult(this._teamOne.id, this._teamTwo.id);
+    this._result = new Result(this._teamOne.id, this._teamTwo.id);
   }
 
 	advance() {

@@ -1,6 +1,7 @@
 import { IJDateTimeCreator, JDate, JDateTime } from "../../../JCalendar";
 import GeogEntity, { Town } from "./GeogEntity";
 
+// export interface ISportOrganizationData {}
 
 export interface ISportOrganizationCreator<G extends GeogEntity, M extends { id: string }> {
   id: string;

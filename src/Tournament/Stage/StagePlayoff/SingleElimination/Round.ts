@@ -3,8 +3,8 @@ import SingleElmination from './SingleElmination';
 import { Event_ScheduleOfRoundMatches } from './Event_ScheduleOfRoundMatches';
 import { TypeHalfWeekOfYear, JDateTime } from '../../../../JCalendar/JDateTimeModule';
 import Team from '../../../../JSportModule/data/Team';
-import JSerie from '../../../../JSportModule/Match/JSerie';
-import Match from '../../../../JSportModule/Match/JMatch';
+import JSerie from '../../../../JSportModule/Match/Serie';
+import Match from '../../../../JSportModule/Match/Match';
 import { arr2 } from '../../../../JSportModule';
 
 

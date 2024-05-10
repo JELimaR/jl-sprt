@@ -2,8 +2,8 @@ import { IJEventInfo, JEvent } from "../../../../JCalendar/Event/JEvent";
 import { Turn } from "./Turn";
 import League from './League';
 import { JDateTime } from "../../../../JCalendar/JDateTimeModule";
-import Match from "../../../../JSportModule/Match/JMatch";
-import { JEventMatch } from "../../../../JSportModule/Match/JEventMatch";
+import Match from "../../../../JSportModule/Match/Match";
+import { JEventMatch } from "../../../../JSportModule/Match/EventMatch";
 
 export interface IEvent_ScheduleOfTurnMatchesInfo extends IJEventInfo {
 	turn: Turn;

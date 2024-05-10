@@ -1,8 +1,8 @@
 
-import JResult, { IJResultInfo } from './JResult';
-import Match from './JMatch';
+import JResult, { IJResultInfo } from './Result';
+import Match from './Match';
 import { TypeHalfWeekOfYear, JDateTime } from '../../JCalendar/JDateTimeModule';
-import Team from '../../JSportModule/data/Team';
+import Team from '../data/Team';
 import { arr2, TypeBaseStageOption } from '../data';
 
 export interface IJSerieInfo {

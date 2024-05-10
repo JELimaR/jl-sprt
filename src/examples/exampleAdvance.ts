@@ -1,6 +1,6 @@
 import { JEvent } from "../JCalendar/Event/JEvent";
 import JCalendar from "../JCalendar/JCalendar";
-import { JEventMatch } from "../JSportModule/Match/JEventMatch";
+import { JEventMatch } from "../JSportModule/Match/EventMatch";
 import mostrarFecha from "../mostrarFechaBorrar";
 import { Event_StageEnd } from "../Tournament/Stage/Event_StageEnd";
 import Event_RoundCreationAndTeamsDraw from "../Tournament/Stage/StagePlayoff/SingleElimination/Event_RoundCreationAndTeamsDraw";

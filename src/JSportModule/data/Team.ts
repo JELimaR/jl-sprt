@@ -1,5 +1,5 @@
 import { TGS } from "../../Tournament/Stage/Stage";
-import Match from "../Match/JMatch";
+import Match from "../Match/Match";
 import { Federation, Institution } from "./Entities";
 import { TypeCategory } from "./types";
 

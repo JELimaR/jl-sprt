@@ -27,10 +27,10 @@ class FednAux {
 
   constructor(info: IFederationData, teams: Team[]) {
     this._id = info.id;
-    this._areaAsosiatedId = info.areaAsosiatedId;
-    this._founderIds = info.founderIds;
-    this._headquarters = info.headquarters;
-    this._dateTimeCreation = info.dateTimeCreation;
+    this._areaAsosiatedId = info.area;
+    this._founderIds = info.fds;
+    this._headquarters = info.hqs;
+    this._dateTimeCreation = info.dtC;
 
     this._institutions = [...teams]; // buscar los teams
     this._divisionSystem = info.leagueSystem
@@ -71,8 +71,8 @@ const fid = `F${String(1).padStart(3, '0')}`;
 const fteams = getExampleTeams(18, fid);
 
 const federation = new FednAux({
-  id: fid, areaAsosiatedId: 'A_C001', founderIds: [], institutionIds: [], headquarters: 'hq_F001',
-  dateTimeCreation: { day: 1118 * 378 + 19, interv: 120 },
+  id: fid, area: 'A_C001', fds: [], institutionIds: [], hqs: 'hq_F001',
+  dtC: { day: 1118 * 378 + 19, interv: 120 },
   leagueSystem: {},
   cupSystem: {},
   rankings: {}

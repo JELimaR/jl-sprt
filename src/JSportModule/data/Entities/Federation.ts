@@ -116,7 +116,7 @@ export class Federation extends SportOrganization<Country, Institution> {
   // se actualiza el sistema de ligas
   // actualizar el leaguesistem
   updateLeagueSystem(ls: LeagueSystem) {
-    const category: TypeCategory = ls._category;
+    const category: TypeCategory = ls.category;
     let franking = this.getRanking(category)
     let categoryTeams = this.getRankList(category);
 

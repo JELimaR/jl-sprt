@@ -1,6 +1,6 @@
-import JSerie from './JSerie';
-import JMatchPlay from './JMatchPlay';
-import JResult, { IJResultInfo } from './JResult';
+import JSerie from './Serie';
+import JMatchPlay from './MatchPlay';
+import JResult, { IJResultInfo } from './Result';
 import { TypeHalfWeekOfYear, JDateTime } from '../../JCalendar/JDateTimeModule';
 import Team from '../data/Team';
 
