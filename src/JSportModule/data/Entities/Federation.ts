@@ -1,20 +1,19 @@
 import { IDivisionCondition } from ".";
-import { globalFinishedRankingsMap } from "../../../Tournament/Rank/globalFinishedRankingsMap";
+import { globalFinishedRankingsMap } from "../../../Tournament/globalFinishedRankingsMap";
 import { ITournamentFromGSGData } from "../../GeneralStageGraph/tournamentFromGSG";
 import { IGenericRankItem, IRankItem, Ranking } from "../../Ranking";
-import { ISportOrganizationData } from "../entities";
 import Team from "../Team";
 import { CATEGORIES, getCategoryList, TypeCategory, TypeCategoryList } from "../types";
 import { Country } from "./GeogEntity";
 import { Institution } from "./Institution";
 import LeagueSystem, { CupSystem, ICupSystemCreator, IDivisionConfig, ILeagueSystemCreator } from "./LeagueSystem";
-import SportOrganization, { ISportOrganizationCreator } from "./SportOrganization";
+import SportOrganization, { ISportOrganizationCreator, ISportOrganizationData } from "./SportOrganization";
 
 export interface IFederationData extends ISportOrganizationData {
-  institutionIds: string[];
-  leagueSystem: TypeCategoryList<ILeagueSystemCreator>;
-  cupSystem: TypeCategoryList<ICupSystemCreator>;
-  rankings: TypeCategoryList<string[]>
+  insts: string[];
+  lSys: TypeCategoryList<ILeagueSystemCreator>;
+  cSys: TypeCategoryList<ICupSystemCreator>;
+  rnks: TypeCategoryList<string[]>
 }
 
 export interface IFederationCreator extends ISportOrganizationCreator<Country, Institution> {

@@ -1,7 +1,7 @@
 import { isSetIterator } from "util/types";
 import { IJEventInfo, JEvent } from "../../JCalendar/Event/JEvent";
 import { IRankItem } from "../../JSportModule";
-import { globalFinishedRankingsMap } from "../Rank/globalFinishedRankingsMap";
+import { globalFinishedRankingsMap } from "../globalFinishedRankingsMap";
 import { TGS } from "./Stage";
 
 export interface IEvent_StageStartInfo extends IJEventInfo {
