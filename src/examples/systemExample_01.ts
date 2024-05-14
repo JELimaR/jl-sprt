@@ -11,7 +11,7 @@ import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/Gener
 import SportServerAPI from "../JSportServerModule";
 import mostrarFecha from "../mostrarFechaBorrar";
 import { asignarTeams2 } from "../Tournament/asignarTeams2";
-import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
+import { globalFinishedRankingsMap } from "../Tournament/globalFinishedRankingsMap";
 import Tournament from "../Tournament/Tournament";
 import exampleAdvance from "./exampleAdvance";
 
@@ -21,19 +21,19 @@ class FednAux {
   private _areaAsosiatedId: string;
   private _founderIds: string[];
   private _headquarters: string;
-  _dateTimeCreation: IJDateTimeCreator;
+  private _dateTimeCreation: number;
   private _institutions: Team[]; // cambiar a institutions
   private _divisionSystem: any;
 
   constructor(info: IFederationData, teams: Team[]) {
-    this._id = info.id;
-    this._areaAsosiatedId = info.area;
-    this._founderIds = info.fds;
-    this._headquarters = info.hqs;
-    this._dateTimeCreation = info.dtC;
+    this._id = info.i;
+    this._areaAsosiatedId = info.aa;
+    this._founderIds = info.fs;
+    this._headquarters = info.hq;
+    this._dateTimeCreation = info.fd;
 
     this._institutions = [...teams]; // buscar los teams
-    this._divisionSystem = info.leagueSystem
+    this._divisionSystem = info.lSys
   }
 
   addInstitution(inst: Team): boolean {
@@ -48,6 +48,10 @@ class FednAux {
       }
     })
     return Ranking.fromRankItemArr(`fr_S_${this._id}`, rankArr)
+  }
+
+  get dateTimeCreation(): IJDateTimeCreator {
+    return {day: this._dateTimeCreation, interv: 100}
   }
 
   updateRanking(rank: Ranking) {
@@ -71,11 +75,13 @@ const fid = `F${String(1).padStart(3, '0')}`;
 const fteams = getExampleTeams(18, fid);
 
 const federation = new FednAux({
-  id: fid, area: 'A_C001', fds: [], institutionIds: [], hqs: 'hq_F001',
-  dtC: { day: 1118 * 378 + 19, interv: 120 },
-  leagueSystem: {},
-  cupSystem: {},
-  rankings: {}
+  i: fid, aa: 'A_C001', fs: [], ms: [], hq: 'hq_F001',
+  fd: 1118,
+  lSys: {},
+  cSys: {},
+  rnks: {},
+  n: 'Federation N' + fid,
+  sn: 'F' + fid,
 }, fteams.slice(0, 8))
 
 /*********************************************************************************** */
@@ -188,7 +194,7 @@ export default function systemExample_01() {
   }
 
   console.log('La federation fue creada en:')
-  mostrarFecha((new JDateTime(federation._dateTimeCreation)))
+  mostrarFecha((new JDateTime(federation.dateTimeCreation)))
 
 }
 
@@ -220,7 +226,7 @@ const phaseCreatorArr_1156: TPhaseCreator[] = [
 
 const config_1156: ITournamentFromGSGData = {
   name: 'Lig',
-  gsgData: {initialCreator: iniCreator_1156, phaseArr: phaseCreatorArr_1156},
+  gsgData: { initialCreator: iniCreator_1156, phaseArr: phaseCreatorArr_1156 },
   matchList: [28, 32, 36, 40, 44, 48, 52, 70, 74, 78, 82, 86, 90, 94],
   schedList: [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
   qualyRules: []
@@ -256,12 +262,12 @@ const phaseCreatorArr_1161: TPhaseCreator[] = [
 
 const config_1161: ITournamentFromGSGData = {
   name: 'Lig',
-  gsgData: {initialCreator: iniCreator_1161, phaseArr: phaseCreatorArr_1161},
+  gsgData: { initialCreator: iniCreator_1161, phaseArr: phaseCreatorArr_1161 },
   matchList: [28, 32, 36, 40, 44, 48, 52, 56, 60, 70, 74, 78, 82, 86, 90, 94, 98, 102],
   schedList: [16, 16, 16, 16, 16, 16, 16, 16, 16, 62, 62, 62, 62, 62, 62, 62, 62, 62],
   qualyRules: [
-    {minRankPos: 1, maxRankPos: 1},
-    {minRankPos: 9, maxRankPos: 10},
+    { minRankPos: 1, maxRankPos: 1 },
+    { minRankPos: 9, maxRankPos: 10 },
   ]
 };
 // 2 div
@@ -299,11 +305,11 @@ const phaseCreatorArr_1161_2d: TPhaseCreator[] = [
 
 const config_1161_2d: ITournamentFromGSGData = {
   name: 'Lig2',
-  gsgData: {initialCreator: iniCreator_1161_2d, phaseArr: phaseCreatorArr_1161_2d},
+  gsgData: { initialCreator: iniCreator_1161_2d, phaseArr: phaseCreatorArr_1161_2d },
   matchList: [30, 34, 38, 42, 46, 50, 54, 64, 68, 72, 76, 80, 84, 88, 91],
   schedList: [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 89],
   qualyRules: [
-    {minRankPos: 1, maxRankPos: 1},
-    {minRankPos: 1, maxRankPos: 2},
+    { minRankPos: 1, maxRankPos: 1 },
+    { minRankPos: 1, maxRankPos: 2 },
   ]
 }

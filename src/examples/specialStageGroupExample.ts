@@ -2,7 +2,7 @@
 import JCalendar from "../JCalendar/JCalendar";
 import { getExampleTeams } from "./ExampleData";
 import mostrarFecha from "../mostrarFechaBorrar";
-import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
+import { globalFinishedRankingsMap } from "../Tournament/globalFinishedRankingsMap";
 import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
 import exampleAdvance from "./exampleAdvance";
 import { JDateTime } from "../JCalendar/JDateTimeModule";

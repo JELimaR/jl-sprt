@@ -3,7 +3,7 @@ import { getExampleTeams } from "./ExampleData";
 import mostrarFecha from "../mostrarFechaBorrar";
 import exampleAdvance from "./exampleAdvance";
 import stageExampleData from "./stageExampleData";
-import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
+import { globalFinishedRankingsMap } from "../Tournament/globalFinishedRankingsMap";
 import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
 import { TGS } from "../Tournament/Stage/Stage";
 import StagePlayoff from "../Tournament/Stage/StagePlayoff/StagePlayoff";

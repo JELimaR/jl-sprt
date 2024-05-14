@@ -1,3 +1,4 @@
+import { JDate } from "../JCalendar";
 import { Country, IFederationCreator, IFederationData, IInstitutionCreator, Institution, Town } from "../JSportModule";
 import Team from "../JSportModule/data/Team";
 import { IGenericRank } from "../JSportModule/interfaces";
@@ -6,10 +7,17 @@ import { IGenericRank } from "../JSportModule/interfaces";
 export const getExampleTeams = (n: number, pid: string = ''): Team[] => {
 	let out: Team[] = [];
 	for (let i = 1; i <= n; i++) {
+    const iid = `${pid}-T${1000+i}`;
+    const cid = `C${String(14).padStart(3, '0')}`;
+    const tid = `T${String(Math.round(321 * Math.random() + 187 * Math.random())).padStart(8, '0')}`;
 		out.push(
 			new Team({
         category: 'S',
-        entity: new Institution({id: `${pid}-T${1000+i}`}),
+        entity: new Institution({
+          id: iid, name: iid, shortName: iid, abrevName: iid,
+          headquarters: new Town({i: tid, n: tid, c: cid, p: 2, a: 5}),
+          funtationDay: new JDate(13556)
+        }),
         matches: []
       })
 		)
@@ -26,9 +34,11 @@ export const getFederationCreators = (count: number) => {
     const tid = `T${String(Math.round(fede * 321 * Math.random() + 187 * Math.random())).padStart(8, '0')}`;
 
     out.push({
-      id: fid, areaAsosiated: new Country({ id: cid }),
-      fundationDay: Math.round(378 * (1888 + 24 * Math.random()) + 378 * Math.random()),
-      founders: [], headquarters: new Town({ id: tid }), institutions: [],
+      id: fid, areaAsosiated: new Country({ i: cid, n: 'Country_' + cid, r: '1', a: 18141, p: 1576000 }),
+      name: `Medval ${fid}`, shortName: fid,
+      fundationDay: new JDate(Math.round(378 * (1888 + 24 * Math.random()) + 378 * Math.random())),
+      members: new Map<string, Institution>(),
+      founderMembers: [], headquarters: new Town({ i: tid, n: 'Town_' + tid, c: '12', a: 18, p: 15400 }),
       cupSystem: {}, leagueSystem: {}, rankings: {}
     });
   }
@@ -43,7 +53,9 @@ export const getInstitutionCreators = (count: number, cid: string) => {
     const tid = `T${String(Math.round(ii * 321 * Math.random() + 187 * Math.random())).padStart(8, '0')}`;
 
     out.push({
-      id: iid
+      id: iid, name: iid, shortName: iid, abrevName: iid,
+      headquarters: new Town({i: tid, n: tid, c: cid, p: 2, a: 5}),
+      funtationDay: new JDate(13556)
     })
 
   }

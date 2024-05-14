@@ -4,7 +4,7 @@ import StagePlayoff from "../Tournament/Stage/StagePlayoff/StagePlayoff";
 import mostrarFecha from "../mostrarFechaBorrar";
 import exampleAdvance from "./exampleAdvance";
 import stageExampleData from "./stageExampleData";
-import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
+import { globalFinishedRankingsMap } from "../Tournament/globalFinishedRankingsMap";
 import { JDateTime } from "../JCalendar/JDateTimeModule";
 import Team from "../JSportModule/data/Team";
 import TeamTableItem from "../JSportModule/Ranking/TeamTableItem";

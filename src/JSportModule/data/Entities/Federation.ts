@@ -10,47 +10,45 @@ import LeagueSystem, { CupSystem, ICupSystemCreator, IDivisionConfig, ILeagueSys
 import SportOrganization, { ISportOrganizationCreator, ISportOrganizationData } from "./SportOrganization";
 
 export interface IFederationData extends ISportOrganizationData {
-  insts: string[];
   lSys: TypeCategoryList<ILeagueSystemCreator>;
   cSys: TypeCategoryList<ICupSystemCreator>;
   rnks: TypeCategoryList<string[]>
 }
 
 export interface IFederationCreator extends ISportOrganizationCreator<Country, Institution> {
-  institutions: Institution[];
-  leagueSystem: TypeCategoryList<ILeagueSystemCreator>;
-  cupSystem: TypeCategoryList<ICupSystemCreator>;
+  leagueSystem: TypeCategoryList<LeagueSystem>;
+  cupSystem: TypeCategoryList<CupSystem>;
   rankings: TypeCategoryList<Team[]>
 }
 
-export class Federation extends SportOrganization<Country, Institution> {
+export class Federation extends SportOrganization<Country, Institution, IFederationData, IFederationCreator> {
 
   // sistema de divisiones, definido por categoria
-  private _leagueSystem: TypeCategoryList<LeagueSystem> = {};
+  // private _leagueSystem: TypeCategoryList<LeagueSystem> = {};
   // sistema de torneos de copa, definido por categoria
-  private _cupSystem: TypeCategoryList<CupSystem> = {};
+  // private _cupSystem: TypeCategoryList<CupSystem> = {};
   // cada categoria tiene un ranking
-  private _rankings: TypeCategoryList<Team[]> = {}; //
+  // private _rankings: TypeCategoryList<Team[]> = {}; //
 
   constructor(ifc: IFederationCreator) {
     super(ifc)
-    ifc.institutions.forEach((ii) => {
-      this.addMember(ii)
-    })
-    this._rankings = { S13: [], S15: [], S17: [], S19: [], S21: [], S23: [], S: [] };
-    CATEGORIES.forEach((c: TypeCategory) => {
-      const cupSystem_c = ifc.cupSystem[c]
-      if (cupSystem_c)
-        this._cupSystem[c] = new CupSystem(cupSystem_c)
-      const leagueSystem = ifc.leagueSystem[c];
-      if (leagueSystem)
-        this._leagueSystem[c] = new LeagueSystem(leagueSystem);
+    // ifc.institutions.forEach((ii) => {
+    //   this.addMember(ii)
+    // })
+    // this.info.rankings = { S13: [], S15: [], S17: [], S19: [], S21: [], S23: [], S: [] };
+    // CATEGORIES.forEach((c: TypeCategory) => {
+    //   const cupSystem_c = ifc.cupSystem[c]
+    //   if (cupSystem_c)
+    //     this._cupSystem[c] = new CupSystem(cupSystem_c)
+    //   const leagueSystem = ifc.leagueSystem[c];
+    //   if (leagueSystem)
+    //     this._leagueSystem[c] = new LeagueSystem(leagueSystem);
 
-      const ranking_c = ifc.rankings[c];
-      if (ranking_c) {
-        this._rankings[c] = [...ranking_c]
-      }
-    })
+    //   const ranking_c = ifc.rankings[c];
+    //   if (ranking_c) {
+    //     this.info.rankings[c] = [...ranking_c]
+    //   }
+    // })
   }
 
   getDivTourId(category: TypeCategory, level: number): string {
@@ -84,7 +82,7 @@ export class Federation extends SportOrganization<Country, Institution> {
 
   private getRankList(category: TypeCategory): Team[] {
     let out: Team[];
-    const rankList = this._rankings[category]
+    const rankList = this.info.rankings[category]
     if (rankList) {
       out = [...rankList];
     } else {
@@ -96,8 +94,8 @@ export class Federation extends SportOrganization<Country, Institution> {
   // la institution pasa a formar parte de una categoria, implica que empieza a competir en dicha categoria
   addInstitutionToCategory(inst: Institution, category: TypeCategory) {
     let rankList: Team[];
-    if (this._rankings[category]) {
-      rankList = this._rankings[category] as Team[];
+    if (this.info.rankings[category]) {
+      rankList = this.info.rankings[category] as Team[];
     } else {
       rankList = [];
     }
@@ -131,13 +129,13 @@ export class Federation extends SportOrganization<Country, Institution> {
         En Federation.updateLeagueSystem`)
       }
     })
-    this._leagueSystem[category] = ls;
+    this.info.leagueSystem[category] = ls;
   }
 
   createTournamentList(): ITournamentFromGSGData[] {
     let out: ITournamentFromGSGData[] = []
     CATEGORIES.forEach((category: TypeCategory) => {
-      const ls = this._leagueSystem[category];
+      const ls = this.info.leagueSystem[category];
       if (!!ls) {
         // hacer esto en LeagueSystem
         ls.getDivisionConfigList().forEach((idc: IDivisionConfig) => {
@@ -167,7 +165,7 @@ export class Federation extends SportOrganization<Country, Institution> {
     })
   }
   private updateRankingsPerCategory(category: TypeCategory) {
-    const ls = this._leagueSystem[category];
+    const ls = this.info.leagueSystem[category];
     const teamListCategory = this.getRankList(category)
     let pos = 0
     if (!!ls) {
@@ -235,7 +233,19 @@ export class Federation extends SportOrganization<Country, Institution> {
       }
     })
 
-    this._rankings[category] = teamsArr;
+    this.info.rankings[category] = teamsArr;
+  }
+
+  getData(): IFederationData {
+    const members: string[] = [];
+    this.members.forEach(i => members.push(i.id))
+    return {
+      i: this.id, n: this.name, sn: this.shortName, fd: this.foundationDate.getDate().dayAbsolute,
+      aa: this.areaAsosiated.id, hq: this.headquarters.id,
+      fs: this.founderMembers.map(i => i.id), ms: members,
+      rnks: {},
+      cSys: {}, /*this._cupSystem,*/ lSys: {}/*this._leagueSystem*/
+    }
   }
 
 }

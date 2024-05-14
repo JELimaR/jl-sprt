@@ -5,7 +5,7 @@ import { ITournamentFromGSGData, tournamentFromGSG } from '../JSportModule/Gener
 import Tournament from '../Tournament/Tournament';
 import JCalendar from '../JCalendar/JCalendar';
 import exampleAdvance from './exampleAdvance';
-import { globalFinishedRankingsMap } from '../Tournament/Rank/globalFinishedRankingsMap';
+import { globalFinishedRankingsMap } from '../Tournament/globalFinishedRankingsMap';
 import { Ranking } from '../JSportModule/Ranking';
 import { IGenericRankItem } from '../JSportModule/Ranking';
 import Team from '../JSportModule/data/Team';

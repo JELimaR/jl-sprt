@@ -1,4 +1,5 @@
 export * from './Federation'
+export * from './Confederation'
 export * from './GeogEntity'
 export * from './Institution'
 export * from './LeagueSystem'

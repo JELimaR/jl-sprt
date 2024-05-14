@@ -1,7 +1,7 @@
 
 import { Ranking, IGenericRankItem, TypeRanking } from "../JSportModule";
 import Team from "../JSportModule/data/Team";
-import { globalFinishedRankingsMap } from "./Rank/globalFinishedRankingsMap";
+import { globalFinishedRankingsMap } from "./globalFinishedRankingsMap";
 import Tournament from "./Tournament";
 
 /**

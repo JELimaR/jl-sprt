@@ -3,7 +3,7 @@ import { TypeHalfWeekOfYear } from "../JCalendar/JDateTimeModule";
 import { IElementInfo, IPhaseConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, TCC } from "../JSportModule";
 import { IGenericRankItem } from "../JSportModule";
 import { Ranking, TypeRanking } from "../JSportModule";
-import { globalFinishedRankingsMap } from "./Rank/globalFinishedRankingsMap";
+import { globalFinishedRankingsMap } from "./globalFinishedRankingsMap";
 import StageGroup from "./Stage/StageGroup/StageGroup";
 import StagePlayoff from "./Stage/StagePlayoff/StagePlayoff";
 import { TGS } from "./Stage/Stage";

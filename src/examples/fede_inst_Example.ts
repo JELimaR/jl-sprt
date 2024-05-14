@@ -9,7 +9,7 @@ import { TInitialCreator, TPhaseCreator } from "../JSportModule/GeneralStageGrap
 import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
 import mostrarFecha from "../mostrarFechaBorrar";
 import { asignarTeams2 } from "../Tournament/asignarTeams2";
-import { globalFinishedRankingsMap } from "../Tournament/Rank/globalFinishedRankingsMap";
+import { globalFinishedRankingsMap } from "../Tournament/globalFinishedRankingsMap";
 import Tournament from "../Tournament/Tournament";
 import exampleAdvance from "./exampleAdvance";
 import { getFederationCreators, getInstitutionCreators } from "./ExampleData";
