@@ -38,10 +38,10 @@ export default function APIExample() {
   getConfederationData().forEach((conf: IConfederationData) => {
     entities.createConfederation(conf)
     if (!entities.associateFederation('1', conf.i)) {
-      console.log(conf)
+      console.log(conf.i)
     }
   })
-  console.log(entities.getAllConfederations().length)
+  console.log(entities.getAllConfederations())
 
   mostrarFecha(cal.now)
 }
