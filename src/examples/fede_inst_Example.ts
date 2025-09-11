@@ -32,7 +32,14 @@ export default function fede_inst_Example() {
     institution.createTeam('S');
     federation.addInstitutionToCategory(institution, 'S')
   })
-  console.log(federation)
+
+  // Verificar estado inicial de la federación
+  console.log(`\n=== Initial Federation Status ===`);
+  console.log(`Federation: ${federation.name} (${federation.id})`);
+  console.log(`Total members: ${federation.members.size}`);
+  console.log(`Teams in category 'S': ${federation.getRanking('S').size}`);
+  console.log(`Available teams:`, federation.getRanking('S').getRankTable().map(r => r.team.id));
+  console.log(`=================================\n`);
 
   // nuevas institutions
   getInstitutionCreators(18, federation.areaAsosiated.id).forEach((iic: IInstitutionCreator, idx: number) => {
@@ -55,12 +62,16 @@ export default function fede_inst_Example() {
     // nuevas institutions asociadas a una federation
     const newMembers = federationFileMembers.get(Y)
     if (newMembers) {
+      console.log(`\n--- Adding ${newMembers.length} new members in year ${Y} ---`);
       newMembers.forEach((newMember: IInstitutionCreator) => {
         const institution = new Institution(newMember);
         federation.addMember(institution)
         institution.createTeam('S');
         federation.addInstitutionToCategory(institution, 'S')
+        console.log(`✓ Added institution: ${institution.id}`);
       })
+      console.log(`Total members after additions: ${federation.members.size}`);
+      console.log(`Teams in category 'S' after additions: ${federation.getRanking('S').size}`);
     }
     // nuevas institutions participantes en alguna categoria
 
@@ -68,16 +79,29 @@ export default function fede_inst_Example() {
     const franking: Ranking = federation.getRanking('S')
     globalFinishedRankingsMap.set(franking.context, franking)
 
-    // actualizo los ls de la federation
+    // actualizo los ls de la federation SOLO si hay equipos en la categoría
     const lsList = federationFileLS.get(Y)
-    if (!!lsList) {
+    if (!!lsList && franking.size > 0) {
       CATEGORIES.forEach((category: TypeCategory) => {
         const ilsc = lsList[category]
         if (!!ilsc) {
           const ls = new LeagueSystem(ilsc)
-          federation.updateLeagueSystem(ls)
+
+          // Verificar que el sistema de ligas sea compatible con el número de equipos
+          console.log(`Updating LeagueSystem for year ${Y}, category ${category}:`);
+          console.log(`- Teams available: ${franking.size}`);
+          console.log(`- Teams required by LeagueSystem: ${ls.getTeamsCount()}`);
+
+          if (ls.getTeamsCount() <= franking.size) {
+            federation.updateLeagueSystem(ls)
+            console.log(`✓ LeagueSystem updated successfully`);
+          } else {
+            console.warn(`⚠ Skipping LeagueSystem update: requires ${ls.getTeamsCount()} teams but only ${franking.size} available`);
+          }
         }
       })
+    } else if (!!lsList && franking.size === 0) {
+      console.warn(`⚠ Skipping LeagueSystem update for year ${Y}: no teams in federation`);
     }
 
     // creo los tournaments de federations

@@ -68,8 +68,8 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
         items.push(IGRIList[i])
       }
       if (items.length !== cond.N) {
-        console.log(IGRIList.length)
-        console.log(items.length)
+        console.log('IGRIList', IGRIList.length)
+        console.log('items', items.length)
         console.log(cond)
         throw new Error(`
         En Federation.getDivGenericRank`)
@@ -98,6 +98,7 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
       rankList = this.info.rankings[category] as Team[];
     } else {
       rankList = [];
+      this.info.rankings[category] = []
     }
     if (rankList) {
       if (rankList.includes(inst.getTeam(category)!)) {
@@ -117,10 +118,51 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
     let franking = this.getRanking(category)
     let categoryTeams = this.getRankList(category);
 
+    // Información detallada para debugging
+    console.log(`\n=== UpdateLeagueSystem Debug Info ===`);
+    console.log(`Federation: ${this.name} (${this.id})`);
+    console.log(`Category: ${category}`);
+    console.log(`Teams required by LeagueSystem: ${ls.getTeamsCount()}`);
+    console.log(`Teams available in federation: ${franking.size}`);
+    console.log(`Teams in category list: ${categoryTeams.length}`);
+    console.log(`Total members in federation: ${this.members.size}`);
+    
+    // Mostrar equipos disponibles
+    if (categoryTeams.length > 0) {
+      console.log(`Available teams:`, categoryTeams.map(t => t.id));
+    } else {
+      console.log(`No teams found in category ${category}`);
+      
+      // Verificar si hay instituciones pero sin equipos en esta categoría
+      const institutionsWithoutTeams: string[] = [];
+      this.members.forEach((institution, id) => {
+        if (!institution.getTeam(category)) {
+          institutionsWithoutTeams.push(id);
+        }
+      });
+      
+      if (institutionsWithoutTeams.length > 0) {
+        console.log(`Institutions without teams in category ${category}:`, institutionsWithoutTeams);
+      }
+    }
+    console.log(`=====================================\n`);
+
     if (ls.getTeamsCount() > franking.size) {
-      throw new Error(`El league system requiere: ${ls.getTeamsCount()} teams, mientras que
-      para la categoria (${category}) hay "incriptos" un total de ${franking.size} teams.
-      En Federation.updateLeagueSystem`)
+      throw new Error(`Cannot update LeagueSystem for Federation '${this.name}' (${this.id}):
+      
+      LeagueSystem Requirements:
+      - Category: ${category}
+      - Teams required: ${ls.getTeamsCount()}
+      - Divisions: ${ls.getDivisionConfigList().length}
+      
+      Federation Status:
+      - Teams available: ${franking.size}
+      - Total members: ${this.members.size}
+      - Teams in category: ${categoryTeams.length}
+      
+      Solution: Add more institutions to category '${category}' or reduce LeagueSystem requirements.
+      
+      (Federation.updateLeagueSystem)`)
     }
     ls.getGenericRankOrdered().forEach((igri: IGenericRankItem, idx: number) => {
       const item = franking.getGenericRankItems()[idx]
