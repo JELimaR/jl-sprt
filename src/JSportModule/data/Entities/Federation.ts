@@ -1,4 +1,4 @@
-import { IDivisionCondition } from ".";
+import { IDivisionCondition } from "./LeagueSystem";
 import { globalFinishedRankingsMap } from "../../../Tournament/globalFinishedRankingsMap";
 import { ITournamentFromGSGData } from "../../GeneralStageGraph/tournamentFromGSG";
 import { IGenericRankItem, IRankItem, Ranking } from "../../Ranking";

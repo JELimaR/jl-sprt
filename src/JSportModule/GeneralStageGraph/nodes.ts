@@ -8,6 +8,11 @@ export interface IANodeData {
 export abstract class ANode<D extends IANodeData> {
 
   private _data: D;
+  x: number = 0;
+  y: number = 0;
+  size: number = 20;
+  color: string = '#CCC'
+  label: string = '';
 
   constructor(data: D) {
     this._data = data;

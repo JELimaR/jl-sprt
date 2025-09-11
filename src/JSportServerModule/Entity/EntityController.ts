@@ -1,7 +1,7 @@
-import { Continent, Country, Federation, IContinentData, ICountryData, IEntityController, IFederationCreator, IFederationData, Institution, IPaginationData, ITownData, Town } from "../../JSportModule";
-import { CATEGORIES, Confederation, CupSystem, IConfederationCreator, IConfederationData, IInstitutionCreator, IInstitutionData, TypeCategory, TypeCategoryList } from "../../JSportModule/data/";
+
 import EntityHandler from "./EntityHandler";
 import { JDate } from "../../JCalendar";
+import { IEntityController, IContinentData, ICountryData, ITownData, Continent, Country, Town, IConfederationData, Federation, IConfederationCreator, Confederation, IFederationData, Institution, TypeCategoryList, CupSystem, CATEGORIES, TypeCategory, IFederationCreator, IPaginationData, IInstitutionData, IInstitutionCreator } from "../../JSportModule";
 import LeagueSystem from "../../JSportModule/data/Entities/LeagueSystem";
 
 export default class EntityController implements IEntityController {
@@ -12,7 +12,7 @@ export default class EntityController implements IEntityController {
   private constructor() { }
   static get instance(): EntityController {
     if (!this._instance)
-    this._instance = new EntityController();
+      this._instance = new EntityController();
     return this._instance;
   }
   loadGeogExampleData(continents: IContinentData[], countries: ICountryData[], towns: ITownData[]) {
@@ -84,7 +84,7 @@ export default class EntityController implements IEntityController {
     CATEGORIES.forEach((c: TypeCategory) => {
       const cupSystem_c = data.cSys[c]
       if (cupSystem_c)
-      cupSystem[c] = new CupSystem(cupSystem_c)
+        cupSystem[c] = new CupSystem(cupSystem_c)
       const leagueSystem_c = data.lSys[c];
       if (leagueSystem_c)
         leagueSystem[c] = new LeagueSystem(leagueSystem_c);

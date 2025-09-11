@@ -1,6 +1,6 @@
 import JCalendar from "../JCalendar/JCalendar";
-import { IElementInfo, IGenericRankItem, IPhaseConfig, ITournamentConfig, TCC } from "../JSportModule";
-import { Ranking } from "../JSportModule";
+import { IGenericRankItem, Ranking, TCC } from "../JSportModule";
+import { IElementInfo, IPhaseConfig, ITournamentConfig } from "../JSportModule/data";
 import { createGSG } from "../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
 import Phase from "./Phase";

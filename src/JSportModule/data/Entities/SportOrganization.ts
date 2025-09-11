@@ -66,7 +66,11 @@ export default abstract class SportOrganization<
   get foundationDate(): JDate { return this.info.fundationDay }
 
   addMember(m: M) {
-    if (!!this.info.members.get(m.id)) throw new Error(`en add member`);
+    if (!!this.info.members.get(m.id)) {
+      console.log(m.id)
+      console.log(this.members.keys())
+      throw new Error(`en add member`);
+    }
     this.info.members.set(m.id, m);
   }
 

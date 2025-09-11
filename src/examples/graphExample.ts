@@ -60,6 +60,7 @@ export default function graphExample() {
       ]
     }
   ];
+  
   const gsg = createGSG(iniCreator, phaseCreatorArr);
   const asp = gsg.getAllSimplePath('ini', 'fin');
   console.log(asp.length)

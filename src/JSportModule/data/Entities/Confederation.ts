@@ -1,5 +1,5 @@
 
-import { Federation } from "..";
+import { Federation } from "./Federation";
 import Team from "../Team";
 import { Continent } from "./GeogEntity";
 import LeagueSystem, { CupSystem, ICupSystemCreator, IDivisionConfig, ILeagueSystemCreator } from "./LeagueSystem";

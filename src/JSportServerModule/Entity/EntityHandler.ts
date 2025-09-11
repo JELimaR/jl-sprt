@@ -1,4 +1,7 @@
-import { Continent, Country, Federation, IEntityHandler, Institution, Town } from "../../JSportModule";
+import { IEntityHandler } from "../../JSportModule";
+import { Institution } from "../../JSportModule/data/Entities/Institution";
+import { Federation } from "../../JSportModule/data/Entities/Federation";
+import { Country, Continent, Town } from "../../JSportModule/data/Entities/GeogEntity";
 import { Confederation, IConfederationData } from "../../JSportModule/data/Entities/Confederation";
 
 

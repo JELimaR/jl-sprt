@@ -1,11 +1,11 @@
-
+import { JDateTime } from "../JCalendar";
 import JCalendar from "../JCalendar/JCalendar";
-import { JDateTime } from "../JCalendar/JDateTimeModule";
-import { IConfederationData, IFederationCreator, IFederationData, IInstitutionData, ITownData, SportAPIController } from "../JSportModule";
+import { IConfederationData, IFederationData, IInstitutionData, SportAPIController } from "../JSportModule";
 import SportServerAPI from "../JSportServerModule";
 import mostrarFecha from "../mostrarFechaBorrar";
-import { getConfederationData, getFederationData, getInstitutionsData } from "./APIExample/entitiesData";
+import { getInstitutionsData, getFederationData, getConfederationData } from "./APIExample/entitiesData";
 import { getContinentData, getCountriesData, getTownsData } from "./APIExample/geogData";
+
 
 export default function APIExample() {
 

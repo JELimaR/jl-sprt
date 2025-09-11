@@ -32,6 +32,7 @@ export default function fede_inst_Example() {
     institution.createTeam('S');
     federation.addInstitutionToCategory(institution, 'S')
   })
+  console.log(federation)
 
   // nuevas institutions
   getInstitutionCreators(18, federation.areaAsosiated.id).forEach((iic: IInstitutionCreator, idx: number) => {
