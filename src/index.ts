@@ -43,9 +43,9 @@ function app() {
   
   // systemExample_01()
 
-  fede_inst_Example()
+  // fede_inst_Example()
 
-  // APIExample()
+  APIExample()
 
   // console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getDateTime())
   // console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getIJDateTimeCreator())

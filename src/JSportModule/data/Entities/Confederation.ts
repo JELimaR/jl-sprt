@@ -21,7 +21,7 @@ export class Confederation extends SportOrganization<Continent, Federation, ICon
 
   getData(): IConfederationData {
     const members: string[] = [];
-    this.members.forEach(i => members.push(i.id))
+    this.members.forEach(m => members.push(m.id))
     return {
       i: this.id, n: this.name, sn: this.shortName, fd: this.foundationDate.getDate().dayAbsolute,
       aa: this.areaAsosiated.id, hq: this.headquarters.id,

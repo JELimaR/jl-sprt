@@ -31,38 +31,6 @@ Un **Tournament** es el elemento de más alto nivel que representa un torneo dep
 - **Ranking Global**: Mantiene el ranking final del torneo
 - **Configuración Centralizada**: Define reglas globales y configuraciones
 
-### Estructura Interna
-```typescript
-class Tournament {
-  private _phases: Phase[]           // Fases del torneo
-  private _fromGSGData: ITournamentFromGSGData  // Datos del grafo
-  
-  // Propiedades principales
-  get phases(): Phase[]              // Acceso a las fases
-  get stagesMap(): Map<string, TGS>  // Mapa de todas las etapas
-  get graph(): GeneralStageGraph     // Grafo del torneo
-  
-  // Métodos principales
-  getRelativeRank(): Ranking         // Ranking actual del torneo
-}
-```
-
-### Ejemplo de Uso
-```typescript
-// Crear un torneo desde configuración GSG
-const tournament = Tournament.create(
-  { id: 'champions_2024', season: '2024' },
-  tournamentFromGSGData,
-  calendar
-);
-
-// Obtener fases del torneo
-const phases = tournament.phases;
-
-// Obtener ranking final
-const finalRanking = tournament.getRelativeRank();
-```
-
 ---
 
 ## 📅 Phase (Fase)
@@ -76,37 +44,10 @@ Una **Phase** representa una fase específica dentro de un torneo. Las fases son
 - **Ranking de Fase**: Genera rankings que alimentan la siguiente fase
 - **Validación**: Verifica que se cumplan las condiciones para avanzar
 
-### Estructura Interna
-```typescript
-class Phase {
-  private _parallelStages: TGS[]     // Etapas paralelas de la fase
-  
-  get stages(): TGS[]                // Acceso a las etapas
-  get isFinished(): boolean          // Estado de finalización
-  
-  getRelativeRank(): Ranking         // Ranking de la fase
-}
-```
-
 ### Ejemplos de Fases
 1. **Fase de Grupos**: Múltiples grupos jugando simultáneamente
 2. **Fase Eliminatoria**: Octavos, cuartos, semifinales, final
 3. **Fase de Clasificación**: Rondas previas de clasificación
-
-### Ejemplo de Configuración
-```typescript
-const phaseConfig = {
-  n: 1,  // Número de fase
-  stages: [
-    {
-      idConfig: 'group_stage',
-      type: 'group',
-      participantsPerGroup: [4, 4, 4, 4], // 4 grupos de 4 equipos
-      qualyQty: 8  // 8 clasificados total
-    }
-  ]
-};
-```
 
 ---
 
@@ -122,54 +63,18 @@ Un **Stage** es una unidad de competición específica dentro de una fase. Repre
 - **Formato**: Todos contra todos dentro de cada grupo
 - **Clasificación**: Los mejores de cada grupo avanzan
 
-```typescript
-class StageGroup extends Stage {
-  private _groups: League[]          // Ligas individuales por grupo
-  
-  get groupsNumber(): number         // Número de grupos
-  get groups(): League[]             // Acceso a los grupos
-  
-  // Métodos específicos
-  getTableOfGroups(): TeamTableItem[][] // Tablas por grupo
-  teamsDraw(): Team[][]              // Sorteo de equipos
-}
-```
 
 #### 2. **StagePlayoff** (Etapa Eliminatoria)
 - **Propósito**: Eliminación directa entre equipos
 - **Formato**: Partidos eliminatorios (ida/vuelta o partido único)
 - **Clasificación**: Solo el ganador avanza
 
-```typescript
-class StagePlayoff extends Stage {
-  private _playoff: SingleElmination // Sistema de eliminación
-  
-  get playoff(): SingleElmination    // Acceso al sistema
-  
-  // Métodos específicos
-  teamsDraw(): Team[]               // Sorteo para emparejamientos
-  drawRulesValidate(): boolean      // Validación de reglas de sorteo
-}
-```
 
 ### Características Comunes de Stage
 - **Gestión Temporal**: Control de fechas de inicio y fin
 - **Sistema de Sorteo**: Algoritmos para asignación de equipos
 - **Validación de Reglas**: Verificación de reglas de sorteo y participación
 - **Generación de Rankings**: Creación de clasificaciones para siguientes fases
-
-### Configuración de Stage
-```typescript
-interface IStageConfig {
-  idConfig: string;                  // Identificador único
-  type: 'group' | 'playoff';        // Tipo de etapa
-  hwStart: number;                  // Semana de inicio
-  hwEnd: number;                    // Semana de fin
-  qualifyConditions: TQualyCondition[]; // Condiciones de clasificación
-  bombos: number[];                 // Configuración de bombos para sorteo
-  drawRulesValidate: TypeDrawRulePlayoff[]; // Reglas de sorteo
-}
-```
 
 ---
 
@@ -199,77 +104,12 @@ El **Ranking** es el sistema de clasificación que determina el orden de los equ
 - Clasificación final del torneo
 - Determina posiciones finales de todos los participantes
 
-### Estructura del Ranking
-```typescript
-class Ranking {
-  private _context: string;          // Contexto del ranking
-  private _items: IGenericRankItem[]; // Items del ranking
-  private _teams: Team[];            // Equipos clasificados
-  
-  get isBlocked(): boolean;          // Si está completo
-  get context(): string;             // Contexto
-  get size(): number;                // Cantidad de items
-  
-  // Métodos principales
-  getRankTable(): IRankItem[];       // Tabla completa
-  getFromPosition(pos: number): IRankItem; // Equipo en posición específica
-  addTeams(teams: Team[]): void;     // Agregar equipos
-}
-```
-
-### Interfaces del Ranking
-```typescript
-interface IRankItem {
-  pos: number;                       // Posición en el ranking
-  team: Team;                        // Equipo
-  origin: string;                    // Origen del ranking
-}
-
-interface IGenericRankItem {
-  pos: number;                       // Posición
-  origin: string;                    // Origen (sin equipo específico)
-}
-
-type TypeRanking = {
-  context: string;                   // Contexto del ranking
-  items: IGenericRankItem[];         // Items genéricos
-  teams: Team[];                     // Equipos específicos
-}
-```
-
 ### Flujo de Rankings
 ```
 Ranking Inicial → Stage 1 → Ranking Etapa 1 → Stage 2 → Ranking Etapa 2
                      ↓                            ↓
                 Fase 1 Ranking  →  Fase 2  →  Ranking Final
 ```
-
-### Ejemplo de Uso
-```typescript
-// Crear ranking inicial
-const initialRanking = Ranking.fromTypeRanking({
-  context: 'initial_seeding',
-  items: [
-    { pos: 1, origin: 'initial_seeding' },
-    { pos: 2, origin: 'initial_seeding' },
-    // ...
-  ],
-  teams: [team1, team2, /* ... */]
-});
-
-// Obtener equipo en posición específica
-const firstPlace = ranking.getFromPosition(1);
-
-// Crear ranking desde condición de clasificación
-const qualyRanking = Ranking.fromQualyCondition({
-  rankId: 'group_stage_results',
-  season: 'current',
-  minRankPos: 1,
-  maxRankPos: 8  // Los 8 primeros clasifican
-});
-```
-
----
 
 ## 🕸️ GeneralStageGraph (GSG)
 

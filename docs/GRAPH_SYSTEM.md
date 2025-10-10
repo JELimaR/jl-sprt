@@ -31,16 +31,6 @@ GeneralStageGraph
 - **Datos**: Lista de equipos clasificados y distribución inicial
 - **Salidas**: Genera RankGroupNodes con equipos distribuidos
 
-```typescript
-const initialNode = {
-  tournamentId: 'champions_2024',
-  qualyRankList: [
-    { pos: 1, origin: 'league_champion' },
-    { pos: 2, origin: 'league_champion' },
-    // ... más equipos
-  ],
-  rankGroups: [16, 8, 8] // 32 equipos en 3 grupos
-};
 ```
 
 #### FinalNode (`FIN`)
@@ -57,17 +47,6 @@ const initialNode = {
 - **Duración**: Calculada automáticamente según participantes
 - **Formato**: Round Robin o Ida/Vuelta
 
-```typescript
-const groupStage = {
-  participants: 32,
-  groupsNumber: 8,        // 8 grupos de 4 equipos
-  opt: 'rr',             // Round Robin
-  bombos: [8, 8, 8, 8],  // Distribución por bombos
-  drawRules: [           // Reglas de sorteo
-    { origin: 'all', minCount: 2 }
-  ]
-};
-```
 
 **Cálculos Automáticos**:
 - **Participantes por grupo**: Distribución equilibrada (3-20 por grupo)
@@ -79,18 +58,6 @@ const groupStage = {
 - **Función**: Eliminación directa
 - **Restricción**: Participantes debe ser potencia de 2
 - **Formatos**: Partido único, ida/vuelta, campo neutral
-
-```typescript
-const playoffStage = {
-  participants: 16,       // Debe ser 2^n
-  roundsNumber: 4,        // Octavos → Cuartos → Semis → Final
-  opt: 'h&a',            // Ida y vuelta
-  bombos: [8, 8],        // Cabezas de serie
-  drawRules: [
-    { origin: 'same_group', minCount: 1 }
-  ]
-};
-```
 
 **Cálculos Automáticos**:
 - **Rondas válidas**: `log2(participantes)`
@@ -105,43 +72,17 @@ const playoffStage = {
 - **Duración**: 0 semanas (instantáneo)
 - **Uso**: Reorganización de flujos, combinación de rankings
 
-```typescript
-const transferStage = {
-  participants: 16,
-  // No requiere configuración adicional
-  // Pasa todos los equipos sin cambios
-};
-```
-
 #### TableStageNode (`TBL`)
 - **Color**: Rosa (`#E9BCB7`)
 - **Función**: División de ranking en clasificados/eliminados
 - **Entrada**: Exactamente 1 ranking
 - **Salida**: 2 rankings (clasificados + eliminados)
 
-```typescript
-const tableStage = {
-  participants: 20,
-  qNumber: 8,           // Los primeros 8 clasifican
-  // Genera:
-  // - Ranking 1: Posiciones 1-8 (clasificados)
-  // - Ranking 2: Posiciones 9-20 (eliminados)
-};
-```
-
 #### ReOrderStageNode (`ROR`)
 - **Color**: Personalizable
 - **Función**: Reordenamiento de rankings
 - **Entrada**: Exactamente 2 rankings
 - **Salida**: Los mismos 2 rankings en orden inverso
-
-```typescript
-const reorderStage = {
-  participants: 16,
-  // Entrada: [RankingA, RankingB]
-  // Salida:  [RankingB, RankingA]
-};
-```
 
 ### 4. Nodos de Ranking (RankGroupNode)
 
@@ -150,19 +91,6 @@ const reorderStage = {
 - **Tamaño**: Más pequeño (10px vs 20px)
 - **Función**: Representa grupos específicos de equipos
 - **Datos**: Ranking con posiciones y origen
-
-```typescript
-const rankGroupNode = {
-  sourceData: {
-    context: 'group_stage_winners',
-    items: [
-      { pos: 1, origin: 'group_A' },
-      { pos: 1, origin: 'group_B' },
-      // ... ganadores de cada grupo
-    ]
-  }
-};
-```
 
 ## 🔄 Flujo de Datos
 
@@ -234,45 +162,9 @@ renderGSGtoPNG(gsg); // Genera ./graph.png
 
 ### Configuración Visual
 
-```typescript
-const visualConfig = {
-  STEP_SIZE: 50,           // Espaciado entre nodos
-  STAGE_NODE_SIZE: 20,     // Tamaño nodos de etapa
-  RANK_NODE_SIZE: 10,      // Tamaño nodos de ranking
-  MARGIN: 30,              // Margen del canvas
-  backgroundColor: '#FFFFFF' // Fondo blanco
-};
-```
-
 ## 🛠️ Creación de Grafos
 
 ### Configuración Básica
-
-```typescript
-const initialCreator = {
-  tournamentId: 'my_tournament',
-  qualyrankList: getQualifiedTeams(),
-  rankGroupNumbers: [32] // 32 equipos iniciales
-};
-
-const phaseCreators = [
-  {
-    id: 1,
-    stages: [
-      {
-        count: 1, // Una etapa de grupos
-        stage: {
-          type: 'group',
-          value: 8,      // 8 grupos
-          opt: 'rr'      // Round robin
-        }
-      }
-    ]
-  }
-];
-
-const gsg = createGSG(initialCreator, phaseCreators);
-```
 
 ### Validación y Análisis
 
@@ -295,40 +187,6 @@ const finalRankings = gsg.getFinalRankings();
 
 ### Torneo con Múltiples Caminos
 
-```typescript
-// Equipos pueden seguir diferentes rutas
-const complexTournament = {
-  phases: [
-    {
-      stages: [
-        { count: 2, stage: { type: 'group', value: 4 } },
-        { count: 1, stage: { type: 'playoff', value: 2 } }
-      ]
-    },
-    {
-      stages: [
-        { count: 1, stage: { type: 'transfer' } },
-        { count: 2, stage: { type: 'table', value: 8 } }
-      ]
-    }
-  ]
-};
-```
-
 ### Integración con Torneos Reales
-
-```typescript
-// El GSG se convierte en configuración de torneo real
-const tournamentConfig = tournamentFromGSG(gsgData);
-const tournament = Tournament.create(info, tournamentConfig, calendar);
-
-// El torneo ejecuta la estructura definida en el GSG
-tournament.phases.forEach(phase => {
-  phase.stages.forEach(stage => {
-    // Cada stage corresponde a un nodo del GSG
-    stage.start(teams, calendar);
-  });
-});
-```
 
 Este sistema de grafos proporciona una base sólida para modelar cualquier tipo de competición deportiva, desde torneos simples hasta estructuras complejas con múltiples caminos y formatos mixtos.

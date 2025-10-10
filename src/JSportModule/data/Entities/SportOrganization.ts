@@ -65,11 +65,19 @@ export default abstract class SportOrganization<
   // get calendar(): JDateTime { return this._dateTimeCreator }
   get foundationDate(): JDate { return this.info.fundationDay }
 
+  /**
+   * Agrega un miembro a la organización. Lanza un error si el miembro ya existe.
+   * El mensaje de error incluye el id del miembro, el tipo de organización y los ids actuales de miembros.
+   */
   addMember(m: M) {
     if (!!this.info.members.get(m.id)) {
-      console.log(m.id)
-      console.log(this.members.keys())
-      throw new Error(`en add member`);
+      const orgType = this.constructor.name;
+      const currentMembers = Array.from(this.members.keys()).join(', ');
+      throw new Error(
+        `Error en addMember (${orgType}):\n` +
+        `- El miembro con id '${m.id}' ya existe en la organización.\n` +
+        `- Miembros actuales: [${currentMembers}]`
+      );
     }
     this.info.members.set(m.id, m);
   }
