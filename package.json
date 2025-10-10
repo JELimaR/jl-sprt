@@ -11,7 +11,7 @@
     "dev:tsc": "tsc --watch",
     "dev:nodemon": "nodemon ./dist/index.js ",
     "dev:nodemon-log": "nodemon ./dist/index.js > app.log",
-    "test": "jest",
+    "test": "vitest",
     "start": "node ./dist/index.js"
   },
   "author": "JELimaR",
@@ -19,7 +19,8 @@
   "devDependencies": {
     "@types/node": "^16.4.3",
     "nodemon": "^2.0.12",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "vitest": "^3.2.4"
   },
   "dependencies": {
     "canvas": "^3.2.0",
