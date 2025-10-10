@@ -10,3 +10,5 @@ dist/*
 
 package-lock.json
 
+.log
+

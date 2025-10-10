@@ -49,8 +49,14 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
     //     this.info.rankings[c] = [...ranking_c]
     //   }
     // })
-  }
+    }
 
+  /**
+   * Devuelve el identificador único de un torneo de división para una categoría y nivel dados.
+   * @param category Categoría deportiva
+   * @param level Nivel de la división
+   * @returns string con el id único del torneo de división
+   */
   getDivTourId(category: TypeCategory, level: number): string {
     if (0 >= level && level >= 100) {
       throw new Error(`
@@ -58,61 +64,106 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
     }
     return `${category}_${this.id}_D${String(level).padStart(2, '0')}`
   }
-  getDivGenericRank(category: TypeCategory, conditions: IDivisionCondition[]) {
+  /**
+   * Divide el ranking genérico de una categoría en grupos según las condiciones de división.
+   * Cada grupo representa los equipos asignados a una división específica.
+   * @param category Categoría deportiva (ej: S, S17, etc)
+   * @param conditions Lista de condiciones de división (cantidad de equipos por división)
+   * @returns Array de arrays, cada uno con los IGenericRankItem de una división
+   *
+   * IMPORTANTE: El método asume que el ranking está ordenado y que la suma de N en conditions
+   * coincide exactamente con la cantidad de equipos en el ranking. Si no, lanza error.
+   */
+  getDivGenericRank(category: TypeCategory, conditions: IDivisionCondition[]): IGenericRankItem[][] {
     let out: Array<IGenericRankItem[]> = [];
     let pos = 0;
+    // Obtiene la lista de items genéricos del ranking de la categoría
     const IGRIList = this.getRanking(category).getGenericRankItems();
+    const totalN = conditions.reduce((acc, cond) => acc + cond.N, 0);
+    if (totalN !== IGRIList.length) {
+      const teamIds = this.getRankList(category).map(t => t.id);
+      throw new Error(
+        [
+          'Error en Federation.getDivGenericRank:',
+          `  - Cantidad de equipos en ranking: ${IGRIList.length}`,
+          `  - Suma de N en conditions: ${totalN}`,
+          `  - Conditions:`,
+          ...conditions.map((c, i) => `      ${i + 1}: ${JSON.stringify(c)}`),
+          `  - Equipos en ranking:`,
+          ...teamIds.map((id, i) => `      ${i + 1}: ${id}`),
+          '  Solución: Verifica que la suma de N coincida con la cantidad de equipos en el ranking.'
+        ].join('\n')
+      );
+    }
     conditions.forEach((cond: IDivisionCondition) => {
-      const items: IGenericRankItem[] = []
-      for (let i = pos; i < pos + cond.N && i < IGRIList.length; i++) {
-        items.push(IGRIList[i])
+      const items: IGenericRankItem[] = [];
+      // Toma N elementos consecutivos del ranking para esta división
+      for (let i = pos; i < pos + cond.N; i++) {
+        items.push(IGRIList[i]);
       }
-      if (items.length !== cond.N) {
-        console.log('IGRIList', IGRIList.length)
-        console.log('items', items.length)
-        console.log(cond)
-        throw new Error(`
-        En Federation.getDivGenericRank`)
-      }
-      out.push(items)
-      pos += cond.N
-    })
+      out.push(items);
+      pos += cond.N;
+    });
     return out;
   }
 
+  /**
+   * Devuelve la lista de equipos (Team[]) que forman el ranking de una categoría específica.
+   * Se basa en la información almacenada en this.info.rankings.
+   * @param category Categoría deportiva
+   * @returns Array de equipos en el ranking de la categoría
+   */
+  /**
+   * Devuelve la lista de equipos (Team[]) que forman el ranking de una categoría específica.
+   * Se basa en la información almacenada en this.info.rankings.
+   * @param category Categoría deportiva
+   * @returns Array de equipos en el ranking de la categoría
+   */
   private getRankList(category: TypeCategory): Team[] {
     let out: Team[];
-    const rankList = this.info.rankings[category]
+    const rankList = this.info.rankings[category];
     if (rankList) {
       out = [...rankList];
     } else {
       out = [];
     }
-    return out
+    return out;
   }
 
-  // la institution pasa a formar parte de una categoria, implica que empieza a competir en dicha categoria
+  /**
+   * Agrega el equipo de una institución al ranking de una categoría.
+   * - Si no existe ranking para la categoría, lo inicializa con el nuevo equipo.
+   * - Si ya existe, agrega el equipo solo si no está repetido.
+   * - Lanza error si el equipo ya está en el ranking (no permite duplicados).
+   *
+   * @param inst Institución a agregar
+   * @param category Categoría deportiva
+   */
   addInstitutionToCategory(inst: Institution, category: TypeCategory) {
-    let rankList: Team[];
-    if (this.info.rankings[category]) {
-      rankList = this.info.rankings[category] as Team[];
-    } else {
-      rankList = [];
-      this.info.rankings[category] = []
+    const team = inst.getTeam(category);
+    if (!team) {
+      throw new Error(`La institución ${inst.id} no tiene equipo en la categoría ${category}`);
     }
-    if (rankList) {
-      if (rankList.includes(inst.getTeam(category)!)) {
-        console.log(rankList, inst.id)
-        throw new Error(`1 En Federation.addInstitutionToCategory`)
-      } else {
-        rankList.push(inst.getTeam(category)!);
-      }
-    } else {
-      throw new Error(`2 En Federation.addInstitutionToCategory`)
+    // Si no hay ranking, inicializarlo con el nuevo equipo
+    if (!this.info.rankings[category]) {
+      this.info.rankings[category] = [team];
+      return;
     }
+    // Si ya existe, verificar que no esté repetido
+    const rankList = this.info.rankings[category] as Team[];
+    if (rankList.find(t => t.id === team.id)) {
+      console.log(rankList.map(t => t.id), inst.id);
+      throw new Error(`El equipo ${team.id} ya está en el ranking de la categoría ${category}`);
+    }
+    rankList.push(team);
   }
   // se actualiza el sistema de ligas
   // actualizar el leaguesistem
+  /**
+   * Actualiza el sistema de ligas de la federación para una categoría, validando que haya suficientes equipos
+   * y que el ranking sea consistente con los requerimientos del sistema de ligas.
+   * @param ls Nuevo sistema de ligas
+   */
   updateLeagueSystem(ls: LeagueSystem) {
     const category: TypeCategory = ls.category;
     let franking = this.getRanking(category)
@@ -174,6 +225,10 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
     this.info.leagueSystem[category] = ls;
   }
 
+  /**
+   * Crea una lista de datos de torneos a partir de la configuración de ligas de la federación.
+   * @returns Lista de datos de torneos (uno por división configurada)
+   */
   createTournamentList(): ITournamentFromGSGData[] {
     let out: ITournamentFromGSGData[] = []
     CATEGORIES.forEach((category: TypeCategory) => {
@@ -190,6 +245,11 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
   }
 
   //
+  /**
+   * Devuelve el ranking de una categoría como un objeto Ranking, usando la lista de equipos de la categoría.
+   * @param category Categoría deportiva
+   * @returns Objeto Ranking con los equipos ordenados
+   */
   getRanking(category: TypeCategory): Ranking {
     let rankList: Team[] = this.getRankList(category);
     const out: IRankItem[] = rankList.map((team: Team, i: number) => {
@@ -201,11 +261,20 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
   }
 
   // Se actualizan los rankings por categoria de la federation al final de temporada
+  /**
+   * Actualiza los rankings de todas las categorías al final de la temporada,
+   * usando los rankings finales de los torneos almacenados en globalFinishedRankingsMap.
+   */
   updateRankings() {
     CATEGORIES.forEach((cat: TypeCategory) => {
       this.updateRankingsPerCategory(cat)
     })
   }
+  /**
+   * Actualiza el ranking de una categoría específica al final de la temporada,
+   * reasignando equipos según ascensos y descensos definidos en las divisiones.
+   * @param category Categoría deportiva
+   */
   private updateRankingsPerCategory(category: TypeCategory) {
     const ls = this.info.leagueSystem[category];
     const teamListCategory = this.getRankList(category)
@@ -247,6 +316,12 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
       this.setTeamInRanking(teamListCategory, category)
     }
   }
+  /**
+   * Establece el ranking de equipos para una categoría, validando que no haya repetidos
+   * y que todos los equipos pertenezcan a instituciones miembros.
+   * @param teamsArr Lista de equipos ordenada
+   * @param category Categoría deportiva
+   */
   private setTeamInRanking(teamsArr: Team[], category: TypeCategory) {
     const teamsPrevList = [...this.getRankList(category)];
     // verifico que no haya repetidos
@@ -275,9 +350,13 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
       }
     })
 
-    this.info.rankings[category] = teamsArr;
+    this.info.rankings[category] = [...teamsArr];
   }
 
+  /**
+   * Devuelve los datos serializados de la federación, incluyendo rankings, sistemas de copa y liga, y miembros.
+   * @returns Objeto IFederationData con la información de la federación
+   */
   getData(): IFederationData {
     const members: string[] = [];
     this.members.forEach(i => members.push(i.id))
@@ -285,9 +364,8 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
       i: this.id, n: this.name, sn: this.shortName, fd: this.foundationDate.getDate().dayAbsolute,
       aa: this.areaAsosiated.id, hq: this.headquarters.id,
       fs: this.founderMembers.map(i => i.id), ms: members,
-      rnks: {},
+      rnks: {S: this.getRankList('S').map(T => T.id)},
       cSys: {}, /*this._cupSystem,*/ lSys: {}/*this._leagueSystem*/
     }
   }
-
 }

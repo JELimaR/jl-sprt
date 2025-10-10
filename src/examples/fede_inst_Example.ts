@@ -42,16 +42,16 @@ export default function fede_inst_Example() {
   console.log(`=================================\n`);
 
   // nuevas institutions
+  const arr: IInstitutionCreator[] = [];
   getInstitutionCreators(18, federation.areaAsosiated.id).forEach((iic: IInstitutionCreator, idx: number) => {
     if (idx >= 8) {
-      const arr: IInstitutionCreator[] = federationFileMembers.get(1159) ? federationFileMembers.get(1159)! : []
       arr.push(iic)
-      federationFileMembers.set(1159, arr)
     }
   })
+  federationFileMembers.set(1159, arr)
 
   console.log('federationFileLS')
-  console.log(federationFileLS)
+  console.log(federationFileLS.entries())
 
   let cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1154, 168).getIJDateTimeCreator());
   for (let Y = 1154; Y <= 1166; Y++) {
@@ -81,7 +81,7 @@ export default function fede_inst_Example() {
 
     // actualizo los ls de la federation SOLO si hay equipos en la categoría
     const lsList = federationFileLS.get(Y)
-    if (!!lsList && franking.size > 0) {
+    if (!!lsList) {
       CATEGORIES.forEach((category: TypeCategory) => {
         const ilsc = lsList[category]
         if (!!ilsc) {
@@ -92,16 +92,9 @@ export default function fede_inst_Example() {
           console.log(`- Teams available: ${franking.size}`);
           console.log(`- Teams required by LeagueSystem: ${ls.getTeamsCount()}`);
 
-          if (ls.getTeamsCount() <= franking.size) {
-            federation.updateLeagueSystem(ls)
-            console.log(`✓ LeagueSystem updated successfully`);
-          } else {
-            console.warn(`⚠ Skipping LeagueSystem update: requires ${ls.getTeamsCount()} teams but only ${franking.size} available`);
-          }
+          federation.updateLeagueSystem(ls)
         }
       })
-    } else if (!!lsList && franking.size === 0) {
-      console.warn(`⚠ Skipping LeagueSystem update for year ${Y}: no teams in federation`);
     }
 
     // creo los tournaments de federations
@@ -165,7 +158,9 @@ export default function fede_inst_Example() {
   console.log('next', next)
 
   // console.log(federation.getDivGenericRank('S', prev))
+  console.log('getDivGenericRank')
   console.log(federation.getDivGenericRank('S', lsArr[1].getDivisionConfigList().map(e => e.condition)))
+  console.log(federation.getRanking('S').getRankTable().map(ri => ri.team.id))
 }
 
 /************************************************************************************************************ */
