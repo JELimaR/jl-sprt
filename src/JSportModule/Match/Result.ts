@@ -1,8 +1,9 @@
 
-type TypeTotalScore = {
-  team: string;
-  score: number;
-}
+import { A_Result, IJResultInfo, TypeTotalScore } from './A_Result';
+
+// re-export para no romper imports existentes
+export { IJResultInfo, TypeTotalScore } from './A_Result';
+
 // no se usa pero depende de res y punt
 export type TypeTeamResultInfo = {
   id: string;
@@ -11,18 +12,16 @@ export type TypeTeamResultInfo = {
   res: 'W' | 'D' | 'L';
 }
 
-export interface IJResultInfo {
-  teamOneScore: TypeTotalScore;
-  teamTwoScore: TypeTotalScore;
-  teamWinner: string | 'none';
-  teamLoser: string | 'none';
-}
-
-export default class JResult {
+/**
+ * Resultado de un partido de fútbol (goles).
+ * Implementación concreta de A_Result.
+ */
+export default class JResult extends A_Result {
   _teamOneScore: TypeTotalScore;
   _teamTwoScore: TypeTotalScore;
 
   constructor(one: string, two: string) {
+    super(one, two);
     this._teamOneScore = {
       team: one,
       score: 0
