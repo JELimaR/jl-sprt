@@ -289,3 +289,22 @@ Para agregar un nuevo deporte, se necesitan:
 4. `BasketballProfile implements ISportProfile<BasketRes, BasketPunt>`
 
 El resto del sistema (Tournament, Phase, Stage, GSG, Calendar, Entities) funciona sin cambios.
+
+---
+
+## Nota: Generalización de Serie
+
+La clase `Serie` actual está diseñada para fútbol (ida y vuelta, acumulando goles globales).
+Cada deporte resuelve las series de forma diferente:
+
+- **Fútbol**: goles globales acumulados. Si hay empate, gol de visitante / tiempo extra / penales.
+- **American Football**: no es habitual el formato ida/vuelta. Si se usara, acumularía puntos.
+- **Volleyball**: se juegan dos partidos. Si ambos equipos están empatados en puntos de partido
+  (ej: ambos ganaron 3-0, o ambos ganaron 3-2), se juega un **Set de Oro (Golden Set)**:
+  - Set único a 15 puntos con diferencia mínima de 2.
+  - Ignora sets y puntos anteriores de la serie.
+  - Se juega inmediatamente después del segundo encuentro.
+
+Esto requiere generalizar `Serie` con una clase abstracta `A_Serie<ScoreType>` que defina
+la lógica de desempate por deporte, y que el `ISportProfile` provea un factory de Serie.
+Esta generalización se puede hacer como un paso adicional posterior al paso 8.
