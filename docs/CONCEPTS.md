@@ -20,6 +20,35 @@ Tournament
 
 ---
 
+## 🔄 Flujo Principal del Sistema
+
+```
+Entidades (estructura organizativa):
+  Confederation → agrupa Federations (por continente/región)
+    Federation → agrupa Institutions, gestiona LeagueSystem (divisiones, ascensos/descensos)
+      Institution → agrupa Teams
+        Team → participa en Tournaments
+
+LeagueSystem (dentro de Federation):
+  Define divisiones por categoría → asigna teams a divisiones
+  → al final de temporada: promociones/relegaciones entre divisiones
+
+Torneos (ejecución deportiva):
+  GSG (grafo dirigido) → tournamentFromGSG() → TournamentConfig → Tournament
+    → crea Phases → crea Stages → programan Events en JCalendar
+    → Calendar avanza → ejecuta EventMatch → Match.play()
+    → actualiza Rankings → globalFinishedRankingsMap almacena resultados
+    → QualyConditions transfieren equipos entre Stages/Phases
+
+Conexión entre ambos:
+  Federation.updateLeagueSystem() → toma rankings finalizados
+    → redistribuye teams en divisiones para la siguiente temporada
+```
+
+Las entidades definen *quién* juega y cómo se organizan, mientras que Tournament/GSG define *cómo* se juega. El puente entre ambos es `Federation.updateLeagueSystem()` que usa los resultados de los torneos para actualizar la estructura de divisiones.
+
+---
+
 ## 🏆 Tournament (Torneo)
 
 ### ¿Qué es?
