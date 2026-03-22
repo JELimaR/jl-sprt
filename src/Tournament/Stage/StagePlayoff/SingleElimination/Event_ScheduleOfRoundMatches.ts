@@ -4,7 +4,7 @@ import SingleElmination from './SingleElmination';
 import { arr2 } from '../../../../JSportModule';
 import { JDateTime, TypeHalfWeekOfYear } from "../../../../JCalendar/JDateTimeModule";
 import JSerie from "../../../../JSportModule/Match/Serie";
-import Match from "../../../../JSportModule/Match/Match";
+import Match from "../../../../JSportModule/Match/ScoreMatch";
 import { JEventMatch } from "../../../../JSportModule/Match/EventMatch";
 
 

@@ -1,7 +1,7 @@
 import JCalendar from "../../JCalendar/JCalendar";
 import { IBaseStageConfig, IElementInfo, TCC, TypeTableMatchState } from "../../JSportModule";
 import Team from "../../JSportModule/data/Team";
-import Match from "../../JSportModule/Match/Match";
+import Match from "../../JSportModule/Match/ScoreMatch";
 import TeamTableItem from "../../JSportModule/Ranking/TeamTableItem";
 
 /**

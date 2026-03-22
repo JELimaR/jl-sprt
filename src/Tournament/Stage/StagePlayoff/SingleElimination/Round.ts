@@ -4,7 +4,7 @@ import { Event_ScheduleOfRoundMatches } from './Event_ScheduleOfRoundMatches';
 import { TypeHalfWeekOfYear, JDateTime } from '../../../../JCalendar/JDateTimeModule';
 import Team from '../../../../JSportModule/data/Team';
 import JSerie from '../../../../JSportModule/Match/Serie';
-import Match from '../../../../JSportModule/Match/Match';
+import Match from '../../../../JSportModule/Match/ScoreMatch';
 import { arr2 } from '../../../../JSportModule';
 
 

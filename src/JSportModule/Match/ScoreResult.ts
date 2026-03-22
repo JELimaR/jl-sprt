@@ -1,24 +1,14 @@
 
-import { A_Result, IJResultInfo, TypeTotalScore } from './A_Result';
-
-// re-export para no romper imports existentes
-export { IJResultInfo, TypeTotalScore } from './A_Result';
-
-// no se usa pero depende de res y punt
-export type TypeTeamResultInfo = {
-  id: string;
-  GF: number;
-  GA: number;
-  res: 'W' | 'D' | 'L';
-}
+import { A_Result, IA_ResultInfo, TypeTotalScore } from './A_Result';
 
 /**
- * Resultado de un partido de fútbol (goles).
- * Implementación concreta de A_Result.
+ * Resultado de un partido basado en score numérico (goles, puntos, etc.).
+ * Aplica para deportes donde el score es un número simple: fútbol, basketball, handball, etc.
+ * El ganador es quien tiene mayor score.
  */
-export default class JResult extends A_Result {
-  _teamOneScore: TypeTotalScore;
-  _teamTwoScore: TypeTotalScore;
+export default class ScoreResult extends A_Result<number> {
+  _teamOneScore: TypeTotalScore<number>;
+  _teamTwoScore: TypeTotalScore<number>;
 
   constructor(one: string, two: string) {
     super(one, two);
@@ -81,7 +71,7 @@ export default class JResult extends A_Result {
     return '';
   }
 
-  getResultInfo(): IJResultInfo {
+  getResultInfo(): IA_ResultInfo<number> {
     const tw = (this._teamOneScore.score > this._teamTwoScore.score) ? this._teamOneScore.team : ((this._teamOneScore.score < this._teamTwoScore.score) ? this._teamTwoScore.team : 'none');
     const tl = (this._teamOneScore.score < this._teamTwoScore.score) ? this._teamOneScore.team : ((this._teamOneScore.score > this._teamTwoScore.score) ? this._teamTwoScore.team : 'none');
     return {

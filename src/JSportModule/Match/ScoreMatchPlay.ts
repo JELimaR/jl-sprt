@@ -1,28 +1,23 @@
+
 import { TeamMatch } from "../data/Team";
-import Result from "./Result";
+import { A_MatchPlay } from "./A_MatchPlay";
+import ScoreResult from "./ScoreResult";
 
+/**
+ * Simulación de un partido de fútbol (goles).
+ * Implementación concreta de A_MatchPlay.
+ */
+export default class ScoreMatchPlay extends A_MatchPlay<number> {
 
-export default class JMatchPlay {
-	_time: number;
-	_result: Result | undefined;
-  _globalResult: Result | undefined;
-  _teamOne: TeamMatch | undefined;
-  _teamTwo: TeamMatch | undefined;
-
-	constructor(globalResult?: Result) {
-		this._time = -1;	
-    this._globalResult = globalResult;
-	}
-	get time(): number { return this._time; }
-	get result(): Result | undefined {
-		return this._result;
+	constructor(globalResult?: ScoreResult) {
+		super(globalResult);
 	}
 
   init(one: TeamMatch, two: TeamMatch) {
     this._time = 0;
     this._teamOne = one;
     this._teamTwo = two;
-    this._result = new Result(this._teamOne.id, this._teamTwo.id);
+    this._result = new ScoreResult(this._teamOne.id, this._teamTwo.id);
   }
 
 	advance() {
@@ -40,4 +35,3 @@ export default class JMatchPlay {
     }
 	}
 }
-

@@ -1,6 +1,6 @@
 
-import JResult, { IJResultInfo } from './Result';
-import Match from './Match';
+import ScoreResult from './ScoreResult';
+import Match from './ScoreMatch';
 import { TypeHalfWeekOfYear, JDateTime } from '../../JCalendar/JDateTimeModule';
 import Team from '../data/Team';
 import { arr2, TypeBaseStageOption } from '../data';
@@ -21,7 +21,7 @@ export default class JSerie {
 
   _opt: TypeBaseStageOption
 	// _isIV: boolean = false;
-	private _result: JResult;
+	private _result: ScoreResult;
 	private _id: string;
 	private _date: JDateTime | undefined;
 
@@ -36,7 +36,7 @@ export default class JSerie {
 		this._id = isi.id;
 		this._teamOne = isi.teamOne;
 		this._teamTwo = isi.teamTwo;
-		this._result = new JResult(
+		this._result = new ScoreResult(
 			this._teamOne.id,
 			this._teamTwo.id
 		);
@@ -71,7 +71,7 @@ export default class JSerie {
 	}
 
 	get id(): string { return this._id }
-	get result(): JResult {return this._result }
+	get result(): ScoreResult {return this._result }
 	get matches(): Match[] { return this._matches }
 
 	get isFinished(): boolean {

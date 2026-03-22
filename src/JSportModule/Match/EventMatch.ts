@@ -1,5 +1,5 @@
 import { IJEventInfo, JEvent } from "../../JCalendar/Event/JEvent";
-import Match from "./Match";
+import Match from "./ScoreMatch";
 
 export interface IJEventMatchInfo extends IJEventInfo {
   match: Match;
