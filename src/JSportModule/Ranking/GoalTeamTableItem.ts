@@ -2,17 +2,17 @@ import Team from "../data/Team";
 import { A_TeamTableItem, IA_TeamTableItem } from "./A_TeamTableItem"; // Asumo que A_TeamTableItem está en un archivo separado
 
 // 1. Define los tipos específicos para los genéricos Res y Punt
-export type MatchResults = 'W' | 'D' | 'L';
-export type MatchPuntuations = 'gf' | 'ga';
+export type GoalMatchResults = 'W' | 'D' | 'L';
+export type GoalMatchPuntuations = 'gf' | 'ga';
 
 // 2. Define la Interfaz concreta, extendiendo la Interfaz abstracta
 // Incluye 'sg' ya que es específico de fútbol y no está en la base abstracta.
-export type IGoalTeamTableItem = IA_TeamTableItem<MatchResults, MatchPuntuations> & {
+export type IGoalTeamTableItem = IA_TeamTableItem<GoalMatchResults, GoalMatchPuntuations> & {
   sg: number; // sg (Goal Difference) es específico de esta implementación
 };
 
 
-export default class GoalTeamTableItem extends A_TeamTableItem<MatchResults, MatchPuntuations> {
+export default class GoalTeamTableItem extends A_TeamTableItem<GoalMatchResults, GoalMatchPuntuations> {
     
   // El constructor simplemente llama al constructor de la clase padre
   constructor(t: Team, bsId: string) {
@@ -33,7 +33,7 @@ export default class GoalTeamTableItem extends A_TeamTableItem<MatchResults, Mat
   /**
    * Generar los valores iniciales de MatchTeamResults: { W: 0, D: 0, L: 0 }
    */
-  getInitialCountOfMathResults(): { [k in MatchResults]: number; } {
+  getInitialCountOfMathResults(): { [k in GoalMatchResults]: number; } {
     return { W: 0, D: 0, L: 0 };
   }
 
@@ -41,7 +41,7 @@ export default class GoalTeamTableItem extends A_TeamTableItem<MatchResults, Mat
   /**
    * Generar los valores iniciales de MatchTeamPuntuation: { gf: 0, ga: 0 }
    */
-  getInitialCountOfMathPuntuations(): { [k in MatchPuntuations]: number; } {
+  getInitialCountOfMathPuntuations(): { [k in GoalMatchPuntuations]: number; } {
     return { gf: 0, ga: 0 };
   }
 
@@ -78,7 +78,7 @@ export default class GoalTeamTableItem extends A_TeamTableItem<MatchResults, Mat
 
 
   // 7. Implementación para devolver la función de ordenamiento específica
-  getSortFunc(): (a: A_TeamTableItem<MatchResults, MatchPuntuations>, b: A_TeamTableItem<MatchResults, MatchPuntuations>, isSE: boolean) => number {
+  getSortFunc(): (a: A_TeamTableItem<GoalMatchResults, GoalMatchPuntuations>, b: A_TeamTableItem<GoalMatchResults, GoalMatchPuntuations>, isSE: boolean) => number {
     return goalSimpleSortFunc;
   }
 
@@ -86,14 +86,14 @@ export default class GoalTeamTableItem extends A_TeamTableItem<MatchResults, Mat
   getInterface(): IGoalTeamTableItem {
     // Llama a la interfaz base y le añade sg
     return {
-      ...(super.getInterface() as IA_TeamTableItem<MatchResults, MatchPuntuations>),
+      ...(super.getInterface() as IA_TeamTableItem<GoalMatchResults, GoalMatchPuntuations>),
       sg: this.sg,
     };
   }
 }
 
 // 9. Se mantiene y se adapta la función de ordenamiento
-export const goalSimpleSortFunc = (a: A_TeamTableItem<MatchResults, MatchPuntuations>, b: A_TeamTableItem<MatchResults, MatchPuntuations>, isSE: boolean): number => {
+export const goalSimpleSortFunc = (a: A_TeamTableItem<GoalMatchResults, GoalMatchPuntuations>, b: A_TeamTableItem<GoalMatchResults, GoalMatchPuntuations>, isSE: boolean): number => {
   // Puntos (P) - se maneja en el A_TeamTableItem, pero se repite aquí para la lógica SE
   if (isSE) {
     if (a.P - b.P !== 0) {

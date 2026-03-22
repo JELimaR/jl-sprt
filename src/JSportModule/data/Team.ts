@@ -10,7 +10,7 @@ export interface ITeamData {
 export interface ITeamCreator {
   entity: Institution | Federation;
   category: TypeCategory;
-  matches: Math[];
+  matches: Match[];
 }
 
 export default class Team {
