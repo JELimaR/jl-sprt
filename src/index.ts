@@ -1,5 +1,6 @@
 import APIExample from './examples/APIExample';
 import baseStageExample from './examples/baseStageExample';
+import volleyBaseStageExample from './examples/volleyBaseStageExample';
 import fede_inst_Example from './examples/fede_inst_Example';
 import graphExample from './examples/graphExample';
 import specialStageGroupExample from './examples/specialStageGroupExample';
@@ -28,6 +29,8 @@ import systemExample_01 from './examples/systemExample_01';
 function app() {
 
   baseStageExample();
+
+  // volleyBaseStageExample();
 
   // stageExample01();
 
