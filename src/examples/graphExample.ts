@@ -9,7 +9,7 @@ import { globalFinishedRankingsMap } from '../Tournament/globalFinishedRankingsM
 import { Ranking } from '../JSportModule/Ranking';
 import { renderGSGtoPNG } from '../JSportModule/GeneralStageGraph/renderGSGtoPNG';
 import { asignarTeams2 } from '../Tournament/asignarTeams2';
-import { FootballProfile } from '../JSportModule/profiles/FootballProfile';
+import { FootballProfile } from '../JSportModule/profiles/football/FootballProfile';
 
 export default function graphExample() {
 

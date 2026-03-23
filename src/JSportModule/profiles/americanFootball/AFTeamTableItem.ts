@@ -1,6 +1,6 @@
 
-import Team from "../data/Team";
-import { A_TeamTableItem, IA_TeamTableItemBase, SortFunc } from "./A_TeamTableItem";
+import Team from "../../data/Team";
+import { A_TeamTableItem, IA_TeamTableItemBase, SortFunc } from "../../Ranking/A_TeamTableItem";
 
 // American Football: no hay empate (overtime lo resuelve)
 export type AFMatchResults = 'W' | 'L';
@@ -21,7 +21,6 @@ export default class AFTeamTableItem extends A_TeamTableItem<AFMatchResults, AFM
   }
 
   get ps(): number {
-    // 2 puntos por victoria
     return 2 * this.matchResults.W;
   }
 
@@ -38,7 +37,6 @@ export default class AFTeamTableItem extends A_TeamTableItem<AFMatchResults, AFM
 
   get pf(): number { return this.matchPuntuations.pf }
   get pa(): number { return this.matchPuntuations.pa }
-
   get pd(): number { return this.pf - this.pa }
 
   addWM() { this.addMatchResult('W') }
@@ -54,11 +52,8 @@ export default class AFTeamTableItem extends A_TeamTableItem<AFMatchResults, AFM
   getInterface(): IAFTeamTableItem {
     return {
       ...super.getInterface(),
-      W: this.W,
-      L: this.L,
-      pf: this.pf,
-      pa: this.pa,
-      pd: this.pd,
+      W: this.W, L: this.L,
+      pf: this.pf, pa: this.pa, pd: this.pd,
     };
   }
 }
@@ -72,10 +67,6 @@ export const afSimpleSortFunc: SortFunc = (a, b, isSE): number => {
     if (a.pm - b.pm !== 0) return b.pm - a.pm;
   }
   if (a.ps - b.ps !== 0) return b.ps - a.ps;
-  // point differential
-  if ((a as any).pd - (b as any).pd !== 0) {
-    return (b as any).pd - (a as any).pd;
-  }
-  // points for
+  if ((a as any).pd - (b as any).pd !== 0) return (b as any).pd - (a as any).pd;
   return (b as any).pf - (a as any).pf;
 };

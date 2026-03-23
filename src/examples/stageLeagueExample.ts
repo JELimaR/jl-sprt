@@ -9,7 +9,7 @@ import { IStageGroupConfig } from "../JSportModule";
 import { IRankItem } from "../JSportModule/Ranking";
 import { Ranking, TypeRanking } from "../JSportModule/Ranking";
 import Team from "../JSportModule/data/Team";
-import { FootballProfile } from "../JSportModule/profiles/FootballProfile";
+import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
 
 const selection = getExampleTeams(150, 'Team');
 

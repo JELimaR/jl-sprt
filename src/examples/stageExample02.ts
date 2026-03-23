@@ -9,7 +9,7 @@ import { globalFinishedRankingsMap } from "../Tournament/globalFinishedRankingsM
 import { JDateTime } from "../JCalendar/JDateTimeModule";
 import Team from "../JSportModule/data/Team";
 import { IRankItem, TypeRanking, Ranking } from "../JSportModule";
-import { FootballProfile } from "../JSportModule/profiles/FootballProfile";
+import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
 
 const {
   s3,

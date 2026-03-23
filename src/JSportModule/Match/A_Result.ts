@@ -30,7 +30,5 @@ export abstract class A_Result<ScoreType> {
   get teamOneId(): string { return this._teamOneId }
   get teamTwoId(): string { return this._teamTwoId }
 
-  abstract addScore(teamId: string, ...args: any[]): void;
-  abstract getScore(teamId: string): ScoreType;
   abstract getResultInfo(): IA_ResultInfo<ScoreType>;
 }

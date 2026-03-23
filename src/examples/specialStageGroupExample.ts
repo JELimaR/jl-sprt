@@ -9,7 +9,7 @@ import { JDateTime } from "../JCalendar/JDateTimeModule";
 import { IStageGroupConfig } from "../JSportModule";
 import Team from "../JSportModule/data/Team";
 import { IRankItem, TypeRanking, Ranking } from "../JSportModule";
-import { FootballProfile } from "../JSportModule/profiles/FootballProfile";
+import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
 
 const selection = getExampleTeams(80, 'Team');
 

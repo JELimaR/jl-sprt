@@ -1,13 +1,13 @@
 import { IJEventInfo, JEvent } from "../../JCalendar/Event/JEvent";
-import Match from "./ScoreMatch";
+import { A_Match } from "./A_Match";
 
 export interface IJEventMatchInfo extends IJEventInfo {
-  match: Match;
+  match: A_Match<unknown>;
 }
 
 export class JEventMatch extends JEvent {
   // evento que dura algunos intervalos
-  private _match: Match;
+  private _match: A_Match<unknown>;
   constructor(emc: IJEventMatchInfo) {
     try {
       super(emc);
@@ -26,11 +26,8 @@ export class JEventMatch extends JEvent {
     }
     console.log(`\tresult:`)
     const res = this._match.result;
-    const global = this._match.serie?.result;
-    const homeGlobal = global?.getScore(this._match.homeTeam.id)
-    const awayGlobal = global?.getScore(this._match.awayTeam.id)
     if (!res) throw new Error(`no se obtuvo un res`)
-    console.log(`\t\t ${this._match.homeTeam.id}: ${res.teamOneScore.score}${(global) ? ' ' + homeGlobal : ''}`);
-    console.log(`\t\t ${this._match.awayTeam.id}: ${res.teamTwoScore.score}${(global) ? ' ' + awayGlobal : ''}`);
+    console.log(`\t\t ${this._match.homeTeam.id}: ${res.teamOneScore.score}`);
+    console.log(`\t\t ${this._match.awayTeam.id}: ${res.teamTwoScore.score}`);
   }
 }

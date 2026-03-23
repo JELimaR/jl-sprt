@@ -10,7 +10,7 @@ import StagePlayoff from "../Tournament/Stage/StagePlayoff/StagePlayoff";
 import { JDateTime } from "../JCalendar/JDateTimeModule";
 import { IElementInfo, IRankItem, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, Ranking } from "../JSportModule";
 import Team from "../JSportModule/data/Team";
-import { FootballProfile } from "../JSportModule/profiles/FootballProfile";
+import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
 
 const {
   s1,

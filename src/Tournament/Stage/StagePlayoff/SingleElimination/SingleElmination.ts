@@ -7,9 +7,9 @@ import { IElementInfo, ISingleElminationConfig } from '../../../../JSportModule'
 import Team from '../../../../JSportModule/data/Team';
 import { AnyTeamTableItem } from '../../../../JSportModule/Ranking/A_TeamTableItem';
 import { ISportProfile } from '../../../../JSportModule/profiles/ISportProfile';
+import { A_Serie } from '../../../../JSportModule/Match/A_Serie';
 import { TypeTableMatchState } from '../../../../JSportModule/';
-import Match from '../../../../JSportModule/Match/ScoreMatch';
-import JSerie from '../../../../JSportModule/Match/Serie';
+import { A_Match } from '../../../../JSportModule/Match/A_Match';
 
 // export interface IElementInfo extends IBaseStageInfo { }
 
@@ -35,10 +35,10 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
   }
 
   get rounds(): Round[] { return this._rounds }
-  get matches(): Match[] {
-    let out: Match[] = [];
+  get matches(): A_Match<unknown>[] {
+    let out: A_Match<unknown>[] = [];
     this._rounds.forEach((r: Round) => {
-      r.matches.forEach((m: Match) => out.push(m));
+      r.matches.forEach((m) => out.push(m));
     })
     return out;
   }
@@ -84,19 +84,19 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
     this._rounds.push(round);
   }
 
-  createRoundSeries(teams: Team[]): JSerie[] {
-    let out: JSerie[] = [];
+  createRoundSeries(teams: Team[]): A_Serie<unknown, unknown>[] {
+    let out: A_Serie<unknown, unknown>[] = [];
 
     const total: number = this.matches.length / ((this.config.opt == 'h&a') ? 2 : 1);
     for (let i = 0; i < teams.length; i += 2) {
       out.push(
-        new JSerie({
+        this._sportProfile.createSerie({
           teamOne: teams[i + 0],
           teamTwo: teams[i + 1],
           id: `${this.info.id}-S${total + i / 2 + 1}`,
           season: this.info.season,
           hws: this.config.roundHalfWeeks[this._rounds.length],
-          opt: this.config.opt
+          opt: this.config.opt,
         })
       )
     }

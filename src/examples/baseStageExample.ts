@@ -5,7 +5,7 @@ import SingleElmination from "../Tournament/Stage/StagePlayoff/SingleElimination
 import mostrarFecha from "../mostrarFechaBorrar";
 import { JDateTime } from "../JCalendar/JDateTimeModule";
 import { ILeagueConfig, ISingleElminationConfig, verifyBaseStageConfig } from "../JSportModule";
-import { FootballProfile } from "../JSportModule/profiles/FootballProfile";
+import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
 
 export default function baseStageExample() {
 

@@ -2,18 +2,18 @@ import JCalendar from "../../../../JCalendar/JCalendar";
 import League from "./League";
 import { Event_ScheduleOfTurnMatches } from "./Event_ScheduleOfTurnMatches";
 import { JDateTime, TypeHalfWeekOfYear } from "../../../../JCalendar/JDateTimeModule";
-import Match from "../../../../JSportModule/Match/ScoreMatch";
+import { A_Match } from "../../../../JSportModule/Match/A_Match";
 
 export interface ITurnInfo {
 	num: number;
 	halfweek: TypeHalfWeekOfYear;
 	halfweekSchedule: TypeHalfWeekOfYear;
-	matches: Match[];
+	matches: A_Match<unknown>[];
 }
 
 export /*default*/ class Turn {
 	private _num: number;
-	private _matches: Match[] = [];
+	private _matches: A_Match<unknown>[] = [];
 	private _halfWeek: TypeHalfWeekOfYear;
 	private _halfweekSchedule: TypeHalfWeekOfYear;
 
@@ -26,10 +26,10 @@ export /*default*/ class Turn {
 
 	get num(): number { return this._num }
 	get halfWeek(): TypeHalfWeekOfYear { return this._halfWeek }
-	get matches(): Match[] { return this._matches }
+	get matches(): A_Match<unknown>[] { return this._matches }
 
 	get isFinished(): boolean {
-		return this._matches.every((m: Match) => m.state === 'finished');
+		return this._matches.every((m) => m.state === 'finished');
 	}
 
 	generateMatchOfTurnScheduleEvents(cal: JCalendar, league: League): void {

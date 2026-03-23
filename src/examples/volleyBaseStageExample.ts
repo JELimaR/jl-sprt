@@ -5,15 +5,13 @@ import SingleElmination from "../Tournament/Stage/StagePlayoff/SingleElimination
 import mostrarFecha from "../mostrarFechaBorrar";
 import { JDateTime } from "../JCalendar/JDateTimeModule";
 import { ILeagueConfig, ISingleElminationConfig, verifyBaseStageConfig } from "../JSportModule";
-import { VolleyballProfile } from "../JSportModule/profiles/VolleyballProfile";
+import { VolleyballProfile } from "../JSportModule/profiles/volleyball/VolleyballProfile";
 
 /**
  * Ejemplo de BaseStage usando VolleyballProfile.
  * 
- * NOTA: Actualmente los partidos se simulan con ScoreMatch (score numérico),
- * porque la creación de matches aún no usa el ISportProfile (pendiente paso 7).
- * La tabla se crea con VolleyTeamTableItem pero updateTableFromResult no se invoca
- * correctamente hasta que Match use el profile.
+ * NOTA: VolleyballProfile.createMatch() y createSerie() aún no están implementados (TODO).
+ * Cuando se implementen, este ejemplo funcionará con la simulación real de volleyball.
  */
 export default function volleyBaseStageExample() {
 

@@ -2,7 +2,7 @@
 import JCalendar from "../../../../JCalendar/JCalendar";
 import { arr2, IElementInfo, ILeagueConfig, TypeBaseStageOption, TypeTableMatchState } from "../../../../JSportModule";
 import Team from "../../../../JSportModule/data/Team";
-import Match from "../../../../JSportModule/Match/ScoreMatch";
+import { A_Match } from "../../../../JSportModule/Match/A_Match";
 import { AnyTeamTableItem } from "../../../../JSportModule/Ranking/A_TeamTableItem";
 import { ISportProfile } from "../../../../JSportModule/profiles/ISportProfile";
 import BaseStage from "../../BaseStage";
@@ -65,10 +65,10 @@ export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
     return this._turns;
   }
 
-  get matches(): Match[] {
-    let out: Match[] = [];
+  get matches(): A_Match<unknown>[] {
+    let out: A_Match<unknown>[] = [];
     this._turns.forEach((f: Turn) => {
-      f.matches.forEach((m: Match) => out.push(m));
+      f.matches.forEach((m) => out.push(m));
     })
     return out;
   }
@@ -111,20 +111,20 @@ export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
     this._turns.push(turn);
   }
 
-  createTurnMatches(teams: Team[], turnNumber: number): Match[] {
-    let out: Match[] = [];
+  createTurnMatches(teams: Team[], turnNumber: number): A_Match<unknown>[] {
+    let out: A_Match<unknown>[] = [];
 
     const total: number = this.matches.length;
     for (let i = 0; i < teams.length; i += 2) {
 
-      const match = new Match({
+      const match = this._sportProfile.createMatch({
         awayTeam: teams[i],
         homeTeam: teams[i + 1],
         hw: this.config.turnHalfWeeks[turnNumber - 1],
         season: this.info.season,
         id: `${this.info.id}-T${turnNumber}-M${total + i / 2 + 1}`,
         allowedDraw: true,
-        isNeutral: this.config.opt == 'neutral'
+        isNeutral: this.config.opt == 'neutral',
       })
 
       out.push(match);

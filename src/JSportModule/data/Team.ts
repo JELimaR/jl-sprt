@@ -1,5 +1,5 @@
 import { TGS } from "../../Tournament/Stage/Stage";
-import Match from "../Match/ScoreMatch";
+import { A_Match } from "../Match/A_Match";
 import { Federation, Institution } from "./Entities";
 import { TypeCategory } from "./types";
 
@@ -10,12 +10,12 @@ export interface ITeamData {
 export interface ITeamCreator {
   entity: Institution | Federation;
   category: TypeCategory;
-  matches: Match[];
+  matches: A_Match<unknown>[];
 }
 
 export default class Team {
   // private _id: string;
-	private _matches: Match[] = [];
+	private _matches: A_Match<unknown>[] = [];
   private _entity: Institution | Federation
   private _category: TypeCategory
 
@@ -28,13 +28,13 @@ export default class Team {
   
 	get id(): string {return `${this._category}_${this._entity.id}`}
   get entity(): Institution | Federation { return this._entity }
-	get matches(): Match[] { return this._matches }
+	get matches(): A_Match<unknown>[] { return this._matches }
 
   addStage(stage: TGS) {
     this._stages.set(stage.config.idConfig, stage);
   }
 
-	addNewMatch(match: Match) { 
+	addNewMatch(match: A_Match<unknown>) { 
 		this._matches.push(match);
 	}
 	getTeamMatch(): TeamMatch {

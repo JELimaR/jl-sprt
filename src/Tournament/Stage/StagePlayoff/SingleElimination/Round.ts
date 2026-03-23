@@ -3,8 +3,8 @@ import SingleElmination from './SingleElmination';
 import { Event_ScheduleOfRoundMatches } from './Event_ScheduleOfRoundMatches';
 import { TypeHalfWeekOfYear, JDateTime } from '../../../../JCalendar/JDateTimeModule';
 import Team from '../../../../JSportModule/data/Team';
-import JSerie from '../../../../JSportModule/Match/Serie';
-import Match from '../../../../JSportModule/Match/ScoreMatch';
+import { A_Serie } from '../../../../JSportModule/Match/A_Serie';
+import { A_Match } from '../../../../JSportModule/Match/A_Match';
 import { arr2 } from '../../../../JSportModule';
 
 
@@ -12,12 +12,12 @@ export interface IRoundInfo {
 	num: number;
 	halfweeks: arr2<TypeHalfWeekOfYear>;
 	halfweekSchedule: TypeHalfWeekOfYear;
-	series: JSerie[];
+	series: A_Serie<unknown, unknown>[];
 }
 
 export class Round {
 	private _num: number;
-	private _series: JSerie[] = [];
+	private _series: A_Serie<unknown, unknown>[] = [];
 	private _halfWeeks: arr2<TypeHalfWeekOfYear>;
 	private _halfweekSchedule: TypeHalfWeekOfYear;
 
@@ -30,11 +30,11 @@ export class Round {
 
 	get num(): number { return this._num }
 	get halfWeek(): arr2<TypeHalfWeekOfYear> { return this._halfWeeks }
-	get series(): JSerie[] {return this._series }
-	get matches(): Match[] { 
-		let out: Match[] = [];
-		this._series.forEach((serie: JSerie) => {
-			serie.matches.forEach((match: Match) => {
+	get series(): A_Serie<unknown, unknown>[] {return this._series }
+	get matches(): A_Match<unknown>[] { 
+		let out: A_Match<unknown>[] = [];
+		this._series.forEach((serie) => {
+			serie.matches.forEach((match) => {
 				out.push(match);
 			})
 		})
@@ -43,19 +43,19 @@ export class Round {
 
 	get winners(): Team[] {
 		let out: Team[] = [];
-		this._series.forEach((s: JSerie) => out.push(s.winner))
+		this._series.forEach((s) => out.push(s.winner))
 		return out;
 	}
 
 	get losers(): Team[] {
 		let out: Team[] = [];
-		this._series.forEach((s: JSerie) => {
+		this._series.forEach((s) => {
 			out.push(s.loser)})
 		return out;
 	}
 
 	get isFinished(): boolean {
-		return this.matches.every((m: Match) => m.state === 'finished');
+		return this.matches.every((m) => m.state === 'finished');
 	}
 
 	generateMatchOfRoundScheduleEvents(cal: JCalendar, playoff: SingleElmination): void {
