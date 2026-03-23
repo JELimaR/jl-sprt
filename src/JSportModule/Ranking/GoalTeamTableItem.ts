@@ -1,5 +1,5 @@
 import Team from "../data/Team";
-import { A_TeamTableItem, IA_TeamTableItem } from "./A_TeamTableItem"; // Asumo que A_TeamTableItem está en un archivo separado
+import { A_TeamTableItem, IA_TeamTableItemBase, SortFunc } from "./A_TeamTableItem";
 
 // 1. Define los tipos específicos para los genéricos Res y Punt
 export type GoalMatchResults = 'W' | 'D' | 'L';
@@ -7,8 +7,13 @@ export type GoalMatchPuntuations = 'gf' | 'ga';
 
 // 2. Define la Interfaz concreta, extendiendo la Interfaz abstracta
 // Incluye 'sg' ya que es específico de fútbol y no está en la base abstracta.
-export type IGoalTeamTableItem = IA_TeamTableItem<GoalMatchResults, GoalMatchPuntuations> & {
-  sg: number; // sg (Goal Difference) es específico de esta implementación
+export type IGoalTeamTableItem = IA_TeamTableItemBase & {
+  W: number;
+  D: number;
+  L: number;
+  gf: number;
+  ga: number;
+  sg: number;
 };
 
 
@@ -78,22 +83,26 @@ export default class GoalTeamTableItem extends A_TeamTableItem<GoalMatchResults,
 
 
   // 7. Implementación para devolver la función de ordenamiento específica
-  getSortFunc(): (a: A_TeamTableItem<GoalMatchResults, GoalMatchPuntuations>, b: A_TeamTableItem<GoalMatchResults, GoalMatchPuntuations>, isSE: boolean) => number {
+  getSortFunc(): SortFunc {
     return goalSimpleSortFunc;
   }
 
   // 8. Sobrescribe getInterface para incluir 'sg'
   getInterface(): IGoalTeamTableItem {
-    // Llama a la interfaz base y le añade sg
     return {
-      ...(super.getInterface() as IA_TeamTableItem<GoalMatchResults, GoalMatchPuntuations>),
+      ...super.getInterface(),
+      W: this.W,
+      D: this.D,
+      L: this.L,
+      gf: this.gf,
+      ga: this.ga,
       sg: this.sg,
     };
   }
 }
 
 // 9. Se mantiene y se adapta la función de ordenamiento
-export const goalSimpleSortFunc = (a: A_TeamTableItem<GoalMatchResults, GoalMatchPuntuations>, b: A_TeamTableItem<GoalMatchResults, GoalMatchPuntuations>, isSE: boolean): number => {
+export const goalSimpleSortFunc: SortFunc = (a, b, isSE): number => {
   // Puntos (P) - se maneja en el A_TeamTableItem, pero se repite aquí para la lógica SE
   if (isSE) {
     if (a.P - b.P !== 0) {
@@ -115,9 +124,9 @@ export const goalSimpleSortFunc = (a: A_TeamTableItem<GoalMatchResults, GoalMatc
     return b.ps - a.ps;
   }
   // Diferencia de Goles (sg) - ESPECÍFICO DE GOAL
-  if ( (a as GoalTeamTableItem).sg - (b as GoalTeamTableItem).sg !== 0) {
-    return (b as GoalTeamTableItem).sg - (a as GoalTeamTableItem).sg;
+  if ( (a as any).sg - (b as any).sg !== 0) {
+    return (b as any).sg - (a as any).sg;
   }
   // Goles a Favor (gf) - ESPECÍFICO DE GOAL
-  return (b as GoalTeamTableItem).gf - (a as GoalTeamTableItem).gf;
+  return (b as any).gf - (a as any).gf;
 }

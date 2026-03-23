@@ -1,4 +1,4 @@
-import { A_TeamTableItem, IA_TeamTableItem } from "./A_TeamTableItem";
+import { A_TeamTableItem, IA_TeamTableItemBase, SortFunc } from "./A_TeamTableItem";
 
 // Arr de resultados posibles
 const ExampleMatchTeamResultsArr = ['W', 'L'] as const;
@@ -36,27 +36,24 @@ export class ExampleTeamTableItem extends A_TeamTableItem<TExampleMatchTeamResul
     throw new Error("Method not implemented.");
   }
 
-  getSortFunc() {
+  getSortFunc(): SortFunc {
     return exampleSimpleSortFunc;
   }
 
-  getInterface(): IA_TeamTableItem<TExampleMatchTeamResult, TExampleMatchPuntuation> {
-    let out = super.getInterface();
-    // return out;
+  getInterface(): IA_TeamTableItemBase & { W: number; L: number; gf: number; ge: number; sg: number } {
     return {
-      ...out,
-      sg: out.gf - out.ge,
-
-      ps: out.ps,
-
-      pm: out.pm,
-      team: this.team.id,
+      ...super.getInterface(),
+      W: this.matchResults.W,
+      L: this.matchResults.L,
+      gf: this.matchPuntuations.gf,
+      ge: this.matchPuntuations.ge,
+      sg: this.matchPuntuations.gf - this.matchPuntuations.ge,
     };
   }
 
 }
 
-export const exampleSimpleSortFunc = (a: ExampleTeamTableItem, b: ExampleTeamTableItem, isSE: boolean): number => {
+export const exampleSimpleSortFunc: SortFunc = (a, b, isSE): number => {
   if (isSE) {
     if (a.P - b.P !== 0) {
       return b.P - a.P

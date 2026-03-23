@@ -1,15 +1,25 @@
 
 import Team from "../data/Team";
-import { A_TeamTableItem, IA_TeamTableItem } from "./A_TeamTableItem";
+import { A_TeamTableItem, IA_TeamTableItemBase, SortFunc } from "./A_TeamTableItem";
 
 // Volleyball: no hay empate, se juega a 3 de 5 sets
 export type VolleyMatchResults = 'W3_0' | 'W3_1' | 'W3_2' | 'L2_3' | 'L1_3' | 'L0_3';
 export type VolleyMatchPuntuations = 'sw' | 'sl' | 'pf' | 'pa'; // sets won, sets lost, points for, points against
 
-export type IVolleyTeamTableItem = IA_TeamTableItem<VolleyMatchResults, VolleyMatchPuntuations> & {
-  sd: number; // set differential
-  W: number;  // total wins
-  L: number;  // total losses
+export type IVolleyTeamTableItem = IA_TeamTableItemBase & {
+  W3_0: number;
+  W3_1: number;
+  W3_2: number;
+  L2_3: number;
+  L1_3: number;
+  L0_3: number;
+  sw: number;
+  sl: number;
+  pf: number;
+  pa: number;
+  sd: number;
+  W: number;
+  L: number;
 };
 
 export default class VolleyTeamTableItem extends A_TeamTableItem<VolleyMatchResults, VolleyMatchPuntuations> {
@@ -49,13 +59,23 @@ export default class VolleyTeamTableItem extends A_TeamTableItem<VolleyMatchResu
   addPf(p: number) { this.matchPuntuations.pf += p }
   addPa(p: number) { this.matchPuntuations.pa += p }
 
-  getSortFunc(): (a: A_TeamTableItem<VolleyMatchResults, VolleyMatchPuntuations>, b: A_TeamTableItem<VolleyMatchResults, VolleyMatchPuntuations>, isSE: boolean) => number {
+  getSortFunc(): SortFunc {
     return volleySimpleSortFunc;
   }
 
   getInterface(): IVolleyTeamTableItem {
     return {
-      ...(super.getInterface() as IA_TeamTableItem<VolleyMatchResults, VolleyMatchPuntuations>),
+      ...super.getInterface(),
+      W3_0: this.matchResults.W3_0,
+      W3_1: this.matchResults.W3_1,
+      W3_2: this.matchResults.W3_2,
+      L2_3: this.matchResults.L2_3,
+      L1_3: this.matchResults.L1_3,
+      L0_3: this.matchResults.L0_3,
+      sw: this.sw,
+      sl: this.sl,
+      pf: this.pf,
+      pa: this.pa,
       sd: this.sd,
       W: this.W,
       L: this.L,
@@ -63,7 +83,7 @@ export default class VolleyTeamTableItem extends A_TeamTableItem<VolleyMatchResu
   }
 }
 
-export const volleySimpleSortFunc = (a: A_TeamTableItem<VolleyMatchResults, VolleyMatchPuntuations>, b: A_TeamTableItem<VolleyMatchResults, VolleyMatchPuntuations>, isSE: boolean): number => {
+export const volleySimpleSortFunc: SortFunc = (a, b, isSE): number => {
   if (isSE) {
     if (a.P - b.P !== 0) return b.P - a.P;
   }
@@ -74,14 +94,14 @@ export const volleySimpleSortFunc = (a: A_TeamTableItem<VolleyMatchResults, Voll
   // puntos
   if (a.ps - b.ps !== 0) return b.ps - a.ps;
   // set differential
-  if ((a as VolleyTeamTableItem).sd - (b as VolleyTeamTableItem).sd !== 0) {
-    return (b as VolleyTeamTableItem).sd - (a as VolleyTeamTableItem).sd;
+  if ((a as any).sd - (b as any).sd !== 0) {
+    return (b as any).sd - (a as any).sd;
   }
   // sets won
-  if ((a as VolleyTeamTableItem).sw - (b as VolleyTeamTableItem).sw !== 0) {
-    return (b as VolleyTeamTableItem).sw - (a as VolleyTeamTableItem).sw;
+  if ((a as any).sw - (b as any).sw !== 0) {
+    return (b as any).sw - (a as any).sw;
   }
   // point differential
-  return (b as VolleyTeamTableItem).pf - (a as VolleyTeamTableItem).pa
-    - ((a as VolleyTeamTableItem).pf - (a as VolleyTeamTableItem).pa);
+  return (b as any).pf - (a as any).pa
+    - ((a as any).pf - (a as any).pa);
 };

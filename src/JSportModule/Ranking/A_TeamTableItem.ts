@@ -1,17 +1,15 @@
 import Team from "../data/Team";
 
-export type IA_TeamTableItem<Res extends string, Punt extends string> = {
-  [k in Res]: number;
-} & {
-  [k in Punt]: number;
-} & {
+export type IA_TeamTableItemBase = {
   pos: number;
   P: number;
-
   ps: number;
   pm: number;
   team: string;
 };
+
+export type IA_TeamTableItem<Res extends string, Punt extends string> = 
+  IA_TeamTableItemBase & { [k in Res]: number } & { [k in Punt]: number };
 
 export abstract class A_TeamTableItem<Res extends string, Punt extends string> {
   private _team: Team;
@@ -72,9 +70,9 @@ export abstract class A_TeamTableItem<Res extends string, Punt extends string> {
     return this._team;
   }
 
-  abstract getSortFunc(): (a: A_TeamTableItem<Res, Punt>, b: A_TeamTableItem<Res, Punt>, isSE: boolean) => number;
+  abstract getSortFunc(): SortFunc;
 
-  getInterface(): IA_TeamTableItem<Res, Punt> {
+  getInterface(): IA_TeamTableItemBase {
     return {
       pos: this.pos,
       P: this.P,
@@ -88,7 +86,17 @@ export abstract class A_TeamTableItem<Res extends string, Punt extends string> {
 
 }
 
-const A_simpleSortFunc = (a: A_TeamTableItem<any, any>, b: A_TeamTableItem<any, any>, isSE: boolean): number => {
+/**
+ * Type alias para usar A_TeamTableItem de forma genérica sin conocer Res/Punt concretos.
+ */
+export type AnyTeamTableItem = A_TeamTableItem<string, string>;
+
+/**
+ * Type alias para la función de ordenamiento genérica.
+ */
+export type SortFunc = (a: AnyTeamTableItem, b: AnyTeamTableItem, isSE: boolean) => number;
+
+const A_simpleSortFunc: SortFunc = (a, b, isSE): number => {
   if (isSE) {
     if (a.P - b.P !== 0) {
       return b.P - a.P

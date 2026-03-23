@@ -3,7 +3,6 @@ import Team from "../data/Team";
 import { A_TeamTableItem } from "../Ranking/A_TeamTableItem";
 import { A_Result, IA_ResultInfo } from "../Match/A_Result";
 import { A_MatchPlay } from "../Match/A_MatchPlay";
-import { TeamMatch } from "../data/Team";
 
 /**
  * Interfaz que encapsula todo lo específico de un deporte.
@@ -45,3 +44,9 @@ export interface ISportProfile<ScoreType, Res extends string, Punt extends strin
     teamId: string
   ): void;
 }
+
+/**
+ * Tipo para usar ISportProfile de forma genérica sin propagar los tipos Res/Punt.
+ * Evita problemas con mapped types cuando se usa `any` como genérico.
+ */
+export type AnySportProfile = ISportProfile<any, any, any>;

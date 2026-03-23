@@ -1,13 +1,17 @@
 
 import Team from "../data/Team";
-import { A_TeamTableItem, IA_TeamTableItem } from "./A_TeamTableItem";
+import { A_TeamTableItem, IA_TeamTableItemBase, SortFunc } from "./A_TeamTableItem";
 
 // American Football: no hay empate (overtime lo resuelve)
 export type AFMatchResults = 'W' | 'L';
 export type AFMatchPuntuations = 'pf' | 'pa'; // points for, points against
 
-export type IAFTeamTableItem = IA_TeamTableItem<AFMatchResults, AFMatchPuntuations> & {
-  pd: number; // point differential
+export type IAFTeamTableItem = IA_TeamTableItemBase & {
+  W: number;
+  L: number;
+  pf: number;
+  pa: number;
+  pd: number;
 };
 
 export default class AFTeamTableItem extends A_TeamTableItem<AFMatchResults, AFMatchPuntuations> {
@@ -43,19 +47,23 @@ export default class AFTeamTableItem extends A_TeamTableItem<AFMatchResults, AFM
   addPf(p: number) { this.matchPuntuations.pf += p }
   addPa(p: number) { this.matchPuntuations.pa += p }
 
-  getSortFunc(): (a: A_TeamTableItem<AFMatchResults, AFMatchPuntuations>, b: A_TeamTableItem<AFMatchResults, AFMatchPuntuations>, isSE: boolean) => number {
+  getSortFunc(): SortFunc {
     return afSimpleSortFunc;
   }
 
   getInterface(): IAFTeamTableItem {
     return {
-      ...(super.getInterface() as IA_TeamTableItem<AFMatchResults, AFMatchPuntuations>),
+      ...super.getInterface(),
+      W: this.W,
+      L: this.L,
+      pf: this.pf,
+      pa: this.pa,
       pd: this.pd,
     };
   }
 }
 
-export const afSimpleSortFunc = (a: A_TeamTableItem<AFMatchResults, AFMatchPuntuations>, b: A_TeamTableItem<AFMatchResults, AFMatchPuntuations>, isSE: boolean): number => {
+export const afSimpleSortFunc: SortFunc = (a, b, isSE): number => {
   if (isSE) {
     if (a.P - b.P !== 0) return b.P - a.P;
   }
@@ -65,9 +73,9 @@ export const afSimpleSortFunc = (a: A_TeamTableItem<AFMatchResults, AFMatchPuntu
   }
   if (a.ps - b.ps !== 0) return b.ps - a.ps;
   // point differential
-  if ((a as AFTeamTableItem).pd - (b as AFTeamTableItem).pd !== 0) {
-    return (b as AFTeamTableItem).pd - (a as AFTeamTableItem).pd;
+  if ((a as any).pd - (b as any).pd !== 0) {
+    return (b as any).pd - (a as any).pd;
   }
   // points for
-  return (b as AFTeamTableItem).pf - (a as AFTeamTableItem).pf;
+  return (b as any).pf - (a as any).pf;
 };

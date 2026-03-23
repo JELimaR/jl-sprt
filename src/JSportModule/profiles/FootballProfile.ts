@@ -1,7 +1,6 @@
 
 import Team from "../data/Team";
-import { A_Result, IA_ResultInfo } from "../Match/A_Result";
-import { A_MatchPlay } from "../Match/A_MatchPlay";
+import { IA_ResultInfo } from "../Match/A_Result";
 import ScoreResult from "../Match/ScoreResult";
 import ScoreMatchPlay from "../Match/ScoreMatchPlay";
 import GoalTeamTableItem, { GoalMatchResults, GoalMatchPuntuations } from "../Ranking/GoalTeamTableItem";
