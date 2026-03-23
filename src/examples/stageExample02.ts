@@ -8,8 +8,8 @@ import stageExampleData from "./stageExampleData";
 import { globalFinishedRankingsMap } from "../Tournament/globalFinishedRankingsMap";
 import { JDateTime } from "../JCalendar/JDateTimeModule";
 import Team from "../JSportModule/data/Team";
-import TeamTableItem from "../JSportModule/Ranking/TeamTableItem";
 import { IRankItem, TypeRanking, Ranking } from "../JSportModule";
+import { FootballProfile } from "../JSportModule/profiles/FootballProfile";
 
 const {
   s3,
@@ -26,14 +26,14 @@ export default function stageExample02() {
   const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getIJDateTimeCreator());
   mostrarFecha(cal.now)
 
-  const SE3 = new StageGroup(s3.info, s3.config, cal);
-  const SE4 = new StageGroup(s4.info, s4.config, cal);
+  const SE3 = new StageGroup(s3.info, s3.config, cal, new FootballProfile());
+  const SE4 = new StageGroup(s4.info, s4.config, cal, new FootballProfile());
   
   exampleAdvance(cal)
   // console.log(cal.events[cal.events.length-1])
   
-  console.table(SE3.getTable('finished').map((e: TeamTableItem) => e.getInterface()))
-  console.table(SE4.getTable('finished').map((e: TeamTableItem) => e.getInterface()))
+  console.table(SE3.getTable('finished').map(e => e.getInterface()))
+  console.table(SE4.getTable('finished').map(e => e.getInterface()))
 
   console.log(SE3.groups.map(l => {
     return l.teamsArr.map((t => t.id))

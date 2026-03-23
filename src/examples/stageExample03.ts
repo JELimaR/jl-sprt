@@ -10,7 +10,7 @@ import StagePlayoff from "../Tournament/Stage/StagePlayoff/StagePlayoff";
 import { JDateTime } from "../JCalendar/JDateTimeModule";
 import { IElementInfo, IRankItem, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, Ranking } from "../JSportModule";
 import Team from "../JSportModule/data/Team";
-import TeamTableItem from "../JSportModule/Ranking/TeamTableItem";
+import { FootballProfile } from "../JSportModule/profiles/FootballProfile";
 
 const {
   s1,
@@ -40,9 +40,9 @@ export default function stageExample03() {
 
   stages.forEach((s: TGS) => {
     if (s instanceof StagePlayoff)
-      console.table(SE1.getTable('finished').map((e: TeamTableItem) => e.getInterface()))
+      console.table(SE1.getTable('finished').map(e => e.getInterface()))
     else if (s instanceof StageGroup) {
-      console.table(SE3.getTable('finished').map((e: TeamTableItem) => e.getInterface()))
+      console.table(SE3.getTable('finished').map(e => e.getInterface()))
     }
   })
 
@@ -61,10 +61,10 @@ function create(info: IElementInfo, config: IStageConfig, cal: JCalendar): TGS {
   // throw new Error(`sdfg  dsfg dfsg dsfg`)
   if (config.type == 'group') {
     const sconfig = config as IStageGroupConfig;
-    return new StageGroup(info, sconfig, cal);
+    return new StageGroup(info, sconfig, cal, new FootballProfile());
   } else if (config.type == 'playoff') {
     const sconfig = config as IStagePlayoffConfig;
-    return new StagePlayoff(info, sconfig, cal);
+    return new StagePlayoff(info, sconfig, cal, new FootballProfile());
   } else {
     throw new Error(`not implemented. (en StageConstructor)`)
   }

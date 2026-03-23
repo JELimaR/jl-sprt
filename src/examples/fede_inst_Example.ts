@@ -8,6 +8,7 @@ import Team from "../JSportModule/data/Team";
 import { TInitialCreator, TPhaseCreator } from "../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
 import mostrarFecha from "../mostrarFechaBorrar";
+import { FootballProfile } from "../JSportModule/profiles/FootballProfile";
 import { asignarTeams2 } from "../Tournament/asignarTeams2";
 import { globalFinishedRankingsMap } from "../Tournament/globalFinishedRankingsMap";
 import Tournament from "../Tournament/Tournament";
@@ -100,7 +101,7 @@ export default function fede_inst_Example() {
     // creo los tournaments de federations
     const tournamentList: Tournament[] = []
     federation.createTournamentList().forEach((tournamentFromGSG: ITournamentFromGSGData, i: number) => {
-      const t = Tournament.create({ id: tournamentFromGSG.name, season: Y }, tournamentFromGSG, cal)
+      const t = Tournament.create({ id: tournamentFromGSG.name, season: Y }, tournamentFromGSG, cal, new FootballProfile())
       asignarTeams2(t)
       tournamentList.push(t)
     })

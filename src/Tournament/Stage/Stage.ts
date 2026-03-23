@@ -2,7 +2,7 @@
 import JCalendar from "../../JCalendar/JCalendar";
 import { JDateTime, TypeHalfWeekOfYear, TypeIntervalOfDay } from "../../JCalendar/JDateTimeModule";
 import { IElementInfo, IRankItem, IStageConfig, Ranking, TCC, TQualyCondition, TypeTableMatchState } from "../../JSportModule";
-import TeamTableItem from "../../JSportModule/Ranking/TeamTableItem";
+import { AnyTeamTableItem } from "../../JSportModule/Ranking/A_TeamTableItem";
 import Bombo from "./Bombo";
 import { Event_StageEnd } from "./Event_StageEnd";
 import { Event_StageStart } from "./Event_StageStart";
@@ -122,13 +122,13 @@ export default abstract class Stage<I extends IElementInfo, C extends IStageConf
     return out;
   }
 
-  abstract getTable(ttms: TypeTableMatchState): TeamTableItem[];
+  abstract getTable(ttms: TypeTableMatchState): AnyTeamTableItem[];
 
   /**
    * 
    */
   getRelativeRank(): Ranking {
-    let ttis: TeamTableItem[] = this.getTable('finished');
+    let ttis = this.getTable('finished');
 
     const rankItemArr: IRankItem[] = ttis.map((tti, idx) => {
       return {

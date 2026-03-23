@@ -5,7 +5,8 @@ import Bombo from "../Bombo";
 import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
 import { IElementInfo, ILeagueConfig, IRankItem, IStageGroupConfig, TypeDrawRulePlayoff, TypeTableMatchState } from "../../../JSportModule";
 import Team from "../../../JSportModule/data/Team";
-import TeamTableItem, { simpleSortFunc } from "../../../JSportModule/Ranking/TeamTableItem";
+import { AnyTeamTableItem } from "../../../JSportModule/Ranking/A_TeamTableItem";
+import { ISportProfile } from "../../../JSportModule/profiles/ISportProfile";
 
 /**
  * Debe encargarse de la creacion y de la asignacion de los equipos a cada basestage
@@ -15,7 +16,7 @@ import TeamTableItem, { simpleSortFunc } from "../../../JSportModule/Ranking/Tea
 export default class StageGroup extends Stage<IElementInfo, IStageGroupConfig> {
   private _groups: League[] = [];
 
-  constructor(info: IElementInfo, config: IStageGroupConfig, calendar: JCalendar) {
+  constructor(info: IElementInfo, config: IStageGroupConfig, calendar: JCalendar, sportProfile: ISportProfile<unknown, string, string>) {
     super(info, config, calendar);
 
     for (let i = 0; i < config.participantsPerGroup.length; i++) {
@@ -25,7 +26,7 @@ export default class StageGroup extends Stage<IElementInfo, IStageGroupConfig> {
       }
       const GConfig: ILeagueConfig = { ...config.bsConfig };
       GConfig.participantsNumber = config.participantsPerGroup[i];
-      const group = new League(GInfo, GConfig)
+      const group = new League(GInfo, GConfig, sportProfile)
       this._groups.push(group)
     }
 
@@ -179,20 +180,23 @@ export default class StageGroup extends Stage<IElementInfo, IStageGroupConfig> {
   /**
    * 
    */
-  getTable(ttms: TypeTableMatchState): TeamTableItem[] {
-    let out: TeamTableItem[] = []; // pasar a map
+  getTable(ttms: TypeTableMatchState): AnyTeamTableItem[] {
+    let out: AnyTeamTableItem[] = [];
 
     this.groups.forEach((g: League) => {
       out = out.concat(g.getTable(ttms));
     })
 
-    out.sort((a, b) => simpleSortFunc(a, b, false)) // usar la media de puntos
+    if (out.length > 0) {
+      const sortFunc = out[0].getSortFunc();
+      out.sort((a, b) => sortFunc(a, b, false));
+    }
 
     return out;
   }
 
-  getTableOfGroups(ttms: TypeTableMatchState): Array<TeamTableItem[]> {
-    let out: Array<TeamTableItem[]> = [];
+  getTableOfGroups(ttms: TypeTableMatchState): Array<AnyTeamTableItem[]> {
+    let out: Array<AnyTeamTableItem[]> = [];
     this.groups.forEach((g: League) => {
       out.push(g.getTable(ttms));
     })

@@ -1,8 +1,10 @@
+
 import JCalendar from "../../JCalendar/JCalendar";
 import { IBaseStageConfig, IElementInfo, TCC, TypeTableMatchState } from "../../JSportModule";
 import Team from "../../JSportModule/data/Team";
 import Match from "../../JSportModule/Match/ScoreMatch";
-import TeamTableItem from "../../JSportModule/Ranking/TeamTableItem";
+import { A_TeamTableItem, AnyTeamTableItem } from "../../JSportModule/Ranking/A_TeamTableItem";
+import { ISportProfile } from "../../JSportModule/profiles/ISportProfile";
 
 /**
  * En el BaseStage es donde se configuran las rondas o turnos y los partidos de un torneo.
@@ -18,9 +20,11 @@ export default abstract class BaseStage<I extends IElementInfo, C extends IBaseS
    * 
    */
   private _participants: Map<number, Team> = new Map<number, Team>();
+  protected _sportProfile: ISportProfile<unknown, string, string>;
 
-  constructor(info: I, config: C) {
+  constructor(info: I, config: C, sportProfile: ISportProfile<unknown, string, string>) {
     super(info, config);
+    this._sportProfile = sportProfile;
     this.constructorVerification(config);
   }
 
@@ -58,38 +62,23 @@ export default abstract class BaseStage<I extends IElementInfo, C extends IBaseS
   abstract createChildren(cal: JCalendar): void;
 
   /**
-   * 
+   * Calcula los valores de la tabla para cada equipo a partir de los resultados de los partidos.
+   * Usa el ISportProfile para crear los items y actualizar las estadísticas.
    */
-  calcTableValues(ttms: TypeTableMatchState): TeamTableItem[] {
-    // para cada match, calcular los valores de la tabla de cada team!
-    const out: TeamTableItem[] = [];
-    this.participants.forEach((team: Team) => out.push(new TeamTableItem(team, this.info.id)));
-    // 
+  calcTableValues(ttms: TypeTableMatchState): AnyTeamTableItem[] {
+    const out: AnyTeamTableItem[] = [];
+    this.participants.forEach((team: Team) => out.push(this._sportProfile.createTableItem(team, this.info.id)));
+
     const matchConditionFunc = BaseStage.getTableCondition(ttms);
   
     this.matches.forEach((m: Match) => {
       if (matchConditionFunc(m) && !!m.result) {
-        let homeTTI: TeamTableItem | undefined = out.find(t => t.team.id === m.homeTeam.id);
-        let awayTTI: TeamTableItem | undefined = out.find(t => t.team.id === m.awayTeam.id);
+        let homeTTI = out.find(t => t.team.id === m.homeTeam.id);
+        let awayTTI = out.find(t => t.team.id === m.awayTeam.id);
   
         if (homeTTI && awayTTI) {
-          // gls HomeTeam
-          homeTTI.addGf(m.result.teamOneScore.score);
-          homeTTI.addGe(m.result.teamTwoScore.score);
-          // gls AwayTeam
-          awayTTI.addGf(m.result.teamTwoScore.score);
-          awayTTI.addGe(m.result.teamOneScore.score);
-          // add played matches
-          if (m.result.teamWinner === homeTTI.team.id) { // para generalizar se debe modificar esto
-            homeTTI.addWM();
-            awayTTI.addLM();
-          } else if (m.result.teamWinner === awayTTI.team.id) {
-            homeTTI.addLM();
-            awayTTI.addWM();
-          } else {
-            homeTTI.addDM();
-            awayTTI.addDM();
-          }
+          this._sportProfile.updateTableFromResult(homeTTI, m.result, homeTTI.team.id);
+          this._sportProfile.updateTableFromResult(awayTTI, m.result, awayTTI.team.id);
         } else {
           throw new Error(`non finded
           En BaseStage.calcTableValues`);

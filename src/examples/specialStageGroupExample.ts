@@ -8,8 +8,8 @@ import exampleAdvance from "./exampleAdvance";
 import { JDateTime } from "../JCalendar/JDateTimeModule";
 import { IStageGroupConfig } from "../JSportModule";
 import Team from "../JSportModule/data/Team";
-import TeamTableItem from "../JSportModule/Ranking/TeamTableItem";
 import { IRankItem, TypeRanking, Ranking } from "../JSportModule";
+import { FootballProfile } from "../JSportModule/profiles/FootballProfile";
 
 const selection = getExampleTeams(80, 'Team');
 
@@ -22,14 +22,14 @@ export default function specialStageGroupExample() {
   const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 168).getIJDateTimeCreator());
   mostrarFecha(cal.now)
 
-  const SG = new StageGroup({ id: 'League', season: 168 }, stageLeagueconfig, cal);
+  const SG = new StageGroup({ id: 'League', season: 168 }, stageLeagueconfig, cal, new FootballProfile());
 
   exampleAdvance(cal)
 
   // console.log()
   mostrarFecha(cal.events[0].dateTime)
 
-  console.table(SG.getTable('finished').map((e: TeamTableItem) => e.getInterface()))
+  console.table(SG.getTable('finished').map(e => e.getInterface()))
 
   console.log(SG.groups.map(l => {
     return l.teamsArr.map((t => t.id))

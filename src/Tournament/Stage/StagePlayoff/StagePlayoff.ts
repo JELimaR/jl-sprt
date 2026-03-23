@@ -1,5 +1,4 @@
 
-// import Stage, { IStageConfig, IStageInfo } from "../Stage";
 import SingleElmination from "./SingleElimination/SingleElmination";
 import JCalendar from "../../../JCalendar/JCalendar";
 import Bombo from "../Bombo";
@@ -7,7 +6,8 @@ import Stage from "../Stage";
 import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
 import { arr2, IElementInfo, IRankItem, IStagePlayoffConfig, TypeDrawRulePlayoff, TypeTableMatchState } from "../../../JSportModule";
 import Team from "../../../JSportModule/data/Team";
-import TeamTableItem from "../../../JSportModule/Ranking/TeamTableItem";
+import { AnyTeamTableItem } from "../../../JSportModule/Ranking/A_TeamTableItem";
+import { ISportProfile } from "../../../JSportModule/profiles/ISportProfile";
 
 
 /**
@@ -19,14 +19,14 @@ export default class StagePlayoff extends Stage<IElementInfo, IStagePlayoffConfi
 
   private _playoff: SingleElmination;
 
-  constructor(info: IElementInfo, config: IStagePlayoffConfig, calendar: JCalendar) {
+  constructor(info: IElementInfo, config: IStagePlayoffConfig, calendar: JCalendar, sportProfile: ISportProfile<unknown, string, string>) {
     super(info, config, calendar);
 
     const SEInfo: IElementInfo = {
       id: `${info.id}_SE`,
       season: this.info.season,
     }
-    this._playoff = new SingleElmination(SEInfo, this.config.bsConfig);
+    this._playoff = new SingleElmination(SEInfo, this.config.bsConfig, sportProfile);
   }
 
   get playoff(): SingleElmination { return this._playoff }
@@ -125,7 +125,7 @@ export default class StagePlayoff extends Stage<IElementInfo, IStagePlayoffConfi
   /**
    * 
    */
-  getTable(ttms: TypeTableMatchState): TeamTableItem[] {
+  getTable(ttms: TypeTableMatchState): AnyTeamTableItem[] {
     return this.playoff.getTable(ttms);
   }
 

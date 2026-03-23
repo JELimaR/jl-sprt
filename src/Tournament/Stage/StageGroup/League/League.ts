@@ -3,7 +3,8 @@ import JCalendar from "../../../../JCalendar/JCalendar";
 import { arr2, IElementInfo, ILeagueConfig, TypeBaseStageOption, TypeTableMatchState } from "../../../../JSportModule";
 import Team from "../../../../JSportModule/data/Team";
 import Match from "../../../../JSportModule/Match/ScoreMatch";
-import TeamTableItem, { simpleSortFunc } from "../../../../JSportModule/Ranking/TeamTableItem";
+import { AnyTeamTableItem } from "../../../../JSportModule/Ranking/A_TeamTableItem";
+import { ISportProfile } from "../../../../JSportModule/profiles/ISportProfile";
 import BaseStage from "../../BaseStage";
 import robinRoundSchedulingFunction from "./RoundRobin";
 import { Turn } from "./Turn";
@@ -19,8 +20,8 @@ export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
    * Quedan desconocidos los participants y por tanto no se crean los turns
    *        -> ESTOS SE CREAN EN LA ASIGNACION -> función assign()
    */
-  constructor(info: IElementInfo, config: ILeagueConfig) { // FALTA VERIFICAR QUE CADA fechHalfWeeks sea mayor al fechHalfWeeksSchedule
-    super(info, config);
+  constructor(info: IElementInfo, config: ILeagueConfig, sportProfile: ISportProfile<unknown, string, string>) { // FALTA VERIFICAR QUE CADA fechHalfWeeks sea mayor al fechHalfWeeksSchedule
+    super(info, config, sportProfile);
     this.config.turnHalfWeeks = config.turnHalfWeeks;
     this.config.turnHalfWeeksSchedule = config.turnHalfWeeksSchedule;
   }
@@ -132,10 +133,13 @@ export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
     return out;
   }
 
-  getTable(ttms: TypeTableMatchState): TeamTableItem[] {
-    let out: TeamTableItem[] = this.calcTableValues(ttms);
+  getTable(ttms: TypeTableMatchState): AnyTeamTableItem[] {
+    let out = this.calcTableValues(ttms);
 
-    out.sort((a, b) => simpleSortFunc(a, b, false));
+    if (out.length > 0) {
+      const sortFunc = out[0].getSortFunc();
+      out.sort((a, b) => sortFunc(a, b, false));
+    }
 
     out.forEach((itti, idx) => itti.pos = idx + 1)
 

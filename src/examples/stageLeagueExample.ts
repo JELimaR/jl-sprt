@@ -9,7 +9,7 @@ import { IStageGroupConfig } from "../JSportModule";
 import { IRankItem } from "../JSportModule/Ranking";
 import { Ranking, TypeRanking } from "../JSportModule/Ranking";
 import Team from "../JSportModule/data/Team";
-import TeamTableItem from "../JSportModule/Ranking/TeamTableItem";
+import { FootballProfile } from "../JSportModule/profiles/FootballProfile";
 
 const selection = getExampleTeams(150, 'Team');
 
@@ -22,14 +22,14 @@ export default function stageLeagueExample() {
   const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getIJDateTimeCreator());
   mostrarFecha(cal.now)
 
-  const SG = new StageGroup({id: 'League', season: 1987}, stageLeagueconfig, cal);
+  const SG = new StageGroup({id: 'League', season: 1987}, stageLeagueconfig, cal, new FootballProfile());
   
   exampleAdvance(cal)
   
   // console.log()
   mostrarFecha(cal.events[0].dateTime)
   
-  console.table(SG.getTable('finished').map((e: TeamTableItem) => e.getInterface()))
+  console.table(SG.getTable('finished').map(e => e.getInterface()))
 
   console.log(SG.groups.map(l => {
     return l.teamsArr.map((t => t.id))

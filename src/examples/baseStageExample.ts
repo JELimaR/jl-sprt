@@ -5,6 +5,7 @@ import SingleElmination from "../Tournament/Stage/StagePlayoff/SingleElimination
 import mostrarFecha from "../mostrarFechaBorrar";
 import { JDateTime } from "../JCalendar/JDateTimeModule";
 import { ILeagueConfig, ISingleElminationConfig, verifyBaseStageConfig } from "../JSportModule";
+import { FootballProfile } from "../JSportModule/profiles/FootballProfile";
 
 export default function baseStageExample() {
 
@@ -28,7 +29,7 @@ export default function baseStageExample() {
   const league = new League({
     id: 'L1-1',
     season: 1986,
-  }, leagueConfig);
+  }, leagueConfig, new FootballProfile());
 
   league.assign(selectionL, cal);
 
@@ -48,7 +49,7 @@ export default function baseStageExample() {
     {
       id: 'C',
       season: 1986
-    },singleConfig  );
+    },singleConfig, new FootballProfile()  );
 
   singleElimination.assign(selectionC, cal);
   // throw new Error(`stop`)

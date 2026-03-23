@@ -3,6 +3,7 @@ import { IGenericRankItem, Ranking, TCC } from "../JSportModule";
 import { IElementInfo, IPhaseConfig, ITournamentConfig } from "../JSportModule/data";
 import { createGSG } from "../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
+import { ISportProfile } from "../JSportModule/profiles/ISportProfile";
 import Phase from "./Phase";
 import { TGS } from "./Stage/Stage";
 
@@ -12,8 +13,11 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
   private _fromGSGData: ITournamentFromGSGData | undefined;
   // private _qualyGenericRankItemList: IGenericRankItem[]
 
-  private constructor(info: IElementInfo, config: ITournamentConfig, cal: JCalendar) {
+  private _sportProfile: ISportProfile<unknown, string, string>;
+
+  private constructor(info: IElementInfo, config: ITournamentConfig, cal: JCalendar, sportProfile: ISportProfile<unknown, string, string>) {
     super(info, config);
+    this._sportProfile = sportProfile;
     // this._qualyGenericRankItemList = qualyGenericRankItemList;
     /**
     * creacion de las phases
@@ -27,7 +31,7 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
       }
       // let previusPhasesConfigArr = [...previusPhasesAgregate];
       // const previusPhaseConfig = i >= 1 ? config.phases[i - 1] : undefined;
-      const phase = new Phase(ipi, ipc, cal/*, previusPhasesConfigArr*/);
+      const phase = new Phase(ipi, ipc, cal, sportProfile);
       this._phases.push(phase);
 
       // previusPhasesAgregate.push(config.phases[i]);
@@ -82,9 +86,9 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
   }
 
   //
-  static create(info: IElementInfo, creator: ITournamentFromGSGData, cal: JCalendar): Tournament {
+  static create(info: IElementInfo, creator: ITournamentFromGSGData, cal: JCalendar, sportProfile: ISportProfile<unknown, string, string>): Tournament {
     const config = tournamentFromGSG(creator)
-    const t = new Tournament(info, config, cal)
+    const t = new Tournament(info, config, cal, sportProfile)
     t._fromGSGData = creator;
     return t;
   }

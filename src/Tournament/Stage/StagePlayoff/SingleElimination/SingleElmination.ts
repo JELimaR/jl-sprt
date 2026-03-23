@@ -5,7 +5,8 @@ import Event_RoundCreationAndTeamsDraw from './Event_RoundCreationAndTeamsDraw';
 import { JDateTime } from '../../../../JCalendar/JDateTimeModule';
 import { IElementInfo, ISingleElminationConfig } from '../../../../JSportModule';
 import Team from '../../../../JSportModule/data/Team';
-import TeamTableItem, { simpleSortFunc } from '../../../../JSportModule/Ranking/TeamTableItem';
+import { AnyTeamTableItem } from '../../../../JSportModule/Ranking/A_TeamTableItem';
+import { ISportProfile } from '../../../../JSportModule/profiles/ISportProfile';
 import { TypeTableMatchState } from '../../../../JSportModule/';
 import Match from '../../../../JSportModule/Match/ScoreMatch';
 import JSerie from '../../../../JSportModule/Match/Serie';
@@ -16,8 +17,8 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
 
   private _rounds: Round[] = [];
 
-  constructor(info: IElementInfo, config: ISingleElminationConfig) { // FALTA VERIFICAR QUE CADA fechHalfWeeks sea mayor al fechHalfWeeksSchedule
-    super(info, config);
+  constructor(info: IElementInfo, config: ISingleElminationConfig, sportProfile: ISportProfile<unknown, string, string>) { // FALTA VERIFICAR QUE CADA fechHalfWeeks sea mayor al fechHalfWeeksSchedule
+    super(info, config, sportProfile);
   }
 
   constructorVerification(config: ISingleElminationConfig): void {
@@ -103,17 +104,20 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
     return out;
   }
 
-  getTable(ttms: TypeTableMatchState): TeamTableItem[] {
-    let out: TeamTableItem[] = this.calcTableValues(ttms);
+  getTable(ttms: TypeTableMatchState): AnyTeamTableItem[] {
+    let out = this.calcTableValues(ttms);
 
     this.rounds.forEach((r: Round, idx: number) => {
       r.losers.forEach((loser: Team) => {
-        let item = out.find((value: TeamTableItem) => value.team.id === loser.id)
+        let item = out.find((value) => value.team.id === loser.id)
         if (item) item.pos = this.rounds.length + 1 - idx;
       })
     });
 
-    out.sort((a, b) => simpleSortFunc(a, b, true));
+    if (out.length > 0) {
+      const sortFunc = out[0].getSortFunc();
+      out.sort((a, b) => sortFunc(a, b, true));
+    }
 
     return out;
   }

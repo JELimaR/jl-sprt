@@ -8,6 +8,7 @@ import Team from "../JSportModule/data/Team";
 import { GeneralStageGraph } from "../JSportModule/GeneralStageGraph/GeneralStageGraph";
 import { createGSG, TInitialCreator, TPhaseCreator } from "../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
+import { FootballProfile } from "../JSportModule/profiles/FootballProfile";
 import SportServerAPI from "../JSportServerModule";
 import mostrarFecha from "../mostrarFechaBorrar";
 import { asignarTeams2 } from "../Tournament/asignarTeams2";
@@ -125,13 +126,13 @@ export default function systemExample_01() {
 
 
     // creo los tournaments y creo su ranking inicial
-    let t1 = Tournament.create({ id: 'L1', season: Y }, t1_data, cal)
+    let t1 = Tournament.create({ id: 'L1', season: Y }, t1_data, cal, new FootballProfile())
     console.log(t1.config)
     let t2: Tournament | undefined;
     // asignarTeams(gsg_1)
     asignarTeams2(t1)
     if (t2_data) {
-      t2 = Tournament.create({ id: 'L2', season: Y }, t2_data, cal)
+      t2 = Tournament.create({ id: 'L2', season: Y }, t2_data, cal, new FootballProfile())
       console.log(t2.config)
       asignarTeams2(t2)
     }
