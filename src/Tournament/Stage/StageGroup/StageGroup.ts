@@ -6,7 +6,7 @@ import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
 import { IElementInfo, ILeagueConfig, IRankItem, IStageGroupConfig, TypeDrawRulePlayoff, TypeTableMatchState } from "../../../JSportModule";
 import Team from "../../../JSportModule/data/Team";
 import { AnyTeamTableItem } from "../../../JSportModule/Ranking/A_TeamTableItem";
-import { ISportProfile } from "../../../JSportModule/profiles/ISportProfile";
+import { AnySportProfile } from "../../../JSportModule/profiles/ISportProfile";
 
 /**
  * Debe encargarse de la creacion y de la asignacion de los equipos a cada basestage
@@ -16,7 +16,7 @@ import { ISportProfile } from "../../../JSportModule/profiles/ISportProfile";
 export default class StageGroup extends Stage<IElementInfo, IStageGroupConfig> {
   private _groups: League[] = [];
 
-  constructor(info: IElementInfo, config: IStageGroupConfig, calendar: JCalendar, sportProfile: ISportProfile<unknown, string, string>) {
+  constructor(info: IElementInfo, config: IStageGroupConfig, calendar: JCalendar, sportProfile: AnySportProfile) {
     super(info, config, calendar);
 
     for (let i = 0; i < config.participantsPerGroup.length; i++) {

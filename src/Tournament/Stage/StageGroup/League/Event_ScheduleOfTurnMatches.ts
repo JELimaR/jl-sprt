@@ -30,7 +30,7 @@ export class Event_ScheduleOfTurnMatches extends JEvent {
 	execute() {
 		console.log(`ejecuting match scheduling for matchHWeek number: ${this._turn.num}`);
 		// el evento debe crearse en el match
-		this._turn.matches.forEach((match: A_Match<unknown>) => {
+		this._turn.matches.forEach((match: A_Match<any>) => {
 			const dt = JDateTime.createFromHalfWeekOfYearAndYear(
 				this._turn.halfWeek,
 				// this._leagueData.info.season,

@@ -10,12 +10,12 @@ export interface ITeamData {
 export interface ITeamCreator {
   entity: Institution | Federation;
   category: TypeCategory;
-  matches: A_Match<unknown>[];
+  matches: A_Match<any>[];
 }
 
 export default class Team {
   // private _id: string;
-	private _matches: A_Match<unknown>[] = [];
+	private _matches: A_Match<any>[] = [];
   private _entity: Institution | Federation
   private _category: TypeCategory
 
@@ -28,13 +28,13 @@ export default class Team {
   
 	get id(): string {return `${this._category}_${this._entity.id}`}
   get entity(): Institution | Federation { return this._entity }
-	get matches(): A_Match<unknown>[] { return this._matches }
+	get matches(): A_Match<any>[] { return this._matches }
 
   addStage(stage: TGS) {
     this._stages.set(stage.config.idConfig, stage);
   }
 
-	addNewMatch(match: A_Match<unknown>) { 
+	addNewMatch(match: A_Match<any>) { 
 		this._matches.push(match);
 	}
 	getTeamMatch(): TeamMatch {

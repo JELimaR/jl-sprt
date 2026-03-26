@@ -14,7 +14,7 @@ import { ISportProfile, IMatchCreationInfo, ISerieCreationInfo } from "../ISport
  * Resultados: W (win), D (draw), L (loss)
  * Puntuaciones: gf (goles a favor), ga (goles en contra)
  */
-export class FootballProfile implements ISportProfile<number, FootballMatchResults, FootballMatchPuntuations> {
+export class FootballProfile implements ISportProfile<number, number, FootballMatchResults, FootballMatchPuntuations> {
 
   createMatch(info: IMatchCreationInfo): FootballMatch {
     return new FootballMatch(

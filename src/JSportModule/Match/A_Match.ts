@@ -2,6 +2,7 @@
 import { IA_ResultInfo } from './A_Result';
 import { A_ResultSerie } from './A_ResultSerie';
 import { A_MatchPlay } from './A_MatchPlay';
+import { TMatchScore } from './scores';
 import { JDateTime, TypeHalfWeekOfYear } from '../../JCalendar/JDateTimeModule';
 import Team from '../data/Team';
 
@@ -19,7 +20,7 @@ export type TypeMatchState =
  * La lógica de start/advance/finish es común a todos los deportes.
  * Cada deporte extiende esta clase y provee su propio A_MatchPlay.
  */
-export abstract class A_Match<ScoreType> {
+export abstract class A_Match<ScoreType extends TMatchScore> {
 
 	protected _state: TypeMatchState = 'created';
 	protected _id: string;

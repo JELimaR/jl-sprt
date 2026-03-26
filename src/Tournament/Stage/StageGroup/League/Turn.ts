@@ -8,12 +8,12 @@ export interface ITurnInfo {
 	num: number;
 	halfweek: TypeHalfWeekOfYear;
 	halfweekSchedule: TypeHalfWeekOfYear;
-	matches: A_Match<unknown>[];
+	matches: A_Match<any>[];
 }
 
 export /*default*/ class Turn {
 	private _num: number;
-	private _matches: A_Match<unknown>[] = [];
+	private _matches: A_Match<any>[] = [];
 	private _halfWeek: TypeHalfWeekOfYear;
 	private _halfweekSchedule: TypeHalfWeekOfYear;
 
@@ -26,7 +26,7 @@ export /*default*/ class Turn {
 
 	get num(): number { return this._num }
 	get halfWeek(): TypeHalfWeekOfYear { return this._halfWeek }
-	get matches(): A_Match<unknown>[] { return this._matches }
+	get matches(): A_Match<any>[] { return this._matches }
 
 	get isFinished(): boolean {
 		return this._matches.every((m) => m.state === 'finished');

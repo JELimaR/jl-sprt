@@ -4,7 +4,7 @@ import { IBaseStageConfig, IElementInfo, TCC, TypeTableMatchState } from "../../
 import Team from "../../JSportModule/data/Team";
 import { A_Match } from "../../JSportModule/Match/A_Match";
 import { A_TeamTableItem, AnyTeamTableItem } from "../../JSportModule/Ranking/A_TeamTableItem";
-import { ISportProfile } from "../../JSportModule/profiles/ISportProfile";
+import { AnySportProfile } from "../../JSportModule/profiles/ISportProfile";
 
 /**
  * En el BaseStage es donde se configuran las rondas o turnos y los partidos de un torneo.
@@ -20,9 +20,9 @@ export default abstract class BaseStage<I extends IElementInfo, C extends IBaseS
    * 
    */
   private _participants: Map<number, Team> = new Map<number, Team>();
-  protected _sportProfile: ISportProfile<unknown, string, string>;
+  protected _sportProfile: AnySportProfile;
 
-  constructor(info: I, config: C, sportProfile: ISportProfile<unknown, string, string>) {
+  constructor(info: I, config: C, sportProfile: AnySportProfile) {
     super(info, config);
     this._sportProfile = sportProfile;
     this.constructorVerification(config);
@@ -30,7 +30,7 @@ export default abstract class BaseStage<I extends IElementInfo, C extends IBaseS
 
   abstract constructorVerification(config: C): void;
 
-  abstract get matches(): A_Match<unknown>[];
+  abstract get matches(): A_Match<any>[];
 
   get isFinished(): boolean {
     return this.matches.every((m) => m.state === 'finished');
@@ -93,7 +93,7 @@ export default abstract class BaseStage<I extends IElementInfo, C extends IBaseS
    * 
    * @param ttms 
    */
-  static getTableCondition(ttms: TypeTableMatchState): (m: A_Match<unknown>) => boolean {
+  static getTableCondition(ttms: TypeTableMatchState): (m: A_Match<any>) => boolean {
     switch (ttms) {
       case 'partial':
         return (m => m.state === 'finished' || m.state === 'playing');

@@ -3,7 +3,7 @@ import { TypeHalfWeekOfYear } from "../JCalendar/JDateTimeModule";
 import { IElementInfo, IPhaseConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, TCC } from "../JSportModule";
 import { IGenericRankItem } from "../JSportModule";
 import { Ranking, TypeRanking } from "../JSportModule";
-import { ISportProfile } from "../JSportModule/profiles/ISportProfile";
+import { AnySportProfile } from "../JSportModule/profiles/ISportProfile";
 import { globalFinishedRankingsMap } from "./globalFinishedRankingsMap";
 import StageGroup from "./Stage/StageGroup/StageGroup";
 import StagePlayoff from "./Stage/StagePlayoff/StagePlayoff";
@@ -13,7 +13,7 @@ export default class Phase extends TCC<IElementInfo, IPhaseConfig> { // esto es 
 
   private _parallelStages: TGS[] = [];
 
-  constructor(info: IElementInfo, config: IPhaseConfig, cal: JCalendar, sportProfile: ISportProfile<unknown, string, string>) {
+  constructor(info: IElementInfo, config: IPhaseConfig, cal: JCalendar, sportProfile: AnySportProfile) {
     super(info, config)
     config.stages.forEach((stageConfig: IStageConfig, i: number) => {
       const stage = createStage({ id: `${info.id}_s${i + 1}`, season: info.season }, stageConfig, cal, sportProfile);
@@ -54,7 +54,7 @@ export default class Phase extends TCC<IElementInfo, IPhaseConfig> { // esto es 
 }
 
 
-function createStage(info: IElementInfo, config: IStageConfig, cal: JCalendar, sportProfile: ISportProfile<unknown, string, string>): TGS {
+function createStage(info: IElementInfo, config: IStageConfig, cal: JCalendar, sportProfile: AnySportProfile): TGS {
   if (config.type == 'group') {
     const sconfig = config as IStageGroupConfig;
     return new StageGroup(info, sconfig, cal, sportProfile);

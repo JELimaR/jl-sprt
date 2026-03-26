@@ -14,7 +14,7 @@ import { ISportProfile, IMatchCreationInfo, ISerieCreationInfo } from "../ISport
  * Resultados: W, L (no hay empate)
  * Puntuaciones: pf (points for), pa (points against)
  */
-export class AmericanFootballProfile implements ISportProfile<number, AFMatchResults, AFMatchPuntuations> {
+export class AmericanFootballProfile implements ISportProfile<number, number, AFMatchResults, AFMatchPuntuations> {
 
   createMatch(info: IMatchCreationInfo): AFMatch {
     return new AFMatch(

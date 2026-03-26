@@ -3,7 +3,7 @@ import { IGenericRankItem, Ranking, TCC } from "../JSportModule";
 import { IElementInfo, IPhaseConfig, ITournamentConfig } from "../JSportModule/data";
 import { createGSG } from "../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
-import { ISportProfile } from "../JSportModule/profiles/ISportProfile";
+import { AnySportProfile } from "../JSportModule/profiles/ISportProfile";
 import Phase from "./Phase";
 import { TGS } from "./Stage/Stage";
 
@@ -13,9 +13,9 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
   private _fromGSGData: ITournamentFromGSGData | undefined;
   // private _qualyGenericRankItemList: IGenericRankItem[]
 
-  private _sportProfile: ISportProfile<unknown, string, string>;
+  private _sportProfile: AnySportProfile;
 
-  private constructor(info: IElementInfo, config: ITournamentConfig, cal: JCalendar, sportProfile: ISportProfile<unknown, string, string>) {
+  private constructor(info: IElementInfo, config: ITournamentConfig, cal: JCalendar, sportProfile: AnySportProfile) {
     super(info, config);
     this._sportProfile = sportProfile;
     // this._qualyGenericRankItemList = qualyGenericRankItemList;
@@ -86,7 +86,7 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
   }
 
   //
-  static create(info: IElementInfo, creator: ITournamentFromGSGData, cal: JCalendar, sportProfile: ISportProfile<unknown, string, string>): Tournament {
+  static create(info: IElementInfo, creator: ITournamentFromGSGData, cal: JCalendar, sportProfile: AnySportProfile): Tournament {
     const config = tournamentFromGSG(creator)
     const t = new Tournament(info, config, cal, sportProfile)
     t._fromGSGData = creator;

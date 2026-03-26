@@ -6,7 +6,7 @@ import { JDateTime } from '../../../../JCalendar/JDateTimeModule';
 import { IElementInfo, ISingleElminationConfig } from '../../../../JSportModule';
 import Team from '../../../../JSportModule/data/Team';
 import { AnyTeamTableItem } from '../../../../JSportModule/Ranking/A_TeamTableItem';
-import { ISportProfile } from '../../../../JSportModule/profiles/ISportProfile';
+import { AnySportProfile } from '../../../../JSportModule/profiles/ISportProfile';
 import { A_Serie } from '../../../../JSportModule/Match/A_Serie';
 import { TypeTableMatchState } from '../../../../JSportModule/';
 import { A_Match } from '../../../../JSportModule/Match/A_Match';
@@ -17,7 +17,7 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
 
   private _rounds: Round[] = [];
 
-  constructor(info: IElementInfo, config: ISingleElminationConfig, sportProfile: ISportProfile<unknown, string, string>) { // FALTA VERIFICAR QUE CADA fechHalfWeeks sea mayor al fechHalfWeeksSchedule
+  constructor(info: IElementInfo, config: ISingleElminationConfig, sportProfile: AnySportProfile) { // FALTA VERIFICAR QUE CADA fechHalfWeeks sea mayor al fechHalfWeeksSchedule
     super(info, config, sportProfile);
   }
 
@@ -35,8 +35,8 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
   }
 
   get rounds(): Round[] { return this._rounds }
-  get matches(): A_Match<unknown>[] {
-    let out: A_Match<unknown>[] = [];
+  get matches(): A_Match<any>[] {
+    let out: A_Match<any>[] = [];
     this._rounds.forEach((r: Round) => {
       r.matches.forEach((m) => out.push(m));
     })
@@ -84,8 +84,8 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
     this._rounds.push(round);
   }
 
-  createRoundSeries(teams: Team[]): A_Serie<unknown, unknown>[] {
-    let out: A_Serie<unknown, unknown>[] = [];
+  createRoundSeries(teams: Team[]): A_Serie<any, any>[] {
+    let out: A_Serie<any, any>[] = [];
 
     const total: number = this.matches.length / ((this.config.opt == 'h&a') ? 2 : 1);
     for (let i = 0; i < teams.length; i += 2) {

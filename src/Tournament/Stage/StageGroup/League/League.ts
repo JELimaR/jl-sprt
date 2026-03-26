@@ -4,7 +4,7 @@ import { arr2, IElementInfo, ILeagueConfig, TypeBaseStageOption, TypeTableMatchS
 import Team from "../../../../JSportModule/data/Team";
 import { A_Match } from "../../../../JSportModule/Match/A_Match";
 import { AnyTeamTableItem } from "../../../../JSportModule/Ranking/A_TeamTableItem";
-import { ISportProfile } from "../../../../JSportModule/profiles/ISportProfile";
+import { AnySportProfile } from "../../../../JSportModule/profiles/ISportProfile";
 import BaseStage from "../../BaseStage";
 import robinRoundSchedulingFunction from "./RoundRobin";
 import { Turn } from "./Turn";
@@ -20,7 +20,7 @@ export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
    * Quedan desconocidos los participants y por tanto no se crean los turns
    *        -> ESTOS SE CREAN EN LA ASIGNACION -> función assign()
    */
-  constructor(info: IElementInfo, config: ILeagueConfig, sportProfile: ISportProfile<unknown, string, string>) { // FALTA VERIFICAR QUE CADA fechHalfWeeks sea mayor al fechHalfWeeksSchedule
+  constructor(info: IElementInfo, config: ILeagueConfig, sportProfile: AnySportProfile) { // FALTA VERIFICAR QUE CADA fechHalfWeeks sea mayor al fechHalfWeeksSchedule
     super(info, config, sportProfile);
     this.config.turnHalfWeeks = config.turnHalfWeeks;
     this.config.turnHalfWeeksSchedule = config.turnHalfWeeksSchedule;
@@ -65,8 +65,8 @@ export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
     return this._turns;
   }
 
-  get matches(): A_Match<unknown>[] {
-    let out: A_Match<unknown>[] = [];
+  get matches(): A_Match<any>[] {
+    let out: A_Match<any>[] = [];
     this._turns.forEach((f: Turn) => {
       f.matches.forEach((m) => out.push(m));
     })
@@ -111,8 +111,8 @@ export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
     this._turns.push(turn);
   }
 
-  createTurnMatches(teams: Team[], turnNumber: number): A_Match<unknown>[] {
-    let out: A_Match<unknown>[] = [];
+  createTurnMatches(teams: Team[], turnNumber: number): A_Match<any>[] {
+    let out: A_Match<any>[] = [];
 
     const total: number = this.matches.length;
     for (let i = 0; i < teams.length; i += 2) {

@@ -12,12 +12,12 @@ export interface IRoundInfo {
 	num: number;
 	halfweeks: arr2<TypeHalfWeekOfYear>;
 	halfweekSchedule: TypeHalfWeekOfYear;
-	series: A_Serie<unknown, unknown>[];
+	series: A_Serie<any, any>[];
 }
 
 export class Round {
 	private _num: number;
-	private _series: A_Serie<unknown, unknown>[] = [];
+	private _series: A_Serie<any, any>[] = [];
 	private _halfWeeks: arr2<TypeHalfWeekOfYear>;
 	private _halfweekSchedule: TypeHalfWeekOfYear;
 
@@ -30,9 +30,9 @@ export class Round {
 
 	get num(): number { return this._num }
 	get halfWeek(): arr2<TypeHalfWeekOfYear> { return this._halfWeeks }
-	get series(): A_Serie<unknown, unknown>[] {return this._series }
-	get matches(): A_Match<unknown>[] { 
-		let out: A_Match<unknown>[] = [];
+	get series(): A_Serie<any, any>[] {return this._series }
+	get matches(): A_Match<any>[] { 
+		let out: A_Match<any>[] = [];
 		this._series.forEach((serie) => {
 			serie.matches.forEach((match) => {
 				out.push(match);

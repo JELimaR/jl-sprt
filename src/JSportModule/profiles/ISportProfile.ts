@@ -5,6 +5,7 @@ import { A_Result, IA_ResultInfo } from "../Match/A_Result";
 import { A_MatchPlay } from "../Match/A_MatchPlay";
 import { A_Match } from "../Match/A_Match";
 import { A_Serie } from "../Match/A_Serie";
+import { TMatchScore, TSerieScore } from "../Match/scores";
 import { TypeHalfWeekOfYear } from "../../JCalendar/JDateTimeModule";
 import { arr2, TypeBaseStageOption } from "../data";
 
@@ -41,33 +42,34 @@ export interface ISerieCreationInfo {
  * El profile es la fábrica completa: crea Match, Serie, Result, MatchPlay, TableItem.
  * Agregar un nuevo deporte = crear un nuevo profile + sus clases concretas.
  * 
- * ScoreType: tipo del score del partido (number para futbol/basketball, IVolleyScore para volleyball, etc.)
+ * MatchScoreType: tipo del score del partido (number para futbol/basketball, IVolleyScore para volleyball, etc.)
  * Res: tipos de resultado posibles ('W' | 'D' | 'L' para futbol, 'W' | 'L' para basketball, etc.)
  * Punt: tipos de puntuación ('gf' | 'ga' para futbol, 'pf' | 'pa' para basketball, etc.)
  */
-export interface ISportProfile<ScoreType, Res extends string, Punt extends string> {
+export interface ISportProfile<MatchScoreType extends TMatchScore, SerieScoreType extends TSerieScore, Res extends string, Punt extends string> {
 
   /**
    * Crea un partido completo con toda la lógica específica del deporte.
    */
-  createMatch(info: IMatchCreationInfo): A_Match<ScoreType>;
+  createMatch(info: IMatchCreationInfo): A_Match<MatchScoreType>;
 
   /**
    * Crea una serie (ida/vuelta o partido único) con la lógica específica del deporte.
    * Cada deporte define cómo se resuelve el desempate de una serie.
    */
-  createSerie(info: ISerieCreationInfo): A_Serie<ScoreType, any>;
+  createSerie(info: ISerieCreationInfo): A_Serie<MatchScoreType, SerieScoreType>;
 
   /**
    * Crea un resultado vacío para un partido entre dos equipos.
    */
-  createResult(teamOneId: string, teamTwoId: string): A_Result<ScoreType>;
+  createResult(teamOneId: string, teamTwoId: string): A_Result<MatchScoreType>;
 
   /**
    * Crea la simulación de un partido.
    * @param globalResult resultado global de la serie (para ida y vuelta)
    */
-  createMatchPlay(globalResult?: A_Result<ScoreType>): A_MatchPlay<ScoreType>;
+  // // NO SE DEBE USAR un globalResult - en su caso, referencia al partido anterior
+  createMatchPlay(globalResult?: A_Result<MatchScoreType>): A_MatchPlay<MatchScoreType>;
 
   /**
    * Crea un item de tabla para un equipo en un BaseStage.
@@ -79,7 +81,7 @@ export interface ISportProfile<ScoreType, Res extends string, Punt extends strin
    */
   updateTableFromResult(
     tti: A_TeamTableItem<Res, Punt>,
-    resultInfo: IA_ResultInfo<ScoreType>,
+    resultInfo: IA_ResultInfo<MatchScoreType>,
     teamId: string
   ): void;
 }
@@ -87,4 +89,4 @@ export interface ISportProfile<ScoreType, Res extends string, Punt extends strin
 /**
  * Tipo para usar ISportProfile de forma genérica sin propagar los tipos Res/Punt.
  */
-export type AnySportProfile = ISportProfile<any, any, any>;
+export type AnySportProfile = ISportProfile<any, any, string, string>;

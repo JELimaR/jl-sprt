@@ -7,7 +7,7 @@ import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
 import { arr2, IElementInfo, IRankItem, IStagePlayoffConfig, TypeDrawRulePlayoff, TypeTableMatchState } from "../../../JSportModule";
 import Team from "../../../JSportModule/data/Team";
 import { AnyTeamTableItem } from "../../../JSportModule/Ranking/A_TeamTableItem";
-import { ISportProfile } from "../../../JSportModule/profiles/ISportProfile";
+import { AnySportProfile } from "../../../JSportModule/profiles/ISportProfile";
 
 
 /**
@@ -19,7 +19,7 @@ export default class StagePlayoff extends Stage<IElementInfo, IStagePlayoffConfi
 
   private _playoff: SingleElmination;
 
-  constructor(info: IElementInfo, config: IStagePlayoffConfig, calendar: JCalendar, sportProfile: ISportProfile<unknown, string, string>) {
+  constructor(info: IElementInfo, config: IStagePlayoffConfig, calendar: JCalendar, sportProfile: AnySportProfile) {
     super(info, config, calendar);
 
     const SEInfo: IElementInfo = {

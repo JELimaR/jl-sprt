@@ -15,7 +15,7 @@ import { ISportProfile, IMatchCreationInfo, ISerieCreationInfo } from "../ISport
  * Resultados: W3_0, W3_1, W3_2, L2_3, L1_3, L0_3
  * Puntuaciones: sw (sets won), sl (sets lost), pf (points for), pa (points against)
  */
-export class VolleyballProfile implements ISportProfile<IVolleyScore, VolleyMatchResults, VolleyMatchPuntuations> {
+export class VolleyballProfile implements ISportProfile<IVolleyScore, number, VolleyMatchResults, VolleyMatchPuntuations> {
 
   createMatch(info: IMatchCreationInfo): VolleyMatch {
     return new VolleyMatch(
