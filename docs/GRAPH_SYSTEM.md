@@ -31,8 +31,6 @@ GeneralStageGraph
 - **Datos**: Lista de equipos clasificados y distribución inicial
 - **Salidas**: Genera RankGroupNodes con equipos distribuidos
 
-```
-
 #### FinalNode (`FIN`)
 - **Color**: Rojo oscuro (`#4E0110`)
 - **Función**: Punto final del torneo
@@ -45,7 +43,7 @@ GeneralStageGraph
 - **Color**: Azul oscuro (`#03254E`)
 - **Función**: Etapas de grupos (formato liga)
 - **Duración**: Calculada automáticamente según participantes
-- **Formato**: Round Robin o Ida/Vuelta
+- **Formato**: Round Robin con o sin Ida/Vuelta
 
 
 **Cálculos Automáticos**:

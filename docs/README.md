@@ -4,10 +4,6 @@ Bienvenido a la documentación completa del sistema JSport para gestión de torn
 
 ## 📖 Índice de Documentación
 
-### 🚀 Para Empezar
-- **[Guía de Inicio Rápido](QUICK_START.md)** - Tutorial paso a paso para comenzar
-- **[README Principal](../README.md)** - Visión general del proyecto
-
 ### 🧠 Conceptos Fundamentales
 - **[Conceptos Fundamentales](CONCEPTS.md)** - Explicación detallada de los elementos principales:
   - Tournament (Torneo)
@@ -27,13 +23,6 @@ Bienvenido a la documentación completa del sistema JSport para gestión de torn
   - Team (Equipo)
   - TeamTableItem (Estadísticas)
   - Sistema de Simulación
-
-### 🏗️ Arquitectura Técnica
-- **[Arquitectura](ARCHITECTURE.md)** - Estructura técnica del sistema:
-  - Módulos principales
-  - Patrones de diseño
-  - Flujo de datos
-  - Extensibilidad
 
 ### 📚 Referencia de API
 - **[API Reference](API.md)** - Documentación completa de la API:
