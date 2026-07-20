@@ -52,7 +52,7 @@ export default function fede_inst_Example() {
   federationFileMembers.set(1159, arr)
 
   console.log('federationFileLS')
-  console.log(federationFileLS.entries())
+  console.log(federationFileLS)
 
   let cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1154, 168).getIJDateTimeCreator());
   for (let Y = 1154; Y <= 1166; Y++) {
