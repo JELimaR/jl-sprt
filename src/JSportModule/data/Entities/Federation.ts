@@ -1,7 +1,7 @@
 import { IDivisionCondition } from "./LeagueSystem";
 import { globalFinishedRankingsMap } from "../../../Tournament/globalFinishedRankingsMap";
 import { ITournamentFromGSGData } from "../../GeneralStageGraph/tournamentFromGSG";
-import { IGenericRankItem, IRankItem, Ranking } from "../../Ranking";
+import { IGenericRankItem, IRankingMetadata, IRankItem, Ranking } from "../../Ranking";
 import Team from "../Team";
 import { CATEGORIES, getCategoryList, TypeCategory, TypeCategoryList } from "../types";
 import { Country } from "./GeogEntity";
@@ -257,7 +257,11 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
         origin: `fr_${category}_${this.id}`, pos: i + 1, team: team
       }
     })
-    return Ranking.fromRankItemArr(`fr_${category}_${this.id}`, out)
+    return Ranking.fromRankItemArr(`fr_${category}_${this.id}`, out, {
+      generatedBy: 'federation',
+      rankedEntity: 'institution',
+      sourceId: this.id,
+    })
   }
 
   // Se actualizan los rankings por categoria de la federation al final de temporada

@@ -1,10 +1,13 @@
-import { Ranking } from "../JSportModule";
+import { RankingStore } from "../JSportModule";
 
 /**
- * Mapa global para almacenar los rankings finalizados de:
+ * Store global para almacenar los rankings finalizados de:
  * - Tournaments
  * - Stages
  * - Phases
- * - Seasons?
+ * - Federations
+ * - Confederations
+ * 
+ * Mantiene historial de todos los rankings guardados por context.
  */
-export const globalFinishedRankingsMap = new Map<string, Ranking>();
+export const globalFinishedRankingsMap = new RankingStore();

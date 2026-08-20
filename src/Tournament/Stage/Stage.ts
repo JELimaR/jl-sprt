@@ -142,6 +142,11 @@ export default abstract class Stage<I extends IElementInfo, C extends IStageConf
       context: `rs_${this.config.idConfig}`,
       items: rankItemArr,
       teams: rankItemArr.map(item => item.team),
+      metadata: {
+        season: this.info.season,
+        generatedBy: 'stage',
+        sourceId: this.config.idConfig,
+      },
     })
   }
 }

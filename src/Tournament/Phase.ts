@@ -32,6 +32,11 @@ export default class Phase extends TCC<IElementInfo, IPhaseConfig> { // esto es 
       context: 'pr_' + this.config.idConfig,
       items: this.config.rankItemList,
       teams: [],
+      metadata: {
+        season: this.info.season,
+        generatedBy: 'phase',
+        sourceId: this.config.idConfig,
+      },
     };
 
     this.config.rankItemList.forEach((item: IGenericRankItem, idx: number) => {

@@ -1,3 +1,71 @@
+// ============================================================================
+// JSport Library - Public API Exports
+// ============================================================================
+
+// Calendar
+export { default as JCalendar } from './JCalendar/JCalendar';
+export { JDateTime, JDate, JTime } from './JCalendar/JDateTimeModule';
+export type { IJDateTimeCreator, TypeHalfWeekOfYear, TypeIntervalOfDay } from './JCalendar/JDateTimeModule';
+export { DateToString } from './JCalendar/DateToString';
+
+// Ranking
+export { Ranking } from './JSportModule/Ranking/Ranking';
+export type { TypeRanking } from './JSportModule/Ranking/Ranking';
+export type { IGenericRankItem, IRankItem, TypeTableMatchState, IRankingMetadata, TypeRankingGenerator, TypeRankedEntity } from './JSportModule/Ranking/interfaces';
+export { A_TeamTableItem } from './JSportModule/Ranking/A_TeamTableItem';
+export type { AnyTeamTableItem, SortFunc, IA_TeamTableItemBase } from './JSportModule/Ranking/A_TeamTableItem';
+export { RankingStore } from './JSportModule/Ranking/RankingStore';
+
+// Tournament
+export { default as Tournament } from './Tournament/Tournament';
+export { default as Phase } from './Tournament/Phase';
+export { globalFinishedRankingsMap } from './Tournament/globalFinishedRankingsMap';
+
+// Sport Profiles
+export type { ISportProfile, AnySportProfile, IMatchCreationInfo, ISerieCreationInfo } from './JSportModule/profiles/ISportProfile';
+
+// Match (abstract base classes)
+export { A_Match } from './JSportModule/Match/A_Match';
+export { A_MatchPlay } from './JSportModule/Match/A_MatchPlay';
+export { A_Result } from './JSportModule/Match/A_Result';
+export { A_Serie } from './JSportModule/Match/A_Serie';
+
+// Data & Config types
+export type {
+  IElementInfo,
+  ITournamentConfig,
+  IPhaseConfig,
+  IStageConfig,
+  IStageGroupConfig,
+  IStagePlayoffConfig,
+  IBaseStageConfig,
+  ILeagueConfig,
+  ISingleElminationConfig,
+  TypeBaseStageOption,
+  TQualyCondition,
+} from './JSportModule/data/elementsConfig';
+
+// API & Server
+export { SportAPIController } from './JSportModule/SportAPI';
+export type { ISportFactory, IEntityController, IElementController, ISportAPIController } from './JSportModule/apiInterfaces';
+export { default as SportServerAPI } from './JSportServerModule';
+
+// GeneralStageGraph
+export { GeneralStageGraph } from './JSportModule/GeneralStageGraph/GeneralStageGraph';
+export { createGSG } from './JSportModule/GeneralStageGraph/GSGCreators';
+export { tournamentFromGSG } from './JSportModule/GeneralStageGraph/tournamentFromGSG';
+export type { ITournamentFromGSGData } from './JSportModule/GeneralStageGraph/tournamentFromGSG';
+
+// Entities
+export { Institution } from './JSportModule/data/Entities/Institution';
+export { Federation } from './JSportModule/data/Entities/Federation';
+export { Confederation } from './JSportModule/data/Entities/Confederation';
+export { default as Team } from './JSportModule/data/Team';
+
+// ============================================================================
+// Examples runner - solo se ejecuta si este archivo se corre directamente
+// ============================================================================
+
 import APIExample from './examples/APIExample';
 import baseStageExample from './examples/baseStageExample';
 import volleyBaseStageExample from './examples/volleyBaseStageExample';
@@ -11,60 +79,33 @@ import stageLeagueExample from './examples/stageLeagueExample';
 import systemExample_01 from './examples/systemExample_01';
 
 /**
- * PENDIENTES
- * 1 - generar las drawrules - falta probarlas
- * 2 - un sistema para hacer un ranking de tournament - listo
- * 3 - combinacion de ranking, por ejemplo previo al inicio de un stage cualqueira
- * 4 - AGREGAR COMENTARIOS
- * 5 - separar en modulos independientes - completados: ()
- * 6 - empezar a trabajar con las organizations
- * 7 - PHASES de tournament
- * 8 - todas las verificaciones deben poder realizarse con los config e info -- listo
- * 9 - en la primera ronda de un SE, puede pasar que 2 del mismo grupo (origen) se enfrenten si no hay draw
- * 10 - Crear el modulo ElementConfigVerificationModule -- en progreso
- * 11 - en las quayconditions no pueden repetirse las mismas sources en un stage
- * 12 - Los IEventsInfo deben ser solo info
+ * Ejecuta un ejemplo específico.
+ * Descomenta el que quieras probar y ejecuta con `npm start`.
  */
-
-function app() {
-
+function runExamples() {
   // baseStageExample();
-
   // volleyBaseStageExample();
-
   // stageExample01();
-
   // stageExample02();
-
   // stageLeagueExample();
-
   // specialStageGroupExample();
-
-  // stageExample03()
-  
+  // stageExample03();
   // graphExample();
-  
-  // systemExample_01()
-
-  // fede_inst_Example()
-
-  APIExample()
-
-  // console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getDateTime())
-  // console.log(JDateTime.createFromHalfWeekOfYearAndYear(90, 1, 'start', 1).getIJDateTimeCreator())
+  // systemExample_01();
+  // fede_inst_Example();
+  APIExample();
 }
 
+// Se ejecuta solo si se invoca directamente (npm start / node dist/index.js)
+if (require.main === module) {
+  runExamples();
 
-app();
-const formatMemoryUsage = (data: number) => `${Math.round(data / 1024 / 1024 * 100) / 100} MB`;
-
-const memoryData = process.memoryUsage();
-
-const memoryUsage = {
-  rss: `${formatMemoryUsage(memoryData.rss)} -> Resident Set Size - total memory allocated for the process execution`,
-  heapTotal: `${formatMemoryUsage(memoryData.heapTotal)} -> total size of the allocated heap`,
-  heapUsed: `${formatMemoryUsage(memoryData.heapUsed)} -> actual memory used during the execution`,
-  external: `${formatMemoryUsage(memoryData.external)} -> V8 external memory`,
-};
-
-console.log(memoryUsage);
+  const formatMemoryUsage = (data: number) => `${Math.round(data / 1024 / 1024 * 100) / 100} MB`;
+  const memoryData = process.memoryUsage();
+  console.log({
+    rss: `${formatMemoryUsage(memoryData.rss)} -> Resident Set Size`,
+    heapTotal: `${formatMemoryUsage(memoryData.heapTotal)} -> total heap`,
+    heapUsed: `${formatMemoryUsage(memoryData.heapUsed)} -> used heap`,
+    external: `${formatMemoryUsage(memoryData.external)} -> V8 external`,
+  });
+}

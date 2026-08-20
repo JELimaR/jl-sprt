@@ -82,6 +82,11 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
     return Ranking.fromTypeRanking({
       ...phaseRank.getInterface(),
       context: 'tr_' + this.config.idConfig,
+      metadata: {
+        season: this.info.season,
+        generatedBy: 'tournament',
+        sourceId: this.config.idConfig,
+      },
     });
   }
 
