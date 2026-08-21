@@ -1,5 +1,4 @@
-import { RankingStore } from "../JSportModule";
-
+import { RankingStore } from "../JSportModule/Ranking/RankingStore";
 /**
  * Store global para almacenar los rankings finalizados de:
  * - Tournaments

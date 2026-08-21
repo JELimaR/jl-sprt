@@ -9,8 +9,10 @@ import { Ranking } from "./Ranking";
  * - _history: todos los rankings que se fueron guardando por context (para consultas históricas)
  */
 export class RankingStore {
-  private _current: Map<string, Ranking> = new Map();
-  private _history: Map<string, Ranking[]> = new Map();
+  private _current: Map<string, Ranking> = new Map<string, Ranking>();
+  private _history: Map<string, Ranking[]> = new Map<string, Ranking[]>();
+
+  constructor() {}
 
   /**
    * Guarda un ranking. Actualiza el current y agrega al historial.
