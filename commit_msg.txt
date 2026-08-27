@@ -1,0 +1,9 @@
+refactor: renombrar paquete a jl-sprt, eliminar notas, ampliar exports
+
+- package.json: renombrado de "jl-xxx" a "jl-sprt"
+- Eliminado archivo "notas" (notas de desarrollo obsoletas)
+- src/index.ts: agregados exports adicionales:
+  - Tipos de Entities: IInstitutionData, IInstitutionCreator, IFederationData, IFederationCreator, IConfederationData
+  - Geographic Entities: Continent, Country, Town + sus tipos IContinentData, ICountryData, ITownData
+  - Data types: TypeCategory, TypeCategoryList, CATEGORIES
+  - Example data para seeding: getContinentData, getCountriesData, getTownsData, getInstitutionsData, getFederationData, getConfederationData

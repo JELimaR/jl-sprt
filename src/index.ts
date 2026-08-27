@@ -58,9 +58,24 @@ export type { ITournamentFromGSGData } from './JSportModule/GeneralStageGraph/to
 
 // Entities
 export { Institution } from './JSportModule/data/Entities/Institution';
+export type { IInstitutionData, IInstitutionCreator } from './JSportModule/data/Entities/Institution';
 export { Federation } from './JSportModule/data/Entities/Federation';
+export type { IFederationData, IFederationCreator } from './JSportModule/data/Entities/Federation';
 export { Confederation } from './JSportModule/data/Entities/Confederation';
+export type { IConfederationData } from './JSportModule/data/Entities/Confederation';
 export { default as Team } from './JSportModule/data/Team';
+
+// Geographic Entities
+export { Continent, Country, Town } from './JSportModule/data/Entities/GeogEntity';
+export type { IContinentData, ICountryData, ITownData } from './JSportModule/data/Entities/GeogEntity';
+
+// Data types
+export type { TypeCategory, TypeCategoryList } from './JSportModule/data/types';
+export { CATEGORIES } from './JSportModule/data/types';
+
+// Example data (useful for seeding)
+export { getContinentData, getCountriesData, getTownsData } from './examples/APIExample/geogData';
+export { getInstitutionsData, getFederationData, getConfederationData } from './examples/APIExample/entitiesData';
 
 // ============================================================================
 // Examples runner - solo se ejecuta si este archivo se corre directamente
