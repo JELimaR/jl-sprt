@@ -1,6 +1,5 @@
 import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
 import { arr2, getStageGenericRank, getStageGenericSource, ILeagueConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, TQualyCondition } from "../../data";
-import { sizeGeneric } from "../../interfaces";
 import { verifyBaseStageConfig } from "./verifyBaseStageConfig";
 
 export function verifyStageConfig(config: IStageConfig): boolean {
@@ -67,10 +66,12 @@ export function verifyStageConfig(config: IStageConfig): boolean {
   }
 
   // el tamaño del GenericRank de la stage debe ser igual al tamaño del SourceRank
-  if (sizeGeneric(getStageGenericSource(config)) !== sizeGeneric(getStageGenericRank(config))) {
+  const stageSource = getStageGenericSource(config);
+  const stageRank = getStageGenericRank(config);
+  if (stageSource.length !== stageRank.length) {
     throw new Error(`
-    el tamaño del GenericRank (${sizeGeneric(getStageGenericSource(config))}) de la stage
-    debe ser igual al tamaño del SourceRank (${sizeGeneric(getStageGenericRank(config))}). (verifyStageConfig)`)
+    el tamaño del GenericRank (${stageSource.length}) de la stage
+    debe ser igual al tamaño del SourceRank (${stageRank.length}). (verifyStageConfig)`)
   }
 
   // especificas

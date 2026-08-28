@@ -18,7 +18,7 @@ export function verifyTournamentConfig(config: ITournamentConfig): boolean {
   for (let i = 1; i < config.phases.length; i++) {
     const prevP = config.phases[i - 1];
     const nextP = config.phases[i]
-    if (prevP.hwEnd >= nextP.hwStart) {
+    if (prevP.hwEnd > nextP.hwStart) {
       throw new Error(`la phase ${prevP.n} termina despues (hw = ${prevP.hwEnd})
       de que la phase ${nextP.n} comienze (hw = ${nextP.hwStart}).
       (Tournament.constructor)`)
@@ -32,17 +32,17 @@ export function verifyTournamentConfig(config: ITournamentConfig): boolean {
       // para cada fuente de stageConfig verifico si esa fuente esta dentro del tournament
       const sourceStage = arr.find(e => tq.rankId.slice(3, 80) == e.idConfig);
       if (sourceStage) { // esta dentro del tournament
-        if (tq.maxRankPos > getStageGenericRank(sourceStage).list.length) {
+        if (tq.maxRankPos > getStageGenericRank(sourceStage).length) {
           throw new Error(`
             La stage ${stageConfig.idConfig} necesita que hayan al menos ${tq.maxRankPos} elementos en su source: ${sourceStage.idConfig}.
-            En la stage ${sourceStage.idConfig} solo genera/participan ${getStageGenericRank(sourceStage).list.length} en total.`)
+            En la stage ${sourceStage.idConfig} solo genera/participan ${getStageGenericRank(sourceStage).length} en total.`)
         }
       }
     })
 
   })
 
-  getTournamentGenericRank(config);
+  // getTournamentGenericRank(config);
 
   //
   config.phases.forEach((p : IPhaseConfig) => verifyPhaseConfig(p))

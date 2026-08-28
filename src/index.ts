@@ -98,16 +98,16 @@ import systemExample_01 from './examples/systemExample_01';
  * Descomenta el que quieras probar y ejecuta con `npm start`.
  */
 function runExamples() {
-  // baseStageExample();
-  // volleyBaseStageExample();
-  // stageExample01();
-  // stageExample02();
-  // stageLeagueExample();
-  // specialStageGroupExample();
-  // stageExample03();
+  baseStageExample();
+  volleyBaseStageExample();
+  stageExample01();
+  stageExample02();
+  stageLeagueExample();
+  specialStageGroupExample();
+  stageExample03();
   // graphExample();
-  // systemExample_01();
-  // fede_inst_Example();
+  systemExample_01();
+  fede_inst_Example();
   APIExample();
 }
 

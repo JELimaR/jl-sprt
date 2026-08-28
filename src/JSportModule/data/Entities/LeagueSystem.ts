@@ -3,7 +3,7 @@
 
 import { createStandardGSGDataFromNParticipants } from "../../GeneralStageGraph/createStandardGSGDataFromNParticipants";
 import { ITournamentFromGSGData, tournamentFromGSG } from "../../GeneralStageGraph/tournamentFromGSG";
-import { IGenericRankItem } from "../../interfaces";
+import { IGenericRankItem } from "../../Ranking/interfaces";
 import { TypeCategory } from "../types";
 import { verifyDivisionArr } from "./verifyLeagueSystem";
 

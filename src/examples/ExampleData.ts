@@ -1,7 +1,6 @@
 import { JDate } from "../JCalendar";
 import { Country, IFederationCreator, IFederationData, IInstitutionCreator, Institution, Town } from "../JSportModule";
 import Team from "../JSportModule/data/Team";
-import { IGenericRank } from "../JSportModule/interfaces";
 
 
 export const getExampleTeams = (n: number, pid: string = ''): Team[] => {
@@ -62,16 +61,3 @@ export const getInstitutionCreators = (count: number, cid: string) => {
 
   return out;
 }
-
-export function generateFederationGenericRanks(): IGenericRank[] {
-  let out: IGenericRank[] = [];
-  for (let fede = 1; fede <= 14; fede++) {
-    const fid = `F${String(fede).padStart(3, '0')}`;
-    const fteams = getExampleTeams(74, fid);
-    let franking: IGenericRank = { rankId: 'fr_' + fid, list: [] };
-    fteams.forEach((t, i) => franking.list.push({ origin: fid, pos: i + 1 }))
-    out.push(franking);
-  }
-  return out;
-}
-

@@ -2,15 +2,15 @@ import { IElementController, IEntityController, ISportFactory } from "../JSportM
 import ElementController from "./Element/ElementController";
 import EntityController from "./Entity/EntityController";
 
-export default class JSportFactoryServer implements ISportFactory {
+export default class SportFactoryServer implements ISportFactory {
   /**
    * Patron Singleton
    */
-  private static _instance: JSportFactoryServer;
+  private static _instance: SportFactoryServer;
   private constructor() {}
-  static get instance(): JSportFactoryServer {
+  static get instance(): SportFactoryServer {
     if (!this._instance)
-    this._instance = new JSportFactoryServer();
+    this._instance = new SportFactoryServer();
     return this._instance;
   }
   /**

@@ -1,6 +1,6 @@
 import { SportAPIController } from "../JSportModule";
-import JSportFactoryServer from "./JSportFactoryServer";
+import SportFactoryServer from "./SportFactoryServer";
 
-function SportServerAPI() { return new SportAPIController(JSportFactoryServer.instance); }
+function SportServerAPI() { return new SportAPIController(SportFactoryServer.instance); }
 
 export default SportServerAPI;

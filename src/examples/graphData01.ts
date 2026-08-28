@@ -1,6 +1,6 @@
 import { getExampleTeams } from "./ExampleData";
 import { Ranking, TypeRanking } from "../JSportModule";
-import { IGenericRank, IGenericRankItem } from "../JSportModule/interfaces";
+import { IGenericRankItem } from "../JSportModule/Ranking";
 
 export function getFederationRankings(count: number, teams: number = 45): Map<string, Ranking> {
   let out: Map<string, Ranking> = new Map<string, Ranking>();

@@ -41,3 +41,19 @@ export interface IRankingMetadata {
   sourceId?: string;
   timestamp?: number;
 }
+
+//
+function toString(item: IGenericRankItem) {return `${item.origin}_${String(item.pos).padStart(4, '0')}`}
+
+export function areEqualsGenericItems(a: IGenericRankItem, b: IGenericRankItem): boolean {
+  return toString(a) == toString(b);
+}
+
+export function getIndexOfItem(genericList: IGenericRankItem[], item: IGenericRankItem): number {
+  if (genericList.filter((e: IGenericRankItem) => areEqualsGenericItems(e, item)).length > 1) {
+    throw new Error(`hay un elemento repetido`);
+  }
+  let out = -1;
+  genericList.forEach((e: IGenericRankItem, i: number) => { if (areEqualsGenericItems(e, item)) out = i })
+  return out;
+}
