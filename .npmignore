@@ -1,0 +1,21 @@
+# Código fuente
+src/
+
+# Pruebas y herramientas de desarrollo
+__tests__/
+*.test.ts
+*.spec.ts
+vitest.config.ts
+
+# Scripts internos de construcción y limpieza
+scripts/
+
+# Entornos y configuración de IDEs / plataformas
+.vscode/
+.replit
+.github/
+
+# Archivos de log, temporales y salidas auxiliares
+*.log
+app.log
+.png

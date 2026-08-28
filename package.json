@@ -4,15 +4,19 @@
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "init-config": "npm install",
     "build": "tsc",
     "clean": "node ./scripts/clean.js",
     "dev:tsc": "tsc --watch",
-    "dev:nodemon": "nodemon ./dist/index.js ",
+    "dev:nodemon": "nodemon ./dist/index.js",
     "dev:nodemon-log": "nodemon ./dist/index.js > app.log",
     "test": "vitest",
-    "start": "node ./dist/index.js"
+    "start": "node ./dist/index.js",
+    "prepublishOnly": "npm run clean && npm run build"
   },
   "author": "JELimaR",
   "license": "ISC",
