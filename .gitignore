@@ -7,7 +7,5 @@ dist/*
 
 .png
 
-package-lock.json
-
 .log
 
