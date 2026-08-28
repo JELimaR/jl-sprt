@@ -1,8 +1,8 @@
 .env
 
-.vscode/*
-node_modules/*
-dist/*
+.vscode/
+node_modules/
+dist/
 
 .replit
 
@@ -10,7 +10,7 @@ dist/*
 
 .log
 
-package-lock.json
+/package-lock.json
 
 # typescript
 *.tsbuildinfo
