@@ -1,6 +1,6 @@
 {
   "name": "jl-sprt",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,7 +16,7 @@
     "dev:nodemon-log": "nodemon ./dist/index.js > app.log",
     "test": "vitest",
     "start": "node ./dist/index.js",
-    "prepublishOnly": "npm run clean && npm run build"
+    "prepublishOnly": "npm run build"
   },
   "author": "JELimaR",
   "license": "ISC",
