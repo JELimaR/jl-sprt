@@ -1,6 +1,6 @@
 {
   "name": "jl-sprt",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,13 +9,14 @@
   ],
   "scripts": {
     "init-config": "npm install",
-    "build": "tsc",
+    "build": "npm run clean && tsc --incremental false",
     "clean": "node ./scripts/clean.js",
     "dev:tsc": "tsc --watch",
     "dev:nodemon": "nodemon ./dist/index.js",
     "dev:nodemon-log": "nodemon ./dist/index.js > app.log",
     "test": "vitest",
-    "start": "node ./dist/index.js"
+    "start": "node ./dist/index.js",
+    "prepublishOnly": "npm run build"
   },
   "author": "JELimaR",
   "license": "ISC",
