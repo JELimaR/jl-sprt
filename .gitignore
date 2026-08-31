@@ -10,7 +10,5 @@ dist/
 
 .log
 
-/package-lock.json
-
 # typescript
 *.tsbuildinfo
