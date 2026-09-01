@@ -52,6 +52,19 @@ function divisionConfig(): ITournamentFromGSGData {
   };
 }
 
+/**
+ * Igual que divisionConfig() pero CON sorteo (draw), que dispara el camino
+ * teamsDraw -> Bombo -> shuffled. Con la inyección de randomFloat en Bombo,
+ * este sorteo también es reproducible bajo reseedRandom(seed).
+ */
+function divisionConfigWithDraw(): ITournamentFromGSGData {
+  const cfg = divisionConfig();
+  cfg.gsgData.phaseArr[0].stages[0].stage = {
+    type: 'group', opt: 'h&a', value: 1, draw: { interv: 18, rules: [] },
+  };
+  return cfg;
+}
+
 function buildFederationWithTeams(): Federation {
   const fedCreator: IFederationCreator = {
     id: 'FTEST',
@@ -143,29 +156,33 @@ describe("Integración - temporada de una división (end-to-end)", () => {
     expect(finalTeamIds).toEqual(initialTeamIds);
   });
 
-  it("es determinista: misma semilla produce el mismo ranking final", () => {
-    const runOnce = (): string[] => {
-      reseedRandom(SEED);
-      const federation = buildFederationWithTeams();
-      const franking = federation.getRanking('S');
-      const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, SEASON, 168).getIJDateTimeCreator());
-      const ctx = new SimulationContext(cal);
-      ctx.store.set(franking.context, franking);
-      federation.updateLeagueSystem(new LeagueSystem({
-        category: 'S', isTransition: false,
-        divisions: [{ level: 1, fromGSGData: divisionConfig(), condition: { N: N_TEAMS, p: 0, r: 0 } }],
-      }));
-      const data = federation.createTournamentList();
-      const t = Tournament.create({ id: data[0].name, season: SEASON }, data[0], ctx, new FootballProfile());
-      asignarTeams2(t, ctx);
-      advanceCalendar(cal);
-      // devolver la secuencia de posiciones (por institución) para comparar el orden relativo
-      return t.getRelativeRank().getRankTable().map(r => `${r.pos}:${r.team.entity.id}`);
-    };
+  /** Corre una temporada con el config dado y devuelve la secuencia pos:institución. */
+  function runSeason(configFactory: () => ITournamentFromGSGData): string[] {
+    reseedRandom(SEED);
+    const federation = buildFederationWithTeams();
+    const franking = federation.getRanking('S');
+    const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, SEASON, 168).getIJDateTimeCreator());
+    const ctx = new SimulationContext(cal);
+    ctx.store.set(franking.context, franking);
+    federation.updateLeagueSystem(new LeagueSystem({
+      category: 'S', isTransition: false,
+      divisions: [{ level: 1, fromGSGData: configFactory(), condition: { N: N_TEAMS, p: 0, r: 0 } }],
+    }));
+    const data = federation.createTournamentList();
+    const t = Tournament.create({ id: data[0].name, season: SEASON }, data[0], ctx, new FootballProfile());
+    asignarTeams2(t, ctx);
+    advanceCalendar(cal);
+    return t.getRelativeRank().getRankTable().map(r => `${r.pos}:${r.team.entity.id}`);
+  }
 
-    const a = runOnce();
-    const b = runOnce();
-    expect(a).toEqual(b);
+  it("es determinista SIN sorteo: misma semilla produce el mismo ranking", () => {
+    expect(runSeason(divisionConfig)).toEqual(runSeason(divisionConfig));
+  });
+
+  it("es determinista CON sorteo: Bombo usa la fuente sembrada (reseedRandom)", () => {
+    // Con la inyección de randomFloat en Bombo.shuffled, el sorteo es reproducible:
+    // misma semilla -> mismo emparejamiento -> mismo ranking final.
+    expect(runSeason(divisionConfigWithDraw)).toEqual(runSeason(divisionConfigWithDraw));
   });
 
   it("no comparte estado entre simulaciones (stores independientes)", () => {

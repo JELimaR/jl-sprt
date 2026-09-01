@@ -1,4 +1,5 @@
 import { CollectionsUtilsFunctions } from "jl-utlts";
+import { randomFloat } from "../../JSportModule/Match/randomSource";
 
 const CUF = CollectionsUtilsFunctions.getInstance();
 
@@ -22,7 +23,9 @@ export default class Bombo<T> {
 	private start(): void {
 		if (this._state === 'reseted') {
 			this._stack = [...this._elements];
-      this._stack = CUF.shuffled<T>({ array: this._stack});
+      // Se inyecta la fuente de aleatoriedad compartida (randomSource) para que el
+      // sorteo sea reproducible con reseedRandom(seed), igual que la simulación.
+      this._stack = CUF.shuffled<T>({ array: this._stack, randFunction: randomFloat });
 		}
 		this._state = 'started';
 	}

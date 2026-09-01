@@ -423,23 +423,21 @@ suposiciones).
 
 ---
 
-## HALLAZGO nuevo (Kiro) — el sorteo (Bombo) NO es determinista
+## HALLAZGO (Kiro) — el sorteo (Bombo) ahora es determinista [RESUELTO]
 
-Al escribir el test de integración (Capa 7) descubrí que, con `intervalOfDrawDate` seteado
-(camino `teamsDraw`), el **emparejamiento de equipos varía entre corridas aunque se use la
-misma semilla** (`reseedRandom(13)`). Motivo: `Bombo`/`CollectionsUtilsFunctions.shuffled`
-usan su propia aleatoriedad, NO gobernada por `randomSource.reseedRandom`. Solo los *scores*
-de los partidos son deterministas (esos sí usan `randomFloat`).
+Al escribir el test de integración (Capa 7) detecté que, con `intervalOfDrawDate` seteado
+(camino `teamsDraw`), el emparejamiento variaba entre corridas aunque se usara la misma
+semilla, porque `Bombo` llamaba a `CollectionsUtilsFunctions.shuffled({ array })` sin pasar
+`randFunction`, cayendo en `Math.random`.
 
-Consecuencia para los tests:
-- El test de integración usa un config **sin `intervalOfDrawDate`** (camino `teamsNoDraw`,
-  emparejamiento posicional determinista) → así la corrida completa ES reproducible y el test
-  de determinismo pasa.
-- Para poder testear escenarios CON sorteo de forma determinista, habría que permitir inyectar
-  la función de random del `shuffled`/`Bombo` (pendiente, fuera del alcance de este refactor).
+**Resuelto:** `shuffled` de jl-utlts acepta `randFunction?: () => number` (verificado en
+`node_modules/jl-utlts/dist/Utils/CollectionsUtilsFunctions.d.ts`). Se inyectó `randomFloat`
+(de `randomSource`) en `Bombo.start()`:
+`CUF.shuffled({ array, randFunction: randomFloat })`. Así una sola semilla (`reseedRandom(13)`)
+gobierna tanto los scores de los partidos como los sorteos.
 
-Esto coincide con la nota del TESTING_PLAN ("Sorteos (Bombo): verificar/permitir inyectar esa
-función"). Lo dejo anotado como próximo trabajo.
+Cubierto por dos tests en `season.test.ts`: "determinista SIN sorteo" y "determinista CON
+sorteo". Ambos verifican que dos corridas con la misma semilla producen el mismo ranking.
 
 ---
 
