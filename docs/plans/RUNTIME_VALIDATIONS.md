@@ -265,6 +265,9 @@ desbloquea los torneos acoplados descritos en `COUPLED_TOURNAMENTS.md`.
   `Tournament.create`. (`src/Tournament/TournamentConfigStore.ts`.)
 - **Fase A — validación cross-tournament** — `verifyCoupledTournaments` +
   `resolveTournamentBuildOrder` (ver detalle abajo).
+- **Fase B (núcleo) — resolución diferida** — `RankingStore` observable
+  (`subscribe`) + `teamsAssign` (asigna lo resoluble y difiere los `rs_`/`tr_` hasta
+  que el productor los escribe). Falta solo el cierre end-to-end (reOrder + ejemplo B).
 
 Todos los cambios pasan `tsc --noEmit` limpio y la suite completa en verde.
 
@@ -323,32 +326,35 @@ Objetivo (original): detectar en construcción (no en runtime) los problemas cro
 Riesgo: bajo. Es todo análisis de config, sin tocar runtime. Encaja como un nuevo
 `verifyCoupledTournaments(configs)` en `ConfigVerify`, alimentado por el registro (§7).
 
-### Pendiente — Fase B: módulo `teamsAssign` (resolución diferida)
+### Implementado (parcial) — Fase B: módulo `teamsAssign` (resolución diferida)
 
-Depende de la Fase A (necesita saber a quién esperar y en qué orden).
+> **Estado: núcleo hecho.** Falta solo el cierre end-to-end (reOrder + ejemplo B).
 
-1. **`RankingStore` observable**: agregar `onSet(context, listener)` /
-   `subscribe(context, cb)` que se dispare dentro de `set(context, ranking)`. Es el
-   punto único donde nace un `rs_`/`tr_`. (Opción A del §4, favorecida porque el
-   store ya centraliza y ya tiene `has()`/`_history`.)
-2. **`teamsAssign(tournament, ctx)`** (reemplaza/envuelve a `asignarTeams2`):
-   - Particiona los `{origin, pos}` en **resolubles** (ya en store) y **diferidos**.
-   - Asigna los resolubles y arma el `ini_<id>` parcial con huecos marcados.
-   - Por cada origen diferido, `ctx.store.subscribe(origin, () => resolver esos pos)`.
-     Cuando el `Event_StageEnd` del productor haga `store.set(rs_<...>)`, se dispara
-     la resolución y se completa el `ini_<id>`.
-3. **Bloqueo/consistencia**: el `ini_<id>` no queda "bloqueado" (poblado) hasta que
-   todos sus huecos se resuelvan; `Event_StageStart` del primer stage de B debe
-   estar agendado DESPUÉS del `hwEnd` del productor (garantizado por Fase A §5), así
-   que al dispararse ya estará completo.
-4. **Habilitar `reOrder`**: recién con A+B resueltos tiene sentido descomentar el
-   `case 'reOrder'` en `GSGCreators.createStage` y volver ejecutable el Torneo B de
-   `COUPLED_TOURNAMENTS.md`.
-5. **Tests**: dos torneos acoplados end-to-end (el escenario A→B de
-   `confederationExample`), verificando que B se asigna y corre tras terminar A.
+1. **`RankingStore` observable** — HECHO. `subscribe(context, listener): () => void`
+   que se dispara dentro de `set(context, ranking)` (devuelve función de desuscripción;
+   no dispara retroactivamente; `clear()` limpia suscriptores).
+   (`src/JSportModule/Ranking/RankingStore.ts`.)
+2. **`teamsAssign(tournament, ctx)`** — HECHO. (`src/Tournament/teamsAssign.ts`.)
+   - Particiona los orígenes en **resolubles** (ya en store) y **diferidos**.
+   - Si no hay diferidos: arma y guarda el `ini_<id>` de una (igual que `asignarTeams2`).
+   - Si hay diferidos: se suscribe a cada origen pendiente; cuando el ÚLTIMO llega
+     (todos los orígenes disponibles), construye y guarda el `ini_<id>` COMPLETO en un
+     solo `set`. Nota de diseño: el `Ranking`/`RankingStore` NO admite rankings
+     parciales (items sin sus teams), así que no se guarda un `ini_` con huecos; se
+     espera a tener todo y se guarda una vez.
+3. **Bloqueo/consistencia** — el `ini_<id>` solo se guarda cuando está poblado (el store
+   rechaza rankings no bloqueados). El `Event_StageStart` del primer stage del consumidor
+   se dispara en su `hwStart`, posterior al `hwEnd` del productor (garantizado por la
+   validación temporal de la Fase A), así que al arrancar el `ini_` ya está completo.
+4. **Habilitar `reOrder`** — PENDIENTE. Descomentar el `case 'reOrder'` en
+   `GSGCreators.createStage`.
+5. **Tests end-to-end** — PENDIENTE. Dos torneos acoplados reales (escenario A→B de
+   `confederationExample`) corriendo sobre un mismo `SimulationContext`, verificando que
+   B se asigna y corre tras terminar A. (Hoy hay tests unitarios de `teamsAssign` y de la
+   suscripción del store; falta el de integración con el ejemplo completo.)
 
-Riesgo: medio/alto. Toca el store (transversal) y el momento de asignación. Hacerlo
-detrás de la Fase A y con tests de integración dedicados.
+Riesgo: el núcleo ya está y con tests. Lo pendiente (reOrder + integración) es lo que
+vuelve ejecutable el Torneo B de `COUPLED_TOURNAMENTS.md`.
 
 ### Pendiente — Fase C: reglas semánticas (confederación)
 

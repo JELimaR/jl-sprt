@@ -13,6 +13,7 @@ export type { IGenericRankItem, IRankItem, TypeTableMatchState, IRankingMetadata
 export { A_TeamTableItem } from './JSportModule/Ranking/A_TeamTableItem';
 export type { AnyTeamTableItem, SortFunc, IA_TeamTableItemBase } from './JSportModule/Ranking/A_TeamTableItem';
 export { RankingStore } from './JSportModule/Ranking/RankingStore';
+export type { RankingStoreListener } from './JSportModule/Ranking/RankingStore';
 
 // Tournament
 export { default as Tournament } from './Tournament/Tournament';
@@ -20,6 +21,7 @@ export { default as Phase } from './Tournament/Phase';
 export { SimulationContext, createSimulationContext } from './Tournament/SimulationContext';
 export { TournamentConfigStore } from './Tournament/TournamentConfigStore';
 export { asignarTeams2 } from './Tournament/asignarTeams2';
+export { teamsAssign } from './Tournament/teamsAssign';
 
 // Sport Profiles
 export type { ISportProfile, AnySportProfile, IMatchCreationInfo, ISerieCreationInfo } from './JSportModule/profiles/ISportProfile';

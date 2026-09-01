@@ -169,3 +169,56 @@ describe("RankingStore - aislamiento entre instancias", () => {
     expect(s2.size).toBe(0);
   });
 });
+
+// -----------------------------------------------------------------------------
+// subscribe (observabilidad, para la resolución diferida de teamsAssign)
+// -----------------------------------------------------------------------------
+describe("RankingStore - subscribe", () => {
+  it("notifica al suscriptor cuando se hace set del context", () => {
+    const store = new RankingStore();
+    const seen: Array<{ ctx: string; teamId: string }> = [];
+    store.subscribe("c", (ctx, ranking) => {
+      seen.push({ ctx, teamId: ranking.getRankTable()[0].team.id });
+    });
+    store.set("c", blockedRanking("c", "A"));
+    expect(seen).toEqual([{ ctx: "c", teamId: "A" }]);
+  });
+
+  it("no notifica a suscriptores de otros contexts", () => {
+    const store = new RankingStore();
+    let called = false;
+    store.subscribe("otro", () => { called = true; });
+    store.set("c", blockedRanking("c", "A"));
+    expect(called).toBe(false);
+  });
+
+  it("no dispara retroactivamente: solo ante futuros set", () => {
+    const store = new RankingStore();
+    store.set("c", blockedRanking("c", "A")); // ya existe antes de suscribir
+    let called = false;
+    store.subscribe("c", () => { called = true; });
+    expect(called).toBe(false);
+    // pero sí ante el próximo set
+    store.set("c", blockedRanking("c", "B"));
+    expect(called).toBe(true);
+  });
+
+  it("la función devuelta desuscribe", () => {
+    const store = new RankingStore();
+    let count = 0;
+    const off = store.subscribe("c", () => { count++; });
+    store.set("c", blockedRanking("c", "A"));
+    off();
+    store.set("c", blockedRanking("c", "B"));
+    expect(count).toBe(1);
+  });
+
+  it("clear elimina también los suscriptores", () => {
+    const store = new RankingStore();
+    let count = 0;
+    store.subscribe("c", () => { count++; });
+    store.clear();
+    store.set("c", blockedRanking("c", "A"));
+    expect(count).toBe(0);
+  });
+});
