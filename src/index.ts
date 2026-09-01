@@ -2,11 +2,9 @@
 // JSport Library - Public API Exports
 // ============================================================================
 
-// Calendar
-export { default as JCalendar } from './JCalendar/JCalendar';
-export { JDateTime, JDate, JTime } from './JCalendar/JDateTimeModule';
-export type { IJDateTimeCreator, TypeHalfWeekOfYear, TypeIntervalOfDay } from './JCalendar/JDateTimeModule';
-export { DateToString } from './JCalendar/DateToString';
+// Calendar (re-exported from the jl-calendar package)
+export { JCalendar, JDateTime, JDate, JTime, DateToString, JEvent } from 'jl-calendar';
+export type { IJDateTimeCreator, TypeHalfWeekOfYear, TypeIntervalOfDay, IJEventInfo } from 'jl-calendar';
 
 // Ranking
 export { Ranking } from './JSportModule/Ranking/Ranking';
@@ -29,6 +27,7 @@ export { A_Match } from './JSportModule/Match/A_Match';
 export { A_MatchPlay } from './JSportModule/Match/A_MatchPlay';
 export { A_Result } from './JSportModule/Match/A_Result';
 export { A_Serie } from './JSportModule/Match/A_Serie';
+export { randomFloat, reseedRandom } from './JSportModule/Match/randomSource';
 
 // Data & Config types
 export type {
