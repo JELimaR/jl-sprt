@@ -1,44 +1,52 @@
-# JSport - Sistema de Gestión de Torneos Deportivos
+# jl-sprt - Sistema de Gestión de Torneos Deportivos
 
 ## Descripción
 
-JSport es una librería TypeScript para la gestión completa de torneos deportivos. Proporciona un sistema robusto para crear, configurar y ejecutar torneos con diferentes formatos (eliminación directa, ligas, grupos especiales), gestión de calendarios, rankings y entidades deportivas.
+`jl-sprt` es una librería TypeScript para modelar y simular el mundo del deporte organizado: instituciones (clubes), federaciones nacionales, confederaciones continentales y una entidad internacional. Permite crear torneos con diferentes formatos (ligas, eliminación directa, grupos), simular partidos temporada a temporada, y mantener rankings que determinan ascensos, descensos y clasificaciones.
+
+El sistema es **agnóstico del deporte**: la lógica específica (goles, sets, puntos) se encapsula en un `SportProfile`. Actualmente hay perfiles para fútbol, volleyball y fútbol americano.
 
 ## Características Principales
 
 ### 🏆 Gestión de Torneos
-- **Múltiples formatos**: Eliminación directa, ligas, grupos especiales
-- **Fases múltiples**: Soporte para torneos con múltiples fases
-- **Sistema de clasificación**: Rankings automáticos y manuales
-- **Grafos de torneo**: Visualización y gestión de la estructura del torneo
+- Múltiples formatos: liga (round robin), eliminación directa, grupos
+- Torneos multi-fase
+- Estructura descrita mediante un grafo dirigido (GeneralStageGraph)
 
 ### 📅 Sistema de Calendario
-- **Gestión temporal**: Control preciso de fechas y horarios
-- **Eventos programados**: Automatización de partidos y fases
-- **Intervalos personalizables**: Configuración flexible de tiempos
+- Calendario propio (`JCalendar`) basado en eventos ordenados cronológicamente
+- Automatización de sorteos, partidos y cierres de etapa
+- Unidad temporal: "media semana del año" (half-week)
 
 ### 🏢 Entidades Deportivas
-- **Instituciones**: Gestión de clubes y organizaciones
-- **Federaciones**: Control de federaciones deportivas
-- **Confederaciones**: Manejo de confederaciones internacionales
-- **Geografía**: Soporte para continentes, países y ciudades
+- Instituciones (clubes), Federaciones, Confederaciones y entidad internacional
+- Entidades geográficas: continentes, países, ciudades
+- Equipos por categoría de edad (S, S23, S21, S19, S17, S15, S13)
 
 ### 📊 Sistema de Rankings
-- **Rankings dinámicos**: Actualización automática basada en resultados
-- **Múltiples contextos**: Rankings por torneo, fase o general
-- **Clasificaciones**: Sistema de clasificación automática entre fases
+- Rankings por stage, phase, tournament, federación, etc.
+- Almacenamiento con historial (`RankingStore`)
+- Rankings combinados y ponderados (`combine`, `historical`, `aggregate`)
+
+### 🎯 Multi-deporte
+- Arquitectura basada en `ISportProfile` y clases abstractas (`A_Match`, `A_Result`, `A_MatchPlay`, `A_Serie`)
+- Perfiles implementados: `FootballProfile`, `VolleyballProfile`, `AmericanFootballProfile`
 
 ## Estructura del Proyecto
 
 ```
 src/
-├── JSportModule/          # Módulo principal de deportes
-│   └── data/
-│       └── Entities/      # Entidades deportivas
-├── JSportServerModule/    # API del servidor
-├── Tournament/           # Gestión de torneos
-├── JCalendar/           # Sistema de calendario
-└── examples/            # Ejemplos de uso
+├── index.ts               # Barrel de exports de la librería + runner de ejemplos
+├── JSportModule/          # Core del sistema deportivo
+│   ├── Match/             # A_Match, A_Result, A_MatchPlay, A_Serie (abstractos)
+│   ├── Ranking/           # Ranking, RankingStore, interfaces
+│   ├── GeneralStageGraph/ # GSG y creadores
+│   ├── profiles/          # ISportProfile + perfiles por deporte
+│   └── data/              # Entidades, config, tipos
+├── JSportServerModule/    # API del servidor (SportServerAPI)
+├── Tournament/            # Tournament, Phase, Stage
+├── JCalendar/             # Sistema de calendario y fechas
+└── examples/              # Ejemplos ejecutables de uso
 ```
 
 ## Instalación
@@ -50,206 +58,103 @@ npm install
 ## Scripts Disponibles
 
 ```bash
-# Compilar el proyecto
+# Compilar el proyecto (limpia dist/ y ejecuta tsc)
 npm run build
 
-# Desarrollo con watch
+# Desarrollo con recompilación automática
 npm run dev:tsc
 
-# Ejecutar con nodemon
+# Ejecutar con nodemon (requiere build previo)
 npm run dev:nodemon
 
-# Ejecutar tests
+# Ejecutar tests (vitest)
 npm run test
 
 # Limpiar archivos generados
 npm run clean
 
-# Iniciar aplicación
+# Ejecutar el runner de ejemplos (requiere build previo)
 npm start
 ```
 
 ## Documentación Detallada
 
-### 📚 Guías Disponibles
-
-- **[Conceptos Fundamentales](docs/CONCEPTS.md)** - Explicación detallada de Tournament, Phase, Stage, Ranking y GeneralStageGraph
-- **[Partidos y Equipos](docs/MATCHES_AND_TEAMS.md)** - Sistema de partidos, equipos y simulación
-- **[Arquitectura](docs/ARCHITECTURE.md)** - Estructura técnica y patrones de diseño
-- **[API Reference](docs/API.md)** - Documentación completa de la API
-- **[Guía de Inicio Rápido](docs/QUICK_START.md)** - Tutorial paso a paso
+- **[Flujo General](docs/GENERAL_FLOW.md)** — Visión completa del sistema: entidades, temporadas, rankings y simulación
+- **[Conceptos Fundamentales](docs/CONCEPTS.md)** — Tournament, Phase, Stage, Ranking y GeneralStageGraph
+- **[Sistema de Grafos](docs/GRAPH_SYSTEM.md)** — Tipos de nodos, flujo de datos, validaciones
+- **[Partidos y Equipos](docs/MATCHES_AND_TEAMS.md)** — Match, Team, tablas de posiciones y simulación
+- **[API Reference](docs/API.md)** — Referencia de la API pública
 
 ## Uso Básico
 
-### 1. Inicialización del Sistema
+### 1. Inicialización vía API
 
 ```typescript
-import SportServerAPI from './JSportServerModule';
-import JCalendar from './JCalendar/JCalendar';
-import { JDateTime } from './JCalendar/JDateTimeModule';
+import SportServerAPI from 'jl-sprt';
+import { JCalendar, JDateTime } from 'jl-sprt';
 
 // Crear instancia del API
 const ssapi = SportServerAPI();
 const entities = ssapi.getEntityController();
-const elements = ssapi.getElementController();
 
 // Inicializar calendario
 const cal = new JCalendar(
   JDateTime.createFromDayOfYearAndYear(1, 2024).getIJDateTimeCreator()
 );
-```
 
-### 2. Gestión de Entidades
-
-```typescript
-// Cargar datos geográficos
+// Cargar datos geográficos y entidades (formato compacto IXxxData)
 entities.loadGeogExampleData(continents, countries, towns);
-
-// Crear instituciones
-entities.createInstitution({
-  id: 'inst_001',
-  name: 'Club Ejemplo',
-  shortName: 'Club',
-  abrevName: 'CE',
-  headquarters: town,
-  funtationDay: foundationDate
-});
-
-// Crear federaciones
-entities.createFederation({
-  id: 'fed_001',
-  name: 'Federación Nacional',
-  countryId: 'country_001'
-});
+institutionsData.forEach((inst) => entities.createInstitution(inst));
+federationsData.forEach((fed) => entities.createFederation(fed));
 ```
 
-### 3. Creación de Torneos
+### 2. Creación y ejecución de un torneo
 
 ```typescript
-import Tournament from './Tournament/Tournament';
+import { Tournament } from 'jl-sprt';
+import { FootballProfile } from 'jl-sprt';
 
-// Configuración del torneo
-const tournamentConfig = {
-  idConfig: 'torneo_001',
-  phases: [
-    {
-      stages: [
-        {
-          type: 'playoff',
-          teams: 16,
-          format: 'single_elimination'
-        }
-      ]
-    }
-  ]
-};
-
-// Crear torneo
+// Tournament.create requiere: info, datos GSG, calendario y un SportProfile
 const tournament = Tournament.create(
-  { id: 'trn_001', season: '2024' },
+  { id: 'trn_001', season: 2024 },
   tournamentFromGSGData,
-  calendar
+  cal,
+  new FootballProfile()
 );
 ```
 
-### 4. Gestión de Rankings
+### 3. Rankings
 
 ```typescript
-import { Ranking } from './JSportModule';
+import { Ranking } from 'jl-sprt';
 
-// Crear ranking inicial
-const initialRanking = Ranking.fromTypeRanking({
-  context: 'initial',
-  items: rankItems,
-  teams: teams
-});
-
-// Obtener ranking actualizado
-const currentRanking = tournament.getRelativeRank();
+// El ranking final del torneo (una vez simulado)
+const finalRanking = tournament.getRelativeRank();
+console.table(finalRanking.getRankTable().map(r => ({ ...r, team: r.team.id })));
 ```
 
-## Ejemplos Incluidos
-
-El proyecto incluye varios ejemplos en la carpeta `src/examples/`:
-
-- **APIExample**: Uso completo del API
-- **stageExample01-03**: Ejemplos de diferentes tipos de etapas
-- **stageLeagueExample**: Ejemplo de liga
-- **systemExample_01**: Ejemplo de sistema completo
-- **graphExample**: Visualización de grafos de torneo
-
-## API Principal
-
-### SportAPIController
-```typescript
-const api = SportServerAPI();
-const entityController = api.getEntityController();
-const elementController = api.getElementController();
-```
-
-### Métodos Principales
-
-#### Entidades
-- `createInstitution(data)`: Crear institución
-- `createFederation(data)`: Crear federación  
-- `createConfederation(data)`: Crear confederación
-- `getInstitutions(filter)`: Obtener instituciones
-- `getFederations(filter)`: Obtener federaciones
-
-#### Elementos
-- `createTournament(config)`: Crear torneo
-- `createStage(config)`: Crear etapa
-- `getRankings()`: Obtener rankings
-
-## Configuración
-
-### TypeScript
-El proyecto usa TypeScript con configuración estricta. Ver `tsconfig.json` para detalles.
-
-### Testing
-Configurado con Jest para pruebas unitarias. Ejecutar con `npm test`.
-
-### Linting
-ESLint configurado para mantener calidad de código.
+> Nota: el `import` desde `'jl-sprt'` aplica al consumir la librería publicada. Dentro del propio repositorio, los ejemplos importan mediante rutas relativas.
 
 ## Dependencias Principales
 
-- **canvas**: Renderizado de gráficos
-- **graphology**: Manejo de grafos
-- **jl-utlts**: Utilidades auxiliares
+- **canvas** — renderizado de gráficos (visualización del GSG)
+- **graphology** — manejo del grafo dirigido
+- **jl-utlts** — utilidades auxiliares
 
-## Desarrollo
+## Patrones de Diseño
 
-### Estructura de Módulos
+- **Factory**: `ISportProfile` como fábrica de Match, Serie, Result, MatchPlay y TableItem
+- **Observer / Event queue**: `JCalendar` y sus eventos
+- **Strategy / Template Method**: clases abstractas `A_Match`, `A_Result`, etc. parametrizadas por deporte
 
-1. **JSportModule**: Core del sistema deportivo
-2. **JSportServerModule**: API y controladores
-3. **Tournament**: Lógica de torneos
-4. **JCalendar**: Sistema temporal
-5. **Entities**: Entidades deportivas
+## Testing
 
-### Patrones de Diseño
-
-- **Factory Pattern**: Para creación de elementos
-- **Observer Pattern**: Para eventos del calendario
-- **Strategy Pattern**: Para diferentes tipos de torneo
-
-## Contribución
-
-1. Fork el proyecto
-2. Crear rama feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit cambios (`git commit -am 'Agregar nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
-5. Crear Pull Request
+El proyecto usa **vitest**. Los tests se ejecutan con `npm run test`. Actualmente la cobertura es parcial (existe un set de tests para `JCalendar`).
 
 ## Licencia
 
-ISC License
+ISC
 
 ## Autor
 
 JELimaR
-
----
-
-Para más ejemplos y documentación detallada, revisar los archivos en la carpeta `examples/`.

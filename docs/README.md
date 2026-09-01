@@ -1,129 +1,87 @@
-# Documentación JSport
+# Documentación jl-sprt
 
-Bienvenido a la documentación completa del sistema JSport para gestión de torneos deportivos.
+Documentación del sistema `jl-sprt` para modelado y simulación de torneos deportivos.
 
 ## 📖 Índice de Documentación
 
+### 🌍 Visión General
+- **[Flujo General](GENERAL_FLOW.md)** — El mejor punto de partida. Describe:
+  - La jerarquía organizativa (International → Confederation → Federation → Institution)
+  - Teams de instituciones vs teams de federaciones
+  - LeagueSystem y CupSystem por categoría
+  - El loop de simulación por temporada
+  - El sistema de rankings (RankingStore, rankings combinados)
+
 ### 🧠 Conceptos Fundamentales
-- **[Conceptos Fundamentales](CONCEPTS.md)** - Explicación detallada de los elementos principales:
+- **[Conceptos Fundamentales](CONCEPTS.md)** — Elementos principales:
   - Tournament (Torneo)
-  - Phase (Fase) 
+  - Phase (Fase)
   - Stage (Etapa)
   - Ranking System
   - GeneralStageGraph (GSG)
-- **[Sistema de Grafos](GRAPH_SYSTEM.md)** - Documentación completa del sistema de grafos:
+- **[Sistema de Grafos](GRAPH_SYSTEM.md)** — Sistema de grafos en detalle:
   - Tipos de nodos y sus funciones
   - Flujo de datos en el grafo
-  - Visualización y renderizado
   - Validaciones automáticas
 
 ### ⚽ Sistema de Competición
-- **[Partidos y Equipos](MATCHES_AND_TEAMS.md)** - Sistema de partidos y equipos:
-  - Match (Partido)
+- **[Partidos y Equipos](MATCHES_AND_TEAMS.md)** — Sistema de partidos y equipos:
+  - A_Match (Partido abstracto) y perfiles por deporte
   - Team (Equipo)
-  - TeamTableItem (Estadísticas)
-  - Sistema de Simulación
+  - A_TeamTableItem (tabla de posiciones)
+  - Sistema de simulación
 
 ### 📚 Referencia de API
-- **[API Reference](API.md)** - Documentación completa de la API:
-  - SportServerAPI
-  - EntitiesController
-  - ElementController
-  - Interfaces principales
+- **[API Reference](API.md)** — Referencia de la API pública:
+  - SportServerAPI y EntityController
+  - JCalendar / JDateTime
+  - Tournament
+  - Ranking / RankingStore
 
 ## 🎯 Rutas de Aprendizaje
 
 ### Para Desarrolladores Nuevos
-1. Lee el [README Principal](../README.md) para entender qué hace JSport
-2. Sigue la [Guía de Inicio Rápido](QUICK_START.md) para configurar tu primer ejemplo
-3. Estudia los [Conceptos Fundamentales](CONCEPTS.md) para entender la arquitectura
-4. Explora [Partidos y Equipos](MATCHES_AND_TEAMS.md) para entender la simulación
-
-### Para Desarrolladores Avanzados
-1. Revisa la [Arquitectura](ARCHITECTURE.md) para entender los patrones implementados
-2. Consulta la [API Reference](API.md) para integración avanzada
-3. Examina los ejemplos en `src/examples/` para casos de uso específicos
+1. Lee el [README Principal](../README.md) para entender qué hace jl-sprt
+2. Lee el [Flujo General](GENERAL_FLOW.md) para entender el sistema completo
+3. Estudia los [Conceptos Fundamentales](CONCEPTS.md) para la arquitectura
+4. Explora [Partidos y Equipos](MATCHES_AND_TEAMS.md) para la simulación
 
 ### Para Integradores
-1. Comienza con la [API Reference](API.md) para entender los endpoints
-2. Revisa [Conceptos Fundamentales](CONCEPTS.md) para entender el modelo de datos
-3. Usa la [Guía de Inicio Rápido](QUICK_START.md) para pruebas de concepto
+1. Comienza con la [API Reference](API.md)
+2. Revisa [Conceptos Fundamentales](CONCEPTS.md) para el modelo de datos
+3. Examina los ejemplos en `src/examples/`
 
 ## 🔍 Búsqueda Rápida
 
 ### Conceptos Clave
-- **Tournament**: Contenedor principal de un torneo completo → [Ver detalles](CONCEPTS.md#-tournament-torneo)
-- **Phase**: Fase específica dentro de un torneo → [Ver detalles](CONCEPTS.md#-phase-fase)
-- **Stage**: Etapa de competición (grupos/eliminatorias) → [Ver detalles](CONCEPTS.md#-stage-etapa)
-- **Ranking**: Sistema de clasificaciones → [Ver detalles](CONCEPTS.md#-ranking-system)
-- **GSG**: Grafo de estructura del torneo → [Ver detalles](CONCEPTS.md#️-generalstategraph-gsg)
+- **Tournament**: contenedor de un torneo completo → [CONCEPTS.md](CONCEPTS.md#-tournament-torneo)
+- **Phase**: fase dentro de un torneo → [CONCEPTS.md](CONCEPTS.md#-phase-fase)
+- **Stage**: etapa de competición (grupos/eliminatorias) → [CONCEPTS.md](CONCEPTS.md#-stage-etapa)
+- **Ranking**: sistema de clasificaciones → [CONCEPTS.md](CONCEPTS.md#-ranking-system)
+- **GSG**: grafo de estructura del torneo → [GRAPH_SYSTEM.md](GRAPH_SYSTEM.md)
 
 ### Tipos de Nodos del Grafo
-- **InitialNode (INI)**: Punto de entrada del torneo → [Ver detalles](GRAPH_SYSTEM.md#initialnode-ini)
-- **FinalNode (FIN)**: Punto final del torneo → [Ver detalles](GRAPH_SYSTEM.md#finalnode-fin)
-- **StageGroupNode (GRP)**: Etapas de grupos → [Ver detalles](GRAPH_SYSTEM.md#stagegroupnode-grp)
-- **StagePlayoffNode (PLY)**: Eliminación directa → [Ver detalles](GRAPH_SYSTEM.md#stageplayoffnode-ply)
-- **TransferStageNode (TRF)**: Transferencia directa → [Ver detalles](GRAPH_SYSTEM.md#transferstagenode-trf)
-- **TableStageNode (TBL)**: División de rankings → [Ver detalles](GRAPH_SYSTEM.md#tablestagenode-tbl)
-- **RankGroupNode (RG)**: Grupos de ranking → [Ver detalles](GRAPH_SYSTEM.md#rankgroupnode-rg)
+- **InitialNode (INI)**: punto de entrada → [GRAPH_SYSTEM.md](GRAPH_SYSTEM.md)
+- **FinalNode (FIN)**: punto final → [GRAPH_SYSTEM.md](GRAPH_SYSTEM.md)
+- **StageGroupNode (GRP)**: etapas de grupos → [GRAPH_SYSTEM.md](GRAPH_SYSTEM.md)
+- **StagePlayoffNode (PLY)**: eliminación directa → [GRAPH_SYSTEM.md](GRAPH_SYSTEM.md)
+- **TransferStageNode (TRF)**: transferencia directa → [GRAPH_SYSTEM.md](GRAPH_SYSTEM.md)
+- **TableStageNode (TBL)**: división de rankings → [GRAPH_SYSTEM.md](GRAPH_SYSTEM.md)
+- **RankGroupNode (RG)**: grupos de ranking → [GRAPH_SYSTEM.md](GRAPH_SYSTEM.md)
 
 ### Elementos de Competición
-- **Match**: Partido individual → [Ver detalles](MATCHES_AND_TEAMS.md#️-match-partido)
-- **Team**: Equipo deportivo → [Ver detalles](MATCHES_AND_TEAMS.md#-team-equipo)
-- **League**: Liga/Grupo → [Ver ejemplos](QUICK_START.md#segundo-ejemplo---torneo-simple)
-- **Playoff**: Eliminación directa → [Ver ejemplos](QUICK_START.md#segundo-ejemplo---torneo-simple)
-
-### API Principal
-- **SportServerAPI**: Punto de entrada principal → [Ver API](API.md#sportserverapicontroller)
-- **EntitiesController**: Gestión de entidades → [Ver API](API.md#entitiescontroller)
-- **Calendar**: Sistema temporal → [Ver API](API.md#jcalendar)
-
-## 🛠️ Casos de Uso Comunes
-
-### Crear un Torneo Simple
-```typescript
-// Ver guía completa en QUICK_START.md
-const tournament = Tournament.create(info, config, calendar);
-```
-
-### Gestionar Entidades Deportivas
-```typescript
-// Ver ejemplos en API.md
-entities.createInstitution(institutionData);
-entities.createFederation(federationData);
-```
-
-### Obtener Rankings
-```typescript
-// Ver detalles en CONCEPTS.md
-const ranking = tournament.getRelativeRank();
-```
-
-### Simular Partidos
-```typescript
-// Ver sistema completo en MATCHES_AND_TEAMS.md
-match.start();
-match.advance();
-const result = match.result;
-```
+- **A_Match**: partido individual → [MATCHES_AND_TEAMS.md](MATCHES_AND_TEAMS.md)
+- **Team**: equipo deportivo → [MATCHES_AND_TEAMS.md](MATCHES_AND_TEAMS.md)
 
 ## 🤝 Contribución
 
 Para contribuir al proyecto:
-1. Lee la [Arquitectura](ARCHITECTURE.md) para entender la estructura
+1. Lee el [Flujo General](GENERAL_FLOW.md) y los [Conceptos Fundamentales](CONCEPTS.md)
 2. Revisa los patrones existentes en el código
 3. Sigue las convenciones de TypeScript del proyecto
-4. Agrega tests para nuevas funcionalidades
-
-## 📞 Soporte
-
-Si necesitas ayuda:
-1. Revisa esta documentación primero
-2. Examina los ejemplos en `src/examples/`
-3. Consulta los tests para casos de uso específicos
-4. Crea un issue en el repositorio con detalles específicos
+4. Agrega tests (vitest) para nuevas funcionalidades
 
 ---
 
-**JSport** - Sistema completo para gestión de torneos deportivos
+**jl-sprt** — Sistema para modelado y simulación de torneos deportivos
 Autor: JELimaR
