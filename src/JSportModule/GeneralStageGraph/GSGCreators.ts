@@ -6,7 +6,7 @@ import { GeneralStageGraph, PhaseNode } from "./GeneralStageGraph";
 import { FinalNode, InitialNode, IStageNodeData, RankGroupNode, StageNode } from "./nodes";
 import { ReOrderStageNode, TableStageNode, TransferStageNode } from "./NoneStageNode";
 import { StageGroupNode, StagePlayoffNode } from "./RealStageNode";
-import { TypeIntervalOfDay } from "../../JCalendar";
+import { TypeIntervalOfDay } from "jl-calendar";
 
 export type TInitialCreator = {
   tournamentId: string;

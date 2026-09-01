@@ -6,7 +6,7 @@ import { A_MatchPlay } from "../Match/A_MatchPlay";
 import { A_Match } from "../Match/A_Match";
 import { A_Serie } from "../Match/A_Serie";
 import { TMatchScore, TSerieScore } from "../Match/scores";
-import { TypeHalfWeekOfYear } from "../../JCalendar/JDateTimeModule";
+import { TypeHalfWeekOfYear } from "jl-calendar";
 import { arr2, TypeBaseStageOption } from "../data";
 
 /**

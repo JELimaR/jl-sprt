@@ -1,5 +1,5 @@
 import { isSetIterator } from "util/types";
-import { IJEventInfo, JEvent } from "../../JCalendar/Event/JEvent";
+import { IJEventInfo, JEvent } from "jl-calendar";
 import { IRankItem } from "../../JSportModule";
 import { globalFinishedRankingsMap } from "../globalFinishedRankingsMap";
 import { TGS } from "./Stage";

@@ -1,4 +1,4 @@
-import { TypeHalfWeekOfYear, TypeIntervalOfDay } from "../../JCalendar/JDateTimeModule";
+import { TypeHalfWeekOfYear, TypeIntervalOfDay } from "jl-calendar";
 import { ITCCConfig, ITCCInfo } from "../patterns/templateConfigCreator";
 import { IGenericRankItem, IRankItem } from "../Ranking";
 import { arr2 } from "./types";

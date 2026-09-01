@@ -1,4 +1,4 @@
-import { JDate } from "../JCalendar";
+import { JDate } from "jl-calendar";
 import { Country, IFederationCreator, IFederationData, IInstitutionCreator, Institution, Town } from "../JSportModule";
 import Team from "../JSportModule/data/Team";
 

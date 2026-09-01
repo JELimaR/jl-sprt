@@ -4,7 +4,7 @@ import AFMatch from './AFMatch';
 import AFResultSerie from './AFResultSerie';
 import Team from '../../data/Team';
 import { arr2, TypeBaseStageOption } from '../../data';
-import { TypeHalfWeekOfYear } from '../../../JCalendar/JDateTimeModule';
+import { TypeHalfWeekOfYear } from "jl-calendar";
 
 /**
  * Serie de American Football.

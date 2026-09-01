@@ -1,4 +1,4 @@
-import JCalendar from "../JCalendar/JCalendar";
+import { JCalendar, JDateTime } from "jl-calendar";
 import { getExampleTeams } from "./ExampleData";
 import mostrarFecha from "../mostrarFechaBorrar";
 import exampleAdvance from "./exampleAdvance";
@@ -7,7 +7,6 @@ import { globalFinishedRankingsMap } from "../Tournament/globalFinishedRankingsM
 import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
 import { TGS } from "../Tournament/Stage/Stage";
 import StagePlayoff from "../Tournament/Stage/StagePlayoff/StagePlayoff";
-import { JDateTime } from "../JCalendar/JDateTimeModule";
 import { IElementInfo, IRankItem, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, Ranking } from "../JSportModule";
 import Team from "../JSportModule/data/Team";
 import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";

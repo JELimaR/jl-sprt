@@ -4,7 +4,7 @@
 // import JEventChangeFederationReadingConfig from "./JEventChangeFederationReadingConfig";
 // import JSportOrganization, { IJSportOrganizationCreator } from "../SportOrganization";
 // import { JCountry } from "../JGeogEntity";
-// import { DAYSPERYEAR, JDateTime, TypeDayOfYear } from "../../JCalendar/JDateTimeModule";
+// import { DAYSPERYEAR, JDateTime, TypeDayOfYear } from "jl-calendar";
 // import Team from "../../JSportModule/data/Team";
 
 // export type TypeFederationReadingConfig = 

@@ -1,9 +1,8 @@
-import JCalendar from "../JCalendar/JCalendar";
+import { JCalendar, JDateTime } from "jl-calendar";
 import { getExampleTeams } from "./ExampleData";
 import League from "../Tournament/Stage/StageGroup/League/League";
 import SingleElmination from "../Tournament/Stage/StagePlayoff/SingleElimination/SingleElmination";
 import mostrarFecha from "../mostrarFechaBorrar";
-import { JDateTime } from "../JCalendar/JDateTimeModule";
 import { ILeagueConfig, ISingleElminationConfig, verifyBaseStageConfig } from "../JSportModule";
 import { VolleyballProfile } from "../JSportModule/profiles/volleyball/VolleyballProfile";
 

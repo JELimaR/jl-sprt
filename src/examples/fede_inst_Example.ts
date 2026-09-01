@@ -1,6 +1,5 @@
 
-import JCalendar from "../JCalendar/JCalendar";
-import { JDateTime } from "../JCalendar/JDateTimeModule";
+import { JCalendar, JDateTime } from "jl-calendar";
 import { CATEGORIES, Country, Federation, IFederationCreator, IGenericRankItem, Ranking, Town, TypeCategory, TypeCategoryList } from "../JSportModule";
 import { IInstitutionCreator, Institution } from "../JSportModule/data/Entities/Institution";
 import LeagueSystem, { IDivisionCondition, ILeagueSystemCreator } from "../JSportModule/data/Entities/LeagueSystem";

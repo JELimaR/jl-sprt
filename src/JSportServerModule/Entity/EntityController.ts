@@ -1,6 +1,6 @@
 
 import EntityHandler from "./EntityHandler";
-import { JDate } from "../../JCalendar";
+import { JDate } from "jl-calendar";
 import { IEntityController, IContinentData, ICountryData, ITownData, Continent, Country, Town, IConfederationData, Federation, IConfederationCreator, Confederation, IFederationData, Institution, TypeCategoryList, CupSystem, CATEGORIES, TypeCategory, IFederationCreator, IPaginationData, IInstitutionData, IInstitutionCreator } from "../../JSportModule";
 import LeagueSystem from "../../JSportModule/data/Entities/LeagueSystem";
 

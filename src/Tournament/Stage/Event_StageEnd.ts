@@ -1,4 +1,4 @@
-import { IJEventInfo, JEvent } from "../../JCalendar/Event/JEvent";
+import { IJEventInfo, JEvent } from "jl-calendar";
 import { Ranking } from "../../JSportModule";
 import { globalFinishedRankingsMap } from "../globalFinishedRankingsMap";
 import { TGS } from "./Stage";

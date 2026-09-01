@@ -1,4 +1,4 @@
-import JCalendar from "../JCalendar/JCalendar";
+import { JCalendar } from "jl-calendar";
 import { IGenericRankItem, Ranking, TCC } from "../JSportModule";
 import { IElementInfo, IPhaseConfig, ITournamentConfig } from "../JSportModule/data";
 import { createGSG } from "../JSportModule/GeneralStageGraph/GSGCreators";

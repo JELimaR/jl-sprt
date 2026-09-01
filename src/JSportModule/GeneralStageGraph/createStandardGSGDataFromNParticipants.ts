@@ -1,4 +1,4 @@
-import { TypeHalfWeekOfYear } from "../../JCalendar"
+import { TypeHalfWeekOfYear } from "jl-calendar"
 import { ITournamentFromGSGData } from "./tournamentFromGSG"
 
 export function createStandardGSGDataFromNParticipants(N: number): ITournamentFromGSGData {

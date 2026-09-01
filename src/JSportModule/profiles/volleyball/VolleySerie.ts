@@ -5,7 +5,7 @@ import VolleyResultSerie from './VolleyResultSerie';
 import { IVolleyScore } from './VolleyScore';
 import Team from '../../data/Team';
 import { arr2, TypeBaseStageOption } from '../../data';
-import { TypeHalfWeekOfYear } from '../../../JCalendar/JDateTimeModule';
+import { TypeHalfWeekOfYear } from "jl-calendar";
 
 /**
  * Serie de volleyball.

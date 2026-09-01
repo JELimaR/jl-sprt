@@ -1,5 +1,5 @@
 
-import { TypeHalfWeekOfYear, TypeIntervalOfDay } from "../../JCalendar/JDateTimeModule";
+import { TypeHalfWeekOfYear, TypeIntervalOfDay } from "jl-calendar";
 import { arr2, TypeBaseStageOption, TypeDrawRulePlayoff } from "../data";
 import { Ranking } from "../Ranking";
 import { IStageNodeData, StageNode } from "./nodes";

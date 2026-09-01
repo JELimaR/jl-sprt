@@ -1,4 +1,4 @@
-import { IJEventInfo, JEvent } from "../../../../JCalendar/Event/JEvent";
+import { IJEventInfo, JEvent } from "jl-calendar";
 import Team from "../../../../JSportModule/data/Team";
 import SingleElmination from "./SingleElmination"
 

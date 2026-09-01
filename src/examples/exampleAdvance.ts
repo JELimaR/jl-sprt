@@ -1,10 +1,5 @@
-import { JEvent } from "../JCalendar/Event/JEvent";
-import JCalendar from "../JCalendar/JCalendar";
-import { JEventMatch } from "../JSportModule/Match/EventMatch";
+import { JCalendar, JEvent } from "jl-calendar";
 import mostrarFecha from "../mostrarFechaBorrar";
-import { Event_StageEnd } from "../Tournament/Stage/Event_StageEnd";
-import Event_RoundCreationAndTeamsDraw from "../Tournament/Stage/StagePlayoff/SingleElimination/Event_RoundCreationAndTeamsDraw";
-import { Event_ScheduleOfRoundMatches } from "../Tournament/Stage/StagePlayoff/SingleElimination/Event_ScheduleOfRoundMatches";
 
 const exampleAdvance = (cal: JCalendar) => {
   let idx: number = 0;

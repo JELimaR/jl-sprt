@@ -1,4 +1,4 @@
-import JCalendar from "../JCalendar/JCalendar";
+import { JCalendar } from "jl-calendar";
 import { IConfederationData, IFederationData, IInstitutionData, SportAPIController } from "../JSportModule";
 import SportServerAPI from "../JSportServerModule";
 import mostrarFecha from "../mostrarFechaBorrar";

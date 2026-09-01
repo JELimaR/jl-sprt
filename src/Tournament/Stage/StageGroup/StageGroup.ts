@@ -1,8 +1,7 @@
 import League from "./League/League";
 import Stage from "../Stage";
-import JCalendar from "../../../JCalendar/JCalendar";
+import { JCalendar, TypeHalfWeekOfYear } from "jl-calendar";
 import Bombo from "../Bombo";
-import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
 import { IElementInfo, ILeagueConfig, IRankItem, IStageGroupConfig, TypeDrawRulePlayoff, TypeTableMatchState } from "../../../JSportModule";
 import Team from "../../../JSportModule/data/Team";
 import { AnyTeamTableItem } from "../../../JSportModule/Ranking/A_TeamTableItem";

@@ -1,7 +1,6 @@
-import JCalendar from '../../../../JCalendar/JCalendar';
+import { JCalendar, TypeHalfWeekOfYear, JDateTime } from "jl-calendar";
 import SingleElmination from './SingleElmination';
 import { Event_ScheduleOfRoundMatches } from './Event_ScheduleOfRoundMatches';
-import { TypeHalfWeekOfYear, JDateTime } from '../../../../JCalendar/JDateTimeModule';
 import Team from '../../../../JSportModule/data/Team';
 import { A_Serie } from '../../../../JSportModule/Match/A_Serie';
 import { A_Match } from '../../../../JSportModule/Match/A_Match';

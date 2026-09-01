@@ -1,8 +1,7 @@
 import BaseStage from '../../BaseStage';
-import JCalendar from '../../../../JCalendar/JCalendar';
+import { JCalendar, JDateTime } from "jl-calendar";
 import { Round } from './Round';
 import Event_RoundCreationAndTeamsDraw from './Event_RoundCreationAndTeamsDraw';
-import { JDateTime } from '../../../../JCalendar/JDateTimeModule';
 import { IElementInfo, ISingleElminationConfig } from '../../../../JSportModule';
 import Team from '../../../../JSportModule/data/Team';
 import { AnyTeamTableItem } from '../../../../JSportModule/Ranking/A_TeamTableItem';

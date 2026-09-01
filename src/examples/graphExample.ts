@@ -3,7 +3,7 @@ import { TInitialCreator, TPhaseCreator, createGSG } from '../JSportModule/Gener
 import { getExampleRankItemsListOrdered, getFederationRankings, getInitialRankingExample, } from './graphData01';
 import { ITournamentFromGSGData, tournamentFromGSG } from '../JSportModule/GeneralStageGraph/tournamentFromGSG';
 import Tournament from '../Tournament/Tournament';
-import JCalendar from '../JCalendar/JCalendar';
+import { JCalendar } from "jl-calendar";
 import exampleAdvance from './exampleAdvance';
 import { globalFinishedRankingsMap } from '../Tournament/globalFinishedRankingsMap';
 import { Ranking } from '../JSportModule/Ranking';

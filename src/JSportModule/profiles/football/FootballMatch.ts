@@ -1,6 +1,6 @@
 
 import { A_Match } from '../../Match/A_Match';
-import { TypeHalfWeekOfYear } from '../../../JCalendar/JDateTimeModule';
+import { TypeHalfWeekOfYear } from "jl-calendar";
 import Team from '../../data/Team';
 import FootballMatchPlay from './FootballMatchPlay';
 import FootballResult from './FootballResult';

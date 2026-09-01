@@ -1,7 +1,6 @@
-import { IJEventInfo, JEvent } from "../../../../JCalendar/Event/JEvent";
+import { IJEventInfo, JEvent, JDateTime } from "jl-calendar";
 import { Turn } from "./Turn";
 import League from './League';
-import { JDateTime } from "../../../../JCalendar/JDateTimeModule";
 import { A_Match } from "../../../../JSportModule/Match/A_Match";
 import { JEventMatch } from "../../../../JSportModule/Match/EventMatch";
 

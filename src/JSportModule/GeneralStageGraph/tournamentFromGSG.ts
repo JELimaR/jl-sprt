@@ -1,5 +1,5 @@
 
-import { TypeHalfWeekOfYear } from "../../JCalendar/JDateTimeModule";
+import { TypeHalfWeekOfYear } from "jl-calendar";
 import { IPhaseConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, ITournamentConfig, TQualyCondition, verifyStageConfig, verifyTournamentConfig } from "../data";
 import { Ranking, IGenericRankItem } from "../Ranking";
 import { GeneralStageGraph, PhaseNode } from "./GeneralStageGraph";

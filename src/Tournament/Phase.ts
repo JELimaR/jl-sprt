@@ -1,5 +1,4 @@
-import JCalendar from "../JCalendar/JCalendar";
-import { TypeHalfWeekOfYear } from "../JCalendar/JDateTimeModule";
+import { JCalendar, TypeHalfWeekOfYear } from "jl-calendar";
 import { IElementInfo, IPhaseConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, TCC } from "../JSportModule";
 import { IGenericRankItem } from "../JSportModule";
 import { Ranking, TypeRanking } from "../JSportModule";

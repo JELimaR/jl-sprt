@@ -1,5 +1,5 @@
 
-import JCalendar from "../../JCalendar/JCalendar";
+import { JCalendar } from "jl-calendar";
 import { IBaseStageConfig, IElementInfo, TCC, TypeTableMatchState } from "../../JSportModule";
 import Team from "../../JSportModule/data/Team";
 import { A_Match } from "../../JSportModule/Match/A_Match";

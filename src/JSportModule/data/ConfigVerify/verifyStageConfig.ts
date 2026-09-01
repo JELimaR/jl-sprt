@@ -1,4 +1,4 @@
-import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
+import { TypeHalfWeekOfYear } from "jl-calendar";
 import { arr2, getStageGenericRank, getStageGenericSource, ILeagueConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, TQualyCondition } from "../../data";
 import { verifyBaseStageConfig } from "./verifyBaseStageConfig";
 

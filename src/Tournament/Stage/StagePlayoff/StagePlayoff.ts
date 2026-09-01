@@ -1,9 +1,8 @@
 
 import SingleElmination from "./SingleElimination/SingleElmination";
-import JCalendar from "../../../JCalendar/JCalendar";
+import { JCalendar, TypeHalfWeekOfYear } from "jl-calendar";
 import Bombo from "../Bombo";
 import Stage from "../Stage";
-import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
 import { arr2, IElementInfo, IRankItem, IStagePlayoffConfig, TypeDrawRulePlayoff, TypeTableMatchState } from "../../../JSportModule";
 import Team from "../../../JSportModule/data/Team";
 import { AnyTeamTableItem } from "../../../JSportModule/Ranking/A_TeamTableItem";

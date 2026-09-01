@@ -1,6 +1,5 @@
 
-import JCalendar from "../../JCalendar/JCalendar";
-import { JDateTime, TypeHalfWeekOfYear, TypeIntervalOfDay } from "../../JCalendar/JDateTimeModule";
+import { JCalendar, JDateTime, TypeHalfWeekOfYear, TypeIntervalOfDay } from "jl-calendar";
 import { IElementInfo, IRankItem, IStageConfig, Ranking, TCC, TQualyCondition, TypeTableMatchState } from "../../JSportModule";
 import { AnyTeamTableItem } from "../../JSportModule/Ranking/A_TeamTableItem";
 import Bombo from "./Bombo";

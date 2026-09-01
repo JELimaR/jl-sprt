@@ -1,4 +1,4 @@
-import { TypeHalfWeekOfYear } from "../../../JCalendar/JDateTimeModule";
+import { TypeHalfWeekOfYear } from "jl-calendar";
 import robinRoundSchedulingFunction from "../../../Tournament/Stage/StageGroup/League/RoundRobin"; // ojo con esta import
 import { arr2, IBaseStageConfig, ILeagueConfig, ISingleElminationConfig } from "../../data";
 

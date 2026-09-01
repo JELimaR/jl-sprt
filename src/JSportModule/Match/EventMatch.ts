@@ -1,4 +1,4 @@
-import { IJEventInfo, JEvent } from "../../JCalendar/Event/JEvent";
+import { IJEventInfo, JEvent } from "jl-calendar";
 import { A_Match } from "./A_Match";
 import { IVolleyScore } from "../profiles/volleyball/VolleyScore";
 

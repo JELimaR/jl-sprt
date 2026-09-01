@@ -1,8 +1,7 @@
-import { IJEventInfo, JEvent } from "../../../../JCalendar/Event/JEvent";
+import { IJEventInfo, JEvent, JDateTime, TypeHalfWeekOfYear } from "jl-calendar";
 import { Round } from "./Round";
 import SingleElmination from './SingleElmination';
 import { arr2 } from '../../../../JSportModule';
-import { JDateTime, TypeHalfWeekOfYear } from "../../../../JCalendar/JDateTimeModule";
 import { JEventMatch } from "../../../../JSportModule/Match/EventMatch";
 
 

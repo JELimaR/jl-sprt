@@ -1,6 +1,5 @@
 
-import JCalendar from "../JCalendar/JCalendar";
-import { JDateTime } from "../JCalendar/JDateTimeModule";
+import { JCalendar, JDateTime } from "jl-calendar";
 import mostrarFecha from "../mostrarFechaBorrar";
 
 export default function Example() {

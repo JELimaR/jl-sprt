@@ -1,5 +1,5 @@
 import { Town } from "..";
-import { JDate } from "../../../JCalendar";
+import { JDate } from "jl-calendar";
 import { TDC } from "../../patterns/templateDataCreator";
 import Team from "../Team";
 import { TypeCategory, TypeCategoryList } from "../types";

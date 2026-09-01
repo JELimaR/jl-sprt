@@ -3,7 +3,7 @@ import { IA_ResultInfo } from './A_Result';
 import { A_ResultSerie } from './A_ResultSerie';
 import { A_MatchPlay } from './A_MatchPlay';
 import { TMatchScore } from './scores';
-import { JDateTime, TypeHalfWeekOfYear } from '../../JCalendar/JDateTimeModule';
+import { JDateTime, TypeHalfWeekOfYear } from "jl-calendar";
 import Team from '../data/Team';
 
 export type TypeMatchState =

@@ -1,8 +1,6 @@
 
 import { getExampleTeams } from "./ExampleData";
-import { JEvent } from "../JCalendar/Event/JEvent";
-import JCalendar from "../JCalendar/JCalendar";
-import { IJDateTimeCreator, JDateTime } from "../JCalendar/JDateTimeModule";
+import { JEvent, JCalendar, IJDateTimeCreator, JDateTime } from "jl-calendar";
 import { IFederationData, IGenericRankItem, IRankItem, ITournamentConfig, Ranking, TypeRanking } from "../JSportModule";
 import Team from "../JSportModule/data/Team";
 import { GeneralStageGraph } from "../JSportModule/GeneralStageGraph/GeneralStageGraph";
