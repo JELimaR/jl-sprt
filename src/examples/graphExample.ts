@@ -5,7 +5,7 @@ import { ITournamentFromGSGData, tournamentFromGSG } from '../JSportModule/Gener
 import Tournament from '../Tournament/Tournament';
 import { JCalendar } from "jl-calendar";
 import exampleAdvance from './exampleAdvance';
-import { globalFinishedRankingsMap } from '../Tournament/globalFinishedRankingsMap';
+import { SimulationContext } from '../Tournament/SimulationContext';
 import { Ranking } from '../JSportModule/Ranking';
 import { renderGSGtoPNG } from '../JSportModule/GeneralStageGraph/renderGSGtoPNG';
 import { asignarTeams2 } from '../Tournament/asignarTeams2';
@@ -93,15 +93,16 @@ export default function graphExample() {
   console.log(tournamentFromGSGData)
 
   const cal = new JCalendar({ day: 1987 * 378, interv: 0 });
-  const tournament = Tournament.create({ id: 'dfki', season: 1988 }, tournamentFromGSGData, cal, new FootballProfile())
+  const ctx = new SimulationContext(cal);
+  const tournament = Tournament.create({ id: 'dfki', season: 1988 }, tournamentFromGSGData, ctx, new FootballProfile())
 
   /************************************************************************************************************************************ */
   console.log('-------------------------------------------------------------')
   const fedRankings = getFederationRankings(14);
-  fedRankings.forEach((franking: Ranking) => globalFinishedRankingsMap.set(franking.context, franking));
+  fedRankings.forEach((franking: Ranking) => ctx.store.set(franking.context, franking));
 
   // asignar teams
-  asignarTeams2(tournament)
+  asignarTeams2(tournament, ctx)
 
   // console.log(`
   //   *******************************************************************************************
@@ -109,11 +110,11 @@ export default function graphExample() {
   //                   LOS TOURNAMENTS
   //   *******************************************************************************************
   // `)
-  console.log('globalFinishedRankingsMap keys\n', globalFinishedRankingsMap.keys())
+  console.log('store keys\n', ctx.store.keys())
   // throw new Error(`stop`)
   exampleAdvance(cal)
-  console.log('globalFinishedRankingsMap keys\n', globalFinishedRankingsMap.keys())
-  globalFinishedRankingsMap.forEach((ranking: Ranking, key: string) => {
+  console.log('store keys\n', ctx.store.keys())
+  ctx.store.forEach((ranking: Ranking, key: string) => {
     if (key == 'ini_first_tournament') {
       console.log(key)
       console.table(rankingToTable(ranking))

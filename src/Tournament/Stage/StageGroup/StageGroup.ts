@@ -6,6 +6,7 @@ import { IElementInfo, ILeagueConfig, IRankItem, IStageGroupConfig, TypeDrawRule
 import Team from "../../../JSportModule/data/Team";
 import { AnyTeamTableItem } from "../../../JSportModule/Ranking/A_TeamTableItem";
 import { AnySportProfile } from "../../../JSportModule/profiles/ISportProfile";
+import { SimulationContext } from "../../SimulationContext";
 
 /**
  * Debe encargarse de la creacion y de la asignacion de los equipos a cada basestage
@@ -15,8 +16,8 @@ import { AnySportProfile } from "../../../JSportModule/profiles/ISportProfile";
 export default class StageGroup extends Stage<IElementInfo, IStageGroupConfig> {
   private _groups: League[] = [];
 
-  constructor(info: IElementInfo, config: IStageGroupConfig, calendar: JCalendar, sportProfile: AnySportProfile) {
-    super(info, config, calendar);
+  constructor(info: IElementInfo, config: IStageGroupConfig, ctx: SimulationContext, sportProfile: AnySportProfile) {
+    super(info, config, ctx);
 
     for (let i = 0; i < config.participantsPerGroup.length; i++) {
       const GInfo: IElementInfo = {

@@ -10,7 +10,7 @@ import { FootballProfile } from "../JSportModule/profiles/football/FootballProfi
 import SportServerAPI from "../JSportServerModule";
 import mostrarFecha from "../mostrarFechaBorrar";
 import { asignarTeams2 } from "../Tournament/asignarTeams2";
-import { globalFinishedRankingsMap } from "../Tournament/globalFinishedRankingsMap";
+import { SimulationContext } from "../Tournament/SimulationContext";
 import Tournament from "../Tournament/Tournament";
 import exampleAdvance from "./exampleAdvance";
 
@@ -89,14 +89,17 @@ export default function systemExample_01() {
 
 
   const ssapi = SportServerAPI();
-  const franking = federation.getRanking();
-  globalFinishedRankingsMap.set(franking.context, franking);
 
   const Y_END = 1164;
   for (let Y = 1158; Y <= Y_END; Y++) {
     console.log('-------------------------------', Y, '------------------------------------')
     const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, Y, 168).getIJDateTimeCreator());
+    const ctx = new SimulationContext(cal);
     mostrarFecha(cal.now)
+
+    // ranking de la federacion al inicio de la temporada
+    const franking = federation.getRanking();
+    ctx.store.set(franking.context, franking);
     // defino los configs
     let t1_data: ITournamentFromGSGData;
     let t2_data: ITournamentFromGSGData | undefined;
@@ -124,15 +127,15 @@ export default function systemExample_01() {
 
 
     // creo los tournaments y creo su ranking inicial
-    let t1 = Tournament.create({ id: 'L1', season: Y }, t1_data, cal, new FootballProfile())
+    let t1 = Tournament.create({ id: 'L1', season: Y }, t1_data, ctx, new FootballProfile())
     console.log(t1.config)
     let t2: Tournament | undefined;
     // asignarTeams(gsg_1)
-    asignarTeams2(t1)
+    asignarTeams2(t1, ctx)
     if (t2_data) {
-      t2 = Tournament.create({ id: 'L2', season: Y }, t2_data, cal, new FootballProfile())
+      t2 = Tournament.create({ id: 'L2', season: Y }, t2_data, ctx, new FootballProfile())
       console.log(t2.config)
-      asignarTeams2(t2)
+      asignarTeams2(t2, ctx)
     }
 
     // avance
@@ -154,7 +157,7 @@ export default function systemExample_01() {
       })
     }
 
-    globalFinishedRankingsMap.forEach((value: Ranking, key: string) => {
+    ctx.store.forEach((value: Ranking, key: string) => {
       console.log(key, value.size)
     })
     // actualizar ranking
@@ -183,13 +186,7 @@ export default function systemExample_01() {
       })
       console.log(federation)
     }
-    globalFinishedRankingsMap.clear()
-
-    let f01_ranking = federation.getRanking()
-    globalFinishedRankingsMap.set(f01_ranking.context, f01_ranking)
-    globalFinishedRankingsMap.forEach((value: Ranking, key: string) => {
-      console.log(key, value.size)
-    })
+    // El store es por-temporada (ctx nuevo cada año), no hace falta clear() manual.
   }
 
   console.log('La federation fue creada en:')

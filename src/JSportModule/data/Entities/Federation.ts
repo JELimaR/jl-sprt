@@ -1,5 +1,5 @@
 import { IDivisionCondition } from "./LeagueSystem";
-import { globalFinishedRankingsMap } from "../../../Tournament/globalFinishedRankingsMap";
+import { RankingStore } from "../../Ranking/RankingStore";
 import { ITournamentFromGSGData } from "../../GeneralStageGraph/tournamentFromGSG";
 import { IGenericRankItem, IRankingMetadata, IRankItem, Ranking } from "../../Ranking";
 import Team from "../Team";
@@ -267,30 +267,32 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
   // Se actualizan los rankings por categoria de la federation al final de temporada
   /**
    * Actualiza los rankings de todas las categorías al final de la temporada,
-   * usando los rankings finales de los torneos almacenados en globalFinishedRankingsMap.
+   * usando los rankings finales de los torneos almacenados en el store de rankings.
+   * @param store store de rankings finalizados de la simulación
    */
-  updateRankings() {
+  updateRankings(store: RankingStore) {
     CATEGORIES.forEach((cat: TypeCategory) => {
-      this.updateRankingsPerCategory(cat)
+      this.updateRankingsPerCategory(store, cat)
     })
   }
   /**
    * Actualiza el ranking de una categoría específica al final de la temporada,
    * reasignando equipos según ascensos y descensos definidos en las divisiones.
+   * @param store store de rankings finalizados de la simulación
    * @param category Categoría deportiva
    */
-  private updateRankingsPerCategory(category: TypeCategory) {
+  private updateRankingsPerCategory(store: RankingStore, category: TypeCategory) {
     const ls = this.info.leagueSystem[category];
     const teamListCategory = this.getRankList(category)
     let pos = 0
     if (!!ls) {
       ls.getDivisionConfigList().forEach((idc: IDivisionConfig) => {
-        const trank = globalFinishedRankingsMap.get(`tr_${this.getDivTourId(category, idc.level)}`)
+        const trank = store.get(`tr_${this.getDivTourId(category, idc.level)}`)
         const p = idc.condition.p
         const r = idc.condition.r
         // Si no existe el rank es porque no terminó el tournament
         if (!trank) {
-          console.log('keys', globalFinishedRankingsMap.keys())
+          console.log('keys', store.keys())
           throw new Error(`No se debe actualizar hasta el final de temporada
           En Federation.updateRankingsPerCategory`)
         }

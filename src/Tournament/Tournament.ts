@@ -5,6 +5,7 @@ import { createGSG } from "../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
 import { AnySportProfile } from "../JSportModule/profiles/ISportProfile";
 import Phase from "./Phase";
+import { SimulationContext } from "./SimulationContext";
 import { TGS } from "./Stage/Stage";
 
 export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
@@ -15,7 +16,7 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
 
   private _sportProfile: AnySportProfile;
 
-  private constructor(info: IElementInfo, config: ITournamentConfig, cal: JCalendar, sportProfile: AnySportProfile) {
+  private constructor(info: IElementInfo, config: ITournamentConfig, ctx: SimulationContext, sportProfile: AnySportProfile) {
     super(info, config);
     this._sportProfile = sportProfile;
     // this._qualyGenericRankItemList = qualyGenericRankItemList;
@@ -31,7 +32,7 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
       }
       // let previusPhasesConfigArr = [...previusPhasesAgregate];
       // const previusPhaseConfig = i >= 1 ? config.phases[i - 1] : undefined;
-      const phase = new Phase(ipi, ipc, cal, sportProfile);
+      const phase = new Phase(ipi, ipc, ctx, sportProfile);
       this._phases.push(phase);
 
       // previusPhasesAgregate.push(config.phases[i]);
@@ -91,9 +92,9 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
   }
 
   //
-  static create(info: IElementInfo, creator: ITournamentFromGSGData, cal: JCalendar, sportProfile: AnySportProfile): Tournament {
+  static create(info: IElementInfo, creator: ITournamentFromGSGData, ctx: SimulationContext, sportProfile: AnySportProfile): Tournament {
     const config = tournamentFromGSG(creator)
-    const t = new Tournament(info, config, cal, sportProfile)
+    const t = new Tournament(info, config, ctx, sportProfile)
     t._fromGSGData = creator;
     return t;
   }

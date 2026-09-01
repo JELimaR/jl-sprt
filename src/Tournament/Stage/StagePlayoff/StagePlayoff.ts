@@ -7,6 +7,7 @@ import { arr2, IElementInfo, IRankItem, IStagePlayoffConfig, TypeDrawRulePlayoff
 import Team from "../../../JSportModule/data/Team";
 import { AnyTeamTableItem } from "../../../JSportModule/Ranking/A_TeamTableItem";
 import { AnySportProfile } from "../../../JSportModule/profiles/ISportProfile";
+import { SimulationContext } from "../../SimulationContext";
 
 
 /**
@@ -18,8 +19,8 @@ export default class StagePlayoff extends Stage<IElementInfo, IStagePlayoffConfi
 
   private _playoff: SingleElmination;
 
-  constructor(info: IElementInfo, config: IStagePlayoffConfig, calendar: JCalendar, sportProfile: AnySportProfile) {
-    super(info, config, calendar);
+  constructor(info: IElementInfo, config: IStagePlayoffConfig, ctx: SimulationContext, sportProfile: AnySportProfile) {
+    super(info, config, ctx);
 
     const SEInfo: IElementInfo = {
       id: `${info.id}_SE`,

@@ -1,7 +1,7 @@
 import { JCalendar, JDateTime } from "jl-calendar";
 import { getExampleTeams } from "./ExampleData";
 import mostrarFecha from "../mostrarFechaBorrar";
-import { globalFinishedRankingsMap } from "../Tournament/globalFinishedRankingsMap";
+import { SimulationContext } from "../Tournament/SimulationContext";
 import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
 import exampleAdvance from "./exampleAdvance";
 import { IStageGroupConfig } from "../JSportModule";
@@ -14,14 +14,16 @@ const selection = getExampleTeams(150, 'Team');
 
 export default function stageLeagueExample() {
 
+  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getIJDateTimeCreator());
+  const ctx = new SimulationContext(cal);
+
   const rankItemArr: IRankItem[] = selection.map((t: Team, i: number) => { return { pos: i + 1, team: t, origin: 'rankingInicial' } });
   const ranking: Ranking = Ranking.fromRankItemArr('rankingInicial', rankItemArr);
-  globalFinishedRankingsMap.set(ranking.context, ranking);
+  ctx.store.set(ranking.context, ranking);
 
-  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getIJDateTimeCreator());
   mostrarFecha(cal.now)
 
-  const SG = new StageGroup({id: 'League', season: 1987}, stageLeagueconfig, cal, new FootballProfile());
+  const SG = new StageGroup({id: 'League', season: 1987}, stageLeagueconfig, ctx, new FootballProfile());
   
   exampleAdvance(cal)
   
@@ -34,7 +36,7 @@ export default function stageLeagueExample() {
     return l.teamsArr.map((t => t.id))
   }))
 
-  globalFinishedRankingsMap.forEach((ranking: Ranking, key: string) => {
+  ctx.store.forEach((ranking: Ranking, key: string) => {
     if (key !== 'rankingInicial') {
       console.table(ranking.getRankTable().map((e: IRankItem) => { return { ...e, team: e.team.id } }));
     }

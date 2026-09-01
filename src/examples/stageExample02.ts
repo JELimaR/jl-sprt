@@ -5,7 +5,7 @@ import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
 import mostrarFecha from "../mostrarFechaBorrar";
 import exampleAdvance from "./exampleAdvance";
 import stageExampleData from "./stageExampleData";
-import { globalFinishedRankingsMap } from "../Tournament/globalFinishedRankingsMap";
+import { SimulationContext } from "../Tournament/SimulationContext";
 import Team from "../JSportModule/data/Team";
 import { IRankItem, TypeRanking, Ranking } from "../JSportModule";
 import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
@@ -18,15 +18,17 @@ const selection = getExampleTeams(150, 'Team');
 
 export default function stageExample02() {
 
+  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getIJDateTimeCreator());
+  const ctx = new SimulationContext(cal);
+
   const rankItemArr: IRankItem[] = selection.map((t: Team, i: number) => { return { pos: i + 1, team: t, origin: 'rankingInicial' } });
   const ranking: TypeRanking = { context: 'rankingInicial', items: rankItemArr, teams: rankItemArr.map(e => e.team) }
-  globalFinishedRankingsMap.set(ranking.context, Ranking.fromTypeRanking(ranking));
+  ctx.store.set(ranking.context, Ranking.fromTypeRanking(ranking));
 
-  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getIJDateTimeCreator());
   mostrarFecha(cal.now)
 
-  const SE3 = new StageGroup(s3.info, s3.config, cal, new FootballProfile());
-  const SE4 = new StageGroup(s4.info, s4.config, cal, new FootballProfile());
+  const SE3 = new StageGroup(s3.info, s3.config, ctx, new FootballProfile());
+  const SE4 = new StageGroup(s4.info, s4.config, ctx, new FootballProfile());
   
   exampleAdvance(cal)
   // console.log(cal.events[cal.events.length-1])
@@ -43,7 +45,7 @@ export default function stageExample02() {
     return l.teamsArr.map((t => t.id))
   }))
 
-  globalFinishedRankingsMap.forEach((ranking: Ranking, key: string) => {
+  ctx.store.forEach((ranking: Ranking, key: string) => {
     if (key !== 'rankingInicial') {
       console.table(ranking.getRankTable().map((e: IRankItem) => {return {...e, team: e.team.id}}));
     }

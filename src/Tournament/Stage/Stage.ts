@@ -2,6 +2,7 @@
 import { JCalendar, JDateTime, TypeHalfWeekOfYear, TypeIntervalOfDay } from "jl-calendar";
 import { IElementInfo, IRankItem, IStageConfig, Ranking, TCC, TQualyCondition, TypeTableMatchState } from "../../JSportModule";
 import { AnyTeamTableItem } from "../../JSportModule/Ranking/A_TeamTableItem";
+import { SimulationContext } from "../SimulationContext";
 import Bombo from "./Bombo";
 import { Event_StageEnd } from "./Event_StageEnd";
 import { Event_StageStart } from "./Event_StageStart";
@@ -13,8 +14,12 @@ export type TGS = Stage<IElementInfo, IStageConfig>;
  */
 export default abstract class Stage<I extends IElementInfo, C extends IStageConfig> extends TCC<I, C> {
 
-  constructor(info: I, config: C, calendar: JCalendar) {
+  protected _ctx: SimulationContext;
+
+  constructor(info: I, config: C, ctx: SimulationContext) {
     super(info, config);
+    this._ctx = ctx;
+    const calendar = ctx.calendar;
 
     /********************************************************************************************************************************************************************************************
      * Verificaciones 
@@ -77,18 +82,22 @@ export default abstract class Stage<I extends IElementInfo, C extends IStageConf
     const startEvent = new Event_StageStart({
       calendar: calendar,
       dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.hwStart, info.season, 'start').getIJDateTimeCreator(),
-      stage: this
+      stage: this,
+      store: ctx.store,
     })
 
     const endEvent = new Event_StageEnd({
       calendar: calendar,
       dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.hwEnd, info.season, 'end', 299).getIJDateTimeCreator(),
-      stage: this
+      stage: this,
+      store: ctx.store,
     })
 
     calendar.addEvent(startEvent);
     calendar.addEvent(endEvent);
   }
+
+  get ctx(): SimulationContext { return this._ctx; }
 
   abstract get isFinished(): boolean;
 

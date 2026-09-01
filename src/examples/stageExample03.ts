@@ -3,7 +3,7 @@ import { getExampleTeams } from "./ExampleData";
 import mostrarFecha from "../mostrarFechaBorrar";
 import exampleAdvance from "./exampleAdvance";
 import stageExampleData from "./stageExampleData";
-import { globalFinishedRankingsMap } from "../Tournament/globalFinishedRankingsMap";
+import { SimulationContext } from "../Tournament/SimulationContext";
 import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
 import { TGS } from "../Tournament/Stage/Stage";
 import StagePlayoff from "../Tournament/Stage/StagePlayoff/StagePlayoff";
@@ -21,18 +21,20 @@ const stages: TGS[] = [];
 
 export default function stageExample03() {
 
+  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getIJDateTimeCreator());
+  const ctx = new SimulationContext(cal);
+
   const rankItemArr: IRankItem[] = selection.map((t: Team, i: number) => { return { pos: i + 1, team: t, origin: 'rankingInicial' } });
   const ranking: Ranking = Ranking.fromRankItemArr('rankingInicial', rankItemArr);
-  globalFinishedRankingsMap.set(ranking.context, ranking);
+  ctx.store.set(ranking.context, ranking);
 
-  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getIJDateTimeCreator());
   mostrarFecha(cal.now)
 
-  // const SE1 = new StagePlayoff(s1.info, s1.config, cal);
-  const SE1 = create(s1.info, s1.config, cal);
+  // const SE1 = new StagePlayoff(s1.info, s1.config, ctx);
+  const SE1 = create(s1.info, s1.config, ctx);
   stages.push(SE1);
 
-  const SE3 = create(s3.info, s3.config, cal);
+  const SE3 = create(s3.info, s3.config, ctx);
   stages.push(SE3);
 
   exampleAdvance(cal)
@@ -46,7 +48,7 @@ export default function stageExample03() {
   })
 
 
-  globalFinishedRankingsMap.forEach((ranking: Ranking, key: string) => {
+  ctx.store.forEach((ranking: Ranking, key: string) => {
     if (key !== 'rankingInicial') {
       console.table(ranking.getRankTable().map((e: IRankItem) => { return { ...e, team: e.team.id } }));
     }
@@ -56,14 +58,14 @@ export default function stageExample03() {
 
 }
 
-function create(info: IElementInfo, config: IStageConfig, cal: JCalendar): TGS {
+function create(info: IElementInfo, config: IStageConfig, ctx: SimulationContext): TGS {
   // throw new Error(`sdfg  dsfg dfsg dsfg`)
   if (config.type == 'group') {
     const sconfig = config as IStageGroupConfig;
-    return new StageGroup(info, sconfig, cal, new FootballProfile());
+    return new StageGroup(info, sconfig, ctx, new FootballProfile());
   } else if (config.type == 'playoff') {
     const sconfig = config as IStagePlayoffConfig;
-    return new StagePlayoff(info, sconfig, cal, new FootballProfile());
+    return new StagePlayoff(info, sconfig, ctx, new FootballProfile());
   } else {
     throw new Error(`not implemented. (en StageConstructor)`)
   }

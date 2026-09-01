@@ -3,7 +3,7 @@ import { IElementInfo, IPhaseConfig, IStageConfig, IStageGroupConfig, IStagePlay
 import { IGenericRankItem } from "../JSportModule";
 import { Ranking, TypeRanking } from "../JSportModule";
 import { AnySportProfile } from "../JSportModule/profiles/ISportProfile";
-import { globalFinishedRankingsMap } from "./globalFinishedRankingsMap";
+import { SimulationContext } from "./SimulationContext";
 import StageGroup from "./Stage/StageGroup/StageGroup";
 import StagePlayoff from "./Stage/StagePlayoff/StagePlayoff";
 import { TGS } from "./Stage/Stage";
@@ -11,11 +11,13 @@ import { TGS } from "./Stage/Stage";
 export default class Phase extends TCC<IElementInfo, IPhaseConfig> { // esto es SortedStagesPhase
 
   private _parallelStages: TGS[] = [];
+  private _ctx: SimulationContext;
 
-  constructor(info: IElementInfo, config: IPhaseConfig, cal: JCalendar, sportProfile: AnySportProfile) {
+  constructor(info: IElementInfo, config: IPhaseConfig, ctx: SimulationContext, sportProfile: AnySportProfile) {
     super(info, config)
+    this._ctx = ctx;
     config.stages.forEach((stageConfig: IStageConfig, i: number) => {
-      const stage = createStage({ id: `${info.id}_s${i + 1}`, season: info.season }, stageConfig, cal, sportProfile);
+      const stage = createStage({ id: `${info.id}_s${i + 1}`, season: info.season }, stageConfig, ctx, sportProfile);
       this._parallelStages.push(stage);
     })
   }
@@ -41,9 +43,9 @@ export default class Phase extends TCC<IElementInfo, IPhaseConfig> { // esto es 
     this.config.rankItemList.forEach((item: IGenericRankItem, idx: number) => {
       // console.log(item);
 
-      const sourceRanking = globalFinishedRankingsMap.get(item.origin);
+      const sourceRanking = this._ctx.store.get(item.origin);
       if (!sourceRanking) {
-        console.log(globalFinishedRankingsMap.keys())
+        console.log(this._ctx.store.keys())
         console.log(item.origin)
         throw new Error(`No hay sourceRanking
         En Phase.getRelativeRank`);
@@ -58,13 +60,13 @@ export default class Phase extends TCC<IElementInfo, IPhaseConfig> { // esto es 
 }
 
 
-function createStage(info: IElementInfo, config: IStageConfig, cal: JCalendar, sportProfile: AnySportProfile): TGS {
+function createStage(info: IElementInfo, config: IStageConfig, ctx: SimulationContext, sportProfile: AnySportProfile): TGS {
   if (config.type == 'group') {
     const sconfig = config as IStageGroupConfig;
-    return new StageGroup(info, sconfig, cal, sportProfile);
+    return new StageGroup(info, sconfig, ctx, sportProfile);
   } else if (config.type == 'playoff') {
     const sconfig = config as IStagePlayoffConfig;
-    return new StagePlayoff(info, sconfig, cal, sportProfile);
+    return new StagePlayoff(info, sconfig, ctx, sportProfile);
   } else {
     throw new Error(`not implemented. (en StageConstructor)`)
   }

@@ -9,7 +9,7 @@ import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/Gener
 import mostrarFecha from "../mostrarFechaBorrar";
 import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
 import { asignarTeams2 } from "../Tournament/asignarTeams2";
-import { globalFinishedRankingsMap } from "../Tournament/globalFinishedRankingsMap";
+import { SimulationContext } from "../Tournament/SimulationContext";
 import Tournament from "../Tournament/Tournament";
 import exampleAdvance from "./exampleAdvance";
 import { getFederationCreators, getInstitutionCreators } from "./ExampleData";
@@ -57,6 +57,7 @@ export default function fede_inst_Example() {
   for (let Y = 1154; Y <= 1166; Y++) {
     console.log('-------------------------------', Y, '------------------------------------')
     cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, Y, 168).getIJDateTimeCreator());
+    const ctx = new SimulationContext(cal);
     mostrarFecha(cal.now)
     // actualizo la cantidad institutions
     // nuevas institutions asociadas a una federation
@@ -77,7 +78,7 @@ export default function fede_inst_Example() {
 
     // genero los nuevos rankings
     const franking: Ranking = federation.getRanking('S')
-    globalFinishedRankingsMap.set(franking.context, franking)
+    ctx.store.set(franking.context, franking)
 
     // actualizo los ls de la federation SOLO si hay equipos en la categoría
     const lsList = federationFileLS.get(Y)
@@ -100,8 +101,8 @@ export default function fede_inst_Example() {
     // creo los tournaments de federations
     const tournamentList: Tournament[] = []
     federation.createTournamentList().forEach((tournamentFromGSG: ITournamentFromGSGData, i: number) => {
-      const t = Tournament.create({ id: tournamentFromGSG.name, season: Y }, tournamentFromGSG, cal, new FootballProfile())
-      asignarTeams2(t)
+      const t = Tournament.create({ id: tournamentFromGSG.name, season: Y }, tournamentFromGSG, ctx, new FootballProfile())
+      asignarTeams2(t, ctx)
       tournamentList.push(t)
     })
 
@@ -109,7 +110,7 @@ export default function fede_inst_Example() {
 
     // muestro y grabo
     tournamentList.forEach((t) => {
-      globalFinishedRankingsMap.set(t.getRelativeRank().context, t.getRelativeRank())
+      ctx.store.set(t.getRelativeRank().context, t.getRelativeRank())
       console.log('------------------------------------------------------------------------------')
       console.log(t.info.id, t.info.season)
       console.table(t.getRelativeRank().getRankTable().map(iri => { return { ...iri, team: iri.team.id } }))
@@ -121,7 +122,7 @@ export default function fede_inst_Example() {
     })
 
     // actualizacion de ranking
-    federation.updateRankings()
+    federation.updateRankings(ctx.store)
   }
 
   const lsArr: LeagueSystem[] = []

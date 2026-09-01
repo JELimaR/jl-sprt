@@ -1,15 +1,16 @@
 
 import { Ranking, IGenericRankItem, TypeRanking } from "../JSportModule";
 import Team from "../JSportModule/data/Team";
-import { globalFinishedRankingsMap } from "./globalFinishedRankingsMap";
+import { SimulationContext } from "./SimulationContext";
 import Tournament from "./Tournament";
 
 /**
  * MOEVER ESTA FUNCION
- * @param tournament 
+ * @param tournament
+ * @param ctx contexto de simulación (provee el store de rankings)
  */
 
-export const asignarTeams2 = (tournament: Tournament) => {
+export const asignarTeams2 = (tournament: Tournament, ctx: SimulationContext) => {
   const items: IGenericRankItem[] = [];
   const teams: Team[] = [];
   const gsg = tournament.graph;
@@ -18,12 +19,11 @@ export const asignarTeams2 = (tournament: Tournament) => {
   iniRankings.forEach(v => v.getGenericRankItems().forEach(it => items.push(it)))
   console.log('iniRankings', iniRankings.map(v => v.getGenericRankItems()))
   console.log(items)
-  let currIdx = 0;
-  
+
   tournament.qualyGenericRankItemList.forEach((igri: IGenericRankItem) => {
-    const sourceRanking = globalFinishedRankingsMap.get(igri.origin);
+    const sourceRanking = ctx.store.get(igri.origin);
     if (!sourceRanking) {
-      console.log(globalFinishedRankingsMap.keys())
+      console.log(ctx.store.keys())
       console.log(igri.origin)
       throw new Error(``);
     }
@@ -85,6 +85,5 @@ export const asignarTeams2 = (tournament: Tournament) => {
   });
   // console.log(out.getInterface())
   // throw new Error(`stop`)
-  // globalFinishedRankingsMap.set(iniRankings[0].context, Ranking.fromTypeRanking(ini_ttiidd_ranking));
-  globalFinishedRankingsMap.set(out.context, out)
+  ctx.store.set(out.context, out)
 }

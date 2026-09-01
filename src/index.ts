@@ -17,7 +17,8 @@ export { RankingStore } from './JSportModule/Ranking/RankingStore';
 // Tournament
 export { default as Tournament } from './Tournament/Tournament';
 export { default as Phase } from './Tournament/Phase';
-export { globalFinishedRankingsMap } from './Tournament/globalFinishedRankingsMap';
+export { SimulationContext, createSimulationContext } from './Tournament/SimulationContext';
+export { asignarTeams2 } from './Tournament/asignarTeams2';
 
 // Sport Profiles
 export type { ISportProfile, AnySportProfile, IMatchCreationInfo, ISerieCreationInfo } from './JSportModule/profiles/ISportProfile';
@@ -104,7 +105,7 @@ function runExamples() {
   stageLeagueExample();
   specialStageGroupExample();
   stageExample03();
-  // graphExample();
+  graphExample();
   systemExample_01();
   fede_inst_Example();
   APIExample();

@@ -1,11 +1,11 @@
-import { isSetIterator } from "util/types";
 import { IJEventInfo, JEvent } from "jl-calendar";
 import { IRankItem } from "../../JSportModule";
-import { globalFinishedRankingsMap } from "../globalFinishedRankingsMap";
+import { RankingStore } from "../../JSportModule/Ranking/RankingStore";
 import { TGS } from "./Stage";
 
 export interface IEvent_StageStartInfo extends IJEventInfo {
 	stage: TGS;
+	store: RankingStore;
 }
 
 /**
@@ -13,13 +13,11 @@ export interface IEvent_StageStartInfo extends IJEventInfo {
  */
 export class Event_StageStart extends JEvent {
   private _stage: TGS;
+  private _store: RankingStore;
   constructor(ie_ssi: IEvent_StageStartInfo) {
-    try {
-      super(ie_ssi);
-      this._stage = ie_ssi.stage;
-    } catch (error) {
-      throw error
-    }
+    super(ie_ssi);
+    this._stage = ie_ssi.stage;
+    this._store = ie_ssi.store;
   }
 
   execute() {
@@ -35,10 +33,10 @@ export class Event_StageStart extends JEvent {
   getParticipants() {
     const rankTable: IRankItem[] = [];
     this._stage.config.qualifyConditions.forEach(qc => {
-      const ranking = globalFinishedRankingsMap.get(qc.rankId);
+      const ranking = this._store.get(qc.rankId);
 
       if (!ranking) {
-        console.log(`rankings`, globalFinishedRankingsMap.keys())
+        console.log(`rankings`, this._store.keys())
         throw new Error(`No existe ranking: ${qc.rankId}`)
       }
       if (ranking.size < qc.maxRankPos) {throw new Error(`El ranking es ${ranking.size} y se nesecitan ${qc.maxRankPos}`)}
@@ -54,7 +52,7 @@ export class Event_StageStart extends JEvent {
 
       this._stage.config.qualifyConditions.forEach(qc => {
         console.log(qc)
-        const ranking = globalFinishedRankingsMap.get(qc.rankId);
+        const ranking = this._store.get(qc.rankId);
         // console.log(ranking?.getRankTable().map(e => { return {...e, team: e.team.id}}))
         console.log(ranking?.getGenericRankItems())
 
