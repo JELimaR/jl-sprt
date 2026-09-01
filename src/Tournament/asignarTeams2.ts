@@ -17,15 +17,26 @@ export const asignarTeams2 = (tournament: Tournament, ctx: SimulationContext) =>
   // asignar teams
   const iniRankings = gsg.getInitialRankings()
   iniRankings.forEach(v => v.getGenericRankItems().forEach(it => items.push(it)))
-  console.log('iniRankings', iniRankings.map(v => v.getGenericRankItems()))
-  console.log(items)
 
   tournament.qualyGenericRankItemList.forEach((igri: IGenericRankItem) => {
     const sourceRanking = ctx.store.get(igri.origin);
     if (!sourceRanking) {
-      console.log(ctx.store.keys())
-      console.log(igri.origin)
-      throw new Error(``);
+      // Falla F1 (ver docs/plans/RUNTIME_VALIDATIONS.md): el origen del qualyRankList
+      // no existe en el store al momento de asignar. Típicamente es un `rs_<stageId>`
+      // o `tr_<tournamentId>` de un stage/torneo que aún no se simuló (dependencia
+      // temporal diferida). Antes esto lanzaba un Error vacío sin diagnóstico.
+      const available = Array.from(ctx.store.keys()).sort();
+      throw new Error(
+        `asignarTeams2: no se puede resolver el origen "${igri.origin}" (pos ${igri.pos}) ` +
+        `del torneo "${tournament.config.idConfig}". Ese ranking no está en el store al ` +
+        `momento de asignar los equipos.\n` +
+        (igri.origin.startsWith('rs_') || igri.origin.startsWith('tr_')
+          ? `Es un origen diferido (${igri.origin.slice(0, 3)}): el stage/torneo que lo ` +
+            `produce debe construirse y simularse ANTES que "${tournament.config.idConfig}". ` +
+            `Ver la dependencia temporal en docs/plans/RUNTIME_VALIDATIONS.md.\n`
+          : '') +
+        `Contextos disponibles en el store: [${available.join(', ')}]`
+      );
     }
 
     const team = sourceRanking.getFromPosition(igri.pos).team;

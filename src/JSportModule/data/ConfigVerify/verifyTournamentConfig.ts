@@ -37,6 +37,21 @@ export function verifyTournamentConfig(config: ITournamentConfig): boolean {
             La stage ${stageConfig.idConfig} necesita que hayan al menos ${tq.maxRankPos} elementos en su source: ${sourceStage.idConfig}.
             En la stage ${sourceStage.idConfig} solo genera/participan ${getStageGenericRank(sourceStage).length} en total.`)
         }
+
+        // Orden temporal fuente -> consumidor (evita F2/F6, ver docs/plans/RUNTIME_VALIDATIONS.md):
+        // el stage que PRODUCE el ranking (`rs_<sourceStage>`) debe TERMINAR antes de que
+        // ARRANQUE el stage que lo consume. Si no, cuando se dispare Event_StageStart del
+        // consumidor, `rs_<sourceStage>` todavía no fue escrito por Event_StageEnd y lanza
+        // "No existe ranking". La verificación de fases ya cubre el orden entre fases, pero
+        // esto ata el hwEnd concreto de la fuente al hwStart concreto del consumidor.
+        if (tq.rankId.startsWith('rs_') && sourceStage.hwEnd >= stageConfig.hwStart) {
+          throw new Error(
+            `La stage ${stageConfig.idConfig} (hwStart=${stageConfig.hwStart}) consume el ` +
+            `ranking de ${sourceStage.idConfig}, pero esa fuente termina en hwEnd=${sourceStage.hwEnd}, ` +
+            `que NO es anterior al inicio del consumidor. La fuente debe terminar antes de que ` +
+            `arranque el stage que la consume. (verifyTournamentConfig)`
+          )
+        }
       }
     })
 
