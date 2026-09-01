@@ -18,6 +18,7 @@ export { RankingStore } from './JSportModule/Ranking/RankingStore';
 export { default as Tournament } from './Tournament/Tournament';
 export { default as Phase } from './Tournament/Phase';
 export { SimulationContext, createSimulationContext } from './Tournament/SimulationContext';
+export { TournamentConfigStore } from './Tournament/TournamentConfigStore';
 export { asignarTeams2 } from './Tournament/asignarTeams2';
 
 // Sport Profiles
@@ -92,6 +93,7 @@ import stageExample02 from './examples/stageExample02';
 import stageExample03 from './examples/stageExample03';
 import stageLeagueExample from './examples/stageLeagueExample';
 import systemExample_01 from './examples/systemExample_01';
+import confederationExample from './examples/confederationExample';
 
 /**
  * Ejecuta un ejemplo específico.
@@ -108,6 +110,7 @@ function runExamples() {
   graphExample();
   systemExample_01();
   fede_inst_Example();
+  confederationExample();
   APIExample();
 }
 

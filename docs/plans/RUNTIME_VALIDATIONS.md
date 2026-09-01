@@ -260,12 +260,30 @@ desbloquea los torneos acoplados descritos en `COUPLED_TOURNAMENTS.md`.
   valida ahora que, para cada `qualifyConditions.rankId` de tipo `rs_<stageX>` cuyo
   productor esté dentro del mismo torneo, `sourceStage.hwEnd < consumingStage.hwStart`.
   Evita F2/F6 dentro de un torneo. (`.../ConfigVerify/verifyTournamentConfig.ts`.)
+- **§7 registro de configs** — `TournamentConfigStore` (análogo al `RankingStore`)
+  integrado en `SimulationContext.tournaments`; cada torneo se registra en
+  `Tournament.create`. (`src/Tournament/TournamentConfigStore.ts`.)
+- **Fase A — validación cross-tournament** — `verifyCoupledTournaments` +
+  `resolveTournamentBuildOrder` (ver detalle abajo).
 
-Ambos cambios pasan `tsc --noEmit` limpio y la suite completa (88/88).
+Todos los cambios pasan `tsc --noEmit` limpio y la suite completa en verde.
 
-### Pendiente — Fase A: DAG de dependencias entre torneos (validación)
+### Implementado — Fase A: DAG de dependencias entre torneos (validación)
 
-Objetivo: detectar en construcción (no en runtime) los problemas cross-tournament.
+> **Estado: hecho.** `verifyCoupledTournaments(configs)` y `resolveTournamentBuildOrder(configs)`
+> en `src/JSportModule/data/ConfigVerify/verifyCoupledTournaments.ts`. Reciben el conjunto
+> de `ITournamentConfig[]`; arman el índice `stageId -> torneo` y `tournamentId -> torneo`,
+> extraen las dependencias cross-tournament de las `qualifyConditions` (fuentes `rs_`/`tr_`
+> de OTRO torneo del conjunto), construyen el DAG, detectan ciclos (DFS con colores,
+> reportando la ruta), derivan el orden topológico (productores primero) y validan la
+> alineación temporal (la fuente debe estar disponible antes de que arranque el stage
+> consumidor). Tests: `.../ConfigVerify/__tests__/verifyCoupledTournaments.test.ts` (9).
+> Nota: la extracción de dependencias se hace desde las `qualifyConditions` de las stages
+> (que es donde el GSG expresa una entrada `rs_<otroTorneo>`), no desde el `qualyRankList`
+> del InitialNode; el registro (§7) alimenta esto en runtime, pero la función también acepta
+> una lista suelta de configs.
+
+Objetivo (original): detectar en construcción (no en runtime) los problemas cross-tournament.
 
 > **De dónde salen las stages "del otro torneo" (importante).** La validación
 > intra-torneo ya implementada (`verifyTournamentConfig`) resuelve `sourceStage` con
@@ -334,9 +352,27 @@ detrás de la Fase A y con tests de integración dedicados.
 
 ### Pendiente — Fase C: reglas semánticas (confederación)
 
-Más adelante y probablemente en el ámbito de `Confederation`: cupos por federación,
-que un mismo equipo no entre a dos torneos por la misma vía, coherencia de plazas.
-No bloquea nada de lo anterior.
+Estado: **probablemente fuera de alcance por ahora.** No bloquea nada de lo anterior.
+
+Son reglas de DOMINIO, heterogéneas y específicas por competición, no validaciones
+mecánicas del grafo. No hay un único "validador" que las cubra; cada una vive en un
+ámbito distinto (federación, confederación, formato del torneo) y muchas tienen
+excepciones. Ejemplos del rango de dificultad:
+
+- **Simple-ish**: que un mismo equipo no entre a dos torneos acoplados por la misma
+  vía; que no se salteen posiciones al asignar cupos.
+- **Media**: cupos por federación/confederación con coherencia de plazas.
+- **Compleja / con excepciones**:
+  - Un cupo puede corresponder al **ganador de una cup** de federación, aunque ese
+    equipo no esté bien posicionado en el ranking de la federación. El enrutamiento
+    actual es por ranking/orden, no por "identidad de cómo clasificó".
+  - En un mundial, **no** puede haber dos federaciones de una misma confederación en
+    el mismo grupo — pero eso depende de los bombos, y admite **excepciones por
+    imposibilidad** (cuando no hay forma de evitarlo).
+
+Por su heterogeneidad y sus excepciones, no se implementa como parte de este plan. Se
+abordará caso por caso, en el ámbito que corresponda, cuando haya un requerimiento
+concreto. Queda documentado acá solo para registrar que existe y por qué se posterga.
 
 ---
 

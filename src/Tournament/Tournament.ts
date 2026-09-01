@@ -96,6 +96,10 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
     const config = tournamentFromGSG(creator)
     const t = new Tournament(info, config, ctx, sportProfile)
     t._fromGSGData = creator;
+    // Registrar el config en el store de torneos del contexto. Así, cuando corra la
+    // validación cross-tournament o la resolución diferida de equipos, el registro ya
+    // tiene todos los torneos de la simulación. Ver docs/plans/RUNTIME_VALIDATIONS.md §7.
+    ctx.tournaments.set(config);
     return t;
   }
 

@@ -133,28 +133,51 @@ routing por identidad ni por nombre. Consecuencias:
 
 ## B) Las bifurcaciones NO se pueden volver a cruzar
 
-Objetivo de diseño: **una vez que dos ramas se bifurcan, no deben volver a
-cruzarse.** Es decir, equipos que ya se separaron en ramas distintas (ej. la rama
-que sigue compitiendo por el título vs. la rama que quedó eliminada) no pueden
-reencontrarse en un mismo stage posterior. Esto refleja la realidad deportiva: si te
-eliminaron, no volvés a la rama del campeón.
+Cuando un stage parte su ranking de salida en rank groups, **cada rank group es una
+rama**. Una rama se "bifurca" de otra cuando ambas salen del mismo stage pero se
+rutean a destinos distintos en la fase siguiente.
 
-Hoy el sistema NO valida esto explícitamente: el enrutamiento por índice permite, en
-principio, que el diseñador vuelva a juntar ramas ya separadas. Queremos una
-validación que detecte y prohíba el "re-cruce" de ramas bifurcadas (salvo los casos
-legítimos, ver C).
+Lo que hay que entender bien (y que antes estaba mal explicado):
+
+- Bifurcarse **NO** significa "una rama sigue y la otra muere". Cualquier rama puede
+  seguir compitiendo en **su propio** stage. Los perdedores de una llave pueden ir a
+  otro `StageNode` a definir sus posiciones entre ellos con partidos reales — no
+  necesariamente a un `transfer` que los arrastra al `FinalNode`.
+- El caso extremo es un torneo tipo **vóley olímpico**, donde se definen TODAS las
+  posiciones (1º, 3º, 5º, 7º...) por partido: cada rama que "cae" sigue jugando entre
+  los suyos para ordenar su tramo de la tabla. Eso es perfectamente válido.
+
+La regla, entonces, es más acotada: **dos ramas que YA se bifurcaron no pueden volver
+a juntarse en un mismo stage posterior.** Lo prohibido es el *re-encuentro*, no que
+una rama siga compitiendo. Un equipo que quedó en la rama de "perdedores" puede jugar
+todo lo que haga falta, pero solo contra equipos de su misma rama (o de ramas que
+nunca se separaron de la suya); no puede reaparecer en un stage junto a la rama de la
+que se separó. Refleja la realidad deportiva: si perdiste la llave del título, seguís
+jugando por el 5º puesto, pero no volvés a la rama del campeón.
+
+Hoy el sistema NO valida esto: el enrutamiento por índice permite, en principio, que
+el diseñador vuelva a juntar ramas ya separadas. Falta una validación de
+alcanzabilidad que, para cada `StageNode`, verifique que los rank groups que recibe NO
+provengan de ramas que ya se bifurcaron entre sí (ver §D.1 y RUNTIME_VALIDATIONS.md).
 
 Relacionado (lo que SÍ hay hoy): `verifyPhaseCreator` obliga a rutear TODOS los rank
 groups en cada fase (Σcount == RGs previos). Entonces una rama no puede "quedar
 colgada" silenciosamente: o la consume un stage, o la arrastra un `transfer` hasta el
-FinalNode. No hay "auto-eliminación"; el cierre de cada rama es explícito.
+FinalNode. No hay "auto-eliminación"; el cierre de cada rama es explícito. Pero eso
+NO impide re-cruzar: solo garantiza que nada quede sin rutear.
 
-## C) Ramas que compiten "hacia abajo" (definir descensos / últimos puestos)
+## C) Ramas que siguen compitiendo (definir CUALQUIER posición, no solo el título)
 
-No todas las ramas van hacia el título. Es válido y necesario tener stages que
-**definen los últimos clasificados** — por ejemplo, un playoff de descenso entre los
-peores de una división. Esto NO viola B): es una rama propia (los peores) que compite
-entre sí para ordenar el fondo de la tabla; no se re-cruza con la rama de arriba.
+Corolario de B: no todas las ramas van hacia el título, y está perfecto. Es válido y
+frecuente tener stages que **definen posiciones intermedias o bajas** con partidos
+reales entre los integrantes de una rama:
+
+- El 3er puesto, 5º, 7º de un torneo tipo vóley (cada rama define su tramo).
+- Un playoff de **descenso** entre los peores de una división.
+
+Ninguno viola B): en todos, una rama compite **entre sí misma** (o con ramas que
+nunca se separaron de ella) para ordenar su propio tramo. Lo que B) prohíbe es
+distinto: juntar en un stage a dos ramas que en algún punto anterior se separaron.
 
 Ejemplo real en el código: `fede_inst_Example.ts`, `config_1161_2d` (2da división)
 usa `rankGroupNumbers: [2, 6]` y una fase 2 con:
@@ -167,7 +190,8 @@ usa `rankGroupNumbers: [2, 6]` y una fase 2 con:
 ```
 El playoff de esa fase resuelve el orden de una parte de la tabla (define quién
 asciende/desciende), mientras los transfers arrastran el resto. Es el patrón "stage
-para determinar clasificados/descendidos".
+para determinar posiciones de una rama", que puede aplicarse a cualquier tramo (no
+solo al fondo de la tabla).
 
 ## D) Validaciones objetivo (resumen de lo que falta)
 
