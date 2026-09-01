@@ -200,6 +200,11 @@ function createStage(sid: string, stageCreator: TStageNodeCreator, stageRGs: Ran
       )
       break;
     // case 'reOrder':
+    //   // NOTA: sigue comentado a propósito. El caso de uso que lo necesita
+    //   // (torneos acoplados donde entran equipos desconocidos al inicio, ej. los
+    //   // 3ros de A que bajan a B) todavía NO está resuelto en el pipeline: hoy
+    //   // asignarTeams2 exige resolver el ranking inicial COMPLETO al crear el
+    //   // torneo, y esos entrantes aún no existen. Ver docs/plans/COUPLED_TOURNAMENTS.md
     //   out = new ReOrderStageNode({
     //     ...nodeData,
     //     qNumber: stageCreator.value
