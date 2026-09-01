@@ -22,10 +22,9 @@ export class Ranking {
 
   private constructor(tr: TypeRanking) {
     if (tr.teams.length !== 0 && tr.items.length !== tr.teams.length) {
-      console.log(tr)
-      throw new Error(`El ranking ${tr.context} no se puede crear debido a que la cantidad de
-      items: ${tr.items.length} no es igual a la cantidad de teams: ${tr.teams.length}
-      Ranking.contructor`)
+      throw new Error(`El ranking ${tr.context} no se puede crear debido a que la cantidad de ` +
+        `items: ${tr.items.length} no es igual a la cantidad de teams: ${tr.teams.length}. ` +
+        `en Ranking.constructor`)
     }
     this._context = tr.context;
     this._items = tr.items;
@@ -57,9 +56,12 @@ export class Ranking {
   }
 
   addTeams(t: Team[]) {
-    if (this._items.length == t.length) {
-      this._teams = [...t];
+    if (this._items.length !== t.length) {
+      throw new Error(`No se pueden asignar teams al ranking "${this._context}": ` +
+        `cantidad de items (${this._items.length}) distinta de la cantidad de teams (${t.length}). ` +
+        `en Ranking.addTeams`);
     }
+    this._teams = [...t];
   }
 
   getInterface(): TypeRanking {
@@ -73,19 +75,17 @@ export class Ranking {
   }
 
   getFromPosition(pos: number): IRankItem {
-    const idx = this._items.findIndex(e => e.pos == pos);
-    if (this.isBlocked && idx !== -1) {
-      return {...this._items[idx], team: this._teams[idx], score: this._scores[idx]};
-    } else {
-      throw new Error(`
-      Ranking no esta bloqueado:
-        items length: ${this._items.length}
-        teams length: ${this._teams.length}
-      O
-      Ranking no cuenta con la posicion: ${pos}
-        index: ${idx}
-      en ranking.getFromPosition`)
+    if (!this.isBlocked) {
+      throw new Error(`Ranking "${this._context}" no esta bloqueado ` +
+        `(items: ${this._items.length}, teams: ${this._teams.length}). ` +
+        `en Ranking.getFromPosition`);
     }
+    const idx = this._items.findIndex(e => e.pos == pos);
+    if (idx === -1) {
+      throw new Error(`Ranking "${this._context}" no cuenta con la posicion: ${pos}. ` +
+        `en Ranking.getFromPosition`);
+    }
+    return { ...this._items[idx], team: this._teams[idx], score: this._scores[idx] };
   }
 
   //
@@ -138,27 +138,33 @@ export class Ranking {
     sources: { ranking: Ranking; weight: number }[],
     metadata?: IRankingMetadata
   ): Ranking {
-    // Acumular scores por team
-    const scoreMap = new Map<Team, number>();
+    // Acumular scores por team, indexado por team.id (un team lógico puede venir
+    // como instancias distintas en cada ranking fuente, por eso NO se usa la
+    // referencia del objeto como clave).
+    const scoreMap = new Map<string, number>();
+    const teamMap = new Map<string, Team>();
 
     sources.forEach(({ ranking, weight }) => {
       ranking.getRankTable().forEach((ri: IRankItem) => {
         const teamScore = ri.score ?? 0;
-        const prev = scoreMap.get(ri.team) ?? 0;
-        scoreMap.set(ri.team, prev + teamScore * weight);
+        const prev = scoreMap.get(ri.team.id) ?? 0;
+        scoreMap.set(ri.team.id, prev + teamScore * weight);
+        if (!teamMap.has(ri.team.id)) {
+          teamMap.set(ri.team.id, ri.team);
+        }
       });
     });
 
-    // Ordenar por score descendente
+    // Ordenar por score descendente; desempate estable por team.id
     const sorted = Array.from(scoreMap.entries())
-      .sort((a, b) => b[1] - a[1]);
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 
-    const items: IGenericRankItem[] = sorted.map(([_, score], idx) => ({
+    const items: IGenericRankItem[] = sorted.map((_, idx) => ({
       origin: context,
       pos: idx + 1,
     }));
-    const teams: Team[] = sorted.map(([team]) => team);
-    const scores: number[] = sorted.map(([_, score]) => score);
+    const teams: Team[] = sorted.map(([id]) => teamMap.get(id)!);
+    const scores: number[] = sorted.map(([, score]) => score);
 
     return new Ranking({ context, items, teams, scores, metadata });
   }
@@ -216,10 +222,10 @@ export class Ranking {
       });
     });
 
-    // Calcular score y ordenar
+    // Calcular score y ordenar; desempate estable por team.id
     const scored = Array.from(teamMap.values())
       .map(team => ({ team, score: scoreFn(team, rankings) }))
-      .sort((a, b) => b.score - a.score);
+      .sort((a, b) => b.score - a.score || a.team.id.localeCompare(b.team.id));
 
     const items: IGenericRankItem[] = scored.map((entry, idx) => ({
       origin: context,

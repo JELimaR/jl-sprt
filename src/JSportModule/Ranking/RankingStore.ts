@@ -18,6 +18,10 @@ export class RankingStore {
    * Guarda un ranking. Actualiza el current y agrega al historial.
    */
   set(context: string, ranking: Ranking): void {
+    if (!ranking.isBlocked) {
+      throw new Error(`Solo se pueden guardar rankings bloqueados (poblados con teams). ` +
+        `El ranking "${ranking.context}" no esta bloqueado. en RankingStore.set`);
+    }
     this._current.set(context, ranking);
     const hist = this._history.get(context) || [];
     hist.push(ranking);
