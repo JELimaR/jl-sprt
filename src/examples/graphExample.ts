@@ -8,7 +8,7 @@ import exampleAdvance from './exampleAdvance';
 import { SimulationContext } from '../Tournament/SimulationContext';
 import { Ranking } from '../JSportModule/Ranking';
 import { renderGSGtoPNG } from '../JSportModule/GeneralStageGraph/renderGSGtoPNG';
-import { asignarTeams2 } from '../Tournament/asignarTeams2';
+import { teamsAssign } from '../Tournament/teamsAssign';
 import { FootballProfile } from '../JSportModule/profiles/football/FootballProfile';
 
 export default function graphExample() {
@@ -102,7 +102,7 @@ export default function graphExample() {
   fedRankings.forEach((franking: Ranking) => ctx.store.set(franking.context, franking));
 
   // asignar teams
-  asignarTeams2(tournament, ctx)
+  teamsAssign(tournament, ctx)
 
   // console.log(`
   //   *******************************************************************************************

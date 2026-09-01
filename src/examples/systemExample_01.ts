@@ -9,7 +9,7 @@ import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/Gener
 import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
 import SportServerAPI from "../JSportServerModule";
 import mostrarFecha from "../mostrarFechaBorrar";
-import { asignarTeams2 } from "../Tournament/asignarTeams2";
+import { teamsAssign } from "../Tournament/teamsAssign";
 import { SimulationContext } from "../Tournament/SimulationContext";
 import Tournament from "../Tournament/Tournament";
 import exampleAdvance from "./exampleAdvance";
@@ -131,11 +131,11 @@ export default function systemExample_01() {
     console.log(t1.config)
     let t2: Tournament | undefined;
     // asignarTeams(gsg_1)
-    asignarTeams2(t1, ctx)
+    teamsAssign(t1, ctx)
     if (t2_data) {
       t2 = Tournament.create({ id: 'L2', season: Y }, t2_data, ctx, new FootballProfile())
       console.log(t2.config)
-      asignarTeams2(t2, ctx)
+      teamsAssign(t2, ctx)
     }
 
     // avance

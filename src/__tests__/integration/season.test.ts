@@ -6,7 +6,7 @@ import LeagueSystem, { ILeagueSystemCreator } from "../../JSportModule/data/Enti
 import { TInitialCreator, TPhaseCreator } from "../../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData } from "../../JSportModule/GeneralStageGraph/tournamentFromGSG";
 import { FootballProfile } from "../../JSportModule/profiles/football/FootballProfile";
-import { asignarTeams2 } from "../../Tournament/asignarTeams2";
+import { teamsAssign } from "../../Tournament/teamsAssign";
 import { SimulationContext } from "../../Tournament/SimulationContext";
 import Tournament from "../../Tournament/Tournament";
 import { reseedRandom } from "../../JSportModule/Match/randomSource";
@@ -133,7 +133,7 @@ describe("Integración - temporada de una división (end-to-end)", () => {
     expect(tournamentData.length).toBe(1);
 
     const tournament = Tournament.create({ id: tournamentData[0].name, season: SEASON }, tournamentData[0], ctx, new FootballProfile());
-    asignarTeams2(tournament, ctx);
+    teamsAssign(tournament, ctx);
 
     // avanzar el calendario -> se juegan todos los partidos
     advanceCalendar(cal);
@@ -170,7 +170,7 @@ describe("Integración - temporada de una división (end-to-end)", () => {
     }));
     const data = federation.createTournamentList();
     const t = Tournament.create({ id: data[0].name, season: SEASON }, data[0], ctx, new FootballProfile());
-    asignarTeams2(t, ctx);
+    teamsAssign(t, ctx);
     advanceCalendar(cal);
     return t.getRelativeRank().getRankTable().map(r => `${r.pos}:${r.team.entity.id}`);
   }

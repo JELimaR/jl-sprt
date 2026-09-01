@@ -4,7 +4,6 @@ import { ITournamentFromGSGData } from "../JSportModule/GeneralStageGraph/tourna
 import { IGenericRankItem, Ranking } from "../JSportModule/Ranking";
 import { SimulationContext } from "../Tournament/SimulationContext";
 import Tournament from "../Tournament/Tournament";
-import { asignarTeams2 } from "../Tournament/asignarTeams2";
 import { teamsAssign } from "../Tournament/teamsAssign";
 import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
 import exampleAdvance from "./exampleAdvance";
@@ -294,9 +293,9 @@ export default function confederationExample() {
   const dataA = buildTournamentA();
 
   // 3) Torneo A: se crea, se asignan equipos y se juega normalmente. Sus orígenes
-  //    (fr_) ya están en el store, así que asignarTeams2 resuelve de una.
+  //    (fr_) ya están en el store, así que teamsAssign resuelve de una.
   const tournamentA = Tournament.create({ id: 'confedA', season: SEASON }, dataA, ctx, new FootballProfile());
-  asignarTeams2(tournamentA, ctx);
+  teamsAssign(tournamentA, ctx);
 
   // 4) Torneo B: AHORA es ejecutable. Su ranking inicial de 40 incluye 8 entrantes
   //    (los 3ros de A) que aún no existen al crearlo. Usamos teamsAssign (resolución

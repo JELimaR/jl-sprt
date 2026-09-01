@@ -20,7 +20,6 @@ export { default as Tournament } from './Tournament/Tournament';
 export { default as Phase } from './Tournament/Phase';
 export { SimulationContext, createSimulationContext } from './Tournament/SimulationContext';
 export { TournamentConfigStore } from './Tournament/TournamentConfigStore';
-export { asignarTeams2 } from './Tournament/asignarTeams2';
 export { teamsAssign } from './Tournament/teamsAssign';
 
 // Sport Profiles

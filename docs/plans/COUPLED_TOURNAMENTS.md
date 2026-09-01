@@ -28,10 +28,14 @@ El ejemplo `src/examples/confederationExample.ts` deja la estructura planteada p
 
 ## Problema 1 — el ranking inicial con equipos "desconocidos"
 
-`asignarTeams2` (`src/Tournament/asignarTeams2.ts`) resuelve el ranking inicial
-COMPLETO del torneo al momento de crearlo: recorre `tournament.qualyGenericRankItemList`
-y para cada item hace `ctx.store.get(origin)` + `getFromPosition(pos)`; **lanza si
-falta cualquier origin**.
+> Nota (estado actual): la asignación vive hoy en `teamsAssign`
+> (`src/Tournament/teamsAssign.ts`), que RESUELVE este problema con resolución
+> diferida. Lo que sigue describe el comportamiento naive/histórico (la vieja
+> `asignarTeams2`, ya eliminada) para dar contexto al diseño.
+
+La asignación naive resuelve el ranking inicial COMPLETO del torneo al momento de
+crearlo: recorre `tournament.qualyGenericRankItemList` y para cada item hace
+`ctx.store.get(origin)` + `getFromPosition(pos)`; **lanza si falta cualquier origin**.
 
 Los 8 entrantes de B tienen origin `rs_<grupoA>`, que **no existe** hasta que la fase
 de grupos de A termina (su `Event_StageEnd` lo guarda en el store). Por lo tanto, con

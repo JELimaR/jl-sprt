@@ -5,7 +5,7 @@ import { ITournamentFromGSGData } from "../../JSportModule/GeneralStageGraph/tou
 import { FootballProfile } from "../../JSportModule/profiles/football/FootballProfile";
 import { SimulationContext } from "../SimulationContext";
 import Tournament from "../Tournament";
-import { asignarTeams2 } from "../asignarTeams2";
+import { teamsAssign } from "../teamsAssign";
 import { Ranking } from "../../JSportModule/Ranking";
 import { IRankItem } from "../../JSportModule/Ranking/interfaces";
 import Team, { TeamMatch } from "../../JSportModule/data/Team";
@@ -140,7 +140,7 @@ describe("Tournament - getRelativeRank", () => {
     const ctx = newCtx();
     ctx.store.set('fr_SRC', blockedRanking('fr_SRC', 8));
     const t = Tournament.create({ id: 'LIG', season: SEASON }, ligaConfig(), ctx, new FootballProfile());
-    asignarTeams2(t, ctx);
+    teamsAssign(t, ctx);
     advanceCalendar(ctx.calendar);
 
     const rank = t.getRelativeRank();
@@ -156,7 +156,7 @@ describe("Tournament - getRelativeRank", () => {
     const ctx = newCtx();
     ctx.store.set('fr_SRC', blockedRanking('fr_SRC', 4));
     const t = Tournament.create({ id: 'T5', season: SEASON }, multiPhaseConfig(), ctx, new FootballProfile());
-    asignarTeams2(t, ctx);
+    teamsAssign(t, ctx);
     advanceCalendar(ctx.calendar);
 
     const table = t.getRelativeRank().getRankTable();
@@ -179,7 +179,7 @@ describe("Tournament - getRelativeRank", () => {
       const ctx = newCtx();
       ctx.store.set('fr_SRC', blockedRanking('fr_SRC', 4));
       const t = Tournament.create({ id: 'T5', season: SEASON }, multiPhaseConfig(), ctx, new FootballProfile());
-      asignarTeams2(t, ctx);
+      teamsAssign(t, ctx);
       advanceCalendar(ctx.calendar);
       return t.getRelativeRank().getRankTable().map((r) => `${r.pos}:${r.team.id}`);
     };

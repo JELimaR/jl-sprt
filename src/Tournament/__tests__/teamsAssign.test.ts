@@ -6,7 +6,6 @@ import { FootballProfile } from "../../JSportModule/profiles/football/FootballPr
 import { SimulationContext } from "../SimulationContext";
 import Tournament from "../Tournament";
 import { teamsAssign } from "../teamsAssign";
-import { asignarTeams2 } from "../asignarTeams2";
 import { Ranking } from "../../JSportModule/Ranking";
 import { IRankItem } from "../../JSportModule/Ranking/interfaces";
 import Team from "../../JSportModule/data/Team";
@@ -57,7 +56,7 @@ function newCtx(): SimulationContext {
 }
 
 // -----------------------------------------------------------------------------
-// Caso sin diferidos: mismo comportamiento que asignarTeams2
+// Caso sin diferidos: resuelve el ini_ inmediatamente
 // -----------------------------------------------------------------------------
 describe("teamsAssign - sin orígenes diferidos", () => {
   beforeEach(() => reseedRandom(SEED));
@@ -76,21 +75,15 @@ describe("teamsAssign - sin orígenes diferidos", () => {
     expect(ini!.size).toBe(N);
   });
 
-  it("produce el mismo ini_ que asignarTeams2", () => {
-    const ctxA = newCtx();
-    const ctxB = newCtx();
-    ctxA.store.set('fr_S_FTEST', blockedRanking('fr_S_FTEST', N));
-    ctxB.store.set('fr_S_FTEST', blockedRanking('fr_S_FTEST', N));
+  it("puebla el ini_ con los teams del origen en orden de posición", () => {
+    const ctx = newCtx();
+    ctx.store.set('fr_S_FTEST', blockedRanking('fr_S_FTEST', N));
 
-    const ta = Tournament.create({ id: 'S_D01', season: SEASON }, ligConfig('S_D01', 'fr_S_FTEST'), ctxA, new FootballProfile());
-    const tb = Tournament.create({ id: 'S_D01', season: SEASON }, ligConfig('S_D01', 'fr_S_FTEST'), ctxB, new FootballProfile());
+    const t = Tournament.create({ id: 'S_D01', season: SEASON }, ligConfig('S_D01', 'fr_S_FTEST'), ctx, new FootballProfile());
+    teamsAssign(t, ctx);
 
-    asignarTeams2(ta, ctxA);
-    teamsAssign(tb, ctxB);
-
-    const teamsA = ctxA.store.get('ini_S_D01')!.getRankTable().map((r) => r.team.id);
-    const teamsB = ctxB.store.get('ini_S_D01')!.getRankTable().map((r) => r.team.id);
-    expect(teamsB).toEqual(teamsA);
+    const teams = ctx.store.get('ini_S_D01')!.getRankTable().map((r) => r.team.id);
+    expect(teams).toEqual(Array.from({ length: N }, (_, i) => `fr_S_FTEST_T${i + 1}`));
   });
 });
 

@@ -4,14 +4,17 @@ import { SimulationContext } from "./SimulationContext";
 import Tournament from "./Tournament";
 
 /**
- * teamsAssign — asignación de equipos con RESOLUCIÓN DIFERIDA (Fase B del plan; ver
- * docs/plans/RUNTIME_VALIDATIONS.md §6).
+ * teamsAssign — asignación de equipos del ranking inicial de un torneo, con
+ * RESOLUCIÓN DIFERIDA (Fase B del plan; ver docs/plans/RUNTIME_VALIDATIONS.md §6).
  *
- * `asignarTeams2` resuelve el ranking inicial (`ini_<id>`) COMPLETO al crear el torneo
- * y LANZA si algún origen no está en el store todavía (Falla F1). Eso funciona cuando
- * todos los orígenes son `fr_` (federaciones, sembradas antes). Falla con torneos
- * acoplados: p. ej. el torneo B cuyo `ini_` incluye "los 3ros de A" (`rs_<grupoA>`),
- * que no existe hasta que la fase de grupos de A termina durante la simulación.
+ * Resuelve el ranking inicial (`ini_<id>`) recorriendo `tournament.qualyGenericRankItemList`
+ * y, para cada item, tomando el team en la posición indicada de su ranking de origen.
+ *
+ * Un enfoque naive resolvería TODOS los orígenes al crear el torneo y LANZARÍA si alguno
+ * no está aún en el store. Eso funciona cuando todos los orígenes son `fr_` (federaciones,
+ * sembradas antes), pero falla con torneos acoplados: p. ej. el torneo B cuyo `ini_`
+ * incluye "los 3ros de A" (`rs_<grupoA>`), que no existe hasta que la fase de grupos de A
+ * termina durante la simulación.
  *
  * teamsAssign resuelve esto:
  *  - Los orígenes YA disponibles se resuelven de una.
@@ -26,8 +29,7 @@ import Tournament from "./Tournament";
  * `verifyCoupledTournaments`), el `hwEnd` del productor es anterior, así que el `ini_`
  * ya estará completo cuando el consumidor arranque.
  *
- * Si NO hay orígenes diferidos, se comporta igual que `asignarTeams2` (resuelve y
- * guarda de inmediato).
+ * Si NO hay orígenes diferidos, resuelve y guarda el `ini_` de inmediato.
  */
 export const teamsAssign = (tournament: Tournament, ctx: SimulationContext): void => {
   const gsg = tournament.graph;
@@ -45,7 +47,7 @@ export const teamsAssign = (tournament: Tournament, ctx: SimulationContext): voi
     if (!ctx.store.has(igri.origin)) pendingOrigins.add(igri.origin);
   });
 
-  // Caso simple: todo resoluble ahora -> mismo comportamiento que asignarTeams2.
+  // Caso simple: todo resoluble ahora -> resolver y guardar de inmediato.
   if (pendingOrigins.size === 0) {
     buildAndStoreIni(tournament, ctx, items, qualyItems);
     return;

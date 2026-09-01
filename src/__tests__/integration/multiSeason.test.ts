@@ -6,7 +6,7 @@ import LeagueSystem, { ILeagueSystemCreator } from "../../JSportModule/data/Enti
 import { TInitialCreator, TPhaseCreator } from "../../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData } from "../../JSportModule/GeneralStageGraph/tournamentFromGSG";
 import { FootballProfile } from "../../JSportModule/profiles/football/FootballProfile";
-import { asignarTeams2 } from "../../Tournament/asignarTeams2";
+import { teamsAssign } from "../../Tournament/teamsAssign";
 import { SimulationContext } from "../../Tournament/SimulationContext";
 import Tournament from "../../Tournament/Tournament";
 import { reseedRandom } from "../../JSportModule/Match/randomSource";
@@ -134,7 +134,7 @@ function runSeason(federation: Federation): { d01: string[]; d02: string[] } {
   // tras crear la primera, los eventos de la segunda quedarian en el pasado.
   const tournaments = tournamentData.map((data) => {
     const t = Tournament.create({ id: data.name, season: SEASON }, data, ctx, new FootballProfile());
-    asignarTeams2(t, ctx);
+    teamsAssign(t, ctx);
     return t;
   });
 
