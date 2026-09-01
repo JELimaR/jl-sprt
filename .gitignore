@@ -6,9 +6,9 @@ dist/
 
 .replit
 
-.png
+*.png
 
-.log
+*.log
 
 # typescript
 *.tsbuildinfo
