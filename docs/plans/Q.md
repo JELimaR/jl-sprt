@@ -466,3 +466,30 @@ sorteo". Ambos verifican que dos corridas con la misma semilla producen el mismo
 
 > Podés responder solo el bloque de la Capa 1 primero si querés que arranque ya con los tests
 > de Ranking mientras completás el resto.
+
+
+---
+
+## HALLAZGO (Kiro) — Capa 2: TableStageNode parece tener la invariante invertida
+
+Al testear los nodos del GSG detecté una posible inconsistencia en `TableStageNode`
+(`src/JSportModule/GeneralStageGraph/NoneStageNode.ts`):
+
+- El constructor valida `if (data.participants > data.qNumber) throw` → exige
+  `participants <= qNumber`.
+- Pero `getRanksGroups()` corta el ranking en `qNumber`:
+  `items.slice(0, qNumber)` (clasificados) e `items.slice(qNumber)` (resto).
+
+Consecuencia: si `participants <= qNumber`, el segundo grupo (`slice(qNumber)`)
+**siempre queda vacío**. Es decir, con la invariante actual la "tabla" nunca parte en dos
+grupos no vacíos, lo cual contradice su propósito documentado (dividir un ranking en
+clasificados + eliminados). La intención probablemente sea la inversa: `qNumber < participants`
+(qNumber = cuántos clasifican, y debe ser menor que el total para que haya eliminados).
+
+**Estado:** los tests de `nodes.test.ts` fijan el comportamiento ACTUAL (con un comentario que
+marca la duda), para no romper nada sin confirmar. `TableStageNode` no se usa hoy en los
+examples ni en los tests de integración (los torneos actuales usan group/playoff/transfer).
+
+**Pregunta:** ¿la invariante correcta de `TableStageNode` es `qNumber < participants`
+(dividir en dos no vacíos)? Si confirmás, ajusto el constructor y los tests.
+> R:
