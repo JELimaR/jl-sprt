@@ -169,40 +169,33 @@ describe("calculateParticipantsPerGroupArray", () => {
 // -----------------------------------------------------------------------------
 describe("TableStageNode", () => {
   // POR QUÉ recibe exactamente 1 ranking: una "tabla" parte UNA lista de
-  // posiciones en dos (los primeros qNumber quedan en un ranking; el resto en
-  // otro). No tiene sentido dividir dos rankings a la vez.
+  // posiciones en dos: los primeros qNumber (clasifican) y el resto (eliminados).
   //
-  // OJO (posible inconsistencia a revisar para el frontend): la validación del
-  // constructor es `if (participants > qNumber) throw`, es decir exige
-  // participants <= qNumber. Dado que `getRanksGroups` corta en `qNumber`
-  // (`items.slice(0, qNumber)` y `items.slice(qNumber)`), si participants <=
-  // qNumber el segundo grupo SIEMPRE queda vacío. Esto sugiere que la intención
-  // real podría ser la inversa (qNumber < participants, para partir en dos no
-  // vacíos). Los tests fijan el comportamiento ACTUAL del código y dejan
-  // registrada la duda; conviene confirmar la semántica antes de exponerlo en
-  // la UI. (Ver Q.md / seguimiento.)
-  it("con participants <= qNumber construye (comportamiento actual) y el corte deja el resto vacío", () => {
+  // INVARIANTE: qNumber < participants. Si qNumber >= participants el segundo
+  // grupo quedaría vacío y el nodo no dividiría nada -> equivaldría a un
+  // TransferStageNode, por lo que se rechaza en el constructor.
+  it("divide un ranking en dos grupos no vacíos: primeros qNumber y el resto", () => {
     const node = new TableStageNode(
-      { id: 'tbl', nodeLvl: 0, participants: 8, qNumber: 8 },
+      { id: 'tbl', nodeLvl: 0, participants: 8, qNumber: 4 },
       [rankingOfSize('src', 8)],
     );
     const out = node.getRanksGroups();
     expect(out).toHaveLength(2);
-    expect(out[0].size).toBe(8); // primeros qNumber (todos)
-    expect(out[1].size).toBe(0); // resto (vacío, por la invariante actual)
+    expect(out[0].size).toBe(4); // clasificados (primeros qNumber)
+    expect(out[1].size).toBe(4); // eliminados (el resto)
   });
 
   it("lanza si recibe una cantidad de rankings distinta de 1", () => {
     expect(() => new TableStageNode(
-      { id: 'tbl', nodeLvl: 0, participants: 8, qNumber: 8 },
+      { id: 'tbl', nodeLvl: 0, participants: 8, qNumber: 4 },
       [rankingOfSize('a', 4), rankingOfSize('b', 4)],
     )).toThrow();
   });
 
-  it("lanza si participants > qNumber (invariante actual del constructor)", () => {
+  it("lanza si qNumber >= participants (sería una transferencia, no una división)", () => {
     expect(() => new TableStageNode(
-      { id: 'tbl', nodeLvl: 0, participants: 10, qNumber: 4 },
-      [rankingOfSize('src', 10)],
+      { id: 'tbl', nodeLvl: 0, participants: 8, qNumber: 8 },
+      [rankingOfSize('src', 8)],
     )).toThrow();
   });
 });

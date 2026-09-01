@@ -12,6 +12,13 @@ import { GeneralStageGraph } from "./GeneralStageGraph";
    * * * * * Algoritmo * * * * 
    * para cada e en listQRS
    * Hallar RGe y agregar sus elementos a un conjunto ComparatorSet
+   *
+   * QUÉ/POR QUÉ (resumen): una qualyRule describe un corte sobre el RANKING
+   * FINAL del torneo (ej. "los que salen 1..4 ascienden"). Debe (a) estar dentro
+   * del rango de posiciones que produce el torneo, y (b) componerse EXACTAMENTE
+   * por la unión de rank groups finales COMPLETOS: no puede "cortar" un rank
+   * group por la mitad (no se puede clasificar a medio grupo de salida). Esto
+   * garantiza que las reglas de ascenso/descenso sean aplicables sin ambigüedad.
    */
 export function verifyQualyRulesConditions(gsg: GeneralStageGraph, qualyRules: { minRankPos: number, maxRankPos: number }[]) {
   const finalRankingsArray: Ranking[] = gsg.getFinalRankings()

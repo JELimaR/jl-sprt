@@ -23,11 +23,19 @@ export const calcParticipantsNumber = (GSGData: ITournamentFromGSGData): number 
 }
 
 /**
- * verificar si está bien definido (el utlimo de la primera lista de rank puede llegar al primero de la ultima lista de rank)
- * verificar que la cantidad total de hwList proporcionada sea igual a la cantidad de hws necesarias
- * para cada phaseNode crear su IPhaseConfig si corresponde
- * generar los source (GenericRank) y el target (GenericRank) de cada stage
- * verificar las condiciones del ranking final - grupos y tamaños de los grupos por los qualies
+ * tournamentFromGSG — convierte la estructura declarativa (el GSG) en un
+ * ITournamentConfig EJECUTABLE. Es el puente entre "el dibujo del torneo" y "el
+ * torneo jugable": construye el GSG, lo valida, reparte las half-weeks
+ * disponibles (matchList/schedList) entre las etapas y arma phases/stages con
+ * sus qualifyConditions (de dónde saca los equipos cada etapa).
+ *
+ * Pasos que ejecuta:
+ * - verificar que está bien definido (existe camino del último rank inicial al
+ *   primer rank final; es decir, el clasificado más abajo puede, en principio,
+ *   llegar arriba).
+ * - verificar las condiciones del ranking final (verifyQualyRulesConditions).
+ * - para cada phaseNode con etapas reales, crear su IPhaseConfig.
+ * - generar los qualifyConditions (source) de cada stage.
  */
 export function tournamentFromGSG(entry: ITournamentFromGSGData): ITournamentConfig {
   let out: ITournamentConfig;

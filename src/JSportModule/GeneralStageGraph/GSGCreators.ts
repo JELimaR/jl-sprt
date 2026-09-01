@@ -33,6 +33,8 @@ export type TPhaseCreator = {
   }[];
 };
 
+// NOTA: stub vacío (no valida nada actualmente). La verificación real de
+// cantidades entre fases la hace verifyPhaseCreator (más abajo).
 const validatePhaseCreatorQuantities = (tpc: TPhaseCreator) => {
 
 }
@@ -59,6 +61,17 @@ function createFinalNode() {
   return finalNode;
 }
 
+/**
+ * createGSG — arma el grafo completo a partir de dos "recetas" declarativas:
+ *   - iniCreator: quiénes entran (qualyrankList) y cómo se agrupan (rankGroupNumbers).
+ *   - phaseCreatorArr: la lista de fases; cada fase tiene stages que CONSUMEN
+ *     rank groups de la fase anterior.
+ *
+ * El armado va fase por fase: los rank groups producidos por una fase (o por el
+ * INI) son los que consume la siguiente. Al final conecta lo que quede con el
+ * FinalNode. Esta es la función que el frontend llamará al "materializar" el
+ * dibujo del torneo.
+ */
 export function createGSG(iniCreator: TInitialCreator, phaseCreatorArr: TPhaseCreator[]) {
 
   const gsg = new GeneralStageGraph(iniCreator.tournamentId);
@@ -121,6 +134,12 @@ function createPhaseNodes(gsg: GeneralStageGraph, phaseCreator: TPhaseCreator, p
   return new PhaseNode(currPhaseIndex, stageNodeArr, gsg);
 }
 
+/**
+ * verifyPhaseCreator — coherencia entre fases: la suma de `count` de los stages
+ * de la fase (cuántos rank groups consume en total) debe ser igual a la cantidad
+ * de rank groups que produjo la fase anterior (o el INI para la primera fase).
+ * Si no coincide, el flujo no cierra y el grafo sería inválido.
+ */
 const verifyPhaseCreator = (phaseCreator: TPhaseCreator, prevPhaseRGs: RankGroupNode[]) => {
   const phaseSourcesRequired = phaseCreator.stages.reduce((partialSum, a) => partialSum + a.count, 0);
   if (phaseSourcesRequired !== prevPhaseRGs.length) {

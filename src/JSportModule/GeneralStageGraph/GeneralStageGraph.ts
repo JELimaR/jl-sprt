@@ -12,6 +12,18 @@ type EdgeAttributes = {}
 
 type TYPE_IdOrAttr = string | NodeAttributes;
 
+/**
+ * GeneralStageGraph (GSG) — el grafo dirigido que modela la estructura de un
+ * torneo. Envuelve un DirectedGraph de graphology.
+ *
+ * Nodos: INI, FIN, etapas (grupos/playoff), procesamiento (transfer/table/reorder)
+ * y RankGroupNode (los "puertos" que transportan rankings).
+ * Aristas: flujo de equipos. Invariante central: toda arista conecta un
+ * RankGroupNode con un no-RankGroupNode (ver addDirectedEdge).
+ *
+ * Sirve para (a) validar que un torneo es coherente antes de jugarlo y (b) —
+ * objetivo del frontend— construir torneos visualmente validando en tiempo real.
+ */
 export class GeneralStageGraph /*extends DirectedGraph<NodeAttributes>*/ {
   private _id: string;
   private _graph: DirectedGraph<NodeAttributes>;
@@ -33,6 +45,12 @@ export class GeneralStageGraph /*extends DirectedGraph<NodeAttributes>*/ {
     return this._graph.getNodeAttributes(id);
   }
 
+  /**
+   * Agrega un nodo al grafo. Si el nodo NO es un RankGroupNode ni el FinalNode,
+   * crea AUTOMÁTICAMENTE sus RankGroupNode de salida (uno por cada ranking que
+   * el nodo produce, según getRanksGroups) y los conecta con una arista. Así el
+   * flujo del grafo siempre alterna nodo <-> rankGroup sin trabajo manual.
+   */
   addNode(attributes: NodeAttributes): string {
     let out = this._graph.addNode(attributes.getId(), attributes);
 
@@ -97,11 +115,15 @@ export class GeneralStageGraph /*extends DirectedGraph<NodeAttributes>*/ {
     const sourceIsRGN = sourceNode instanceof RankGroupNode;
     const targetIsRGN = targetNode instanceof RankGroupNode;
 
+    // INVARIANTE CENTRAL DEL GRAFO: toda arista conecta un RankGroupNode con un
+    // no-RankGroupNode. Si ambos son RGN (o ninguno lo es), la arista rompe el
+    // modelo de flujo "rankGroup -> etapa -> rankGroup -> ...".
     if (sourceIsRGN == targetIsRGN) {
       throw new Error(`source y target son del mismo tipo`);
     }
 
-    // si el source es el rank group entonces debe tener solo 1 target
+    // Un RankGroupNode source alimenta a UNA sola etapa (no puede repartir su
+    // ranking a varias): debe tener exactamente 1 target.
     if (sourceIsRGN) {
       // const targets = this.getTargetNeigbhors(sourceNode);
       // this._graph.outDegree(source)
@@ -109,6 +131,8 @@ export class GeneralStageGraph /*extends DirectedGraph<NodeAttributes>*/ {
         throw new Error(`source: ${source} es rankgroup y ya tiene al menos un target`)
       }
     }
+    // Un RankGroupNode target proviene de UNA sola etapa (su ranking tiene un
+    // único origen): debe tener exactamente 1 source.
     if (targetIsRGN) {
       const sources = this.getSourceNeighbors(targetNode);
       if (sources.length > 0) {
@@ -144,6 +168,12 @@ export class GeneralStageGraph /*extends DirectedGraph<NodeAttributes>*/ {
     return out;
   }
 
+  /**
+   * "Mínimo tiempo necesario para completar el torneo" = duración del camino
+   * MÁS LARGO (camino crítico) entre ini y fin. Usa Math.max porque el torneo no
+   * puede terminar antes que su rama más larga. (El nombre alude al mínimo tiempo
+   * requerido, de ahí "Minimum", aunque internamente sea un máximo sobre caminos.)
+   */
   getHwsNumberMinimum() {
     const asp = this.getAllSimplePath('ini', 'fin');
     const hwsOfAlSimplePath = asp.map(np => np.getHwsNumber());
@@ -207,6 +237,11 @@ export class GeneralStageGraph /*extends DirectedGraph<NodeAttributes>*/ {
 
 }
 
+/**
+ * NodePath — un camino simple (secuencia de nodos) dentro del grafo. Su duración
+ * (getHwsNumber) es la suma de las fechas de las etapas REALES que lo componen
+ * (los nodos de procesamiento aportan 0).
+ */
 export class NodePath {
   constructor(public nodes: NodeAttributes[]) { }
 
@@ -221,6 +256,13 @@ export class NodePath {
   }
 }
 
+/**
+ * PhaseNode — agrupación lógica de las etapas que se juegan EN PARALELO en una
+ * misma fase del torneo (ej. los 8 grupos de una fase de grupos). No es un nodo
+ * del grafo en sí; es una vista que agrupa StageNodes. Su duración (getHwsNumber)
+ * es el máximo entre sus etapas (corren en paralelo, así que la fase dura lo que
+ * la etapa más larga).
+ */
 export class PhaseNode {
   constructor(
     public phaseNumber: number,

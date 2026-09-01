@@ -492,4 +492,13 @@ examples ni en los tests de integración (los torneos actuales usan group/playof
 
 **Pregunta:** ¿la invariante correcta de `TableStageNode` es `qNumber < participants`
 (dividir en dos no vacíos)? Si confirmás, ajusto el constructor y los tests.
-> R:
+> R: creo que es correcto. De lo contrario sería un nodo de transferencia no?
+>
+> **RESUELTO (Kiro):** Exacto — si no divide en dos grupos no vacíos, sería equivalente a
+> un TransferStageNode. Se corrigió el constructor de `TableStageNode` a la invariante
+> `qNumber < participants` (antes exigía `participants <= qNumber`, que dejaba el segundo
+> grupo siempre vacío). Test ajustado en `nodes.test.ts` (divide en dos no vacíos; lanza si
+> `qNumber >= participants`). También se agregaron comentarios explicativos a TODO el código
+> de la carpeta GSG (incluido el porqué del ReOrderStageNode con el ejemplo Champions/Europa
+> League: los equipos que "bajan" deben quedar por debajo de los primeros de grupo del otro
+> lado del cruce para poder emparejarse).
