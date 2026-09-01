@@ -1,6 +1,7 @@
 
 import { TeamMatch } from "../../data/Team";
 import { A_MatchPlay } from "../../Match/A_MatchPlay";
+import { randomFloat } from "../../Match/randomSource";
 import AFResult from "./AFResult";
 
 /**
@@ -28,11 +29,11 @@ export default class AFMatchPlay extends A_MatchPlay<number> {
     const globalResult = this._globalResult as AFResult | undefined;
 
     this._time += 5;
-    if (Math.random() < 0.12) {
+    if (randomFloat() < 0.12) {
       result.addScore(this._teamOne.id);
       globalResult?.addScore(this._teamOne.id);
     }
-    if (Math.random() < 0.10) {
+    if (randomFloat() < 0.10) {
       result.addScore(this._teamTwo.id);
       globalResult?.addScore(this._teamTwo.id);
     }

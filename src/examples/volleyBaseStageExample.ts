@@ -8,9 +8,6 @@ import { VolleyballProfile } from "../JSportModule/profiles/volleyball/Volleybal
 
 /**
  * Ejemplo de BaseStage usando VolleyballProfile.
- * 
- * NOTA: VolleyballProfile.createMatch() y createSerie() aún no están implementados (TODO).
- * Cuando se implementen, este ejemplo funcionará con la simulación real de volleyball.
  */
 export default function volleyBaseStageExample() {
 

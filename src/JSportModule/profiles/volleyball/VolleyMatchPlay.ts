@@ -1,6 +1,7 @@
 
 import { TeamMatch } from "../../data/Team";
 import { A_MatchPlay } from "../../Match/A_MatchPlay";
+import { randomFloat } from "../../Match/randomSource";
 import VolleyResult from "./VolleyResult";
 
 /**
@@ -44,7 +45,7 @@ export default class VolleyMatchPlay extends A_MatchPlay<import('./VolleyScore')
     this._time++;
 
     // Simular un rally
-    if (Math.random() < 0.52) {
+    if (randomFloat() < 0.52) {
       this._currentSetPointsOne++;
     } else {
       this._currentSetPointsTwo++;
