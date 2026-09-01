@@ -265,9 +265,10 @@ desbloquea los torneos acoplados descritos en `COUPLED_TOURNAMENTS.md`.
   `Tournament.create`. (`src/Tournament/TournamentConfigStore.ts`.)
 - **Fase A — validación cross-tournament** — `verifyCoupledTournaments` +
   `resolveTournamentBuildOrder` (ver detalle abajo).
-- **Fase B (núcleo) — resolución diferida** — `RankingStore` observable
-  (`subscribe`) + `teamsAssign` (asigna lo resoluble y difiere los `rs_`/`tr_` hasta
-  que el productor los escribe). Falta solo el cierre end-to-end (reOrder + ejemplo B).
+- **Fase B — resolución diferida** — `RankingStore` observable (`subscribe`) +
+  `teamsAssign` (asigna lo resoluble y difiere los `rs_`/`tr_` hasta que el productor
+  los escribe) + `reOrder` habilitado. El ejemplo `confederationExample` (A→B) corre
+  end-to-end. COMPLETA.
 
 Todos los cambios pasan `tsc --noEmit` limpio y la suite completa en verde.
 
@@ -326,9 +327,10 @@ Objetivo (original): detectar en construcción (no en runtime) los problemas cro
 Riesgo: bajo. Es todo análisis de config, sin tocar runtime. Encaja como un nuevo
 `verifyCoupledTournaments(configs)` en `ConfigVerify`, alimentado por el registro (§7).
 
-### Implementado (parcial) — Fase B: módulo `teamsAssign` (resolución diferida)
+### Implementado — Fase B: módulo `teamsAssign` (resolución diferida)
 
-> **Estado: núcleo hecho.** Falta solo el cierre end-to-end (reOrder + ejemplo B).
+> **Estado: COMPLETA.** Núcleo + cierre end-to-end (reOrder habilitado + ejemplo B
+> ejecutable + test de integración A→B).
 
 1. **`RankingStore` observable** — HECHO. `subscribe(context, listener): () => void`
    que se dispara dentro de `set(context, ranking)` (devuelve función de desuscripción;
@@ -346,15 +348,15 @@ Riesgo: bajo. Es todo análisis de config, sin tocar runtime. Encaja como un nue
    rechaza rankings no bloqueados). El `Event_StageStart` del primer stage del consumidor
    se dispara en su `hwStart`, posterior al `hwEnd` del productor (garantizado por la
    validación temporal de la Fase A), así que al arrancar el `ini_` ya está completo.
-4. **Habilitar `reOrder`** — PENDIENTE. Descomentar el `case 'reOrder'` en
-   `GSGCreators.createStage`.
-5. **Tests end-to-end** — PENDIENTE. Dos torneos acoplados reales (escenario A→B de
-   `confederationExample`) corriendo sobre un mismo `SimulationContext`, verificando que
-   B se asigna y corre tras terminar A. (Hoy hay tests unitarios de `teamsAssign` y de la
-   suscripción del store; falta el de integración con el ejemplo completo.)
+4. **Habilitar `reOrder`** — HECHO. Descomentado el `case 'reOrder'` en
+   `GSGCreators.createStage` (usa `ReOrderStageNode`, ya implementado y con tests).
+5. **Tests end-to-end** — HECHO. `confederationExample` corre A y B acoplados sobre un
+   mismo `SimulationContext` (B usa `teamsAssign`); su ranking final de B produce campeón.
+   Test de integración: `src/__tests__/integration/coupledTournaments.test.ts`.
 
-Riesgo: el núcleo ya está y con tests. Lo pendiente (reOrder + integración) es lo que
-vuelve ejecutable el Torneo B de `COUPLED_TOURNAMENTS.md`.
+Resultado: el Torneo B de `COUPLED_TOURNAMENTS.md` es AHORA ejecutable. Los 3ros de A se
+resuelven vía resolución diferida cuando la fase de grupos de A termina, y el reOrder los
+acomoda en el cruce.
 
 ### Pendiente — Fase C: reglas semánticas (confederación)
 

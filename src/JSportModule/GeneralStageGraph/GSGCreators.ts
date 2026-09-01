@@ -199,18 +199,21 @@ function createStage(sid: string, stageCreator: TStageNodeCreator, stageRGs: Ran
         rankings
       )
       break;
-    // case 'reOrder':
-    //   // NOTA: sigue comentado a propósito. El caso de uso que lo necesita
-    //   // (torneos acoplados donde entran equipos desconocidos al inicio, ej. los
-    //   // 3ros de A que bajan a B) todavía NO está resuelto en el pipeline: hoy
-    //   // asignarTeams2 exige resolver el ranking inicial COMPLETO al crear el
-    //   // torneo, y esos entrantes aún no existen. Ver docs/plans/COUPLED_TOURNAMENTS.md
-    //   out = new ReOrderStageNode({
-    //     ...nodeData,
-    //     qNumber: stageCreator.value
-    //   },
-    //     rankings
-    //   )
+    case 'reOrder':
+      // Habilitado (Fase B). Intercambia el orden de exactamente 2 rankings de entrada
+      // (ver ReOrderStageNode). Se usa en torneos acoplados para que los entrantes
+      // (equipos que saltean fases, ej. los 3ros de A que bajan a B) queden POR DEBAJO
+      // de los locales en el emparejamiento del cruce, aunque estructuralmente vengan
+      // "arriba" en el sembrado. Antes estaba comentado porque el ranking inicial con
+      // entrantes desconocidos no se podía resolver; teamsAssign (resolución diferida)
+      // ya lo permite. Ver docs/plans/COUPLED_TOURNAMENTS.md y RUNTIME_VALIDATIONS.md.
+      out = new ReOrderStageNode({
+        ...nodeData,
+        qNumber: stageCreator.value,
+      },
+        rankings
+      )
+      break;
     default:
       throw new Error(`no existe stagenode del tipo: ${stageCreator}. En GSGCreator.createStage`)
   }

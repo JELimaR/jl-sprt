@@ -5,6 +5,7 @@ import { IGenericRankItem, Ranking } from "../JSportModule/Ranking";
 import { SimulationContext } from "../Tournament/SimulationContext";
 import Tournament from "../Tournament/Tournament";
 import { asignarTeams2 } from "../Tournament/asignarTeams2";
+import { teamsAssign } from "../Tournament/teamsAssign";
 import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
 import exampleAdvance from "./exampleAdvance";
 import { getFederationRankings } from "./graphData01";
@@ -43,14 +44,12 @@ import { getFederationRankings } from "./graphData01";
  * POR DEBAJO de los 1ros de B: para eso se usa el ReOrderStageNode, que
  * intercambia dos rank groups. Ese es exactamente su propósito.
  *
- * ⚠️ ESTADO: NO FUNCIONAL TODAVÍA.
- * El Torneo A corre bien. El Torneo B NO puede ejecutarse hoy: su ranking inicial
- * de 40 incluye 8 equipos (los 3ros de A) que no se conocen al crear el torneo, y
- * `asignarTeams2` exige resolver el ranking inicial COMPLETO en ese momento (lanza
- * si falta cualquier origin). Este archivo deja el DISEÑO del Torneo B como
- * documentación ejecutable-parcial; el problema y las opciones para resolverlo
- * están en docs/plans/COUPLED_TOURNAMENTS.md. Por eso el runner solo corre A y se
- * limita a VALIDAR la estructura del GSG de B (createGSG), sin asignarle equipos.
+ * ESTADO: FUNCIONAL. Tanto A como B se ejecutan end-to-end en un mismo
+ * SimulationContext. El Torneo B usa `teamsAssign` (resolución diferida): sus 8
+ * entrantes (los 3ros de A) NO se conocen al crearlo, pero se resuelven solos
+ * cuando la fase de grupos de A termina y escribe su `rs_` en el store. El
+ * `ReOrderStageNode` acomoda a esos entrantes por debajo de los 1ros de B para el
+ * cruce. Ver docs/plans/COUPLED_TOURNAMENTS.md y RUNTIME_VALIDATIONS.md (§ Fase B).
  */
 
 const SEASON = 1990;
@@ -294,26 +293,32 @@ export default function confederationExample() {
   // 2) Construir el Torneo A (funcional).
   const dataA = buildTournamentA();
 
-  // 3) Torneo A: se crea, se asignan equipos y se juega normalmente.
+  // 3) Torneo A: se crea, se asignan equipos y se juega normalmente. Sus orígenes
+  //    (fr_) ya están en el store, así que asignarTeams2 resuelve de una.
   const tournamentA = Tournament.create({ id: 'confedA', season: SEASON }, dataA, ctx, new FootballProfile());
   asignarTeams2(tournamentA, ctx);
 
-  // 4) Torneo B: su diseño está en buildTournamentB() como DOCUMENTACIÓN, pero NO
-  //    se construye acá: usa `reOrder` (deshabilitado a propósito, ver
-  //    COUPLED_TOURNAMENTS.md) y su ranking inicial depende de rs_<grupoA> que aún
-  //    no existe. Construirlo lanzaría. Lo dejamos como referencia estructural.
-  //    const dataB = buildTournamentB(); // <- no ejecutable hoy
-  console.log('Torneo B: diseño documentado en buildTournamentB() (no ejecutable, ver COUPLED_TOURNAMENTS.md).');
+  // 4) Torneo B: AHORA es ejecutable. Su ranking inicial de 40 incluye 8 entrantes
+  //    (los 3ros de A) que aún no existen al crearlo. Usamos teamsAssign (resolución
+  //    diferida): los 32 orígenes fr_ se resuelven ya; los 8 rs_<grupoA> quedan
+  //    pendientes y se completan cuando la fase de grupos de A termine (su
+  //    Event_StageEnd escribe rs_<grupoA> en el store). Ver RUNTIME_VALIDATIONS.md.
+  //    IMPORTANTE: crear B y llamar teamsAssign ANTES de avanzar el calendario, para
+  //    que la suscripción quede registrada antes de que A escriba su rs_.
+  const dataB = buildTournamentB();
+  const tournamentB = Tournament.create({ id: 'confedB', season: SEASON }, dataB, ctx, new FootballProfile());
+  teamsAssign(tournamentB, ctx);
 
-  // 5) Avanzar el calendario: se juega la fase de grupos de A.
+  // 5) Avanzar el calendario: se juegan A y B, en orden temporal. Cuando termina la
+  //    fase de grupos de A, se resuelve el ini_ de B y arrancan sus stages.
   exampleAdvance(cal);
 
-  // 6) Resultados de A y los 3ros que "bajarían" a B.
+  // 6) Resultados de A y los 3ros que "bajaron" a B.
   const rsA = ctx.store.get(`rs_${A_GROUP_STAGE_ID}`);
   if (rsA) {
     console.log('\nRanking de salida de la fase de grupos de A:');
     console.table(rsA.getRankTable().map((ri) => ({ pos: ri.pos, team: ri.team.id })));
-    console.log('\nLos 3ros de A (posiciones 17..24) que bajarían al Torneo B:');
+    console.log('\nLos 3ros de A (posiciones 17..24) que bajaron al Torneo B:');
     console.table(
       rsA.getRankTable().filter((ri) => ri.pos >= 17 && ri.pos <= 24).map((ri) => ({ pos: ri.pos, team: ri.team.id }))
     );
@@ -322,5 +327,6 @@ export default function confederationExample() {
   console.log('\nRanking final de A:');
   console.table(tournamentA.getRelativeRank().getRankTable().map((ri) => ({ pos: ri.pos, team: ri.team.id })));
 
-  console.log('\nTorneo B: estructura definida pero NO ejecutable aún (ver COUPLED_TOURNAMENTS.md).');
+  console.log('\nRanking final de B (Europa):');
+  console.table(tournamentB.getRelativeRank().getRankTable().map((ri) => ({ pos: ri.pos, team: ri.team.id })));
 }
