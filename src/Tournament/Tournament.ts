@@ -98,7 +98,7 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
     // (cross-tournament) sobre todo el conjunto, y devuelve el config ya construido. Así
     // se verifica TODO al crear el torneo, sin re-ejecutar tournamentFromGSG.
     // Ver docs/plans/RUNTIME_VALIDATIONS.md §7.
-    const config = ctx.tournaments.set(creator);
+    const config = ctx.tournaments.set(creator, info.season);
     const t = new Tournament(info, config, ctx, sportProfile)
     t._fromGSGData = creator;
     return t;
