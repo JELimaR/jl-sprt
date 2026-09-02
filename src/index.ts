@@ -24,13 +24,25 @@ export { teamsAssign } from './Tournament/teamsAssign';
 
 // Sport Profiles
 export type { ISportProfile, AnySportProfile, IMatchCreationInfo, ISerieCreationInfo } from './JSportModule/profiles/ISportProfile';
+export { FootballProfile } from './JSportModule/profiles/football/FootballProfile';
+export type { FootballMatchResults, FootballMatchPuntuations, IFootballTeamTableItem } from './JSportModule/profiles/football/FootballTeamTableItem';
 
 // Match (abstract base classes)
 export { A_Match } from './JSportModule/Match/A_Match';
+export type { TypeMatchState } from './JSportModule/Match/A_Match';
 export { A_MatchPlay } from './JSportModule/Match/A_MatchPlay';
 export { A_Result } from './JSportModule/Match/A_Result';
+export type { IA_ResultInfo, TypeTotalScore } from './JSportModule/Match/A_Result';
 export { A_Serie } from './JSportModule/Match/A_Serie';
 export { randomFloat, reseedRandom } from './JSportModule/Match/randomSource';
+
+// Stages
+export { default as Stage } from './Tournament/Stage/Stage';
+export type { TGS } from './Tournament/Stage/Stage';
+export { default as StageGroup } from './Tournament/Stage/StageGroup/StageGroup';
+export { default as League } from './Tournament/Stage/StageGroup/League/League';
+export { Turn } from './Tournament/Stage/StageGroup/League/Turn';
+export type { ITurnInfo } from './Tournament/Stage/StageGroup/League/Turn';
 
 // Data & Config types
 export type {
@@ -55,7 +67,9 @@ export { default as SportServerAPI } from './JSportServerModule';
 // GeneralStageGraph
 export { GeneralStageGraph } from './JSportModule/GeneralStageGraph/GeneralStageGraph';
 export { createGSG } from './JSportModule/GeneralStageGraph/GSGCreators';
+export type { TInitialCreator, TPhaseCreator } from './JSportModule/GeneralStageGraph/GSGCreators';
 export { tournamentFromGSG } from './JSportModule/GeneralStageGraph/tournamentFromGSG';
+export { createStandardGSGDataFromNParticipants } from './JSportModule/GeneralStageGraph/createStandardGSGDataFromNParticipants';
 export type { ITournamentFromGSGData } from './JSportModule/GeneralStageGraph/tournamentFromGSG';
 
 // Entities
