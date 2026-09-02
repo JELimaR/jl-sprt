@@ -7,6 +7,7 @@ import { createGSG, TInitialCreator, TPhaseCreator } from "./GSGCreators";
 import { IStageNodeData, RankGroupNode, StageNode } from "./nodes";
 import { IRealStageNodeData, RealStageNode, StageGroupNode, StagePlayoffNode } from "./RealStageNode";
 import { verifyQualyRulesConditions } from "./verifyQualyRulesConditions";
+import { verifyNoRecross } from "./verifyNoRecross";
 
 export interface ITournamentFromGSGData {
   name: string;
@@ -54,6 +55,10 @@ export function tournamentFromGSG(entry: ITournamentFromGSGData): ITournamentCon
 
   //* verificar las condiciones del ranking final - grupos y tamaños de los grupos por los qualies
   verifyQualyRulesConditions(gsg, entry.qualyRules)
+
+  //* Principio B: no re-cruzar ramas bifurcadas (contigüidad del orden global +
+  //* restricción de reOrder). Ver docs/plans/PRINCIPLE_B_NO_RECROSS.md.
+  verifyNoRecross(gsg)
 
   /* 
    * generar tournament config
