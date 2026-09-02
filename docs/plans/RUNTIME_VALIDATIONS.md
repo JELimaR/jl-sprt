@@ -261,10 +261,15 @@ desbloquea los torneos acoplados descritos en `COUPLED_TOURNAMENTS.md`.
   productor esté dentro del mismo torneo, `sourceStage.hwEnd < consumingStage.hwStart`.
   Evita F2/F6 dentro de un torneo. (`.../ConfigVerify/verifyTournamentConfig.ts`.)
 - **§7 registro de configs** — `TournamentConfigStore` (análogo al `RankingStore`)
-  integrado en `SimulationContext.tournaments`; cada torneo se registra en
-  `Tournament.create`. (`src/Tournament/TournamentConfigStore.ts`.)
+  integrado en `SimulationContext.tournaments`. La ÚNICA puerta de entrada es
+  `set(creator)`, que recibe el creator del GSG y verifica TODO al registrar:
+  `tournamentFromGSG` (individual completa) + `verifyCoupledTournaments`
+  (cross-tournament) sobre el conjunto acumulado. `Tournament.create` delega en
+  `set` y reutiliza el config devuelto. (`src/Tournament/TournamentConfigStore.ts`.)
 - **Fase A — validación cross-tournament** — `verifyCoupledTournaments` +
-  `resolveTournamentBuildOrder` (ver detalle abajo).
+  `resolveTournamentBuildOrder`. ENGANCHADA: corre automáticamente en
+  `TournamentConfigStore.set` sobre todos los configs registrados (tolera
+  productores aún no registrados; valida lo resoluble). (Ver detalle abajo.)
 - **Fase B — resolución diferida** — `RankingStore` observable (`subscribe`) +
   `teamsAssign` (asigna lo resoluble y difiere los `rs_`/`tr_` hasta que el productor
   los escribe) + `reOrder` habilitado. El ejemplo `confederationExample` (A→B) corre

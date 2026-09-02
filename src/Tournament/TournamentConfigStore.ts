@@ -26,8 +26,8 @@ import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/Gener
  *     (tournament + phases + stages + basestage + no-recross). Lanza si el config está mal.
  *  2. `verifyCoupledTournaments(...)` sobre el conjunto acumulado corre la verificación
  *     CROSS-TOURNAMENT (alineación temporal y ausencia de ciclos entre torneos acoplados).
- * El registro puro (sin verificar) queda disponible como `register(config)` para usos
- * internos y para tests del índice/colección.
+ * El registro puro (sin verificar) es privado (`register`): solo lo usa `set` tras
+ * verificar. Fuera del store, la única puerta de entrada es `set(creator)`.
  */
 export class TournamentConfigStore {
   /** Config por `idConfig` del torneo. */
@@ -62,8 +62,8 @@ export class TournamentConfigStore {
   }
 
   /**
-   * Registro PURO de un config ya construido (sin verificar). Lo usa `set` tras
-   * verificar, y está disponible para usos internos / tests del índice y la colección.
+   * Registro PURO de un config ya construido (sin verificar). Uso INTERNO: solo lo
+   * llama `set` tras verificar el creator. No es parte de la API pública del store.
    */
   private register(config: ITournamentConfig): void {
     this._byId.set(config.idConfig, config);

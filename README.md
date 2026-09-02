@@ -149,7 +149,7 @@ console.table(finalRanking.getRankTable().map(r => ({ ...r, team: r.team.id })))
 
 ## Testing
 
-El proyecto usa **vitest**. Los tests se ejecutan con `npm run test`. Actualmente la cobertura es parcial (existe un set de tests para `JCalendar`).
+El proyecto usa **vitest**. Los tests se ejecutan con `npm run test`. La suite cubre desde las unidades básicas (Ranking, GSG, perfiles, stages) hasta la simulación de temporadas completas (integración end-to-end), incluyendo torneos acoplados y validaciones estructurales del grafo.
 
 ## Licencia
 

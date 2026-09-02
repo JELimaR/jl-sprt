@@ -135,40 +135,19 @@ routing por identidad ni por nombre. Consecuencias:
   llegar al primer lugar (el peor sembrado tiene camino al título). Queremos más
   validaciones de coherencia de orden (abajo).
 
-## B) Las bifurcaciones NO se pueden volver a cruzar
+## B) Las bifurcaciones NO se pueden volver a cruzar (Principio B)
 
-Cuando un stage parte su ranking de salida en rank groups, **cada rank group es una
-rama**. Una rama se "bifurca" de otra cuando ambas salen del mismo stage pero se
-rutean a destinos distintos en la fase siguiente.
+> **SUPERSEDED.** Este principio se especificó por completo y se implementó como
+> `verifyNoRecross`. La explicación operativa, la formalización y los ejemplos
+> viven ahora en **`docs/plans/PRINCIPLE_B_NO_RECROSS.md`** (y la validación en
+> `src/JSportModule/GeneralStageGraph/verifyNoRecross.ts`, enganchada en
+> `tournamentFromGSG`). Ver ese documento; acá solo queda el puntero para no
+> duplicar la definición.
 
-Lo que hay que entender bien (y que antes estaba mal explicado):
-
-- Bifurcarse **NO** significa "una rama sigue y la otra muere". Cualquier rama puede
-  seguir compitiendo en **su propio** stage. Los perdedores de una llave pueden ir a
-  otro `StageNode` a definir sus posiciones entre ellos con partidos reales — no
-  necesariamente a un `transfer` que los arrastra al `FinalNode`.
-- El caso extremo es un torneo tipo **vóley olímpico**, donde se definen TODAS las
-  posiciones (1º, 3º, 5º, 7º...) por partido: cada rama que "cae" sigue jugando entre
-  los suyos para ordenar su tramo de la tabla. Eso es perfectamente válido.
-
-La regla, entonces, es más acotada: **dos ramas que YA se bifurcaron no pueden volver
-a juntarse en un mismo stage posterior.** Lo prohibido es el *re-encuentro*, no que
-una rama siga compitiendo. Un equipo que quedó en la rama de "perdedores" puede jugar
-todo lo que haga falta, pero solo contra equipos de su misma rama (o de ramas que
-nunca se separaron de la suya); no puede reaparecer en un stage junto a la rama de la
-que se separó. Refleja la realidad deportiva: si perdiste la llave del título, seguís
-jugando por el 5º puesto, pero no volvés a la rama del campeón.
-
-Hoy el sistema NO valida esto: el enrutamiento por índice permite, en principio, que
-el diseñador vuelva a juntar ramas ya separadas. Falta una validación de
-alcanzabilidad que, para cada `StageNode`, verifique que los rank groups que recibe NO
-provengan de ramas que ya se bifurcaron entre sí (ver §D.1 y RUNTIME_VALIDATIONS.md).
-
-Relacionado (lo que SÍ hay hoy): `verifyPhaseCreator` obliga a rutear TODOS los rank
-groups en cada fase (Σcount == RGs previos). Entonces una rama no puede "quedar
-colgada" silenciosamente: o la consume un stage, o la arrastra un `transfer` hasta el
-FinalNode. No hay "auto-eliminación"; el cierre de cada rama es explícito. Pero eso
-NO impide re-cruzar: solo garantiza que nada quede sin rutear.
+En una frase: dos ramas que se separaron en una bifurcación no pueden volver a
+juntarse en un mismo stage posterior. Equivale a preservar el orden global del
+ranking (cada stage consume un rango contiguo); el único nodo que puede romperlo es
+`reOrder`, y solo es legítimo con una fuente externa al torneo.
 
 ## C) Ramas que siguen compitiendo (definir CUALQUIER posición, no solo el título)
 
@@ -199,11 +178,14 @@ solo al fondo de la tabla).
 
 ## D) Validaciones objetivo (resumen de lo que falta)
 
-1. **No re-cruzar ramas bifurcadas** (principio B).
+1. **No re-cruzar ramas bifurcadas** (principio B). ✅ IMPLEMENTADO: `verifyNoRecross`
+   (ver `docs/plans/PRINCIPLE_B_NO_RECROSS.md`).
 2. **Orden del sembrado**: que los entrantes que saltean fases estén arriba, y que el
    reOrder solo se use para acomodar el emparejamiento, no para violar el sembrado.
 3. **Dependencia temporal** (Problema 3): `hwStart` de un stage posterior al `hwEnd`
-   de sus fuentes.
+   de sus fuentes. ✅ IMPLEMENTADO: intra-torneo en `verifyTournamentConfig` y
+   cross-tournament en `verifyCoupledTournaments` (ambas se ejecutan al registrar el
+   torneo en `TournamentConfigStore.set`).
 4. **Cupos por federación / confederación** (Problema 4): sin solapamientos ni saltos
    de posiciones entre torneos.
 5. **Entradas desconocidas al inicio** (Problema 1): permitir que parte del ranking
