@@ -1,4 +1,6 @@
 import { getStagesOfTournament, ITournamentConfig } from "../JSportModule/data";
+import { verifyCoupledTournaments } from "../JSportModule/data/ConfigVerify/verifyCoupledTournaments";
+import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
 
 /**
  * TournamentConfigStore es el registro en memoria de los `ITournamentConfig` de una
@@ -17,6 +19,15 @@ import { getStagesOfTournament, ITournamentConfig } from "../JSportModule/data";
  * Es un registro EN MEMORIA (no una DB): resuelve la coordinación dentro de una corrida,
  * no la persistencia entre sesiones. Pero es el paso que la habilita después: una vez que
  * todos los configs viven acá con una API clara, serializarlos es un agregado natural.
+ *
+ * VERIFICACIÓN AL REGISTRAR: `set(creator)` es el punto donde se verifica TODO en el
+ * momento de crear los torneos (no se difieren errores a temporadas siguientes):
+ *  1. `tournamentFromGSG(creator)` corre la verificación INDIVIDUAL completa del torneo
+ *     (tournament + phases + stages + basestage + no-recross). Lanza si el config está mal.
+ *  2. `verifyCoupledTournaments(...)` sobre el conjunto acumulado corre la verificación
+ *     CROSS-TOURNAMENT (alineación temporal y ausencia de ciclos entre torneos acoplados).
+ * El registro puro (sin verificar) queda disponible como `register(config)` para usos
+ * internos y para tests del índice/colección.
  */
 export class TournamentConfigStore {
   /** Config por `idConfig` del torneo. */
@@ -31,9 +42,30 @@ export class TournamentConfigStore {
   constructor() {}
 
   /**
-   * Registra (o reemplaza) el config de un torneo por su `idConfig`.
+   * Registra un torneo A PARTIR DE SU CREATOR (el dibujo declarativo del GSG),
+   * VERIFICÁNDOLO por completo en el momento:
+   *  1. `tournamentFromGSG(creator)` -> config, con toda la verificación individual
+   *     (lanza si el torneo está mal definido).
+   *  2. registra el config resultante.
+   *  3. `verifyCoupledTournaments` sobre TODOS los configs registrados -> verificación
+   *     cross-tournament (alineación temporal + ciclos). Tolera productores aún no
+   *     registrados (valida solo lo resoluble), así el orden de creación no importa.
+   *
+   * Devuelve el `ITournamentConfig` construido para que el llamador lo reutilice sin
+   * re-ejecutar `tournamentFromGSG`.
    */
-  set(config: ITournamentConfig): void {
+  set(creator: ITournamentFromGSGData): ITournamentConfig {
+    const config = tournamentFromGSG(creator); // (1) verificación individual completa
+    this.register(config);                     // (2) registro
+    verifyCoupledTournaments(this.all());      // (3) verificación cross-tournament
+    return config;
+  }
+
+  /**
+   * Registro PURO de un config ya construido (sin verificar). Lo usa `set` tras
+   * verificar, y está disponible para usos internos / tests del índice y la colección.
+   */
+  private register(config: ITournamentConfig): void {
     this._byId.set(config.idConfig, config);
     this._stageIndex = null; // invalida el índice derivado
   }

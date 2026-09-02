@@ -2,7 +2,7 @@ import { JCalendar } from "jl-calendar";
 import { IGenericRankItem, Ranking, TCC } from "../JSportModule";
 import { IElementInfo, IPhaseConfig, ITournamentConfig } from "../JSportModule/data";
 import { createGSG } from "../JSportModule/GeneralStageGraph/GSGCreators";
-import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
+import { ITournamentFromGSGData } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
 import { AnySportProfile } from "../JSportModule/profiles/ISportProfile";
 import Phase from "./Phase";
 import { SimulationContext } from "./SimulationContext";
@@ -93,13 +93,14 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
 
   //
   static create(info: IElementInfo, creator: ITournamentFromGSGData, ctx: SimulationContext, sportProfile: AnySportProfile): Tournament {
-    const config = tournamentFromGSG(creator)
+    // El registro en el store es el ÚNICO punto de construcción/verificación: `set`
+    // corre tournamentFromGSG (verificación individual completa) + verifyCoupledTournaments
+    // (cross-tournament) sobre todo el conjunto, y devuelve el config ya construido. Así
+    // se verifica TODO al crear el torneo, sin re-ejecutar tournamentFromGSG.
+    // Ver docs/plans/RUNTIME_VALIDATIONS.md §7.
+    const config = ctx.tournaments.set(creator);
     const t = new Tournament(info, config, ctx, sportProfile)
     t._fromGSGData = creator;
-    // Registrar el config en el store de torneos del contexto. Así, cuando corra la
-    // validación cross-tournament o la resolución diferida de equipos, el registro ya
-    // tiene todos los torneos de la simulación. Ver docs/plans/RUNTIME_VALIDATIONS.md §7.
-    ctx.tournaments.set(config);
     return t;
   }
 
