@@ -135,6 +135,39 @@ fecha/hora a la definitiva).
 - **app**: consumir `cal.events` para pintar el fixture completo desde el inicio
   (deja de depender de leer `stage.groups[].turns[]`).
 
+### Limitación importante: los equipos NO siempre están definidos
+
+P1 asume que "al crear el torneo ya se conocen los partidos". Esto es cierto en una
+**liga/round-robin** (tras el sorteo inicial se conoce el fixture completo con equipos
+concretos), pero **NO en playoffs/eliminación**: los partidos de rondas futuras
+dependen de quién gane las anteriores, así que sus equipos están **indefinidos** hasta
+que se resuelven las rondas previas (hoy `Event_RoundCreationAndTeamsDraw` crea las
+rondas a medida que avanza).
+
+Consecuencia para el modelado:
+
+- Un `JEventMatch` "desde el inicio" puede existir con **fecha media tentativa** pero
+  con **participantes aún no resueltos**. Necesita representar "partido placeholder"
+  (p. ej. "Ganador R1-S1 vs Ganador R1-S2") hasta que el draw fije los equipos.
+- Opciones: (a) crear el evento con referencia a los *slots* (posiciones a resolver) y
+  que el draw complete los equipos + reubique la fecha; o (b) limitar P1 a fases de
+  fixture conocido (liga) y en playoffs seguir creando los `JEventMatch` en el draw.
+- El label/kind del evento debe tolerar equipos indefinidos (mostrar el slot, no un
+  nombre de equipo). Esto ya lo permite `label` (string libre).
+
+Por lo tanto, P1 se implementa **primero para ligas** (fixture conocido) y se deja el
+caso de playoffs como una extensión con "partidos placeholder".
+
+### La regla de scheduling es un atributo del torneo (la fija su organizador)
+
+Quién define **cómo se programan** los partidos de un torneo es la **entidad
+organizadora** (federación/confederación) al crearlo, no la app ni un default global.
+Por lo tanto la `SchedulingPolicy` (P2) debe **viajar en el config/data del torneo**:
+entrar por el GSG / `ITournamentFromGSGData` (o su equivalente) como parte de la
+definición del torneo, y quedar registrada en el config del torneo. Es dominio →
+jl-sprt. La app solo elige *si sigue de cerca* ese torneo (ver P2, punto 6), no la
+regla en sí.
+
 ---
 
 ## Problema 2 — Eventos automáticos vs eventos interactivos (que piden decisión al usuario)
@@ -207,6 +240,74 @@ llegue". Es un modelo *pull*/interactivo para ciertos eventos, en vez de *push* 
    ```
    pero la decisión clave de este problema es el **mecanismo de pausa/resolución**
    (puntos 1–3), no solo la estrategia.
+
+5. **Escala: miles de torneos corriendo, freno selectivo (requisito clave).** En
+   producción habrá muchísimos torneos simultáneos. El usuario NO quiere programar a
+   mano todos los partidos ni que la simulación se detenga a pedir decisiones por cada
+   uno. Quiere seguir de cerca **algunos** (interactivos) y dejar que **el resto** corra
+   solo con reglas automáticas.
+
+   Esto **no requiere ningún cambio en jl-calendar**: `requiresInput` es **por evento**,
+   no global. `advanceIntervals(n)` puede procesar decenas de miles de eventos
+   automáticos y frenar **solo** en los pocos que declaran `requiresInput = true`. El
+   "no frenar en los no seleccionados" es literalmente `requiresInput = false` en sus
+   eventos.
+
+   La granularidad natural es **por torneo/competición**: cada torneo lleva una
+   `SchedulingPolicy` (y análogamente políticas para otros eventos decidibles, p. ej.
+   sorteos). Torneos "seguidos por el usuario" → política manual (eventos interactivos);
+   el resto → política automática (eventos que se autoresuelven con una regla que
+   distribuye fechas de forma coherente). Cambiar el foco del usuario = cambiar qué
+   política tiene ese torneo, sin tocar el motor de avance ni el calendario.
+
+   Reparto de este requisito:
+   - **jl-calendar**: nada nuevo (el freno selectivo ya sale de `requiresInput` por
+     evento). ✔ ya está.
+   - **jl-sprt**: `SchedulingPolicy` inyectable por torneo; los eventos decidibles
+     consultan su política para setear `requiresInput` y para su `execute()`/`resolve()`
+     automático. Debe ser barata para el caso automático (miles de torneos).
+   - **app**: elegir qué torneos se siguen de cerca (asignarles política manual),
+     detectar el freno (`getPendingInteractiveEvent`) y pedir la decisión; el resto de
+     torneos corre sin intervención.
+
+   Rendimiento: como los eventos automáticos no frenan y (con P1) los `JEventMatch` ya
+   existen, `advanceIntervals` los procesa en batch sin round-trips a la UI. El costo es
+   el de simular, no el de pausar. Persistencia/determinismo (punto de "Implicancias"):
+   las decisiones manuales se guardan; las automáticas se re-derivan de la regla + semilla.
+
+6. **La resolución es un DATO agnóstico de su origen (desacople clave).** `resolve()`
+   recibe una `IEventResolution`; al evento/calendario **no le importa** si esa
+   resolución la eligió un humano en la UI, la calculó una regla automática, o viene
+   pregrabada de una re-simulación. Son el mismo `resolve(resolution)`. Esto habilita
+   tres caminos con el mismo mecanismo:
+
+   | Escenario | `requiresInput` | Quién produce la resolución | ¿Frena? |
+   |---|---|---|---|
+   | Torneo automático masivo | `false` | el propio `execute()` con la regla | no |
+   | Torneo seguido, decide el usuario | `true` | la UI (manual) → `resolve()` | sí |
+   | Torneo seguido, "resolvelo por mí ahora" | `true` | la app calcula con la regla → `resolve()` | sí |
+
+   La fila 3 es la observación clave: la app, como agente externo, puede pasarle a un
+   evento pendiente una resolución **generada automáticamente**, y el evento no
+   distingue ese caso del manual. Para masivo (fila 1) conviene NO frenar
+   (`requiresInput = false`, autoresuelto en `execute()`), evitando 10.000 pausas.
+
+   **Dónde vive cada parte de la "scheduling policy"** (dos cosas distintas, no
+   mezclar):
+   - **(a) La regla de dominio — "cómo se distribuyen las fechas de una ronda"** →
+     **jl-sprt.** Lógica deportiva pura: repartir partidos en la ventana de medias
+     semanas, no fijar siempre el mismo día/hora, evitar choques, respetar descansos.
+     Determinista y testeable sin UI. Produce/consume la `IEventResolution` de
+     scheduling. **Debe ser reutilizable**: la misma regla que usa el `execute()`
+     automático (fila 1) la puede invocar la app para autogenerar una resolución
+     (fila 3). Una sola implementación de "cómo repartir fechas".
+   - **(b) La preferencia del usuario — "a este torneo lo sigo, a estos 5.000 no"** →
+     **app.** No es dominio, es intención de sesión. La app decide, por torneo, si usa
+     política automática (dominio) o lo marca interactivo para pedir input.
+
+   Resumen: **el "cómo programar" es de jl-sprt; el "quién decide / a cuáles presto
+   atención" es de la app.** El puente entre ambos es la `IEventResolution`, agnóstica
+   de su origen.
 
 ### Implicancias
 

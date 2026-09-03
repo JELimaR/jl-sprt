@@ -27,6 +27,8 @@ export default class Team {
 	}
   
 	get id(): string {return `${this._category}_${this._entity.id}`}
+  /** Nombre legible del team (nombre de su entidad). Para mostrar en UI/labels. */
+  get name(): string { return this._entity.name }
   get entity(): Institution | Federation { return this._entity }
 	get matches(): A_Match<any>[] { return this._matches }
 

@@ -13,6 +13,7 @@ const SEED = 13;
 function fakeTeam(id: string): Team {
   const t: Partial<Team> = {
     id,
+    name: id,
     getTeamMatch: () => new TeamMatch(id),
     addNewMatch: () => {},
     addStage: () => {},
@@ -33,14 +34,16 @@ function matchInfo(overrides: Partial<IMatchCreationInfo> = {}): IMatchCreationI
   };
 }
 
-// Cada profile con un tope de intervalos holgado para garantizar que termine.
-const PROFILES: { name: string; profile: ISportProfile<any, any, any, any>; maxIntervals: number }[] = [
-  { name: 'football', profile: new FootballProfile(), maxIntervals: 60 },
-  { name: 'volleyball', profile: new VolleyballProfile(), maxIntervals: 400 },
-  { name: 'americanFootball', profile: new AmericanFootballProfile(), maxIntervals: 60 },
+// Modelo emergente: cada advance() = 1 intervalo (5 min de juego). La duración del
+// partido EMERGE de la simulación (no se declara). `maxReasonable` es un tope holgado
+// para verificar que termina en una cantidad realista de intervalos (no 15 horas).
+const PROFILES: { name: string; profile: ISportProfile<any, any, any, any>; maxReasonable: number }[] = [
+  { name: 'football', profile: new FootballProfile(), maxReasonable: 40 },       // ~90 min → ~18 int
+  { name: 'volleyball', profile: new VolleyballProfile(), maxReasonable: 80 },    // ~4 rallies/int
+  { name: 'americanFootball', profile: new AmericanFootballProfile(), maxReasonable: 60 },
 ];
 
-describe.each(PROFILES)('JEventMatch durativo - profile $name', ({ profile, maxIntervals }) => {
+describe.each(PROFILES)('JEventMatch durativo - profile $name', ({ profile, maxReasonable }) => {
   beforeEach(() => reseedRandom(SEED));
 
   function setup() {
@@ -92,9 +95,10 @@ describe.each(PROFILES)('JEventMatch durativo - profile $name', ({ profile, maxI
     expect(match.state).toBe('playing');
   });
 
-  it('avanzar suficientes intervalos termina el partido (finish + resolved)', () => {
+  it('el partido termina en una cantidad REALISTA de intervalos (no 15 horas)', () => {
     const { cal, ev, match } = setup();
-    cal.advanceIntervals(maxIntervals);
+    // Avanzar hasta un tope holgado pero realista: debe haber terminado dentro de él.
+    cal.advanceIntervals(1 + maxReasonable);
     expect(match.isFinished).toBe(true);
     expect(ev.lifecycle).toBe('finished');
     expect(ev.status).toBe('resolved');
@@ -114,5 +118,53 @@ describe.each(PROFILES)('JEventMatch durativo - profile $name', ({ profile, maxI
     ev.execute();
     expect(match.isFinished).toBe(true);
     expect(match.result).toBeDefined();
+  });
+});
+
+describe('Descansos', () => {
+  beforeEach(() => reseedRandom(SEED));
+
+  function driveMatch(profile: ISportProfile<any, any, any, any>) {
+    const base = JDateTime.createFromDayOfYearAndYear(1, 2000);
+    const match = profile.createMatch(matchInfo({ allowedDraw: false }));
+    const start = base.copy();
+    start.addInterv(1);
+    match.schedule(start);
+    match.start();
+    return match;
+  }
+
+  it('football: hay un entretiempo (un intervalo sin avanzar el tiempo de juego)', () => {
+    const match = driveMatch(new FootballProfile());
+    let sawPause = false;
+    let guard = 0;
+    while (match.state !== 'finished' && guard < 200) {
+      const before = match['_playing'].time;
+      match.advance();
+      // pausa = el partido sigue jugándose pero el tiempo de juego no avanzó
+      if (match.state === 'playing' && match['_playing'].time === before) {
+        sawPause = true;
+      }
+      guard++;
+    }
+    expect(sawPause).toBe(true);
+  });
+
+  it('vóley: activa un descanso entre sets (breakLeft > 0 tras cerrar un set)', () => {
+    const match = driveMatch(new VolleyballProfile());
+    const play = match['_playing'];
+
+    let sawBreakActivated = false;
+    let guard = 0;
+    while (match.state !== 'finished' && guard < 500) {
+      match.advance();
+      // Tras un advance que cerró un set (partido en curso), el mecanismo deja pendiente
+      // al menos un intervalo de descanso.
+      if (match.state === 'playing' && play['_breakLeft'] > 0) {
+        sawBreakActivated = true;
+      }
+      guard++;
+    }
+    expect(sawBreakActivated).toBe(true);
   });
 });
