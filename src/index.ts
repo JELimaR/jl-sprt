@@ -3,8 +3,8 @@
 // ============================================================================
 
 // Calendar (re-exported from the jl-calendar package)
-export { JCalendar, JDateTime, JDate, JTime, DateToString, JEvent } from 'jl-calendar';
-export type { IJDateTimeCreator, TypeHalfWeekOfYear, TypeIntervalOfDay, IJEventInfo } from 'jl-calendar';
+export { JCalendar, JDateTime, JDate, JTime, DateToString, JEvent, JInstantEvent, JDurativeEvent } from 'jl-calendar';
+export type { IJDateTimeCreator, TypeHalfWeekOfYear, TypeIntervalOfDay, IJEventInfo, IEventResolution, JEventStatus, JEventLifecycle, TickResult } from 'jl-calendar';
 
 // Ranking
 export { Ranking } from './JSportModule/Ranking/Ranking';
@@ -26,6 +26,9 @@ export { teamsAssign } from './Tournament/teamsAssign';
 export type { ISportProfile, AnySportProfile, IMatchCreationInfo, ISerieCreationInfo } from './JSportModule/profiles/ISportProfile';
 export { FootballProfile } from './JSportModule/profiles/football/FootballProfile';
 export type { FootballMatchResults, FootballMatchPuntuations, IFootballTeamTableItem } from './JSportModule/profiles/football/FootballTeamTableItem';
+export { VolleyballProfile } from './JSportModule/profiles/volleyball/VolleyballProfile';
+export type { VolleyMatchResults, VolleyMatchPuntuations, IVolleyTeamTableItem } from './JSportModule/profiles/volleyball/VolleyTeamTableItem';
+export type { IVolleyScore } from './JSportModule/profiles/volleyball/VolleyScore';
 
 // Match (abstract base classes)
 export { A_Match } from './JSportModule/Match/A_Match';
@@ -43,6 +46,14 @@ export { default as StageGroup } from './Tournament/Stage/StageGroup/StageGroup'
 export { default as League } from './Tournament/Stage/StageGroup/League/League';
 export { Turn } from './Tournament/Stage/StageGroup/League/Turn';
 export type { ITurnInfo } from './Tournament/Stage/StageGroup/League/Turn';
+
+// Eventos concretos (necesarios para discriminar eventos del calendario).
+// WARNING: exponer estas clases para hacer `instanceof` es un workaround temporal.
+// La solución definitiva es un contrato kind/label en el JEvent base (ver docs/BUGS.md).
+export { Event_StageStart } from './Tournament/Stage/Event_StageStart';
+export { Event_StageEnd } from './Tournament/Stage/Event_StageEnd';
+export { Event_ScheduleOfTurnMatches } from './Tournament/Stage/StageGroup/League/Event_ScheduleOfTurnMatches';
+export { JEventMatch } from './JSportModule/Match/EventMatch';
 
 // Data & Config types
 export type {
@@ -100,8 +111,9 @@ export { getInstitutionsData, getFederationData, getConfederationData } from './
 import APIExample from './examples/APIExample';
 import baseStageExample from './examples/baseStageExample';
 import volleyBaseStageExample from './examples/volleyBaseStageExample';
+import americanFootballBaseStageExample from './examples/americanFootballBaseStageExample';
 import fede_inst_Example from './examples/fede_inst_Example';
-import graphExample from './examples/graphExample';
+// import graphExample from './examples/graphExample';
 import specialStageGroupExample from './examples/specialStageGroupExample';
 import stageExample01 from './examples/stageExample01';
 import stageExample02 from './examples/stageExample02';
@@ -117,12 +129,13 @@ import confederationExample from './examples/confederationExample';
 function runExamples() {
   baseStageExample();
   volleyBaseStageExample();
+  americanFootballBaseStageExample();
   stageExample01();
   stageExample02();
   stageLeagueExample();
   specialStageGroupExample();
   stageExample03();
-  graphExample();
+  // graphExample();
   systemExample_01();
   fede_inst_Example();
   confederationExample();

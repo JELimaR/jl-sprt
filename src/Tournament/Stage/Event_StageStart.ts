@@ -1,4 +1,4 @@
-import { IJEventInfo, JEvent } from "jl-calendar";
+import { IJEventInfo, JInstantEvent } from "jl-calendar";
 import { IRankItem } from "../../JSportModule";
 import { RankingStore } from "../../JSportModule/Ranking/RankingStore";
 import { TGS } from "./Stage";
@@ -11,7 +11,7 @@ export interface IEvent_StageStartInfo extends IJEventInfo {
 /**
  * Este evento implica la asignacion de los teams, lo que provocara la creación de los eventos de draw de los BaseStage
  */
-export class Event_StageStart extends JEvent {
+export class Event_StageStart extends JInstantEvent {
   private _stage: TGS;
   private _store: RankingStore;
   constructor(ie_ssi: IEvent_StageStartInfo) {
@@ -19,6 +19,9 @@ export class Event_StageStart extends JEvent {
     this._stage = ie_ssi.stage;
     this._store = ie_ssi.store;
   }
+
+  get kind(): string { return 'stage-start'; }
+  get label(): string { return `Inicio de stage ${this._stage.info.id}`; }
 
   execute() {
     console.log(`ejecuting starting and teams draw from stage: ${this._stage.info.id}  (${this._stage.info.season})`);

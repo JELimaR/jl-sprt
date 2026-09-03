@@ -1,4 +1,4 @@
-import { IJEventInfo, JEvent, JDateTime, TypeHalfWeekOfYear } from "jl-calendar";
+import { IJEventInfo, JInstantEvent, JDateTime, TypeHalfWeekOfYear } from "jl-calendar";
 import { Round } from "./Round";
 import SingleElmination from './SingleElmination';
 import { arr2 } from '../../../../JSportModule';
@@ -10,7 +10,7 @@ export interface IEvent_ScheduleOfRoundMatchesInfo extends IJEventInfo {
 	playoff: SingleElmination;
 }
   
-export class Event_ScheduleOfRoundMatches extends JEvent {
+export class Event_ScheduleOfRoundMatches extends JInstantEvent {
 	// evento que implica una configuracion necesaria
 	_round: Round;
 	_playoff: SingleElmination;
@@ -24,6 +24,9 @@ export class Event_ScheduleOfRoundMatches extends JEvent {
       throw error
     }
 	}
+
+	get kind(): string { return 'schedule'; }
+	get label(): string { return `Programación ronda ${this._round.num}`; }
 
 	execute() {
 		console.log(`ejecuting match scheduling for Round number: ${this._round.num}`);

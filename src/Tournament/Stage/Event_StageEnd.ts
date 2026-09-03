@@ -1,4 +1,4 @@
-import { IJEventInfo, JEvent } from "jl-calendar";
+import { IJEventInfo, JInstantEvent } from "jl-calendar";
 import { Ranking } from "../../JSportModule";
 import { RankingStore } from "../../JSportModule/Ranking/RankingStore";
 import { TGS } from "./Stage";
@@ -11,7 +11,7 @@ export interface IEvent_StageEndInfo extends IJEventInfo {
 /**
  * Este evento implica la finalización de un stage, lo cual genera que se agregue al store de rankings.
  */
-export class Event_StageEnd extends JEvent {
+export class Event_StageEnd extends JInstantEvent {
   private _stage: TGS;
   private _store: RankingStore;
   constructor(ie_sei: IEvent_StageEndInfo) {
@@ -19,6 +19,9 @@ export class Event_StageEnd extends JEvent {
     this._stage = ie_sei.stage;
     this._store = ie_sei.store;
   }
+
+  get kind(): string { return 'stage-end'; }
+  get label(): string { return `Cierre de stage ${this._stage.info.id}`; }
 
   execute() {
     console.log(`ejecuting finishing stage: ${this._stage.info.id} (${this._stage.info.season})`);

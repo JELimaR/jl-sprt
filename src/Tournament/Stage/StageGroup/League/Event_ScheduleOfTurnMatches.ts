@@ -1,4 +1,4 @@
-import { IJEventInfo, JEvent, JDateTime } from "jl-calendar";
+import { IJEventInfo, JInstantEvent, JDateTime } from "jl-calendar";
 import { Turn } from "./Turn";
 import League from './League';
 import { A_Match } from "../../../../JSportModule/Match/A_Match";
@@ -10,7 +10,7 @@ export interface IEvent_ScheduleOfTurnMatchesInfo extends IJEventInfo {
 	league: League;
 }
   
-export class Event_ScheduleOfTurnMatches extends JEvent {
+export class Event_ScheduleOfTurnMatches extends JInstantEvent {
 	// evento que implica una configuracion necesaria
 	_turn: Turn;
 	// _leagueData: ITCCDATA<ILeagueInfo, ILeagueConfig>
@@ -25,6 +25,9 @@ export class Event_ScheduleOfTurnMatches extends JEvent {
       throw error
     }
 	}
+
+	get kind(): string { return 'schedule'; }
+	get label(): string { return `Programación jornada ${this._turn.num}`; }
 
 	execute() {
 		console.log(`ejecuting match scheduling for matchHWeek number: ${this._turn.num}`);
