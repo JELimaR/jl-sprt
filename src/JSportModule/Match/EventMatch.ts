@@ -81,6 +81,7 @@ export class JEventMatch extends JDurativeEvent {
     }
   }
 
+  // BORRAR
   private formatScore(score: number | IVolleyScore): string {
     // Si es un número (Fútbol, Basket, etc.)
     if (typeof score === 'number') {

@@ -22,7 +22,7 @@
 //   // country: JCountry; // JCountry
 //   // founders: JInstitution[];
 //   // headquarters: any; // JTown
-//   // dateTimeCreator: IJDateTimeCreator;
+//   // dateTimeCreator: IJDTCreator;
 // }
 
 // export default class JFederation extends JSportOrganization<JCountry, JInstitution> {
@@ -91,7 +91,7 @@
 //       }
 //       const year = this.calendar.now.getDateTime().date.year + (forNextSeason ? 0 : 1);// 0 o 1
 //       this.calendar.addEvent( new JEventChangeFederationReadingConfig({
-//         dateTime: JDateTime.createFromDayOfYearAndYear(DAYSPERYEAR as TypeDayOfYear, year).getIJDateTimeCreator(),
+//         dateTime: JDateTime.createFromDayOfYearAndYear(DAYSPERYEAR as TypeDayOfYear, year).getCreator(),
 //         calendar: this.calendar,
 //         fed: this,
 //         config: {type: 'l', config: ilsc},
@@ -103,7 +103,7 @@
 
 //     const year = this.calendar.now.getDateTime().date.year;
 //     this.calendar.addEvent( new JEventChangeFederationReadingConfig({
-//       dateTime: JDateTime.createFromDayOfYearAndYear(DAYSPERYEAR as TypeDayOfYear, year).getIJDateTimeCreator(),
+//       dateTime: JDateTime.createFromDayOfYearAndYear(DAYSPERYEAR as TypeDayOfYear, year).getCreator(),
 //       calendar: this.calendar,
 //       fed: this,
 //       config: {type: 'c', config: icsc},

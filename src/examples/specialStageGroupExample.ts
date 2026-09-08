@@ -14,7 +14,7 @@ const selection = getExampleTeams(80, 'Team');
 
 export default function specialStageGroupExample() {
 
-  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 168).getIJDateTimeCreator());
+  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 168).getCreator());
   const ctx = new SimulationContext(cal);
 
   const rankItemArr: IRankItem[] = selection.map((t: Team, i: number) => { return { pos: i + 1, team: t, origin: `C${(i % 13) + 1}` } });

@@ -12,7 +12,7 @@ import { AmericanFootballProfile } from "../JSportModule/profiles/americanFootba
  */
 export default function americanFootballBaseStageExample() {
 
-  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getIJDateTimeCreator());
+  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getCreator());
 
   const selectionL = getExampleTeams(10, 'AFL');
   const selectionC = getExampleTeams(132, 'AFC').slice(100, 133);

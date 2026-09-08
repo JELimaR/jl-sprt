@@ -48,7 +48,7 @@ describe.each(PROFILES)('JEventMatch durativo - profile $name', ({ profile, maxR
 
   function setup() {
     const base = JDateTime.createFromDayOfYearAndYear(1, 2000);
-    const cal = new JCalendar(base.getIJDateTimeCreator());
+    const cal = new JCalendar(base.getCreator());
 
     const match = profile.createMatch(matchInfo({ allowedDraw: false }));
     const start = base.copy();
@@ -56,7 +56,7 @@ describe.each(PROFILES)('JEventMatch durativo - profile $name', ({ profile, maxR
     match.schedule(start); // debe estar 'scheduled' para start()
 
     const ev = new JEventMatch({
-      dateTime: start.getIJDateTimeCreator(),
+      dateTime: start.getCreator(),
       calendar: cal,
       match,
     });
@@ -81,7 +81,7 @@ describe.each(PROFILES)('JEventMatch durativo - profile $name', ({ profile, maxR
     expect(ev.lifecycle).toBe('process');
     expect(['playing', 'finished']).toContain(match.state);
     expect(ev.status).toBe('idle'); // no interactivo, no bloquea
-    expect(cal.getPendingInteractiveEvent()).toBeNull();
+    expect(cal.getPendingInteractiveEvents().length).toBe(0);
   });
 
   it('avanzar pocos intervalos muestra el partido EN JUEGO (progreso parcial)', () => {
@@ -108,12 +108,12 @@ describe.each(PROFILES)('JEventMatch durativo - profile $name', ({ profile, maxR
 
   it('execute() sigue funcionando como fallback (partido completo de una)', () => {
     const base = JDateTime.createFromDayOfYearAndYear(1, 2000);
-    const cal = new JCalendar(base.getIJDateTimeCreator());
+    const cal = new JCalendar(base.getCreator());
     const match = profile.createMatch(matchInfo({ allowedDraw: false }));
     const start = base.copy();
     start.addInterv(1);
     match.schedule(start);
-    const ev = new JEventMatch({ dateTime: start.getIJDateTimeCreator(), calendar: cal, match });
+    const ev = new JEventMatch({ dateTime: start.getCreator(), calendar: cal, match });
 
     ev.execute();
     expect(match.isFinished).toBe(true);

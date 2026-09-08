@@ -11,7 +11,7 @@ import { VolleyballProfile } from "../JSportModule/profiles/volleyball/Volleybal
  */
 export default function volleyBaseStageExample() {
 
-  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getIJDateTimeCreator());
+  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getCreator());
 
   const selectionL = getExampleTeams(10, 'VL');
   const selectionC = getExampleTeams(132, 'VC').slice(100, 133);

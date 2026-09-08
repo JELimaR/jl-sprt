@@ -103,7 +103,7 @@ function ligaConfig(): ITournamentFromGSGData {
 }
 
 function newCtx(): SimulationContext {
-  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, SEASON).getIJDateTimeCreator());
+  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, SEASON).getCreator());
   return new SimulationContext(cal);
 }
 

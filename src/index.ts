@@ -4,7 +4,7 @@
 
 // Calendar (re-exported from the jl-calendar package)
 export { JCalendar, JDateTime, JDate, JTime, DateToString, JEvent, JInstantEvent, JDurativeEvent } from 'jl-calendar';
-export type { IJDateTimeCreator, TypeHalfWeekOfYear, TypeIntervalOfDay, IJEventInfo, IEventResolution, JEventStatus, JEventLifecycle, TickResult } from 'jl-calendar';
+export type { IJDTCreator, TypeHalfWeekOfYear, TypeIntervalOfDay, IJEventInfo, IEventResolution, JEventStatus, JEventLifecycle, TickResult } from 'jl-calendar';
 
 // Ranking
 export { Ranking } from './JSportModule/Ranking/Ranking';

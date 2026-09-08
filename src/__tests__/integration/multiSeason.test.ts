@@ -120,7 +120,7 @@ function advanceCalendar(cal: JCalendar): void {
 function runSeason(federation: Federation): { d01: string[]; d02: string[] } {
   reseedRandom(SEED);
   const franking = federation.getRanking('S');
-  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, SEASON, 168).getIJDateTimeCreator());
+  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, SEASON, 168).getCreator());
   const ctx = new SimulationContext(cal);
   ctx.store.set(franking.context, franking);
 
@@ -205,7 +205,7 @@ describe("Integración - multi-temporada con ascensos y descensos", () => {
   it("updateRankings lanza si falta el tr_ de una division (temporada no terminada)", () => {
     const federation = buildFederationWithTeams();
     const franking = federation.getRanking('S');
-    const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, SEASON, 168).getIJDateTimeCreator());
+    const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, SEASON, 168).getCreator());
     const ctx = new SimulationContext(cal);
     ctx.store.set(franking.context, franking);
     federation.updateLeagueSystem(twoDivisionLeagueSystem());

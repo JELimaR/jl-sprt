@@ -74,7 +74,7 @@ export class Round {
 		}
 		cal.addEvent(
 			new Event_ScheduleOfRoundMatches({
-				dateTime: dt.getIJDateTimeCreator(),
+				dateTime: dt.getCreator(),
 				calendar: cal,
 				round: this,
 				playoff: playoff

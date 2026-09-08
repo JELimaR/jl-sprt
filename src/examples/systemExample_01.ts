@@ -1,6 +1,6 @@
 
 import { getExampleTeams } from "./ExampleData";
-import { JEvent, JCalendar, IJDateTimeCreator, JDateTime } from "jl-calendar";
+import { JEvent, JCalendar, IJDTCreator, JDateTime } from "jl-calendar";
 import { IFederationData, IGenericRankItem, IRankItem, ITournamentConfig, Ranking, TypeRanking } from "../JSportModule";
 import Team from "../JSportModule/data/Team";
 import { GeneralStageGraph } from "../JSportModule/GeneralStageGraph/GeneralStageGraph";
@@ -49,7 +49,7 @@ class FednAux {
     return Ranking.fromRankItemArr(`fr_S_${this._id}`, rankArr)
   }
 
-  get dateTimeCreation(): IJDateTimeCreator {
+  get dateTimeCreation(): IJDTCreator {
     return {day: this._dateTimeCreation, interv: 100}
   }
 
@@ -93,7 +93,7 @@ export default function systemExample_01() {
   const Y_END = 1164;
   for (let Y = 1158; Y <= Y_END; Y++) {
     console.log('-------------------------------', Y, '------------------------------------')
-    const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, Y, 168).getIJDateTimeCreator());
+    const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, Y, 168).getCreator());
     const ctx = new SimulationContext(cal);
     mostrarFecha(cal.now)
 

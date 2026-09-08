@@ -62,7 +62,7 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
         }
       }
       cal.addEvent(new Event_RoundCreationAndTeamsDraw({ // crear los eventos de draw y round creation
-        dateTime: dt.getIJDateTimeCreator(),
+        dateTime: dt.getCreator(),
         calendar: cal,
         playoff: this,
       }))

@@ -42,7 +42,7 @@ export class Event_ScheduleOfRoundMatches extends JInstantEvent {
 				m.schedule(dt);
 				this.calendar.addEvent(
 					new JEventMatch({
-						dateTime: dt.getIJDateTimeCreator(),
+						dateTime: dt.getCreator(),
 						calendar: this.calendar,
 						match: m
 					})

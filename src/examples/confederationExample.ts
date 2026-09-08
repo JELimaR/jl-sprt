@@ -283,7 +283,7 @@ export default function confederationExample() {
   console.log('-------------------- confederation example --------------------');
 
   // Un único contexto: MISMO calendario y MISMO store para ambos torneos.
-  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, SEASON).getIJDateTimeCreator());
+  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, SEASON).getCreator());
   const ctx = new SimulationContext(cal);
 
   // 1) Sembrar rankings de federación (fr_F001..fr_F014).

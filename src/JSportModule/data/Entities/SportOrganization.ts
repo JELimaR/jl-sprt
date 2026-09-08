@@ -1,4 +1,4 @@
-import { IJDateTimeCreator, JDate, JDateTime } from "jl-calendar";
+import { IJDTCreator, JDate, JDateTime } from "jl-calendar";
 import { TDC } from "../../patterns/templateDataCreator";
 import {GeogEntity, IGeogEntityData, Town } from "./GeogEntity";
 

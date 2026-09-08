@@ -8,7 +8,7 @@ import { FootballProfile } from "../JSportModule/profiles/football/FootballProfi
 
 export default function baseStageExample() {
 
-  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getIJDateTimeCreator());
+  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getCreator());
 
   const selectionL = getExampleTeams(10, 'TL');
   const selectionC = getExampleTeams(132, 'TC').slice(100, 133);

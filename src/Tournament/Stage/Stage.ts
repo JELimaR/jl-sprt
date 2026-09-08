@@ -81,14 +81,14 @@ export default abstract class Stage<I extends IElementInfo, C extends IStageConf
      */
     const startEvent = new Event_StageStart({
       calendar: calendar,
-      dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.hwStart, info.season, 'start').getIJDateTimeCreator(),
+      dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.hwStart, info.season, 'start').getCreator(),
       stage: this,
       store: ctx.store,
     })
 
     const endEvent = new Event_StageEnd({
       calendar: calendar,
-      dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.hwEnd, info.season, 'end', 299).getIJDateTimeCreator(),
+      dateTime: JDateTime.createFromHalfWeekOfYearAndYear(config.hwEnd, info.season, 'end', 299).getCreator(),
       stage: this,
       store: ctx.store,
     })

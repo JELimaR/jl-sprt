@@ -21,7 +21,7 @@ const stages: TGS[] = [];
 
 export default function stageExample03() {
 
-  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getIJDateTimeCreator());
+  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getCreator());
   const ctx = new SimulationContext(cal);
 
   const rankItemArr: IRankItem[] = selection.map((t: Team, i: number) => { return { pos: i + 1, team: t, origin: 'rankingInicial' } });
