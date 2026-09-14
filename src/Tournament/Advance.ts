@@ -2,47 +2,78 @@ import { JCalendar, JDateTime, JEvent, JDurativeEvent, DateToString } from "jl-c
 import { mostrarFecha } from "../mostrarFechaBorrar";
 
 export function AdvanceAll(cal: JCalendar, GUARD: number = 5 * 300 * 378) {
-  let idx: number = 0;
+  
+  advanceAll_1(cal, GUARD);
+  // advanceAll_2(cal, GUARD);
+  // advanceAll_3(cal, GUARD);
+
+}
+
+// Version 1: advanceIntervals
+function advanceAll_1(cal: JCalendar, GUARD: number) {
   let guard: number = 0;
   let NE = cal.getNextEvents();
+  while (
+    !!NE ||
+    cal.getCurrentEventList().length > 0 ||
+    cal.getActiveEvents().length > 0
+  ) {
+    if (NE) {
+      const intervals = JDateTime.difBetween(NE.dt, cal.now) - 1;
+      if (intervals > 0) cal.advanceIntervals(intervals);
+    }
 
-  // while (!!NE) {
+    const res = cal.tick();
+    if (!res.advanced && res.pending.length > 0) {
+      throw new Error(
+        `advanceCalendar detenido por evento pendiente en ${DateToString.Date_DDMMYYYY(cal.now.date)}`
+      );
+    }
 
-  //   const { dt, events } = NE;
+    NE = cal.getNextEvents();
+    if (++guard > GUARD) throw new Error(`advanceCalendar loop: ${DateToString.Date_DDMMYYYY(cal.now.date)}`);
+  }
+}
 
-  //   const INTERVALS = JDateTime.difBetween(dt, cal.now);
-  //   cal.advanceIntervals(INTERVALS);
-  //   NE.events.forEach((e) => console.log('ejecutando: ', e.label))
+// Version 2: tick
+function advanceAll_2(cal: JCalendar, GUARD: number) {
+  let guard: number = 0;
+  let NE = cal.getNextEvents();
+  while (
+    !!NE ||
+    cal.getCurrentEventList().length > 0 ||
+    cal.getActiveEvents().length > 0
+  ) {
+    const res = cal.tick();
 
-  //   while (cal.getActiveEvents().length > 0) {
-  //     cal.tick();
-  //     mostrarFecha(cal.now)
-  //   }
+    if (!res.advanced && res.pending.length > 0) {
+      throw new Error(
+        `advanceCalendar detenido por evento pendiente en ${DateToString.Date_DDMMYYYY(cal.now.date)}`
+      );
+    }
 
-  //   NE = cal.getNextEvents();
-  //   if (++guard > GUARD) throw new Error(`advanceCalendar loop: ${cal.now}`);
-  // }
+    NE = cal.getNextEvents();
+    if (++guard > GUARD) throw new Error(`advanceCalendar loop: ${DateToString.Date_DDMMYYYY(cal.now.date)}`);
+  }
+}
 
-  // while (!!NE) {
-
-  //   const res = cal.advanceIntervals(1);
-  //   // hacer algo con el tickresult
-  //   NE = cal.getNextEvents();
-  //   if (++guard > GUARD) throw new Error(`advanceCalendar loop: ${DateToString.Date_DDMMYYYY(cal.now.date)}`);
-  // }
+// Version 3: idx + execute
+function advanceAll_3(cal: JCalendar, GUARD: number) {
+  let guard: number = 0;
+  let NE = cal.getNextEvents();
+  let idx: number = 0;
 
   while (!!NE && idx < cal.events.length) {
-
     const eve = cal.events[idx];
 
-    console.log()
-    console.log(`event index: ${idx}`)
+    console.log();
+    console.log(`event index: ${idx}`);
     eve.execute();
     mostrarFecha(eve.dateTime);
-    console.log('-------------------------------------------------------------------------------------------------')
+    console.log('-------------------------------------------------------------------------------------------------');
 
     NE = cal.getNextEvents();
     idx++;
-    if (++guard > GUARD) throw new Error(`advanceCalendar loop: ${cal.now.getDateTime().date}`);
+    if (++guard > GUARD) throw new Error(`advanceCalendar loop: ${DateToString.Date_DDMMYYYY(cal.now.date)}`);
   }
 }
