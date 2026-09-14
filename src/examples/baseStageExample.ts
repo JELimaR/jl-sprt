@@ -15,7 +15,7 @@ export default function baseStageExample() {
   const selectionC = getExampleTeams(132, 'TC').slice(100, 133);
 
   // league creation
-  const leagueConfig: ILeagueConfig =  {
+  const leagueConfig: ILeagueConfig = {
     idConfig: 'L1',
     name: 'League Name',
     opt: 'neutral',
@@ -49,10 +49,10 @@ export default function baseStageExample() {
     {
       id: 'C',
       season: 1986
-    },singleConfig, new FootballProfile()  );
+    }, singleConfig, new FootballProfile());
 
   singleElimination.assign(selectionC, cal);
-  // throw new Error(`stop`)
+
   mostrarFecha(cal.now)
 
   AdvanceAll(cal);

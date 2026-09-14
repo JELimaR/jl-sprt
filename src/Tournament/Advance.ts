@@ -3,9 +3,9 @@ import { mostrarFecha } from "../mostrarFechaBorrar";
 
 export function AdvanceAll(cal: JCalendar, GUARD: number = 5 * 300 * 378) {
   
-  advanceAll_1(cal, GUARD);
+  // advanceAll_1(cal, GUARD);
   // advanceAll_2(cal, GUARD);
-  // advanceAll_3(cal, GUARD);
+  advanceAll_3(cal, GUARD);
 
 }
 
@@ -13,11 +13,7 @@ export function AdvanceAll(cal: JCalendar, GUARD: number = 5 * 300 * 378) {
 function advanceAll_1(cal: JCalendar, GUARD: number) {
   let guard: number = 0;
   let NE = cal.getNextEvents();
-  while (
-    !!NE ||
-    cal.getCurrentEventList().length > 0 ||
-    cal.getActiveEvents().length > 0
-  ) {
+  while (cal.hasEventsToProcess()) {
     if (NE) {
       const intervals = JDateTime.difBetween(NE.dt, cal.now) - 1;
       if (intervals > 0) cal.advanceIntervals(intervals);
@@ -39,11 +35,7 @@ function advanceAll_1(cal: JCalendar, GUARD: number) {
 function advanceAll_2(cal: JCalendar, GUARD: number) {
   let guard: number = 0;
   let NE = cal.getNextEvents();
-  while (
-    !!NE ||
-    cal.getCurrentEventList().length > 0 ||
-    cal.getActiveEvents().length > 0
-  ) {
+  while (cal.hasEventsToProcess()) {
     const res = cal.tick();
 
     if (!res.advanced && res.pending.length > 0) {

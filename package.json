@@ -32,7 +32,7 @@
     "graphology-canvas": "^0.4.3",
     "graphology-simple-path": "^0.2.0",
     "graphology-types": "^0.24.8",
-    "jl-calendar": "^2.0.0",
+    "jl-calendar": "^2.1.1",
     "jl-utlts": "^1.4.0"
   }
 }
