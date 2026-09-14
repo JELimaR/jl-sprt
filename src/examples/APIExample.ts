@@ -1,7 +1,7 @@
 import { JCalendar } from "jl-calendar";
 import { IConfederationData, IFederationData, IInstitutionData, SportAPIController } from "../JSportModule";
 import SportServerAPI from "../JSportServerModule";
-import mostrarFecha from "../mostrarFechaBorrar";
+import { mostrarFecha } from "../mostrarFechaBorrar";
 import { getInstitutionsData, getFederationData, getConfederationData } from "./APIExample/entitiesData";
 import { getContinentData, getCountriesData, getTownsData } from "./APIExample/geogData";
 

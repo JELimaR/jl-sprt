@@ -2,6 +2,7 @@ import { IJEventInfo, JInstantEvent, JDateTime, TypeHalfWeekOfYear } from "jl-ca
 import { Round } from "./Round";
 import SingleElmination from './SingleElmination';
 import { arr2 } from '../../../../JSportModule';
+import { A_Match } from "../../../../JSportModule/Match/A_Match";
 import { JEventMatch } from "../../../../JSportModule/Match/EventMatch";
 
 
@@ -33,20 +34,20 @@ export class Event_ScheduleOfRoundMatches extends JInstantEvent {
 		// el evento debe crearse en el match
 		const hws2: arr2<TypeHalfWeekOfYear> = this._round.halfWeek;
 		this._round.series.forEach((serie) => {
-			serie.matches.forEach((m, idx: number) => {
+			serie.matches.forEach((match: A_Match<any>, idx: number) => {
 				const dt: JDateTime = JDateTime.createFromHalfWeekOfYearAndYear(
 					hws2[idx as 0 | 1],
 					this._playoff.info.season,
 					'end'
 				);
-				m.schedule(dt);
-				this.calendar.addEvent(
-					new JEventMatch({
-						dateTime: dt.getCreator(),
-						calendar: this.calendar,
-						match: m
-					})
-				)
+				match.schedule(dt, this.calendar);
+				// this.calendar.addEvent(
+				// 	new JEventMatch({
+				// 		dateTime: dt.getCreator(),
+				// 		calendar: this.calendar,
+				// 		match: match
+				// 	})
+				// )
 			})
 		});
 	}

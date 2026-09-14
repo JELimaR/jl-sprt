@@ -1,7 +1,7 @@
 import { JCalendar, JDateTime } from "jl-calendar";
 import { getExampleTeams } from "./ExampleData";
-import mostrarFecha from "../mostrarFechaBorrar";
-import exampleAdvance from "./exampleAdvance";
+import { mostrarFecha } from "../mostrarFechaBorrar";
+import { AdvanceAll } from '../Tournament/Advance';
 import stageExampleData from "./stageExampleData";
 import { SimulationContext } from "../Tournament/SimulationContext";
 import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
@@ -37,7 +37,7 @@ export default function stageExample03() {
   const SE3 = create(s3.info, s3.config, ctx);
   stages.push(SE3);
 
-  exampleAdvance(cal)
+  AdvanceAll(cal)
 
   stages.forEach((s: TGS) => {
     if (s instanceof StagePlayoff)

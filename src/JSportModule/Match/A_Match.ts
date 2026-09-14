@@ -3,7 +3,8 @@ import { IA_ResultInfo } from './A_Result';
 import { A_ResultSerie } from './A_ResultSerie';
 import { A_MatchPlay } from './A_MatchPlay';
 import { TMatchScore } from './scores';
-import { JDateTime, TypeHalfWeekOfYear } from "jl-calendar";
+import { JCalendar, JDateTime, TypeHalfWeekOfYear } from "jl-calendar";
+import { JEventMatch } from './EventMatch'
 import Team from '../data/Team';
 
 export type TypeMatchState =
@@ -72,12 +73,19 @@ export abstract class A_Match<ScoreType extends TMatchScore> {
 		this._serieFirstMatchState = firstMatchState;
 	}
 
-	schedule(d: JDateTime): void {
+	schedule(d: JDateTime, cal: JCalendar): JEventMatch {
 		this._state =
 			this._state == 'postponed' || this._state == 'scheduled'
 				? 'reschuduled'
 				: 'scheduled';
 		this._date = d.copy();
+		const event = new JEventMatch({
+			dateTime: d.getCreator(),
+			calendar: cal,
+			match: this,
+		})
+		cal.addEvent(event);
+		return event;
 	}
 
 	finish(): void {

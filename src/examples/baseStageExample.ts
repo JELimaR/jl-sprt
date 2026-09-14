@@ -2,9 +2,10 @@ import { JCalendar, JDateTime } from "jl-calendar";
 import { getExampleTeams } from "./ExampleData";
 import League from "../Tournament/Stage/StageGroup/League/League";
 import SingleElmination from "../Tournament/Stage/StagePlayoff/SingleElimination/SingleElmination";
-import mostrarFecha from "../mostrarFechaBorrar";
+import { mostrarFecha } from "../mostrarFechaBorrar";
 import { ILeagueConfig, ISingleElminationConfig, verifyBaseStageConfig } from "../JSportModule";
 import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
+import { AdvanceAll } from '../Tournament/Advance';
 
 export default function baseStageExample() {
 
@@ -54,17 +55,7 @@ export default function baseStageExample() {
   // throw new Error(`stop`)
   mostrarFecha(cal.now)
 
-  let idx: number = 0;
-  while (idx < cal.events.length) {
-    console.log();
-    console.log(`event index: ${idx}`);
-
-    const eve = cal.events[idx];
-    eve.execute();
-    mostrarFecha(eve.dateTime);
-    console.log('-------------------------------------------------------------------------------------------------')
-    idx++;
-  }
+  AdvanceAll(cal);
 
   console.log(cal.events.length);
 

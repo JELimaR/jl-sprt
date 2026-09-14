@@ -10,6 +10,7 @@ import { Ranking } from "../../JSportModule/Ranking";
 import { IRankItem } from "../../JSportModule/Ranking/interfaces";
 import Team, { TeamMatch } from "../../JSportModule/data/Team";
 import { reseedRandom } from "../../JSportModule/Match/randomSource";
+import { AdvanceAll } from "../../Tournament/Advance";
 
 // -----------------------------------------------------------------------------
 // Capa 5 — Tournament / Phase (ranking final)
@@ -47,13 +48,7 @@ function blockedRanking(context: string, n: number): Ranking {
 }
 
 function advanceCalendar(cal: JCalendar): void {
-  let guard = 0;
-  while (cal.getNextEvents().events.length !== 0) {
-    const { dt, events } = cal.getNextEvents();
-    cal.now = dt;
-    events.forEach((e) => e.execute());
-    if (++guard > 100000) throw new Error('advanceCalendar loop');
-  }
+  AdvanceAll(cal);
 }
 
 /**

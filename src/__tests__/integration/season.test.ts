@@ -12,6 +12,7 @@ import Tournament from "../../Tournament/Tournament";
 import { reseedRandom } from "../../JSportModule/Match/randomSource";
 import { Ranking } from "../../JSportModule/Ranking";
 import { JDate } from "jl-calendar";
+import { AdvanceAll } from "../../Tournament/Advance";
 
 // -----------------------------------------------------------------------------
 // Capa 7 — Integración end-to-end de una temporada
@@ -94,13 +95,7 @@ function buildFederationWithTeams(): Federation {
 
 /** Avanza el calendario ejecutando todos los eventos (equivalente a exampleAdvance, sin logs). */
 function advanceCalendar(cal: JCalendar): void {
-  let guard = 0;
-  while (cal.getNextEvents().events.length !== 0) {
-    const { dt, events } = cal.getNextEvents();
-    cal.now = dt;
-    events.forEach((eve) => eve.execute());
-    if (++guard > 100000) throw new Error('advanceCalendar: demasiados eventos (posible loop)');
-  }
+  AdvanceAll(cal);
 }
 
 describe("Integración - temporada de una división (end-to-end)", () => {

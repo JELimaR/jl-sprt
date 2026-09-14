@@ -1,9 +1,9 @@
 import { JCalendar, JDateTime } from "jl-calendar";
 import { getExampleTeams } from "./ExampleData";
-import mostrarFecha from "../mostrarFechaBorrar";
+import { mostrarFecha } from "../mostrarFechaBorrar";
 import { SimulationContext } from "../Tournament/SimulationContext";
 import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
-import exampleAdvance from "./exampleAdvance";
+import { AdvanceAll } from '../Tournament/Advance';
 import { IStageGroupConfig } from "../JSportModule";
 import { IRankItem } from "../JSportModule/Ranking";
 import { Ranking, TypeRanking } from "../JSportModule/Ranking";
@@ -25,7 +25,7 @@ export default function stageLeagueExample() {
 
   const SG = new StageGroup({id: 'League', season: 1987}, stageLeagueconfig, ctx, new FootballProfile());
   
-  exampleAdvance(cal)
+  AdvanceAll(cal)
   
   // console.log()
   mostrarFecha(cal.events[0].dateTime)

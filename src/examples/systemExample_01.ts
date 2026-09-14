@@ -8,11 +8,11 @@ import { createGSG, TInitialCreator, TPhaseCreator } from "../JSportModule/Gener
 import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
 import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
 import SportServerAPI from "../JSportServerModule";
-import mostrarFecha from "../mostrarFechaBorrar";
+import { mostrarFecha } from "../mostrarFechaBorrar";
 import { teamsAssign } from "../Tournament/teamsAssign";
 import { SimulationContext } from "../Tournament/SimulationContext";
 import Tournament from "../Tournament/Tournament";
-import exampleAdvance from "./exampleAdvance";
+import { AdvanceAll } from '../Tournament/Advance';
 
 /********************************************************************************* */
 class FednAux {
@@ -43,7 +43,7 @@ class FednAux {
   getRanking(): Ranking {
     const rankArr: IRankItem[] = this._institutions.map((inst: Team, i: number) => {
       return {
-        origin: this._id, pos: i + 1, team: inst
+        origin: `fr_S_${this._id}`, pos: i + 1, team: inst
       }
     })
     return Ranking.fromRankItemArr(`fr_S_${this._id}`, rankArr)
@@ -139,8 +139,19 @@ export default function systemExample_01() {
     }
 
     // avance
-    exampleAdvance(cal)
+    mostrarFecha(cal.now)
+    console.log('KKKKKKKKKKKKKKKKKKKKKKKK')
+    cal.events.forEach((eve) => {
+      mostrarFecha(eve.dateTime)
+      console.log(eve.label)
+    })
+    console.log()
+    console.log(t1.config.phases[0].stages[0])
+    console.log()
+    console.log('KKKKKKKKKKKKKKKKKKKKKKKK')
+    AdvanceAll(cal)
     console.log(cal.events.length)
+    mostrarFecha(cal.now)
 
     // muestreo
     console.table(t1.getRelativeRank().getRankTable().map(iri => { return { ...iri, team: iri.team.id } }))
@@ -176,7 +187,7 @@ export default function systemExample_01() {
       ]
 
       federation.updateRanking(
-        Ranking.fromRankItemArr('no importa', arr)
+        Ranking.fromRankItemArr(`no importa`, arr)
       )
 
     }

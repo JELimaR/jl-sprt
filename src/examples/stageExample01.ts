@@ -1,8 +1,8 @@
 import { JCalendar, JDateTime } from "jl-calendar";
 import { getExampleTeams } from "./ExampleData";
 import StagePlayoff from "../Tournament/Stage/StagePlayoff/StagePlayoff";
-import mostrarFecha from "../mostrarFechaBorrar";
-import exampleAdvance from "./exampleAdvance";
+import { mostrarFecha } from "../mostrarFechaBorrar";
+import { AdvanceAll } from '../Tournament/Advance';
 import stageExampleData from "./stageExampleData";
 import { SimulationContext } from "../Tournament/SimulationContext";
 import Team from "../JSportModule/data/Team";
@@ -30,7 +30,7 @@ export default function stageExample01() {
   
   const SE2 = new StagePlayoff(s2.info, s2.config, ctx, new FootballProfile());
   
-  exampleAdvance(cal)
+  AdvanceAll(cal)
   
   console.table(SE1.getTable( 'finished').map(e => e.getInterface()))
   console.table(SE2.getTable( 'finished').map(e => e.getInterface()))

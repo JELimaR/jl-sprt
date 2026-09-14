@@ -43,7 +43,7 @@ export default class Phase extends TCC<IElementInfo, IPhaseConfig> { // esto es 
       const sourceRanking = this._ctx.store.get(item.origin);
       if (!sourceRanking) {
         console.log(this._ctx.store.keys())
-        console.log(item.origin)
+        console.log('origin:', item.origin, 'pos:', item.pos)
         throw new Error(`No hay sourceRanking
         En Phase.getRelativeRank`);
       }

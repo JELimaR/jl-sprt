@@ -6,7 +6,7 @@ import { SimulationContext } from "../Tournament/SimulationContext";
 import Tournament from "../Tournament/Tournament";
 import { teamsAssign } from "../Tournament/teamsAssign";
 import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
-import exampleAdvance from "./exampleAdvance";
+import { AdvanceAll } from '../Tournament/Advance';
 import { getFederationRankings } from "./graphData01";
 
 /**
@@ -310,7 +310,7 @@ export default function confederationExample() {
 
   // 5) Avanzar el calendario: se juegan A y B, en orden temporal. Cuando termina la
   //    fase de grupos de A, se resuelve el ini_ de B y arrancan sus stages.
-  exampleAdvance(cal);
+  AdvanceAll(cal);
 
   // 6) Resultados de A y los 3ros que "bajaron" a B.
   const rsA = ctx.store.get(`rs_${A_GROUP_STAGE_ID}`);

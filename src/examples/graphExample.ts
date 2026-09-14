@@ -4,7 +4,7 @@ import { getExampleRankItemsListOrdered, getFederationRankings, getInitialRankin
 import { ITournamentFromGSGData, tournamentFromGSG } from '../JSportModule/GeneralStageGraph/tournamentFromGSG';
 import Tournament from '../Tournament/Tournament';
 import { JCalendar } from "jl-calendar";
-import exampleAdvance from './exampleAdvance';
+import { AdvanceAll } from '../Tournament/Advance';
 import { SimulationContext } from '../Tournament/SimulationContext';
 import { Ranking } from '../JSportModule/Ranking';
 import { renderGSGtoPNG } from '../JSportModule/GeneralStageGraph/renderGSGtoPNG';
@@ -112,7 +112,7 @@ export default function graphExample() {
   // `)
   console.log('store keys\n', ctx.store.keys())
   // throw new Error(`stop`)
-  exampleAdvance(cal)
+  AdvanceAll(cal)
   console.log('store keys\n', ctx.store.keys())
   ctx.store.forEach((ranking: Ranking, key: string) => {
     if (key == 'ini_first_tournament') {

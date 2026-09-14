@@ -10,6 +10,7 @@ import { teamsAssign } from "../../Tournament/teamsAssign";
 import { SimulationContext } from "../../Tournament/SimulationContext";
 import Tournament from "../../Tournament/Tournament";
 import { reseedRandom } from "../../JSportModule/Match/randomSource";
+import { AdvanceAll } from "../../Tournament/Advance";
 
 // -----------------------------------------------------------------------------
 // Capa 7 — Integración multi-temporada (ascensos y descensos)
@@ -103,13 +104,7 @@ function twoDivisionLeagueSystem(): LeagueSystem {
 
 /** Avanza el calendario ejecutando todos los eventos. */
 function advanceCalendar(cal: JCalendar): void {
-  let guard = 0;
-  while (cal.getNextEvents().events.length !== 0) {
-    const { dt, events } = cal.getNextEvents();
-    cal.now = dt;
-    events.forEach((eve) => eve.execute());
-    if (++guard > 100000) throw new Error('advanceCalendar: demasiados eventos (posible loop)');
-  }
+  AdvanceAll(cal);
 }
 
 /**

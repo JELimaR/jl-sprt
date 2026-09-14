@@ -6,12 +6,12 @@ import LeagueSystem, { IDivisionCondition, ILeagueSystemCreator } from "../JSpor
 import Team from "../JSportModule/data/Team";
 import { TInitialCreator, TPhaseCreator } from "../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
-import mostrarFecha from "../mostrarFechaBorrar";
+import { mostrarFecha } from "../mostrarFechaBorrar";
 import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
 import { teamsAssign } from "../Tournament/teamsAssign";
 import { SimulationContext } from "../Tournament/SimulationContext";
 import Tournament from "../Tournament/Tournament";
-import exampleAdvance from "./exampleAdvance";
+import { AdvanceAll } from '../Tournament/Advance';
 import { getFederationCreators, getInstitutionCreators } from "./ExampleData";
 
 /**
@@ -106,7 +106,7 @@ export default function fede_inst_Example() {
       tournamentList.push(t)
     })
 
-    exampleAdvance(cal)
+    AdvanceAll(cal)
 
     // muestro y grabo
     tournamentList.forEach((t) => {

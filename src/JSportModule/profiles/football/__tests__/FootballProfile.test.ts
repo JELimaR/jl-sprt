@@ -5,6 +5,7 @@ import { footballSortFunc } from "../FootballTeamTableItem";
 import { reseedRandom } from "../../../Match/randomSource";
 import Team, { TeamMatch } from "../../../data/Team";
 import { IMatchCreationInfo } from "../../ISportProfile";
+import { JCalendar, JDateTime } from 'jl-calendar';
 
 const SEED = 13;
 
@@ -35,6 +36,8 @@ function matchInfo(overrides: Partial<IMatchCreationInfo> = {}): IMatchCreationI
 }
 
 const profile = new FootballProfile();
+const base = JDateTime.createFromDayOfYearAndYear(1, 1);
+const cal = new JCalendar(base.getCreator());
 
 // -----------------------------------------------------------------------------
 // Simulación de un match completo (lifecycle + determinismo)
@@ -49,7 +52,7 @@ describe("FootballProfile - simulación de match", () => {
     // start() exige estar scheduled
     expect(() => match.start()).toThrow(/none scheduled/);
 
-    match.schedule(match.date);
+    match.schedule(match.date, cal);
     expect(match.state).toBe('scheduled');
 
     match.start();
@@ -68,7 +71,7 @@ describe("FootballProfile - simulación de match", () => {
     const play = () => {
       reseedRandom(SEED);
       const m = profile.createMatch(matchInfo());
-      m.schedule(m.date);
+      m.schedule(m.date, cal);
       m.start();
       while (m.state !== 'finished') m.advance();
       const r = m.result!;
@@ -79,7 +82,7 @@ describe("FootballProfile - simulación de match", () => {
 
   it("produce un resultado con ganador coherente (o empate si permitido)", () => {
     const match = profile.createMatch(matchInfo({ allowedDraw: true }));
-    match.schedule(match.date);
+    match.schedule(match.date, cal);
     match.start();
     while (match.state !== 'finished') match.advance();
 
@@ -208,7 +211,7 @@ describe("FootballProfile - serie ida y vuelta", () => {
     expect(serie.matches.length).toBe(2);
 
     serie.matches.forEach((m) => {
-      m.schedule(m.date);
+      m.schedule(m.date, cal);
       m.start();
       let guard = 0;
       while (m.state !== 'finished') {

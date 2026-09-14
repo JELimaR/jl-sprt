@@ -53,14 +53,14 @@ describe.each(PROFILES)('JEventMatch durativo - profile $name', ({ profile, maxR
     const match = profile.createMatch(matchInfo({ allowedDraw: false }));
     const start = base.copy();
     start.addInterv(1);
-    match.schedule(start); // debe estar 'scheduled' para start()
+    const ev = match.schedule(start, cal); // debe estar 'scheduled' para start()
 
-    const ev = new JEventMatch({
-      dateTime: start.getCreator(),
-      calendar: cal,
-      match,
-    });
-    cal.addEvent(ev);
+    // const ev = new JEventMatch({
+    //   dateTime: start.getCreator(),
+    //   calendar: cal,
+    //   match,
+    // });
+    // cal.addEvent(ev);
     return { cal, ev, match };
   }
 
@@ -112,8 +112,7 @@ describe.each(PROFILES)('JEventMatch durativo - profile $name', ({ profile, maxR
     const match = profile.createMatch(matchInfo({ allowedDraw: false }));
     const start = base.copy();
     start.addInterv(1);
-    match.schedule(start);
-    const ev = new JEventMatch({ dateTime: start.getCreator(), calendar: cal, match });
+    const ev = match.schedule(start, cal);
 
     ev.execute();
     expect(match.isFinished).toBe(true);
@@ -126,10 +125,11 @@ describe('Descansos', () => {
 
   function driveMatch(profile: ISportProfile<any, any, any, any>) {
     const base = JDateTime.createFromDayOfYearAndYear(1, 2000);
+    const cal = new JCalendar(base.getCreator());
     const match = profile.createMatch(matchInfo({ allowedDraw: false }));
     const start = base.copy();
     start.addInterv(1);
-    match.schedule(start);
+    match.schedule(start, cal);
     match.start();
     return match;
   }

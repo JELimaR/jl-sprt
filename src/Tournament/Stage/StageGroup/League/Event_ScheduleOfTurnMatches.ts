@@ -39,14 +39,14 @@ export class Event_ScheduleOfTurnMatches extends JInstantEvent {
 				this._league.info.season,
 				'end'
 			);
-			match.schedule(dt);
-			this.calendar.addEvent(
-				new JEventMatch({
-					dateTime: dt.getCreator(),
-					calendar: this.calendar,
-					match,
-				})
-			);
+			match.schedule(dt, this.calendar);
+			// this.calendar.addEvent(
+			// 	new JEventMatch({
+			// 		dateTime: dt.getCreator(),
+			// 		calendar: this.calendar,
+			// 		match,
+			// 	})
+			// );
 		});
 	}
 }
