@@ -6,6 +6,8 @@ import { SimulationContext } from "../Tournament/SimulationContext";
 import Tournament from "../Tournament/Tournament";
 import { teamsAssign } from "../Tournament/teamsAssign";
 import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
+import { AmericanFootballProfile } from "../JSportModule/profiles/americanFootball/AmericanFootballProfile";
+import { VolleyballProfile } from "../JSportModule/profiles/volleyball/VolleyballProfile";
 import { AdvanceAll } from '../Tournament/Advance';
 import { getFederationRankings } from "./graphData01";
 
@@ -37,7 +39,9 @@ import { getFederationRankings } from "./graphData01";
  * sembrado que uno que será eliminado en la fase de grupos. Además,
  * `tournamentFromGSG` valida que "el último rank group inicial pueda llegar al
  * primer lugar" (el peor sembrado inicial debe tener camino al título); poner los
- * entrantes arriba respeta ambas cosas.
+ * entrantes arriba respeta ambas cosas. Por otro lado y más importante, cada phase
+ * cuenta con un conjunto de Stages, las cuales van "tomando" teams de forma
+ * secuencial. 
  *
  * Pero para el EMPAREJAMIENTO del cruce, los entrantes (3ros de A) deben quedar
  * POR DEBAJO de los 1ros de B: para eso se usa el ReOrderStageNode, que
@@ -295,6 +299,8 @@ export default function confederationExample() {
   // 3) Torneo A: se crea, se asignan equipos y se juega normalmente. Sus orígenes
   //    (fr_) ya están en el store, así que teamsAssign resuelve de una.
   const tournamentA = Tournament.create({ id: 'confedA', season: SEASON }, dataA, ctx, new FootballProfile());
+  // const tournamentA = Tournament.create({ id: 'confedA', season: SEASON }, dataA, ctx, new AmericanFootballProfile());
+  // const tournamentA = Tournament.create({ id: 'confedA', season: SEASON }, dataA, ctx, new VolleyballProfile());
   teamsAssign(tournamentA, ctx);
 
   // 4) Torneo B: AHORA es ejecutable. Su ranking inicial de 40 incluye 8 entrantes
@@ -306,6 +312,8 @@ export default function confederationExample() {
   //    que la suscripción quede registrada antes de que A escriba su rs_.
   const dataB = buildTournamentB();
   const tournamentB = Tournament.create({ id: 'confedB', season: SEASON }, dataB, ctx, new FootballProfile());
+  // const tournamentB = Tournament.create({ id: 'confedB', season: SEASON }, dataB, ctx, new AmericanFootballProfile());
+  // const tournamentB = Tournament.create({ id: 'confedB', season: SEASON }, dataB, ctx, new VolleyballProfile());
   teamsAssign(tournamentB, ctx);
 
   // 5) Avanzar el calendario: se juegan A y B, en orden temporal. Cuando termina la
