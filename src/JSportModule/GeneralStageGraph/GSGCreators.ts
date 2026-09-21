@@ -15,7 +15,7 @@ export type TInitialCreator = {
 };
 export type TStageNodeCreator = {
   type: 'group' | 'playoff';
-  value: number;
+  value: number; // grupos para StageGroup y rondas para StagePlayoff
   opt: TypeBaseStageOption;
   draw?: {interv: TypeIntervalOfDay, rules: TypeDrawRulePlayoff[]};
   bombos?: number[];
