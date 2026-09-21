@@ -2,9 +2,8 @@ import { IA_ResultInfo } from './A_Result';
 import { A_ResultSerie } from './A_ResultSerie';
 import { A_MatchPlay } from './A_MatchPlay';
 import { TMatchScore } from './scores';
-import { JCalendar, JDateTime, TypeHalfWeekOfYear } from 'jl-calendar';
-import { JEventMatch } from '../../JSportModule/Match/EventMatch';
-import Team from '../../JSportModule/data/Team';
+import { Team } from '../Team';
+import { JDateTime, TypeHalfWeekOfYear } from 'jl-calendar';
 
 export type TypeMatchState =
 	| 'created'
@@ -72,19 +71,12 @@ export abstract class A_Match<ScoreType extends TMatchScore> {
 		this._serieFirstMatchState = firstMatchState;
 	}
 
-	schedule(d: JDateTime, cal: JCalendar): JEventMatch {
+	schedule(dt: JDateTime): void {
 		this._state =
 			this._state == 'postponed' || this._state == 'scheduled'
 				? 'reschuduled'
 				: 'scheduled';
-		this._date = d.copy();
-		const event = new JEventMatch({
-			dateTime: d.getCreator(),
-			calendar: cal,
-			match: this,
-		});
-		cal.addEvent(event);
-		return event;
+		this._date = dt.copy();
 	}
 
 	finish(): void {

@@ -3,7 +3,7 @@ import { FootballProfile } from "../FootballProfile";
 import FootballResult from "../FootballResult";
 import { footballSortFunc } from "../FootballTeamTableItem";
 import { reseedRandom } from "../../../jl-sprt-match/randomSource";
-import Team, { TeamMatch } from "../../../JSportModule/data/Team";
+import { Team, TeamMatch } from "../../../jl-sprt-core/Team";
 import { IMatchCreationInfo } from "../../../jl-sprt-core/profiles/ISportProfile";
 import { JCalendar, JDateTime } from 'jl-calendar';
 
@@ -52,7 +52,7 @@ describe("FootballProfile - simulación de match", () => {
     // start() exige estar scheduled
     expect(() => match.start()).toThrow(/none scheduled/);
 
-    match.schedule(match.date, cal);
+    match.schedule(match.date);
     expect(match.state).toBe('scheduled');
 
     match.start();
@@ -71,7 +71,7 @@ describe("FootballProfile - simulación de match", () => {
     const play = () => {
       reseedRandom(SEED);
       const m = profile.createMatch(matchInfo());
-      m.schedule(m.date, cal);
+      m.schedule(m.date);
       m.start();
       while (m.state !== 'finished') m.advance();
       const r = m.result!;
@@ -82,7 +82,7 @@ describe("FootballProfile - simulación de match", () => {
 
   it("produce un resultado con ganador coherente (o empate si permitido)", () => {
     const match = profile.createMatch(matchInfo({ allowedDraw: true }));
-    match.schedule(match.date, cal);
+    match.schedule(match.date);
     match.start();
     while (match.state !== 'finished') match.advance();
 
@@ -211,7 +211,7 @@ describe("FootballProfile - serie ida y vuelta", () => {
     expect(serie.matches.length).toBe(2);
 
     serie.matches.forEach((m) => {
-      m.schedule(m.date, cal);
+      m.schedule(m.date);
       m.start();
       let guard = 0;
       while (m.state !== 'finished') {

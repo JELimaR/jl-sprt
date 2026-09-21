@@ -1,8 +1,6 @@
 
 import { Federation } from "./Federation";
-import Team from "../Team";
 import { Continent } from "./GeogEntity";
-import LeagueSystem, { CupSystem, ICupSystemCreator, IDivisionConfig, ILeagueSystemCreator } from "./LeagueSystem";
 import SportOrganization, { ISportOrganizationCreator, ISportOrganizationData } from "./SportOrganization";
 
 export interface IConfederationData extends ISportOrganizationData {

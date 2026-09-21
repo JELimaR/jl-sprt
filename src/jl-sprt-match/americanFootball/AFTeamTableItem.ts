@@ -1,6 +1,6 @@
 
-import Team from "../../JSportModule/data/Team";
-import { A_TeamTableItem, IA_TeamTableItemBase, SortFunc } from "../../JSportModule/Ranking/A_TeamTableItem";
+import { Team } from "../../jl-sprt-core/Team";
+import { A_TeamTableItem, IA_TeamTableItemBase, SortFunc } from "../../jl-sprt-core/profiles/A_TeamTableItem";
 
 // American Football: no hay empate (overtime lo resuelve)
 export type AFMatchResults = 'W' | 'L';

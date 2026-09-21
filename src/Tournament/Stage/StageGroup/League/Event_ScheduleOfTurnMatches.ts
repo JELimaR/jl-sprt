@@ -2,7 +2,8 @@ import { IJEventInfo, JInstantEvent, JDateTime } from "jl-calendar";
 import { Turn } from "./Turn";
 import League from './League';
 import { A_Match } from "../../../../jl-sprt-core/Match/A_Match";
-import { JEventMatch } from "../../../../JSportModule/Match/EventMatch";
+import { JEventMatch } from "../../Match/EventMatch";
+import { MatchScheduler } from "../../Match/MatchScheduler";
 
 export interface IEvent_ScheduleOfTurnMatchesInfo extends IJEventInfo {
 	turn: Turn;
@@ -39,14 +40,8 @@ export class Event_ScheduleOfTurnMatches extends JInstantEvent {
 				this._league.info.season,
 				'end'
 			);
-			match.schedule(dt, this.calendar);
-			// this.calendar.addEvent(
-			// 	new JEventMatch({
-			// 		dateTime: dt.getCreator(),
-			// 		calendar: this.calendar,
-			// 		match,
-			// 	})
-			// );
+
+			MatchScheduler(match, dt, this.calendar);
 		});
 	}
 }

@@ -1,14 +1,14 @@
 import { describe, it, expect } from "vitest";
-import { AnySportProfile, IMatchCreationInfo, ISerieCreationInfo } from "../../jl-sprt-core/profiles/ISportProfile";
+import { AnySportProfile, IMatchCreationInfo, ISerieCreationInfo } from "../../jl-sprt-core";
 import { FootballProfile } from "../football/FootballProfile";
 import { VolleyballProfile } from "../volleyball/VolleyballProfile";
 import { AmericanFootballProfile } from "../americanFootball/AmericanFootballProfile";
-import { A_Match } from "../../jl-sprt-core/Match/A_Match";
-import { A_Serie } from "../../jl-sprt-core/Match/A_Serie";
-import { A_Result } from "../../jl-sprt-core/Match/A_Result";
-import { A_MatchPlay } from "../../jl-sprt-core/Match/A_MatchPlay";
-import { A_TeamTableItem, AnyTeamTableItem } from "../../JSportModule/Ranking/A_TeamTableItem";
-import Team, { TeamMatch } from "../../JSportModule/data/Team";
+import { A_Match } from "../../jl-sprt-core";
+import { A_Serie } from "../../jl-sprt-core";
+import { A_Result } from "../../jl-sprt-core";
+import { A_MatchPlay } from "../../jl-sprt-core";
+import { Team, TeamMatch } from "../../jl-sprt-core";
+import { A_TeamTableItem, AnyTeamTableItem } from "../../jl-sprt-core";
 
 // -----------------------------------------------------------------------------
 // Contrato ISportProfile — parametrizado sobre los 3 profiles.

@@ -1,9 +1,9 @@
 
 import { A_Serie } from '../../jl-sprt-core/Match/A_Serie';
+import { Team } from '../../jl-sprt-core/Team';
 import FootballMatch from './FootballMatch';
 import FootballResultSerie from './FootballResultSerie';
-import Team from '../../JSportModule/data/Team';
-import { arr2, TypeBaseStageOption } from '../../JSportModule/data';
+import { arr2, TypeBaseStageOption } from '../../jl-sprt-core/types';
 import { TypeHalfWeekOfYear } from "jl-calendar";
 
 /**

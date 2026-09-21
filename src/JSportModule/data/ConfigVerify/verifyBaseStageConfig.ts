@@ -1,6 +1,7 @@
 import { TypeHalfWeekOfYear } from "jl-calendar";
 import robinRoundSchedulingFunction from "../../../Tournament/Stage/StageGroup/League/RoundRobin"; // ojo con esta import
-import { arr2, IBaseStageConfig, ILeagueConfig, ISingleElminationConfig } from "../../data";
+import { IBaseStageConfig, ILeagueConfig, ISingleElminationConfig } from "../../data";
+import { arr2 } from '../../../jl-sprt-core';
 
 export function verifyBaseStageConfig(config: IBaseStageConfig): boolean {
   const aux = config as ISingleElminationConfig;

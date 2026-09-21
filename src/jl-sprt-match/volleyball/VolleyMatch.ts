@@ -1,7 +1,7 @@
 
 import { A_Match } from '../../jl-sprt-core/Match/A_Match';
+import { Team } from '../../jl-sprt-core/Team';
 import { TypeHalfWeekOfYear } from "jl-calendar";
-import Team from '../../JSportModule/data/Team';
 import VolleyMatchPlay from './VolleyMatchPlay';
 import VolleyResult from './VolleyResult';
 import VolleyResultSerie from './VolleyResultSerie';

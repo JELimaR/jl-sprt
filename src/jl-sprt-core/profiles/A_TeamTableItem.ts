@@ -1,4 +1,4 @@
-import Team from "../data/Team";
+import { Team }from "../Team";
 
 export type IA_TeamTableItemBase = {
   pos: number;

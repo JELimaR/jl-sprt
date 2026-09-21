@@ -1,6 +1,6 @@
 
-import Team from "../../JSportModule/data/Team";
-import { A_TeamTableItem, IA_TeamTableItemBase, SortFunc } from "../../JSportModule/Ranking/A_TeamTableItem";
+import {Team} from "../../jl-sprt-core/Team";
+import { A_TeamTableItem, IA_TeamTableItemBase, SortFunc } from "../../jl-sprt-core/profiles/A_TeamTableItem";
 
 export type FootballMatchResults = 'W' | 'D' | 'L';
 export type FootballMatchPuntuations = 'gf' | 'ga';

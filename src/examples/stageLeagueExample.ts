@@ -7,7 +7,7 @@ import { AdvanceAll } from '../Tournament/Advance';
 import { IStageGroupConfig } from "../JSportModule";
 import { IRankItem } from "../JSportModule/Ranking";
 import { Ranking, TypeRanking } from "../JSportModule/Ranking";
-import Team from "../JSportModule/data/Team";
+import { Team } from "../jl-sprt-core";
 import { FootballProfile } from "../jl-sprt-match/football/FootballProfile";
 
 const selection = getExampleTeams(150, 'Team');

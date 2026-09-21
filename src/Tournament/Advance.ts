@@ -3,9 +3,9 @@ import { mostrarFecha } from "../mostrarFechaBorrar";
 
 export function AdvanceAll(cal: JCalendar, GUARD: number = 5 * 300 * 378) {
   
-  // advanceToNext(cal, GUARD);
+  advanceToNext(cal, GUARD);
   // advanceAnyTick(cal, GUARD);
-  exectuteAllEvents(cal, GUARD);
+  // exectuteAllEvents(cal, GUARD);
 
 }
 

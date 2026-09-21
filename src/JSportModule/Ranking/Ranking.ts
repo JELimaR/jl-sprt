@@ -1,5 +1,5 @@
 import { TQualyCondition } from "../data/elementsConfig";
-import Team from "../data/Team";
+import { Team }from "../../jl-sprt-core";
 import { IGenericRankItem, IRankingMetadata, IRankItem } from "./interfaces";
 import { RankingStore } from "./RankingStore";
 

@@ -2,7 +2,7 @@
 import { getExampleTeams } from "./ExampleData";
 import { JEvent, JCalendar, IJDTCreator, JDateTime } from "jl-calendar";
 import { IFederationData, IGenericRankItem, IRankItem, ITournamentConfig, Ranking, TypeRanking } from "../JSportModule";
-import Team from "../JSportModule/data/Team";
+import { Team } from "../jl-sprt-core";
 import { GeneralStageGraph } from "../JSportModule/GeneralStageGraph/GeneralStageGraph";
 import { createGSG, TInitialCreator, TPhaseCreator } from "../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";

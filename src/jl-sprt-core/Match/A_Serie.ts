@@ -1,8 +1,8 @@
 import { A_ResultSerie } from './A_ResultSerie';
 import { A_Match } from './A_Match';
 import { TMatchScore, TSerieScore } from './scores';
-import Team from '../../JSportModule/data/Team';
-import { TypeBaseStageOption } from '../../JSportModule/data';
+import { Team } from '../Team';
+import { TypeBaseStageOption } from '../../jl-sprt-core';
 
 /**
  * Clase abstracta que representa una serie genérica (ida y vuelta o partido único).

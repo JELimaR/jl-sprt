@@ -13,3 +13,5 @@ export const getCategoryList = <T>(generic: T): TypeCategoryList<T> => {
     'S': generic, 'S23': generic, 'S21': generic, 'S19': generic, 'S17': generic, 'S15': generic, 'S13': generic
   }
 }
+
+export type TypeBaseStageOption = 'home' | 'h&a' | 'neutral';

@@ -1,13 +1,13 @@
 
-import Team from "../../JSportModule/data/Team";
-import { A_TeamTableItem } from "../../JSportModule/Ranking/A_TeamTableItem";
+import { TypeHalfWeekOfYear } from "jl-calendar";
+import { Team } from "../Team";
+import { A_TeamTableItem } from "./A_TeamTableItem";
 import { A_Result, IA_ResultInfo } from "../Match/A_Result";
 import { A_MatchPlay } from "../Match/A_MatchPlay";
 import { A_Match } from "../Match/A_Match";
 import { A_Serie } from "../Match/A_Serie";
 import { TMatchScore, TSerieScore } from "../Match/scores";
-import { TypeHalfWeekOfYear } from "jl-calendar";
-import { arr2, TypeBaseStageOption } from "../../JSportModule/data";
+import { arr2, TypeBaseStageOption } from '../types';
 
 /**
  * Info genérica para crear un Match desde el profile.

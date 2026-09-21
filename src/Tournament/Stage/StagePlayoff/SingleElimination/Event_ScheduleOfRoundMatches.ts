@@ -3,7 +3,8 @@ import { Round } from "./Round";
 import SingleElmination from './SingleElmination';
 import { arr2 } from '../../../../JSportModule';
 import { A_Match } from "../../../../jl-sprt-core/Match/A_Match";
-import { JEventMatch } from "../../../../JSportModule/Match/EventMatch";
+import { JEventMatch } from "../../Match/EventMatch";
+import { MatchScheduler } from "../../Match/MatchScheduler";
 
 
 export interface IEvent_ScheduleOfRoundMatchesInfo extends IJEventInfo {
@@ -40,14 +41,7 @@ export class Event_ScheduleOfRoundMatches extends JInstantEvent {
 					this._playoff.info.season,
 					'end'
 				);
-				match.schedule(dt, this.calendar);
-				// this.calendar.addEvent(
-				// 	new JEventMatch({
-				// 		dateTime: dt.getCreator(),
-				// 		calendar: this.calendar,
-				// 		match: match
-				// 	})
-				// )
+				MatchScheduler(match, dt, this.calendar);
 			})
 		});
 	}

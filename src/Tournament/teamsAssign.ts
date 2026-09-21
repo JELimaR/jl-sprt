@@ -1,5 +1,5 @@
 import { Ranking, IGenericRankItem } from "../JSportModule";
-import Team from "../JSportModule/data/Team";
+import { Team } from "../jl-sprt-core";
 import { SimulationContext } from "./SimulationContext";
 import Tournament from "./Tournament";
 

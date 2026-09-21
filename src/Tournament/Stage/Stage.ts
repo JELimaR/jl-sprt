@@ -1,7 +1,7 @@
 
 import { JCalendar, JDateTime, TypeHalfWeekOfYear, TypeIntervalOfDay } from "jl-calendar";
 import { IElementInfo, IRankItem, IStageConfig, Ranking, TCC, TQualyCondition, TypeTableMatchState } from "../../JSportModule";
-import { AnyTeamTableItem } from "../../JSportModule/Ranking/A_TeamTableItem";
+import { AnyTeamTableItem } from "../../jl-sprt-core/profiles/A_TeamTableItem";
 import { SimulationContext } from "../SimulationContext";
 import Bombo from "./Bombo";
 import { Event_StageEnd } from "./Event_StageEnd";

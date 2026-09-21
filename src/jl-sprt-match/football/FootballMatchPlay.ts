@@ -1,6 +1,6 @@
 
-import { TeamMatch } from "../../JSportModule/data/Team";
 import { A_MatchPlay } from "../../jl-sprt-core/Match/A_MatchPlay";
+import { TeamMatch } from "../../jl-sprt-core/Team";
 import { randomFloat } from "../../jl-sprt-match/randomSource";
 import FootballResult from "./FootballResult";
 

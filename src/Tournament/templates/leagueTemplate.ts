@@ -1,6 +1,6 @@
 
 import { createGSG, TInitialCreator, TPhaseCreator } from "../../JSportModule/GeneralStageGraph/GSGCreators";
-import { TypeCategory } from "../../JSportModule/data/types";
+import { TypeCategory } from "../../jl-sprt-core";
 
 export function leaguePhaseArr(): TPhaseCreator[] {
 

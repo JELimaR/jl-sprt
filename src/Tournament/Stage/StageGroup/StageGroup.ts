@@ -3,8 +3,8 @@ import Stage from "../Stage";
 import { JCalendar, TypeHalfWeekOfYear } from "jl-calendar";
 import Bombo from "../Bombo";
 import { IElementInfo, ILeagueConfig, IRankItem, IStageGroupConfig, TypeDrawRulePlayoff, TypeTableMatchState } from "../../../JSportModule";
-import Team from "../../../JSportModule/data/Team";
-import { AnyTeamTableItem } from "../../../JSportModule/Ranking/A_TeamTableItem";
+import { Team } from "../../../jl-sprt-core";
+import { AnyTeamTableItem } from "../../../jl-sprt-core/profiles/A_TeamTableItem";
 import { AnySportProfile } from "../../../jl-sprt-core/profiles/ISportProfile";
 import { SimulationContext } from "../../SimulationContext";
 

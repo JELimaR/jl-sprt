@@ -1,4 +1,4 @@
-import Team from "../data/Team";
+import { Team } from "../../jl-sprt-core/Team";
 
 export type TypeTableMatchState = 'partial' | 'finished';
 

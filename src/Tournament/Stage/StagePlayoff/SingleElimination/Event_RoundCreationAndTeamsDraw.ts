@@ -1,5 +1,5 @@
 import { IJEventInfo, JInstantEvent } from "jl-calendar";
-import Team from "../../../../JSportModule/data/Team";
+import { Team } from "../../../../jl-sprt-core";
 import SingleElmination from "./SingleElmination"
 
 export interface IEvent_RoundCreationAndTeamsDrawInfo extends IJEventInfo {

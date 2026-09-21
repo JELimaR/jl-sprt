@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import SingleElmination from "../SingleElmination";
-import Team from "../../../../../JSportModule/data/Team";
+import { Team } from "../../../../../jl-sprt-core";
 
 // -----------------------------------------------------------------------------
 // Capa 4 — SingleElimination (statics deterministas del bracket)

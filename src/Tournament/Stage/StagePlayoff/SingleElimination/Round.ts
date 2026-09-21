@@ -1,7 +1,7 @@
 import { JCalendar, TypeHalfWeekOfYear, JDateTime } from "jl-calendar";
 import SingleElmination from './SingleElmination';
 import { Event_ScheduleOfRoundMatches } from './Event_ScheduleOfRoundMatches';
-import Team from '../../../../JSportModule/data/Team';
+import { Team } from '../../../../jl-sprt-core';
 import { A_Serie } from '../../../../jl-sprt-core/Match/A_Serie';
 import { A_Match } from '../../../../jl-sprt-core/Match/A_Match';
 import { arr2 } from '../../../../JSportModule';
@@ -40,14 +40,14 @@ export class Round {
 		return out;
 	}
 
-	get winners(): Team[] {
-		let out: Team[] = [];
+	 get winners(): Team[] {
+		 let out: Team[] = [];
 		this._series.forEach((s) => out.push(s.winner))
 		return out;
 	}
 
-	get losers(): Team[] {
-		let out: Team[] = [];
+	 get losers(): Team[] {
+		 let out: Team[] = [];
 		this._series.forEach((s) => {
 			out.push(s.loser)})
 		return out;

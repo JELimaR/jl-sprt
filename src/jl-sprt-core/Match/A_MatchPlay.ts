@@ -1,5 +1,5 @@
-import { TeamMatch } from '../../JSportModule/data/Team';
 import { A_Result } from './A_Result';
+import { TeamMatch } from '../Team';
 
 /**
  * Clase abstracta que define el contrato de la simulación de un partido.

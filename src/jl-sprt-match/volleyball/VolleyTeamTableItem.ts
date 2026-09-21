@@ -1,6 +1,6 @@
 
-import Team from "../../JSportModule/data/Team";
-import { A_TeamTableItem, IA_TeamTableItemBase, SortFunc } from "../../JSportModule/Ranking/A_TeamTableItem";
+import {Team} from "../../jl-sprt-core/Team";
+import { A_TeamTableItem, IA_TeamTableItemBase, SortFunc } from "../../jl-sprt-core/profiles/A_TeamTableItem";
 
 export type VolleyMatchResults = 'W3_0' | 'W3_1' | 'W3_2' | 'L2_3' | 'L1_3' | 'L0_3';
 export type VolleyMatchPuntuations = 'sw' | 'sl' | 'pf' | 'pa';

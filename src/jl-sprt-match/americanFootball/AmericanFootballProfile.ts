@@ -1,5 +1,5 @@
 
-import Team from "../../JSportModule/data/Team";
+import {Team} from "../../jl-sprt-core/Team";
 import { IA_ResultInfo } from "../../jl-sprt-core/Match/A_Result";
 import AFResult from "./AFResult";
 import AFMatchPlay from "./AFMatchPlay";

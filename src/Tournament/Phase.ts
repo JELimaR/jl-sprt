@@ -1,8 +1,7 @@
-import { JCalendar, TypeHalfWeekOfYear } from "jl-calendar";
 import { IElementInfo, IPhaseConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, TCC } from "../JSportModule";
 import { IGenericRankItem } from "../JSportModule";
 import { Ranking, TypeRanking } from "../JSportModule";
-import Team from "../JSportModule/data/Team";
+import { Team } from "../jl-sprt-core";
 import { AnySportProfile } from "../jl-sprt-core/profiles/ISportProfile";
 import { SimulationContext } from "./SimulationContext";
 import StageGroup from "./Stage/StageGroup/StageGroup";

@@ -1,9 +1,9 @@
 
 import { JCalendar, JDateTime } from "jl-calendar";
-import { CATEGORIES, Country, Federation, IFederationCreator, IGenericRankItem, Ranking, Town, TypeCategory, TypeCategoryList } from "../JSportModule";
+import { Federation, Ranking } from "../JSportModule";
+import { CATEGORIES, TypeCategory, TypeCategoryList } from '../jl-sprt-core'
 import { IInstitutionCreator, Institution } from "../JSportModule/data/Entities/Institution";
 import LeagueSystem, { IDivisionCondition, ILeagueSystemCreator } from "../JSportModule/data/Entities/LeagueSystem";
-import Team from "../JSportModule/data/Team";
 import { TInitialCreator, TPhaseCreator } from "../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
 import { mostrarFecha } from "../mostrarFechaBorrar";

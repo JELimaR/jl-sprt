@@ -1,8 +1,7 @@
 import { Town } from "..";
 import { JDate } from "jl-calendar";
 import { TDC } from "../../patterns/templateDataCreator";
-import Team from "../Team";
-import { TypeCategory, TypeCategoryList } from "../types";
+import { Team, TypeCategory, TypeCategoryList } from "../../../jl-sprt-core";
 
 export interface IInstitutionData {//} extends ISportOrganizationData {
   i: string; // id
@@ -48,9 +47,10 @@ export class Institution extends TDC<IInstitutionData, IInstitutionCreator>{
       throw new Error(`la inst ${this.info.id} ya cuenta con un team en la categoria: ${category}`);
 
     this._teams[category] = new Team({
+      id: `${category}_${this.id}`,
+      name: this.name,
       category: category,
-      entity: this,
-      matches: []
+      owner: this,
     });
   }
 

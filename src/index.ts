@@ -10,8 +10,8 @@ export type { IJDTCreator, TypeHalfWeekOfYear, TypeIntervalOfDay, IJEventInfo, I
 export { Ranking } from './JSportModule/Ranking/Ranking';
 export type { TypeRanking } from './JSportModule/Ranking/Ranking';
 export type { IGenericRankItem, IRankItem, TypeTableMatchState, IRankingMetadata, TypeRankingGenerator, TypeRankedEntity } from './JSportModule/Ranking/interfaces';
-export { A_TeamTableItem } from './JSportModule/Ranking/A_TeamTableItem';
-export type { AnyTeamTableItem, SortFunc, IA_TeamTableItemBase } from './JSportModule/Ranking/A_TeamTableItem';
+export { A_TeamTableItem } from './jl-sprt-core/profiles/A_TeamTableItem';
+export type { AnyTeamTableItem, SortFunc, IA_TeamTableItemBase } from './jl-sprt-core/profiles/A_TeamTableItem';
 export { RankingStore } from './JSportModule/Ranking/RankingStore';
 export type { RankingStoreListener } from './JSportModule/Ranking/RankingStore';
 
@@ -29,8 +29,13 @@ export {
   A_Result,
   A_ResultSerie,
   A_Serie,
+  CATEGORIES,
+  Team
 } from './jl-sprt-core';
 export type {
+  TypeBaseStageOption,
+  TypeCategory,
+  TypeCategoryList,
   TypeMatchState,
   IA_ResultInfo,
   TypeTotalScore,
@@ -96,7 +101,7 @@ export type { ITurnInfo } from './Tournament/Stage/StageGroup/League/Turn';
 export { Event_StageStart } from './Tournament/Stage/Event_StageStart';
 export { Event_StageEnd } from './Tournament/Stage/Event_StageEnd';
 export { Event_ScheduleOfTurnMatches } from './Tournament/Stage/StageGroup/League/Event_ScheduleOfTurnMatches';
-export { JEventMatch } from './JSportModule/Match/EventMatch';
+export { JEventMatch } from './Tournament/Stage/Match/EventMatch';
 
 // Data & Config types
 export type {
@@ -109,7 +114,6 @@ export type {
   IBaseStageConfig,
   ILeagueConfig,
   ISingleElminationConfig,
-  TypeBaseStageOption,
   TQualyCondition,
 } from './JSportModule/data/elementsConfig';
 
@@ -133,15 +137,10 @@ export { Federation } from './JSportModule/data/Entities/Federation';
 export type { IFederationData, IFederationCreator } from './JSportModule/data/Entities/Federation';
 export { Confederation } from './JSportModule/data/Entities/Confederation';
 export type { IConfederationData } from './JSportModule/data/Entities/Confederation';
-export { default as Team } from './JSportModule/data/Team';
 
 // Geographic Entities
 export { Continent, Country, Town } from './JSportModule/data/Entities/GeogEntity';
 export type { IContinentData, ICountryData, ITownData } from './JSportModule/data/Entities/GeogEntity';
-
-// Data types
-export type { TypeCategory, TypeCategoryList } from './JSportModule/data/types';
-export { CATEGORIES } from './JSportModule/data/types';
 
 // Example data (useful for seeding)
 export { getContinentData, getCountriesData, getTownsData } from './examples/APIExample/geogData';

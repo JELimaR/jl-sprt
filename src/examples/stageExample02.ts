@@ -6,7 +6,7 @@ import { mostrarFecha } from "../mostrarFechaBorrar";
 import { AdvanceAll } from '../Tournament/Advance';
 import stageExampleData from "./stageExampleData";
 import { SimulationContext } from "../Tournament/SimulationContext";
-import Team from "../JSportModule/data/Team";
+import { Team } from "../jl-sprt-core";
 import { IRankItem, TypeRanking, Ranking } from "../JSportModule";
 import { FootballProfile } from "../jl-sprt-match/football/FootballProfile";
 

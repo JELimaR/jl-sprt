@@ -1,9 +1,9 @@
 
 import { JCalendar } from "jl-calendar";
 import { IBaseStageConfig, IElementInfo, TCC, TypeTableMatchState } from "../../JSportModule";
-import Team from "../../JSportModule/data/Team";
+import { Team }from "../../jl-sprt-core";
 import { A_Match } from "../../jl-sprt-core/Match/A_Match";
-import { A_TeamTableItem, AnyTeamTableItem } from "../../JSportModule/Ranking/A_TeamTableItem";
+import { AnyTeamTableItem } from "../../jl-sprt-core/profiles/A_TeamTableItem";
 import { AnySportProfile } from "../../jl-sprt-core/profiles/ISportProfile";
 
 /**

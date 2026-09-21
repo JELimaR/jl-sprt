@@ -1,6 +1,7 @@
 
 import { TypeHalfWeekOfYear, TypeIntervalOfDay } from "jl-calendar";
-import { arr2, TypeBaseStageOption, TypeDrawRulePlayoff } from "../data";
+import { arr2, TypeBaseStageOption } from '../../jl-sprt-core';
+import { TypeDrawRulePlayoff } from "../data";
 import { Ranking } from "../Ranking";
 import { IStageNodeData, StageNode } from "./nodes";
 

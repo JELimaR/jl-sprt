@@ -4,9 +4,9 @@ import { JCalendar, TypeHalfWeekOfYear } from "jl-calendar";
 import Bombo from "../Bombo";
 import Stage from "../Stage";
 import { arr2, IElementInfo, IRankItem, IStagePlayoffConfig, TypeDrawRulePlayoff, TypeTableMatchState } from "../../../JSportModule";
-import Team from "../../../JSportModule/data/Team";
-import { AnyTeamTableItem } from "../../../JSportModule/Ranking/A_TeamTableItem";
-import { AnySportProfile } from "../../../jl-sprt-core/profiles/ISportProfile";
+import { Team } from "../../../jl-sprt-core";
+import { AnyTeamTableItem } from "../../../jl-sprt-core/profiles/A_TeamTableItem";
+import { AnySportProfile } from "../../../jl-sprt-core";
 import { SimulationContext } from "../../SimulationContext";
 
 

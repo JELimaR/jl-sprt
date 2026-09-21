@@ -1,6 +1,6 @@
 import { IJEventInfo, JDurativeEvent } from "jl-calendar";
-import { A_Match } from "../../jl-sprt-core/Match/A_Match";
-import { IVolleyScore } from "../../jl-sprt-match/volleyball/VolleyScore";
+import { A_Match } from "../../../jl-sprt-core/Match/A_Match";
+import { IVolleyScore } from "../../../jl-sprt-match/volleyball/VolleyScore";
 
 export interface IJEventMatchInfo extends IJEventInfo {
   match: A_Match<any>;
@@ -64,10 +64,20 @@ export class JEventMatch extends JDurativeEvent {
   }
 
   advance(): void {
+    // tiene setnido avanzar sin verificar antes si el evento termino?
     super.advance();
     // 1 intervalo de calendario = 1 advance() del partido (= 5 min de juego).
     if (!this._match.isFinished) {
       this._match.advance();
+      if (this._match.isFinished) {
+        this.finish();
+        console.log(`playing match ${this._match.id}`);
+        console.log(`\tresult:`)
+        const res = this._match.result;
+        if (!res) throw new Error(`no se obtuvo un res`)
+        console.log(`\t  ${this._match.homeTeam.id.padEnd(10)} : ${this.formatScore(res.teamOneScore.score)}`);
+        console.log(`\t  ${this._match.awayTeam.id.padEnd(10)} : ${this.formatScore(res.teamTwoScore.score)}`);
+      }
     }
   }
 

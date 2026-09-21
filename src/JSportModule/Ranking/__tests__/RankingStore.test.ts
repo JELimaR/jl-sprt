@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { RankingStore } from "../RankingStore";
 import { Ranking } from "../Ranking";
 import { IRankItem, IRankingMetadata } from "../interfaces";
-import Team from "../../data/Team";
+import { Team } from "../../data/Team";
 
 // -----------------------------------------------------------------------------
 // Helpers

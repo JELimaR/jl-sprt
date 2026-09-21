@@ -4,7 +4,7 @@
 import { createStandardGSGDataFromNParticipants } from "../../GeneralStageGraph/createStandardGSGDataFromNParticipants";
 import { ITournamentFromGSGData, tournamentFromGSG } from "../../GeneralStageGraph/tournamentFromGSG";
 import { IGenericRankItem } from "../../Ranking/interfaces";
-import { TypeCategory } from "../types";
+import { TypeCategory } from "../../../jl-sprt-core";
 import { verifyDivisionArr } from "./verifyLeagueSystem";
 
 export interface ILevelConfig {

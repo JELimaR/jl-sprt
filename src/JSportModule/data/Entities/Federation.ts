@@ -1,9 +1,8 @@
 import { IDivisionCondition } from "./LeagueSystem";
 import { RankingStore } from "../../Ranking/RankingStore";
 import { ITournamentFromGSGData } from "../../GeneralStageGraph/tournamentFromGSG";
-import { IGenericRankItem, IRankingMetadata, IRankItem, Ranking } from "../../Ranking";
-import Team from "../Team";
-import { CATEGORIES, getCategoryList, TypeCategory, TypeCategoryList } from "../types";
+import { IGenericRankItem, IRankItem, Ranking } from "../../Ranking";
+import { CATEGORIES, TypeCategory, TypeCategoryList, Team } from "../../../jl-sprt-core";
 import { Country } from "./GeogEntity";
 import { Institution } from "./Institution";
 import LeagueSystem, { CupSystem, ICupSystemCreator, IDivisionConfig, ILeagueSystemCreator } from "./LeagueSystem";

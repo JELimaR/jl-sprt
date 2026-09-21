@@ -1,13 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { JCalendar, JDateTime } from 'jl-calendar';
-import { JEventMatch } from '../EventMatch';
-import { FootballProfile } from '../../../jl-sprt-match/football/FootballProfile';
-import { VolleyballProfile } from '../../../jl-sprt-match/volleyball/VolleyballProfile';
-import { AmericanFootballProfile } from '../../../jl-sprt-match/americanFootball/AmericanFootballProfile';
-import VolleyMatchPlay from '../../../jl-sprt-match/volleyball/VolleyMatchPlay';
-import { ISportProfile, IMatchCreationInfo } from '../../../jl-sprt-core/profiles/ISportProfile';
-import { reseedRandom } from '../../../jl-sprt-match/randomSource';
-import Team, { TeamMatch } from '../../data/Team';
+import { FootballProfile } from '../../../../jl-sprt-match/football/FootballProfile';
+import { VolleyballProfile } from '../../../../jl-sprt-match/volleyball/VolleyballProfile';
+import { AmericanFootballProfile } from '../../../../jl-sprt-match/americanFootball/AmericanFootballProfile';
+import VolleyMatchPlay from '../../../../jl-sprt-match/volleyball/VolleyMatchPlay';
+import { ISportProfile, IMatchCreationInfo } from '../../../../jl-sprt-core/profiles/ISportProfile';
+import { reseedRandom } from '../../../../jl-sprt-match/randomSource';
+import { Team, TeamMatch } from '../../../../jl-sprt-core/Team';
+import { MatchScheduler } from '../../Match/MatchScheduler';
+
 
 const SEED = 13;
 
@@ -54,7 +55,7 @@ describe.each(PROFILES)('JEventMatch durativo - profile $name', ({ profile, maxR
     const match = profile.createMatch(matchInfo({ allowedDraw: false }));
     const start = base.copy();
     start.addInterv(1);
-    const ev = match.schedule(start, cal); // debe estar 'scheduled' para start()
+    const ev = MatchScheduler(match, start, cal); // debe estar 'scheduled' para start()
 
     // const ev = new JEventMatch({
     //   dateTime: start.getCreator(),
@@ -113,7 +114,7 @@ describe.each(PROFILES)('JEventMatch durativo - profile $name', ({ profile, maxR
     const match = profile.createMatch(matchInfo({ allowedDraw: false }));
     const start = base.copy();
     start.addInterv(1);
-    const ev = match.schedule(start, cal);
+    const ev = MatchScheduler(match, start, cal);
 
     ev.execute();
     expect(match.isFinished).toBe(true);
@@ -130,7 +131,7 @@ describe('Descansos', () => {
     const match = profile.createMatch(matchInfo({ allowedDraw: false }));
     const start = base.copy();
     start.addInterv(1);
-    match.schedule(start, cal);
+    const ev = MatchScheduler(match, start, cal);
     match.start();
     return match;
   }

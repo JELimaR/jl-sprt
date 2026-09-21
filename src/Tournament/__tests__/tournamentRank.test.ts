@@ -8,7 +8,7 @@ import Tournament from "../Tournament";
 import { teamsAssign } from "../teamsAssign";
 import { Ranking } from "../../JSportModule/Ranking";
 import { IRankItem } from "../../JSportModule/Ranking/interfaces";
-import Team, { TeamMatch } from "../../JSportModule/data/Team";
+import { Team, TeamMatch } from "../../jl-sprt-core";
 import { reseedRandom } from "../../jl-sprt-match/randomSource";
 import { AdvanceAll } from "../../Tournament/Advance";
 
