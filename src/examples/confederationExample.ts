@@ -5,9 +5,9 @@ import { IGenericRankItem, Ranking } from "../JSportModule/Ranking";
 import { SimulationContext } from "../Tournament/SimulationContext";
 import Tournament from "../Tournament/Tournament";
 import { teamsAssign } from "../Tournament/teamsAssign";
-import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
-import { AmericanFootballProfile } from "../JSportModule/profiles/americanFootball/AmericanFootballProfile";
-import { VolleyballProfile } from "../JSportModule/profiles/volleyball/VolleyballProfile";
+import { FootballProfile } from "../jl-sprt-match/football/FootballProfile";
+import { AmericanFootballProfile } from "../jl-sprt-match/americanFootball/AmericanFootballProfile";
+import { VolleyballProfile } from "../jl-sprt-match/volleyball/VolleyballProfile";
 import { AdvanceAll } from '../Tournament/Advance';
 import { getFederationRankings } from "./graphData01";
 

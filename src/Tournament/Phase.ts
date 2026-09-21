@@ -3,7 +3,7 @@ import { IElementInfo, IPhaseConfig, IStageConfig, IStageGroupConfig, IStagePlay
 import { IGenericRankItem } from "../JSportModule";
 import { Ranking, TypeRanking } from "../JSportModule";
 import Team from "../JSportModule/data/Team";
-import { AnySportProfile } from "../JSportModule/profiles/ISportProfile";
+import { AnySportProfile } from "../jl-sprt-core/profiles/ISportProfile";
 import { SimulationContext } from "./SimulationContext";
 import StageGroup from "./Stage/StageGroup/StageGroup";
 import StagePlayoff from "./Stage/StagePlayoff/StagePlayoff";

@@ -5,10 +5,10 @@ import Event_RoundCreationAndTeamsDraw from './Event_RoundCreationAndTeamsDraw';
 import { IElementInfo, ISingleElminationConfig } from '../../../../JSportModule';
 import Team from '../../../../JSportModule/data/Team';
 import { AnyTeamTableItem } from '../../../../JSportModule/Ranking/A_TeamTableItem';
-import { AnySportProfile } from '../../../../JSportModule/profiles/ISportProfile';
-import { A_Serie } from '../../../../JSportModule/Match/A_Serie';
+import { AnySportProfile } from '../../../../jl-sprt-core/profiles/ISportProfile';
+import { A_Serie } from '../../../../jl-sprt-core/Match/A_Serie';
 import { TypeTableMatchState } from '../../../../JSportModule/';
-import { A_Match } from '../../../../JSportModule/Match/A_Match';
+import { A_Match } from '../../../../jl-sprt-core/Match/A_Match';
 
 // export interface IElementInfo extends IBaseStageInfo { }
 

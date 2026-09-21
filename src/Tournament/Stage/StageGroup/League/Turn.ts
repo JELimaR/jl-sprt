@@ -1,7 +1,7 @@
 import { JCalendar, JDateTime, TypeHalfWeekOfYear } from "jl-calendar";
 import League from "./League";
 import { Event_ScheduleOfTurnMatches } from "./Event_ScheduleOfTurnMatches";
-import { A_Match } from "../../../../JSportModule/Match/A_Match";
+import { A_Match } from "../../../../jl-sprt-core/Match/A_Match";
 
 export interface ITurnInfo {
 	num: number;

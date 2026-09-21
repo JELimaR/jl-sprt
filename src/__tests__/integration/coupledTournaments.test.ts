@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import confederationExample from "../../examples/confederationExample";
-import { reseedRandom } from "../../JSportModule/Match/randomSource";
+import { reseedRandom } from "../../jl-sprt-match/randomSource";
 
 // -----------------------------------------------------------------------------
 // Integración — torneos acoplados (Champions A -> Europa B)

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import Bombo from "../Bombo";
-import { reseedRandom } from "../../../JSportModule/Match/randomSource";
+import { reseedRandom } from "../../../jl-sprt-match/randomSource";
 
 const SEED = 13;
 

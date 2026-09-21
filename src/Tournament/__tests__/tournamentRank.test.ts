@@ -2,14 +2,14 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { JCalendar, JDateTime } from "jl-calendar";
 import { TInitialCreator, TPhaseCreator } from "../../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData } from "../../JSportModule/GeneralStageGraph/tournamentFromGSG";
-import { FootballProfile } from "../../JSportModule/profiles/football/FootballProfile";
+import { FootballProfile } from "../../jl-sprt-match/football/FootballProfile";
 import { SimulationContext } from "../SimulationContext";
 import Tournament from "../Tournament";
 import { teamsAssign } from "../teamsAssign";
 import { Ranking } from "../../JSportModule/Ranking";
 import { IRankItem } from "../../JSportModule/Ranking/interfaces";
 import Team, { TeamMatch } from "../../JSportModule/data/Team";
-import { reseedRandom } from "../../JSportModule/Match/randomSource";
+import { reseedRandom } from "../../jl-sprt-match/randomSource";
 import { AdvanceAll } from "../../Tournament/Advance";
 
 // -----------------------------------------------------------------------------

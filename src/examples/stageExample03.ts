@@ -9,7 +9,7 @@ import { TGS } from "../Tournament/Stage/Stage";
 import StagePlayoff from "../Tournament/Stage/StagePlayoff/StagePlayoff";
 import { IElementInfo, IRankItem, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, Ranking } from "../JSportModule";
 import Team from "../JSportModule/data/Team";
-import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
+import { FootballProfile } from "../jl-sprt-match/football/FootballProfile";
 
 const {
   s1,

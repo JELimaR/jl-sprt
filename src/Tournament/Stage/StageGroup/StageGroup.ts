@@ -5,7 +5,7 @@ import Bombo from "../Bombo";
 import { IElementInfo, ILeagueConfig, IRankItem, IStageGroupConfig, TypeDrawRulePlayoff, TypeTableMatchState } from "../../../JSportModule";
 import Team from "../../../JSportModule/data/Team";
 import { AnyTeamTableItem } from "../../../JSportModule/Ranking/A_TeamTableItem";
-import { AnySportProfile } from "../../../JSportModule/profiles/ISportProfile";
+import { AnySportProfile } from "../../../jl-sprt-core/profiles/ISportProfile";
 import { SimulationContext } from "../../SimulationContext";
 
 /**

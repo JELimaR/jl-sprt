@@ -22,22 +22,65 @@ export { SimulationContext, createSimulationContext } from './Tournament/Simulat
 export { TournamentConfigStore } from './Tournament/TournamentConfigStore';
 export { teamsAssign } from './Tournament/teamsAssign';
 
-// Sport Profiles
-export type { ISportProfile, AnySportProfile, IMatchCreationInfo, ISerieCreationInfo } from './JSportModule/profiles/ISportProfile';
-export { FootballProfile } from './JSportModule/profiles/football/FootballProfile';
-export type { FootballMatchResults, FootballMatchPuntuations, IFootballTeamTableItem } from './JSportModule/profiles/football/FootballTeamTableItem';
-export { VolleyballProfile } from './JSportModule/profiles/volleyball/VolleyballProfile';
-export type { VolleyMatchResults, VolleyMatchPuntuations, IVolleyTeamTableItem } from './JSportModule/profiles/volleyball/VolleyTeamTableItem';
-export type { IVolleyScore } from './JSportModule/profiles/volleyball/VolleyScore';
+// Core: abstracciones, contratos y tipos independientes del deporte.
+export {
+  A_Match,
+  A_MatchPlay,
+  A_Result,
+  A_ResultSerie,
+  A_Serie,
+} from './jl-sprt-core';
+export type {
+  TypeMatchState,
+  IA_ResultInfo,
+  TypeTotalScore,
+  IA_ResultSerieInfo,
+  TMatchScore,
+  TSerieScore,
+  ISportProfile,
+  AnySportProfile,
+  IMatchCreationInfo,
+  ISerieCreationInfo,
+} from './jl-sprt-core';
 
-// Match (abstract base classes)
-export { A_Match } from './JSportModule/Match/A_Match';
-export type { TypeMatchState } from './JSportModule/Match/A_Match';
-export { A_MatchPlay } from './JSportModule/Match/A_MatchPlay';
-export { A_Result } from './JSportModule/Match/A_Result';
-export type { IA_ResultInfo, TypeTotalScore } from './JSportModule/Match/A_Result';
-export { A_Serie } from './JSportModule/Match/A_Serie';
-export { randomFloat, reseedRandom } from './JSportModule/Match/randomSource';
+// Match: profiles y resoluciones concretas por deporte.
+export {
+  AmericanFootballProfile,
+  FootballProfile,
+  VolleyballProfile,
+  AFMatch,
+  AFMatchPlay,
+  AFResult,
+  AFResultSerie,
+  AFSerie,
+  AFTeamTableItem,
+  FootballMatch,
+  FootballMatchPlay,
+  FootballResult,
+  FootballResultSerie,
+  FootballSerie,
+  FootballTeamTableItem,
+  VolleyMatch,
+  VolleyMatchPlay,
+  VolleyResult,
+  VolleyResultSerie,
+  VolleySerie,
+  VolleyTeamTableItem,
+  randomFloat,
+  reseedRandom,
+} from './jl-sprt-match';
+export type {
+  AFMatchResults,
+  AFMatchPuntuations,
+  IAFTeamTableItem,
+  FootballMatchResults,
+  FootballMatchPuntuations,
+  IFootballTeamTableItem,
+  IVolleyScore,
+  VolleyMatchResults,
+  VolleyMatchPuntuations,
+  IVolleyTeamTableItem,
+} from './jl-sprt-match';
 
 // Stages
 export { default as Stage } from './Tournament/Stage/Stage';

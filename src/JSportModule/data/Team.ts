@@ -1,5 +1,5 @@
 import { TGS } from "../../Tournament/Stage/Stage";
-import { A_Match } from "../Match/A_Match";
+import { A_Match } from "../../jl-sprt-core/Match/A_Match";
 import { Federation, Institution } from "./Entities";
 import { TypeCategory } from "./types";
 

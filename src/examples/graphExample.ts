@@ -9,7 +9,7 @@ import { SimulationContext } from '../Tournament/SimulationContext';
 import { Ranking } from '../JSportModule/Ranking';
 import { renderGSGtoPNG } from '../JSportModule/GeneralStageGraph/renderGSGtoPNG';
 import { teamsAssign } from '../Tournament/teamsAssign';
-import { FootballProfile } from '../JSportModule/profiles/football/FootballProfile';
+import { FootballProfile } from '../jl-sprt-match/football/FootballProfile';
 
 export default function graphExample() {
 

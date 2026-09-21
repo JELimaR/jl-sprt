@@ -5,11 +5,11 @@ import { IInstitutionCreator, Institution } from "../../JSportModule/data/Entiti
 import LeagueSystem, { ILeagueSystemCreator } from "../../JSportModule/data/Entities/LeagueSystem";
 import { TInitialCreator, TPhaseCreator } from "../../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData } from "../../JSportModule/GeneralStageGraph/tournamentFromGSG";
-import { FootballProfile } from "../../JSportModule/profiles/football/FootballProfile";
+import { FootballProfile } from "../../jl-sprt-match/football/FootballProfile";
 import { teamsAssign } from "../../Tournament/teamsAssign";
 import { SimulationContext } from "../../Tournament/SimulationContext";
 import Tournament from "../../Tournament/Tournament";
-import { reseedRandom } from "../../JSportModule/Match/randomSource";
+import { reseedRandom } from "../../jl-sprt-match/randomSource";
 import { AdvanceAll } from "../../Tournament/Advance";
 
 // -----------------------------------------------------------------------------

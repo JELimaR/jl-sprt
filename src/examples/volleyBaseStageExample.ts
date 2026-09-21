@@ -4,7 +4,7 @@ import League from "../Tournament/Stage/StageGroup/League/League";
 import SingleElmination from "../Tournament/Stage/StagePlayoff/SingleElimination/SingleElmination";
 import { mostrarFecha } from "../mostrarFechaBorrar";
 import { ILeagueConfig, ISingleElminationConfig, verifyBaseStageConfig } from "../JSportModule";
-import { VolleyballProfile } from "../JSportModule/profiles/volleyball/VolleyballProfile";
+import { VolleyballProfile } from "../jl-sprt-match/volleyball/VolleyballProfile";
 import { AdvanceAll } from '../Tournament/Advance';
 
 /**

@@ -1,6 +1,6 @@
 import { IJEventInfo, JDurativeEvent } from "jl-calendar";
-import { A_Match } from "./A_Match";
-import { IVolleyScore } from "../profiles/volleyball/VolleyScore";
+import { A_Match } from "../../jl-sprt-core/Match/A_Match";
+import { IVolleyScore } from "../../jl-sprt-match/volleyball/VolleyScore";
 
 export interface IJEventMatchInfo extends IJEventInfo {
   match: A_Match<any>;

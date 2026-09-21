@@ -1,0 +1,10 @@
+export { A_Match } from './Match/A_Match';
+export { A_MatchPlay } from './Match/A_MatchPlay';
+export { A_Result } from './Match/A_Result';
+export { A_ResultSerie } from './Match/A_ResultSerie';
+export { A_Serie } from './Match/A_Serie';
+export type { TypeMatchState } from './Match/A_Match';
+export type { IA_ResultInfo, TypeTotalScore } from './Match/A_Result';
+export type { IA_ResultSerieInfo } from './Match/A_ResultSerie';
+export type { TMatchScore, TSerieScore } from './Match/scores';
+export type { ISportProfile, AnySportProfile, IMatchCreationInfo, ISerieCreationInfo } from './profiles/ISportProfile';

@@ -1,7 +1,7 @@
 import { IJEventInfo, JInstantEvent, JDateTime } from "jl-calendar";
 import { Turn } from "./Turn";
 import League from './League';
-import { A_Match } from "../../../../JSportModule/Match/A_Match";
+import { A_Match } from "../../../../jl-sprt-core/Match/A_Match";
 import { JEventMatch } from "../../../../JSportModule/Match/EventMatch";
 
 export interface IEvent_ScheduleOfTurnMatchesInfo extends IJEventInfo {

@@ -1,11 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { JCalendar, JDateTime } from 'jl-calendar';
 import { JEventMatch } from '../EventMatch';
-import { FootballProfile } from '../../profiles/football/FootballProfile';
-import { VolleyballProfile } from '../../profiles/volleyball/VolleyballProfile';
-import { AmericanFootballProfile } from '../../profiles/americanFootball/AmericanFootballProfile';
-import { ISportProfile, IMatchCreationInfo } from '../../profiles/ISportProfile';
-import { reseedRandom } from '../randomSource';
+import { FootballProfile } from '../../../jl-sprt-match/football/FootballProfile';
+import { VolleyballProfile } from '../../../jl-sprt-match/volleyball/VolleyballProfile';
+import { AmericanFootballProfile } from '../../../jl-sprt-match/americanFootball/AmericanFootballProfile';
+import VolleyMatchPlay from '../../../jl-sprt-match/volleyball/VolleyMatchPlay';
+import { ISportProfile, IMatchCreationInfo } from '../../../jl-sprt-core/profiles/ISportProfile';
+import { reseedRandom } from '../../../jl-sprt-match/randomSource';
 import Team, { TeamMatch } from '../../data/Team';
 
 const SEED = 13;
@@ -152,7 +153,7 @@ describe('Descansos', () => {
 
   it('vóley: activa un descanso entre sets (breakLeft > 0 tras cerrar un set)', () => {
     const match = driveMatch(new VolleyballProfile());
-    const play = match['_playing'];
+    const play = match['_playing'] as VolleyMatchPlay;
 
     let sawBreakActivated = false;
     let guard = 0;
@@ -160,7 +161,7 @@ describe('Descansos', () => {
       match.advance();
       // Tras un advance que cerró un set (partido en curso), el mecanismo deja pendiente
       // al menos un intervalo de descanso.
-      if (match.state === 'playing' && play['_breakLeft'] > 0) {
+      if (match.state === 'playing' && play.breakLeft > 0) {
         sawBreakActivated = true;
       }
       guard++;

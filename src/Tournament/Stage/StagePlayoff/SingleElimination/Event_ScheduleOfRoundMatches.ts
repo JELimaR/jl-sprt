@@ -2,7 +2,7 @@ import { IJEventInfo, JInstantEvent, JDateTime, TypeHalfWeekOfYear } from "jl-ca
 import { Round } from "./Round";
 import SingleElmination from './SingleElmination';
 import { arr2 } from '../../../../JSportModule';
-import { A_Match } from "../../../../JSportModule/Match/A_Match";
+import { A_Match } from "../../../../jl-sprt-core/Match/A_Match";
 import { JEventMatch } from "../../../../JSportModule/Match/EventMatch";
 
 

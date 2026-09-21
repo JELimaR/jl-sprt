@@ -7,7 +7,7 @@ import Team from "../JSportModule/data/Team";
 import { TInitialCreator, TPhaseCreator } from "../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
 import { mostrarFecha } from "../mostrarFechaBorrar";
-import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
+import { FootballProfile } from "../jl-sprt-match/football/FootballProfile";
 import { teamsAssign } from "../Tournament/teamsAssign";
 import { SimulationContext } from "../Tournament/SimulationContext";
 import Tournament from "../Tournament/Tournament";

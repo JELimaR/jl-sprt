@@ -4,7 +4,7 @@ import League from "../Tournament/Stage/StageGroup/League/League";
 import SingleElmination from "../Tournament/Stage/StagePlayoff/SingleElimination/SingleElmination";
 import { mostrarFecha } from "../mostrarFechaBorrar";
 import { ILeagueConfig, ISingleElminationConfig, verifyBaseStageConfig } from "../JSportModule";
-import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
+import { FootballProfile } from "../jl-sprt-match/football/FootballProfile";
 import { AdvanceAll } from '../Tournament/Advance';
 
 export default function baseStageExample() {

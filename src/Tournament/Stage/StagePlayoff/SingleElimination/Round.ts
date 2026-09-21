@@ -2,8 +2,8 @@ import { JCalendar, TypeHalfWeekOfYear, JDateTime } from "jl-calendar";
 import SingleElmination from './SingleElmination';
 import { Event_ScheduleOfRoundMatches } from './Event_ScheduleOfRoundMatches';
 import Team from '../../../../JSportModule/data/Team';
-import { A_Serie } from '../../../../JSportModule/Match/A_Serie';
-import { A_Match } from '../../../../JSportModule/Match/A_Match';
+import { A_Serie } from '../../../../jl-sprt-core/Match/A_Serie';
+import { A_Match } from '../../../../jl-sprt-core/Match/A_Match';
 import { arr2 } from '../../../../JSportModule';
 
 

@@ -2,9 +2,9 @@
 import { JCalendar } from "jl-calendar";
 import { arr2, IElementInfo, ILeagueConfig, TypeBaseStageOption, TypeTableMatchState } from "../../../../JSportModule";
 import Team from "../../../../JSportModule/data/Team";
-import { A_Match } from "../../../../JSportModule/Match/A_Match";
+import { A_Match } from "../../../../jl-sprt-core/Match/A_Match";
 import { AnyTeamTableItem } from "../../../../JSportModule/Ranking/A_TeamTableItem";
-import { AnySportProfile } from "../../../../JSportModule/profiles/ISportProfile";
+import { AnySportProfile } from "../../../../jl-sprt-core/profiles/ISportProfile";
 import BaseStage from "../../BaseStage";
 import robinRoundSchedulingFunction from "./RoundRobin";
 import { Turn } from "./Turn";

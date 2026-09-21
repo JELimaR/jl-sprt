@@ -1,11 +1,11 @@
 
 import Team from "../data/Team";
 import { A_TeamTableItem } from "../Ranking/A_TeamTableItem";
-import { A_Result, IA_ResultInfo } from "../Match/A_Result";
-import { A_MatchPlay } from "../Match/A_MatchPlay";
-import { A_Match } from "../Match/A_Match";
-import { A_Serie } from "../Match/A_Serie";
-import { TMatchScore, TSerieScore } from "../Match/scores";
+import { A_Result, IA_ResultInfo } from "../../jl-sprt-core/Match/A_Result";
+import { A_MatchPlay } from "../../jl-sprt-core/Match/A_MatchPlay";
+import { A_Match } from "../../jl-sprt-core/Match/A_Match";
+import { A_Serie } from "../../jl-sprt-core/Match/A_Serie";
+import { TMatchScore, TSerieScore } from "../../jl-sprt-core/Match/scores";
 import { TypeHalfWeekOfYear } from "jl-calendar";
 import { arr2, TypeBaseStageOption } from "../data";
 

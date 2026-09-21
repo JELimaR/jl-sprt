@@ -7,7 +7,7 @@ import stageExampleData from "./stageExampleData";
 import { SimulationContext } from "../Tournament/SimulationContext";
 import Team from "../JSportModule/data/Team";
 import { IRankItem, TypeRanking, Ranking } from "../JSportModule";
-import { FootballProfile } from "../JSportModule/profiles/football/FootballProfile";
+import { FootballProfile } from "../jl-sprt-match/football/FootballProfile";
 
 const {
   s1,

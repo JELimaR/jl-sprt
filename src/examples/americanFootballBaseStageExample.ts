@@ -4,7 +4,7 @@ import League from "../Tournament/Stage/StageGroup/League/League";
 import SingleElmination from "../Tournament/Stage/StagePlayoff/SingleElimination/SingleElmination";
 import { mostrarFecha } from "../mostrarFechaBorrar";
 import { ILeagueConfig, ISingleElminationConfig, verifyBaseStageConfig } from "../JSportModule";
-import { AmericanFootballProfile } from "../JSportModule/profiles/americanFootball/AmericanFootballProfile";
+import { AmericanFootballProfile } from "../jl-sprt-match/americanFootball/AmericanFootballProfile";
 import { AdvanceAll } from '../Tournament/Advance';
 
 /**
