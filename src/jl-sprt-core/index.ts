@@ -13,5 +13,5 @@ export type { IA_ResultInfo, TypeTotalScore } from './Match/A_Result';
 export type { IA_ResultSerieInfo } from './Match/A_ResultSerie';
 export type { TMatchScore, TSerieScore } from './Match/scores';
 export type { ISportProfile, AnySportProfile, IMatchCreationInfo, ISerieCreationInfo } from './profiles/ISportProfile';
-export { A_TeamTableItem, AnyTeamTableItem } from './profiles/A_TeamTableItem';
+export { A_TeamTableItem, type AnyTeamTableItem } from './profiles/A_TeamTableItem';
 export type { arr2, TypeBaseStageOption, TypeCategory, TypeCategoryList } from './types';
