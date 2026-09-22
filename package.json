@@ -11,6 +11,7 @@
     "init-config": "npm install",
     "build": "npm run clean && tsc --incremental false",
     "clean": "node ./scripts/clean.js",
+    "clean:all": "node ./scripts/clean.js --all",
     "dev:tsc": "tsc --watch",
     "dev:nodemon": "nodemon ./dist/index.js",
     "dev:nodemon-log": "nodemon ./dist/index.js > app.log",
