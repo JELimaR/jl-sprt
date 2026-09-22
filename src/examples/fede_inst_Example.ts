@@ -53,10 +53,10 @@ export default function fede_inst_Example() {
   console.log('federationFileLS')
   console.log(federationFileLS)
 
-  let cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1154, 168).getCreator());
+  let cal = JCalendar.createFromYear(1154);
   for (let Y = 1154; Y <= 1166; Y++) {
     console.log('-------------------------------', Y, '------------------------------------')
-    cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, Y, 168).getCreator());
+    cal = JCalendar.createFromYear(Y);
     const ctx = new SimulationContext(cal);
     mostrarFecha(cal.now)
     // actualizo la cantidad institutions

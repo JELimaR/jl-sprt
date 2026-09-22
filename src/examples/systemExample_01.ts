@@ -50,7 +50,7 @@ class FednAux {
   }
 
   get dateTimeCreation(): IJDTCreator {
-    return {day: this._dateTimeCreation, interv: 100}
+    return { day: this._dateTimeCreation, interv: 100 }
   }
 
   updateRanking(rank: Ranking) {
@@ -93,7 +93,7 @@ export default function systemExample_01() {
   const Y_END = 1164;
   for (let Y = 1158; Y <= Y_END; Y++) {
     console.log('-------------------------------', Y, '------------------------------------')
-    const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, Y, 168).getCreator());
+    const cal = JCalendar.createFromYear(Y);
     const ctx = new SimulationContext(cal);
     mostrarFecha(cal.now)
 

@@ -14,7 +14,7 @@ const selection = getExampleTeams(150, 'Team');
 
 export default function stageLeagueExample() {
 
-  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getCreator());
+  const cal = JCalendar.createFromYear(1986);
   const ctx = new SimulationContext(cal);
 
   const rankItemArr: IRankItem[] = selection.map((t: Team, i: number) => { return { pos: i + 1, team: t, origin: 'rankingInicial' } });
@@ -23,13 +23,13 @@ export default function stageLeagueExample() {
 
   mostrarFecha(cal.now)
 
-  const SG = new StageGroup({id: 'League', season: 1987}, stageLeagueconfig, ctx, new FootballProfile());
-  
+  const SG = new StageGroup({ id: 'League', season: 1987 }, stageLeagueconfig, ctx, new FootballProfile());
+
   AdvanceAll(cal)
-  
+
   // console.log()
   mostrarFecha(cal.events[0].dateTime)
-  
+
   console.table(SG.getTable('finished').map(e => e.getInterface()))
 
   console.log(SG.groups.map(l => {
@@ -48,16 +48,16 @@ const stageLeagueconfig: IStageGroupConfig = {
   idConfig: 'firstLeague',
   name: '1st Division',
   type: 'group',
-  
+
   hwStart: 9,
   intervalOfDrawDate: 204,
   hwEnd: 93,
-  
+
   bombos: [20],
   drawRulesValidate: [],
   participantsPerGroup: [20],
 
-  qualifyConditions: [{rankId: 'rankingInicial', season: 'previus', minRankPos: 1, maxRankPos: 20}],
+  qualifyConditions: [{ rankId: 'rankingInicial', season: 'previus', minRankPos: 1, maxRankPos: 20 }],
 
   bsConfig: {
     idConfig: 'idLeague',

@@ -112,7 +112,7 @@ describe("Integración - temporada de una división (end-to-end)", () => {
     const initialTeamIds = franking.getRankTable().map(r => r.team.id).sort();
 
     // contexto de simulación (calendario + store local, sin global)
-    const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, SEASON, 168).getCreator());
+    const cal = JCalendar.createFromYear(SEASON);
     const ctx = new SimulationContext(cal);
     ctx.store.set(franking.context, franking);
 
@@ -156,7 +156,7 @@ describe("Integración - temporada de una división (end-to-end)", () => {
     reseedRandom(SEED);
     const federation = buildFederationWithTeams();
     const franking = federation.getRanking('S');
-    const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, SEASON, 168).getCreator());
+    const cal = JCalendar.createFromYear(SEASON);
     const ctx = new SimulationContext(cal);
     ctx.store.set(franking.context, franking);
     federation.updateLeagueSystem(new LeagueSystem({
@@ -184,8 +184,8 @@ describe("Integración - temporada de una división (end-to-end)", () => {
     const federation = buildFederationWithTeams();
     const franking = federation.getRanking('S');
 
-    const ctxA = new SimulationContext(new JCalendar(JDateTime.createFromDayOfYearAndYear(1, SEASON, 168).getCreator()));
-    const ctxB = new SimulationContext(new JCalendar(JDateTime.createFromDayOfYearAndYear(1, SEASON, 168).getCreator()));
+    const ctxA = new SimulationContext(JCalendar.createFromYear(SEASON));
+    const ctxB = new SimulationContext(JCalendar.createFromYear(SEASON));
 
     ctxA.store.set(franking.context, franking);
 

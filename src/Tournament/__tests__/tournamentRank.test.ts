@@ -32,8 +32,8 @@ function fakeTeam(id: string): Team {
     id,
     entity: { id } as any,
     getTeamMatch: () => new TeamMatch(id),
-    addNewMatch: () => {},
-    addStage: () => {},
+    addNewMatch: () => { },
+    addStage: () => { },
   };
   return t as unknown as Team;
 }
@@ -98,7 +98,7 @@ function ligaConfig(): ITournamentFromGSGData {
 }
 
 function newCtx(): SimulationContext {
-  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, SEASON).getCreator());
+  const cal = JCalendar.createFromYear(SEASON);
   return new SimulationContext(cal);
 }
 

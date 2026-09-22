@@ -17,28 +17,28 @@ const selection = getExampleTeams(150, 'Team');
 
 export default function stageExample01() {
 
-  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getCreator());
+  const cal = JCalendar.createFromYear(1986);
   const ctx = new SimulationContext(cal);
 
-  const rankItemArr: IRankItem[] = selection.map((t: Team, i: number) => { return {pos: i+1, team: t, origin: 'rankingInicial'} });
+  const rankItemArr: IRankItem[] = selection.map((t: Team, i: number) => { return { pos: i + 1, team: t, origin: 'rankingInicial' } });
   const ranking: TypeRanking = { context: 'rankingInicial', items: rankItemArr, teams: rankItemArr.map(e => e.team) }
   ctx.store.set(ranking.context, Ranking.fromTypeRanking(ranking));
 
   mostrarFecha(cal.now)
-  
+
   const SE1 = new StagePlayoff(s1.info, s1.config, ctx, new FootballProfile());
-  
+
   const SE2 = new StagePlayoff(s2.info, s2.config, ctx, new FootballProfile());
-  
+
   AdvanceAll(cal)
-  
-  console.table(SE1.getTable( 'finished').map(e => e.getInterface()))
-  console.table(SE2.getTable( 'finished').map(e => e.getInterface()))
+
+  console.table(SE1.getTable('finished').map(e => e.getInterface()))
+  console.table(SE2.getTable('finished').map(e => e.getInterface()))
 
   ctx.store.forEach((ranking: Ranking, key: string) => {
     if (key !== 'rankingInicial') {
-      console.table(ranking.getRankTable().map((e: IRankItem) => {return {...e, team: e.team.id}}));
+      console.table(ranking.getRankTable().map((e: IRankItem) => { return { ...e, team: e.team.id } }));
     }
   })
-  
+
 }

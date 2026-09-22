@@ -12,7 +12,7 @@ import { AdvanceAll } from '../Tournament/Advance';
  */
 export default function volleyBaseStageExample() {
 
-  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 1986).getCreator());
+  const cal = JCalendar.createFromYear(1986);
 
   const selectionL = getExampleTeams(10, 'VL');
   const selectionC = getExampleTeams(132, 'VC').slice(100, 133);

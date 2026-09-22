@@ -14,7 +14,7 @@ const selection = getExampleTeams(80, 'Team');
 
 export default function specialStageGroupExample() {
 
-  const cal = new JCalendar(JDateTime.createFromDayOfYearAndYear(1, 168).getCreator());
+  const cal = JCalendar.createFromYear(168);
   const ctx = new SimulationContext(cal);
 
   const rankItemArr: IRankItem[] = selection.map((t: Team, i: number) => { return { pos: i + 1, team: t, origin: `C${(i % 13) + 1}` } });
@@ -58,7 +58,7 @@ const stageLeagueconfig: IStageGroupConfig = {
   intervalOfDrawDate: 185,
   hwEnd: 105,
 
-  bombos: [ 13, 13, 13 ],
+  bombos: [13, 13, 13],
 
   drawRulesValidate: [],
   participantsPerGroup: [8, 8, 8, 8, 7],
