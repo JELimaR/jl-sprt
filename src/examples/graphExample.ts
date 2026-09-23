@@ -7,7 +7,7 @@ import { JCalendar } from "jl-calendar";
 import { AdvanceAll } from '../Tournament/Advance';
 import { SimulationContext } from '../Tournament/SimulationContext';
 import { Ranking } from '../JSportModule/Ranking';
-import { renderGSGtoPNG } from '../JSportModule/GeneralStageGraph/renderGSGtoPNG';
+import { renderGSGtoPNG } from '../renderGSGtoPNG';
 import { teamsAssign } from '../Tournament/teamsAssign';
 import { FootballProfile } from '../jl-sprt-match/football/FootballProfile';
 
