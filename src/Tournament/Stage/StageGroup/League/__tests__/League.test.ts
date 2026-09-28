@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import League from "../League";
 import robinRoundSchedulingFunction from "../RoundRobin";
-import { Team } from "../../../../../jl-sprt-core";
+import { Team } from "../../../../.jl-sprt-core";
 import { arr2 } from "../../../../../JSportModule";
 
 // -----------------------------------------------------------------------------

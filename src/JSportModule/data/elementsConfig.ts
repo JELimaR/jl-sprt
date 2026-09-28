@@ -1,7 +1,7 @@
 import { TypeHalfWeekOfYear, TypeIntervalOfDay } from "jl-calendar";
 import { ITCCConfig, ITCCInfo } from "../patterns/templateConfigCreator";
 import { IGenericRankItem, IRankItem } from "../Ranking";
-import { arr2, TypeBaseStageOption } from '../../jl-sprt-core';
+import { arr2, TypeBaseStageOption } from 'jl-sprt-core';
 
 export interface IElementInfo extends ITCCInfo {
   season: number;
@@ -10,7 +10,6 @@ export interface IElementInfo extends ITCCInfo {
 /****************************************************************************************************************************
  * BaseStage
  */
-
 export interface IBaseStageConfig extends ITCCConfig {
   participantsNumber: number;
   opt: TypeBaseStageOption;

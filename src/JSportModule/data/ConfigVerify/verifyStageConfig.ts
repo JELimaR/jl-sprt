@@ -1,6 +1,6 @@
 import { TypeHalfWeekOfYear } from "jl-calendar";
 import { getStageGenericRank, getStageGenericSource, ILeagueConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, TQualyCondition } from "../../data";
-import { arr2 } from '../../../jl-sprt-core';
+import { arr2 } from 'jl-sprt-core';
 import { verifyBaseStageConfig } from "./verifyBaseStageConfig";
 
 export function verifyStageConfig(config: IStageConfig): boolean {

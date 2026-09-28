@@ -40,8 +40,6 @@ export type {
 export { Ranking } from './JSportModule/Ranking/Ranking';
 export type { TypeRanking } from './JSportModule/Ranking/Ranking';
 export type { IGenericRankItem, IRankItem, TypeTableMatchState, IRankingMetadata, TypeRankingGenerator, TypeRankedEntity } from './JSportModule/Ranking/interfaces';
-export { A_TeamTableItem } from './jl-sprt-core/profiles/A_TeamTableItem';
-export type { AnyTeamTableItem, SortFunc, IA_TeamTableItemBase } from './jl-sprt-core/profiles/A_TeamTableItem';
 export { RankingStore } from './JSportModule/Ranking/RankingStore';
 export type { RankingStoreListener } from './JSportModule/Ranking/RankingStore';
 
@@ -51,71 +49,6 @@ export { default as Phase } from './Tournament/Phase';
 export { SimulationContext, createSimulationContext } from './Tournament/SimulationContext';
 export { TournamentConfigStore } from './Tournament/TournamentConfigStore';
 export { teamsAssign } from './Tournament/teamsAssign';
-
-// Core: abstracciones, contratos y tipos independientes del deporte.
-export {
-  A_Match,
-  A_MatchPlay,
-  A_Result,
-  A_ResultSerie,
-  A_Serie,
-  CATEGORIES,
-  Team
-} from './jl-sprt-core';
-export type {
-  TypeBaseStageOption,
-  TypeCategory,
-  TypeCategoryList,
-  TypeMatchState,
-  IA_ResultInfo,
-  TypeTotalScore,
-  IA_ResultSerieInfo,
-  TMatchScore,
-  TSerieScore,
-  ISportProfile,
-  AnySportProfile,
-  IMatchCreationInfo,
-  ISerieCreationInfo,
-} from './jl-sprt-core';
-
-// Match: profiles y resoluciones concretas por deporte.
-export {
-  AmericanFootballProfile,
-  FootballProfile,
-  VolleyballProfile,
-  AFMatch,
-  AFMatchPlay,
-  AFResult,
-  AFResultSerie,
-  AFSerie,
-  AFTeamTableItem,
-  FootballMatch,
-  FootballMatchPlay,
-  FootballResult,
-  FootballResultSerie,
-  FootballSerie,
-  FootballTeamTableItem,
-  VolleyMatch,
-  VolleyMatchPlay,
-  VolleyResult,
-  VolleyResultSerie,
-  VolleySerie,
-  VolleyTeamTableItem,
-  randomFloat,
-  reseedRandom,
-} from './jl-sprt-match';
-export type {
-  AFMatchResults,
-  AFMatchPuntuations,
-  IAFTeamTableItem,
-  FootballMatchResults,
-  FootballMatchPuntuations,
-  IFootballTeamTableItem,
-  IVolleyScore,
-  VolleyMatchResults,
-  VolleyMatchPuntuations,
-  IVolleyTeamTableItem,
-} from './jl-sprt-match';
 
 // Stages
 export { default as Stage } from './Tournament/Stage/Stage';

@@ -3,10 +3,10 @@ import SingleElmination from "./SingleElimination/SingleElmination";
 import { JCalendar, TypeHalfWeekOfYear } from "jl-calendar";
 import Bombo from "../Bombo";
 import Stage from "../Stage";
-import { arr2, IElementInfo, IRankItem, IStagePlayoffConfig, TypeDrawRulePlayoff, TypeTableMatchState } from "../../../JSportModule";
-import { Team } from "../../../jl-sprt-core";
-import { AnyTeamTableItem } from "../../../jl-sprt-core/profiles/A_TeamTableItem";
-import { AnySportProfile } from "../../../jl-sprt-core";
+import { IElementInfo, IRankItem, IStagePlayoffConfig, TypeDrawRulePlayoff, TypeTableMatchState } from "../../../JSportModule";
+import { arr2, AnyTeam } from "jl-sprt-core";
+import { AnyTeamTableItem } from "jl-sprt-core";
+import { AnySportProfile } from "jl-sprt-core";
 import { SimulationContext } from "../../SimulationContext";
 
 
@@ -58,7 +58,7 @@ export default class StagePlayoff extends Stage<IElementInfo, IStagePlayoffConfi
    * @param cal 
    */
   start(teams: IRankItem[], cal: JCalendar): void {
-    const participants: Team[] = (this.config.intervalOfDrawDate) ? this.teamsDraw(teams) : teams.map(ri => ri.team);
+    const participants: AnyTeam[] = (this.config.intervalOfDrawDate) ? this.teamsDraw(teams) : teams.map(ri => ri.team);
     this._playoff.assign(participants, cal);
   }
 

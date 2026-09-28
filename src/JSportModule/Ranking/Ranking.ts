@@ -1,12 +1,12 @@
 import { TQualyCondition } from "../data/elementsConfig";
-import { Team }from "../../jl-sprt-core";
+import { AnyTeam } from "jl-sprt-core";
 import { IGenericRankItem, IRankingMetadata, IRankItem } from "./interfaces";
 import { RankingStore } from "./RankingStore";
 
 export type TypeRanking = {
   context: string;
   items: IGenericRankItem[];
-  teams: Team[];
+  teams: AnyTeam[];
   scores?: number[];
   metadata?: IRankingMetadata;
 }
@@ -14,7 +14,7 @@ export type TypeRanking = {
 export class Ranking {
   private _context: string;
   private _items: IGenericRankItem[];
-  private _teams: Team[];
+  private _teams: AnyTeam[];
   private _scores: (number | undefined)[];
   private _metadata: IRankingMetadata | undefined;
 
@@ -55,7 +55,7 @@ export class Ranking {
     return out;
   }
 
-  addTeams(t: Team[]) {
+  addTeams(t: AnyTeam[]) {
     if (this._items.length !== t.length) {
       throw new Error(`No se pueden asignar teams al ranking "${this._context}": ` +
         `cantidad de items (${this._items.length}) distinta de la cantidad de teams (${t.length}). ` +
@@ -142,7 +142,7 @@ export class Ranking {
     // como instancias distintas en cada ranking fuente, por eso NO se usa la
     // referencia del objeto como clave).
     const scoreMap = new Map<string, number>();
-    const teamMap = new Map<string, Team>();
+    const teamMap = new Map<string, AnyTeam>();
 
     sources.forEach(({ ranking, weight }) => {
       ranking.getRankTable().forEach((ri: IRankItem) => {
@@ -163,7 +163,7 @@ export class Ranking {
       origin: context,
       pos: idx + 1,
     }));
-    const teams: Team[] = sorted.map(([id]) => teamMap.get(id)!);
+    const teams: AnyTeam[] = sorted.map(([id]) => teamMap.get(id)!);
     const scores: number[] = sorted.map(([, score]) => score);
 
     return new Ranking({ context, items, teams, scores, metadata });
@@ -211,11 +211,11 @@ export class Ranking {
   static aggregate(
     context: string,
     rankings: Ranking[],
-    scoreFn: (team: Team, rankings: Ranking[]) => number,
+    scoreFn: (team: AnyTeam, rankings: Ranking[]) => number,
     metadata?: IRankingMetadata
   ): Ranking {
     // Recopilar teams únicos
-    const teamMap = new Map<string, Team>();
+    const teamMap = new Map<string, AnyTeam>();
     rankings.forEach(ranking => {
       ranking.getRankTable().forEach((ri: IRankItem) => {
         teamMap.set(ri.team.id, ri.team);
@@ -231,7 +231,7 @@ export class Ranking {
       origin: context,
       pos: idx + 1,
     }));
-    const teams: Team[] = scored.map(entry => entry.team);
+    const teams: AnyTeam[] = scored.map(entry => entry.team);
     const scores: number[] = scored.map(entry => entry.score);
 
     return new Ranking({ context, items, teams, scores, metadata });

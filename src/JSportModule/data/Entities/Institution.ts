@@ -1,7 +1,7 @@
 import { Town } from "..";
 import { JDate } from "jl-calendar";
 import { TDC } from "../../patterns/templateDataCreator";
-import { Team, TypeCategory, TypeCategoryList } from "../../../jl-sprt-core";
+import { AnyTeam, TypeCategory, TypeCategoryList } from "jl-sprt-core";
 
 export interface IInstitutionData {//} extends ISportOrganizationData {
   i: string; // id
@@ -31,7 +31,7 @@ export interface IInstitutionCreator {
 export class Institution extends TDC<IInstitutionData, IInstitutionCreator>{
     // _installations: Installation[] = [];
 
-  _teams: TypeCategoryList<Team> = {};
+  _teams: TypeCategoryList<AnyTeam> = {};
 
   constructor(iic: IInstitutionCreator) {
     super(iic)
@@ -46,6 +46,7 @@ export class Institution extends TDC<IInstitutionData, IInstitutionCreator>{
     if (this._teams[category])
       throw new Error(`la inst ${this.info.id} ya cuenta con un team en la categoria: ${category}`);
 
+    // SE NECESITA UN POFILE
     this._teams[category] = new Team({
       id: `${category}_${this.id}`,
       name: this.name,
@@ -54,7 +55,7 @@ export class Institution extends TDC<IInstitutionData, IInstitutionCreator>{
     });
   }
 
-  getTeam(category: TypeCategory): Team | undefined {
+  getTeam(category: TypeCategory): AnyTeam | undefined {
     return this._teams[category]
   }
 

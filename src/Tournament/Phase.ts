@@ -1,8 +1,8 @@
 import { IElementInfo, IPhaseConfig, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, TCC } from "../JSportModule";
 import { IGenericRankItem } from "../JSportModule";
 import { Ranking, TypeRanking } from "../JSportModule";
-import { Team } from "../jl-sprt-core";
-import { AnySportProfile } from "../jl-sprt-core/profiles/ISportProfile";
+import { AnyTeam } from "jl-sprt-core";
+import { AnySportProfile } from "jl-sprt-core";
 import { SimulationContext } from "./SimulationContext";
 import StageGroup from "./Stage/StageGroup/StageGroup";
 import StagePlayoff from "./Stage/StagePlayoff/StagePlayoff";
@@ -36,7 +36,7 @@ export default class Phase extends TCC<IElementInfo, IPhaseConfig> { // esto es 
     // Acá se RE-NUMERA a una posición GLOBAL 1..N según el orden de concatenación, que
     // ya refleja la jerarquía. Se conserva el `origin` como procedencia.
     const items: IGenericRankItem[] = [];
-    const teams: Team[] = [];
+    const teams: AnyTeam[] = [];
 
     this.config.rankItemList.forEach((item: IGenericRankItem, idx: number) => {
       const sourceRanking = this._ctx.store.get(item.origin);

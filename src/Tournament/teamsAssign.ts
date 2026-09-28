@@ -1,5 +1,5 @@
 import { Ranking, IGenericRankItem } from "../JSportModule";
-import { Team } from "../jl-sprt-core";
+import { AnyTeam } from "jl-sprt-core";
 import { SimulationContext } from "./SimulationContext";
 import Tournament from "./Tournament";
 
@@ -85,7 +85,7 @@ function buildAndStoreIni(
   items: IGenericRankItem[],
   qualyItems: IGenericRankItem[],
 ): void {
-  const teams: Team[] = [];
+  const teams: AnyTeam[] = [];
 
   qualyItems.forEach((igri: IGenericRankItem) => {
     const sourceRanking = ctx.store.get(igri.origin);

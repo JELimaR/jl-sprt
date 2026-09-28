@@ -4,15 +4,15 @@ import League from "../Tournament/Stage/StageGroup/League/League";
 import SingleElmination from "../Tournament/Stage/StagePlayoff/SingleElimination/SingleElmination";
 import { mostrarFecha } from "../mostrarFechaBorrar";
 import { ILeagueConfig, ISingleElminationConfig, verifyBaseStageConfig } from "../JSportModule";
-import { FootballProfile } from "../jl-sprt-match/football/FootballProfile";
+import { FootballProfile } from "jl-sprt-match";
 import { AdvanceAll } from '../Tournament/Advance';
 
 export default function baseStageExample() {
 
   const cal = JCalendar.createFromYear(1986);
 
-  const selectionL = getExampleTeams(10, 'TL');
-  const selectionC = getExampleTeams(132, 'TC').slice(100, 133);
+  const selectionL = getExampleTeams(10,  new FootballProfile(), 'TL');
+  const selectionC = getExampleTeams(132, new FootballProfile(), 'TC').slice(100, 133);
 
   // league creation
   const leagueConfig: ILeagueConfig = {

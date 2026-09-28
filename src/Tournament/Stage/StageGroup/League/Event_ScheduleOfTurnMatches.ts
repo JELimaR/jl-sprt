@@ -1,7 +1,7 @@
 import { IJEventInfo, JInstantEvent, JDateTime } from "jl-calendar";
 import { Turn } from "./Turn";
 import League from './League';
-import { A_Match } from "../../../../jl-sprt-core/Match/A_Match";
+import { AnyMatch } from "jl-sprt-core";
 import { JEventMatch } from "../../Match/EventMatch";
 import { MatchScheduler } from "../../Match/MatchScheduler";
 
@@ -33,7 +33,7 @@ export class Event_ScheduleOfTurnMatches extends JInstantEvent {
 	execute() {
 		console.log(`ejecuting match scheduling for matchHWeek number: ${this._turn.num}`);
 		// el evento debe crearse en el match
-		this._turn.matches.forEach((match: A_Match<any>) => {
+		this._turn.matches.forEach((match: AnyMatch) => {
 			const dt = JDateTime.createFromHalfWeekOfYearAndYear(
 				this._turn.halfWeek,
 				// this._leagueData.info.season,

@@ -1,18 +1,17 @@
 import { JDate } from "jl-calendar";
 import { Country, IFederationCreator, IFederationData, IInstitutionCreator, Institution, Town } from "../JSportModule";
-import { Team } from "../jl-sprt-core";
+import { AnyTeam, AnySportProfile } from "jl-sprt-core";
 
 
-export const getExampleTeams = (n: number, pid: string = ''): Team[] => {
-	let out: Team[] = [];
+export const getExampleTeams = (n: number, profile: AnySportProfile, pid: string = ''): AnyTeam[] => {
+	let out: AnyTeam[] = [];
 	for (let i = 1; i <= n; i++) {
     const iid = `${pid}-T${1000+i}`;
     const cid = `C${String(14).padStart(3, '0')}`;
     const tid = `T${String(Math.round(321 * Math.random() + 187 * Math.random())).padStart(8, '0')}`;
 		out.push(
-			new Team({
+			profile.createTeam({
         id: `${'S'}_${iid}`,
-        name: iid,
         category: 'S',
         owner: new Institution({
           id: iid, name: iid, shortName: iid, abrevName: iid,

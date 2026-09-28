@@ -8,14 +8,13 @@ import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
 import { TGS } from "../Tournament/Stage/Stage";
 import StagePlayoff from "../Tournament/Stage/StagePlayoff/StagePlayoff";
 import { IElementInfo, IRankItem, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, Ranking } from "../JSportModule";
-import { Team } from "../jl-sprt-core";
-import { FootballProfile } from "../jl-sprt-match/football/FootballProfile";
+import { FootballTeam, FootballProfile } from "jl-sprt-match";
 
 const {
   s1,
   s3,
 } = stageExampleData;
-const selection = getExampleTeams(150, 'Team');
+const selection = getExampleTeams(150, new FootballProfile(), 'Team');
 
 const stages: TGS[] = [];
 
@@ -24,7 +23,7 @@ export default function stageExample03() {
   const cal = JCalendar.createFromYear(1986);
   const ctx = new SimulationContext(cal);
 
-  const rankItemArr: IRankItem[] = selection.map((t: Team, i: number) => { return { pos: i + 1, team: t, origin: 'rankingInicial' } });
+  const rankItemArr: IRankItem[] = selection.map((t: FootballTeam, i: number) => { return { pos: i + 1, team: t, origin: 'rankingInicial' } });
   const ranking: Ranking = Ranking.fromRankItemArr('rankingInicial', rankItemArr);
   ctx.store.set(ranking.context, ranking);
 

@@ -1,9 +1,9 @@
 import { JCalendar } from "jl-calendar";
+import { AnySportProfile } from "jl-sprt-core";
 import { IGenericRankItem, Ranking, TCC } from "../JSportModule";
 import { IElementInfo, IPhaseConfig, ITournamentConfig } from "../JSportModule/data";
 import { createGSG } from "../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
-import { AnySportProfile } from "../jl-sprt-core/profiles/ISportProfile";
 import Phase from "./Phase";
 import { SimulationContext } from "./SimulationContext";
 import { TGS } from "./Stage/Stage";

@@ -1,4 +1,4 @@
-import { arr2 } from '../../../../JSportModule'
+import { arr2 } from 'jl-sprt-core'
 
 const robinRoundSchedulingFunction = (n: number, opt: 'home' | 'h&a' | 'neutral'): arr2<number>[][] => {
   const isN = opt == 'neutral';

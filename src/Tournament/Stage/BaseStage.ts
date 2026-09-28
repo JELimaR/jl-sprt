@@ -1,10 +1,10 @@
 
 import { JCalendar } from "jl-calendar";
 import { IBaseStageConfig, IElementInfo, TCC, TypeTableMatchState } from "../../JSportModule";
-import { Team }from "../../jl-sprt-core";
-import { A_Match } from "../../jl-sprt-core/Match/A_Match";
-import { AnyTeamTableItem } from "../../jl-sprt-core/profiles/A_TeamTableItem";
-import { AnySportProfile } from "../../jl-sprt-core/profiles/ISportProfile";
+import { AnyTeam }from "jl-sprt-core";
+import { AnyMatch } from "jl-sprt-core";
+import { AnyTeamTableItem } from "jl-sprt-core";
+import { AnySportProfile } from "jl-sprt-core";
 
 /**
  * En el BaseStage es donde se configuran las rondas o turnos y los partidos de un torneo.
@@ -19,7 +19,7 @@ export default abstract class BaseStage<I extends IElementInfo, C extends IBaseS
    *        -> ESTOS SE CREAN EN LA ASIGNACION -> función assign()
    * 
    */
-  private _participants: Map<number, Team> = new Map<number, Team>();
+  private _participants: Map<number, AnyTeam> = new Map<number, AnyTeam>();
   protected _sportProfile: AnySportProfile;
 
   constructor(info: I, config: C, sportProfile: AnySportProfile) {
@@ -30,30 +30,30 @@ export default abstract class BaseStage<I extends IElementInfo, C extends IBaseS
 
   abstract constructorVerification(config: C): void;
 
-  abstract get matches(): A_Match<any>[];
+  abstract get matches(): AnyMatch[];
 
   get isFinished(): boolean {
     return this.matches.every((m) => m.state === 'finished');
   }
 
-  get participants(): Map<number, Team> { return this._participants }
-  get teamsArr(): Team[] { 
-    const teams: Team[] = [];
-    this.participants.forEach((t: Team) => teams.push(t));
+  get participants(): Map<number, AnyTeam> { return this._participants }
+  get teamsArr(): AnyTeam[] { 
+    const teams: AnyTeam[] = [];
+    this.participants.forEach((t: AnyTeam) => teams.push(t));
     return teams;
    }
 
   /**
    * En la asignacion de los participantes, se deben crear los correspondientes turns/rounds segun corresponda
    */
-  assign(participants: Team[], cal: JCalendar): void {
+  assign(participants: AnyTeam[], cal: JCalendar): void {
     if (this.config.participantsNumber !== participants.length) {
       throw new Error(`cantidad de tms incorrecta:
       presentados: ${participants.length} y se esperaban: ${this.config.participantsNumber}`);
     }
     // verificar que no se repitan
     // assign participants and table items
-    participants.forEach((team: Team, idx: number) => {
+    participants.forEach((team: AnyTeam, idx: number) => {
       this.participants.set(idx + 1, team);
     })
 
@@ -67,7 +67,7 @@ export default abstract class BaseStage<I extends IElementInfo, C extends IBaseS
    */
   calcTableValues(ttms: TypeTableMatchState): AnyTeamTableItem[] {
     const out: AnyTeamTableItem[] = [];
-    this.participants.forEach((team: Team) => out.push(this._sportProfile.createTableItem(team, this.info.id)));
+    this.participants.forEach((team: AnyTeam) => out.push(this._sportProfile.createTableItem(team, this.info.id)));
 
     const matchConditionFunc = BaseStage.getTableCondition(ttms);
   
@@ -77,8 +77,8 @@ export default abstract class BaseStage<I extends IElementInfo, C extends IBaseS
         let awayTTI = out.find(t => t.team.id === m.awayTeam.id);
   
         if (homeTTI && awayTTI) {
-          this._sportProfile.updateTableFromResult(homeTTI, m.result, homeTTI.team.id);
-          this._sportProfile.updateTableFromResult(awayTTI, m.result, awayTTI.team.id);
+          this._sportProfile.updateTableFromResult(homeTTI, m.result.getResultInfo());
+          this._sportProfile.updateTableFromResult(awayTTI, m.result.getResultInfo());
         } else {
           throw new Error(`non finded
           En BaseStage.calcTableValues`);
@@ -93,7 +93,7 @@ export default abstract class BaseStage<I extends IElementInfo, C extends IBaseS
    * 
    * @param ttms 
    */
-  static getTableCondition(ttms: TypeTableMatchState): (m: A_Match<any>) => boolean {
+  static getTableCondition(ttms: TypeTableMatchState): (m: AnyMatch) => boolean {
     switch (ttms) {
       case 'partial':
         return (m => m.state === 'finished' || m.state === 'playing');

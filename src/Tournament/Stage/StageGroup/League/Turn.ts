@@ -1,18 +1,18 @@
 import { JCalendar, JDateTime, TypeHalfWeekOfYear } from "jl-calendar";
 import League from "./League";
 import { Event_ScheduleOfTurnMatches } from "./Event_ScheduleOfTurnMatches";
-import { A_Match } from "../../../../jl-sprt-core/Match/A_Match";
+import { AnyMatch } from "jl-sprt-core";
 
 export interface ITurnInfo {
 	num: number;
 	halfweek: TypeHalfWeekOfYear;
 	halfweekSchedule: TypeHalfWeekOfYear;
-	matches: A_Match<any>[];
+	matches: AnyMatch[];
 }
 
 export /*default*/ class Turn {
 	private _num: number;
-	private _matches: A_Match<any>[] = [];
+	private _matches: AnyMatch[] = [];
 	private _halfWeek: TypeHalfWeekOfYear;
 	private _halfweekSchedule: TypeHalfWeekOfYear;
 
@@ -25,7 +25,7 @@ export /*default*/ class Turn {
 
 	get num(): number { return this._num }
 	get halfWeek(): TypeHalfWeekOfYear { return this._halfWeek }
-	get matches(): A_Match<any>[] { return this._matches }
+	get matches(): AnyMatch[] { return this._matches }
 
 	get isFinished(): boolean {
 		return this._matches.every((m) => m.state === 'finished');

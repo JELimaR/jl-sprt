@@ -2,7 +2,7 @@ import { IDivisionCondition } from "./LeagueSystem";
 import { RankingStore } from "../../Ranking/RankingStore";
 import { ITournamentFromGSGData } from "../../GeneralStageGraph/tournamentFromGSG";
 import { IGenericRankItem, IRankItem, Ranking } from "../../Ranking";
-import { CATEGORIES, TypeCategory, TypeCategoryList, Team } from "../../../jl-sprt-core";
+import { CATEGORIES, TypeCategory, TypeCategoryList, AnyTeam } from "jl-sprt-core";
 import { Country } from "./GeogEntity";
 import { Institution } from "./Institution";
 import LeagueSystem, { CupSystem, ICupSystemCreator, IDivisionConfig, ILeagueSystemCreator } from "./LeagueSystem";
@@ -17,7 +17,7 @@ export interface IFederationData extends ISportOrganizationData {
 export interface IFederationCreator extends ISportOrganizationCreator<Country, Institution> {
   leagueSystem: TypeCategoryList<LeagueSystem>;
   cupSystem: TypeCategoryList<CupSystem>;
-  rankings: TypeCategoryList<Team[]>
+  rankings: TypeCategoryList<AnyTeam[]>
 }
 
 export class Federation extends SportOrganization<Country, Institution, IFederationData, IFederationCreator> {
@@ -118,8 +118,8 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
    * @param category Categoría deportiva
    * @returns Array de equipos en el ranking de la categoría
    */
-  private getRankList(category: TypeCategory): Team[] {
-    let out: Team[];
+  private getRankList(category: TypeCategory): AnyTeam[] {
+    let out: AnyTeam[];
     const rankList = this.info.rankings[category];
     if (rankList) {
       out = [...rankList];
@@ -149,7 +149,7 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
       return;
     }
     // Si ya existe, verificar que no esté repetido
-    const rankList = this.info.rankings[category] as Team[];
+    const rankList = this.info.rankings[category] as AnyTeam[];
     if (rankList.find(t => t.id === team.id)) {
       console.log(rankList.map(t => t.id), inst.id);
       throw new Error(`El equipo ${team.id} ya está en el ranking de la categoría ${category}`);
@@ -250,8 +250,8 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
    * @returns Objeto Ranking con los equipos ordenados
    */
   getRanking(category: TypeCategory): Ranking {
-    let rankList: Team[] = this.getRankList(category);
-    const out: IRankItem[] = rankList.map((team: Team, i: number) => {
+    let rankList: AnyTeam[] = this.getRankList(category);
+    const out: IRankItem[] = rankList.map((team: AnyTeam, i: number) => {
       return {
         origin: `fr_${category}_${this.id}`, pos: i + 1, team: team
       }
@@ -327,7 +327,7 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
    * @param teamsArr Lista de equipos ordenada
    * @param category Categoría deportiva
    */
-  private setTeamInRanking(teamsArr: Team[], category: TypeCategory) {
+  private setTeamInRanking(teamsArr: AnyTeam[], category: TypeCategory) {
     const teamsPrevList = [...this.getRankList(category)];
     // verifico que no haya repetidos
     const teamsMap = new Map(teamsArr.map(t => [t.id, t]))
@@ -337,7 +337,7 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
       En Federation.setTeamInRanking`)
     }
     // verifico que existe cada institution
-    teamsArr.forEach((team: Team) => {
+    teamsArr.forEach((team: AnyTeam) => {
       const inst = this.members.get(team.entity.id)
       if (!inst) {
         console.log(team)
@@ -347,7 +347,7 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
       }
     })
     // verifico que todos siguen estando
-    teamsPrevList.forEach((team: Team) => {
+    teamsPrevList.forEach((team: AnyTeam) => {
       if (!teamsMap.get(team.id)) {
         console.log(this.getRankList(category).map(t => t.entity.id))
         throw new Error(`en la lista de instituciones no se incluye el elemento: ${team.entity.id}.

@@ -5,9 +5,7 @@ import { IGenericRankItem, Ranking } from "../JSportModule/Ranking";
 import { SimulationContext } from "../Tournament/SimulationContext";
 import Tournament from "../Tournament/Tournament";
 import { teamsAssign } from "../Tournament/teamsAssign";
-import { FootballProfile } from "../jl-sprt-match/football/FootballProfile";
-import { AmericanFootballProfile } from "../jl-sprt-match/americanFootball/AmericanFootballProfile";
-import { VolleyballProfile } from "../jl-sprt-match/volleyball/VolleyballProfile";
+import { FootballProfile, AmericanFootballProfile, VolleyballProfile } from "jl-sprt-match";
 import { AdvanceAll } from '../Tournament/Advance';
 import { getFederationRankings } from "./graphData01";
 

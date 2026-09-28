@@ -1,11 +1,7 @@
 import { JCalendar, TypeHalfWeekOfYear, JDateTime } from "jl-calendar";
 import SingleElmination from './SingleElmination';
 import { Event_ScheduleOfRoundMatches } from './Event_ScheduleOfRoundMatches';
-import { Team } from '../../../../jl-sprt-core';
-import { A_Serie } from '../../../../jl-sprt-core/Match/A_Serie';
-import { A_Match } from '../../../../jl-sprt-core/Match/A_Match';
-import { arr2 } from '../../../../JSportModule';
-
+import { arr2, AnyTeam, A_Serie, AnyMatch } from 'jl-sprt-core';
 
 export interface IRoundInfo {
 	num: number;
@@ -30,24 +26,24 @@ export class Round {
 	get num(): number { return this._num }
 	get halfWeek(): arr2<TypeHalfWeekOfYear> { return this._halfWeeks }
 	get series(): A_Serie<any, any>[] {return this._series }
-	get matches(): A_Match<any>[] { 
-		let out: A_Match<any>[] = [];
-		this._series.forEach((serie) => {
-			serie.matches.forEach((match) => {
+	get matches(): AnyMatch[] { 
+		let out: AnyMatch[] = [];
+		this._series.forEach((serie: any /*AnySerie */) => {
+			serie.matches.forEach((match: AnyMatch) => {
 				out.push(match);
 			})
 		})
 		return out;
 	}
 
-	 get winners(): Team[] {
-		 let out: Team[] = [];
+	 get winners(): AnyTeam[] {
+		 let out: AnyTeam[] = [];
 		this._series.forEach((s) => out.push(s.winner))
 		return out;
 	}
 
-	 get losers(): Team[] {
-		 let out: Team[] = [];
+	 get losers(): AnyTeam[] {
+		 let out: AnyTeam[] = [];
 		this._series.forEach((s) => {
 			out.push(s.loser)})
 		return out;

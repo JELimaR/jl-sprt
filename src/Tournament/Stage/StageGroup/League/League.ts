@@ -1,10 +1,7 @@
 
 import { JCalendar } from "jl-calendar";
-import { arr2, IElementInfo, ILeagueConfig, TypeTableMatchState } from "../../../../JSportModule";
-import { Team, TypeBaseStageOption } from "../../../../jl-sprt-core";
-import { A_Match } from "../../../../jl-sprt-core/Match/A_Match";
-import { AnyTeamTableItem } from "../../../../jl-sprt-core/profiles/A_TeamTableItem";
-import { AnySportProfile } from "../../../../jl-sprt-core/profiles/ISportProfile";
+import { arr2, AnyTeam, TypeBaseStageOption, AnyMatch, AnyTeamTableItem, AnySportProfile } from "jl-sprt-core";
+import { IElementInfo, ILeagueConfig, TypeTableMatchState } from "../../../../JSportModule";
 import BaseStage from "../../BaseStage";
 import robinRoundSchedulingFunction from "./RoundRobin";
 import { Turn } from "./Turn";
@@ -65,8 +62,8 @@ export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
     return this._turns;
   }
 
-  get matches(): A_Match<any>[] {
-    let out: A_Match<any>[] = [];
+  get matches(): AnyMatch[] {
+    let out: AnyMatch[] = [];
     this._turns.forEach((f: Turn) => {
       f.matches.forEach((m) => out.push(m));
     })
@@ -85,10 +82,10 @@ export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
     );
 
     for (let t = 0; t < sch.length; t++) {
-      let teams: Team[] = [];
+      let teams: AnyTeam[] = [];
       for (let m of sch[t]) {
-        const ht: Team = this.participants.get(m[0])!;
-        const at: Team = this.participants.get(m[1])!;
+        const ht: AnyTeam = this.participants.get(m[0])!;
+        const at: AnyTeam = this.participants.get(m[1])!;
         teams.push(ht);
         teams.push(at);
       }
@@ -97,7 +94,7 @@ export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
     }
   }
 
-  createNewTurn(teamsDrawSorted: Team[], calendar: JCalendar) {
+  createNewTurn(teamsDrawSorted: AnyTeam[], calendar: JCalendar) {
     const turnNumber: number = this._turns.length + 1;
     const turnIndex: number = this._turns.length;
     const turn: Turn = new Turn({
@@ -111,8 +108,8 @@ export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
     this._turns.push(turn);
   }
 
-  createTurnMatches(teams: Team[], turnNumber: number): A_Match<any>[] {
-    let out: A_Match<any>[] = [];
+  createTurnMatches(teams: AnyTeam[], turnNumber: number): AnyMatch[] {
+    let out: AnyMatch[] = [];
 
     const total: number = this.matches.length;
     for (let i = 0; i < teams.length; i += 2) {
@@ -123,7 +120,7 @@ export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
         hw: this.config.turnHalfWeeks[turnNumber - 1],
         season: this.info.season,
         id: `${this.info.id}-T${turnNumber}-M${total + i / 2 + 1}`,
-        allowedDraw: true,
+        // allowedDraw: true,
         isNeutral: this.config.opt == 'neutral',
       })
 
@@ -161,8 +158,8 @@ export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
   }
 
   //
-  static teamsSortForDraw(teamRankArr: Team[]) {
-    let out: Team[] = [];
+  static teamsSortForDraw(teamRankArr: AnyTeam[]) {
+    let out: AnyTeam[] = [];
 
     let currUpIndex = 0;
     let currUnderIndex = teamRankArr.length - 1;

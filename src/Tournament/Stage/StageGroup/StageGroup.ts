@@ -3,9 +3,7 @@ import Stage from "../Stage";
 import { JCalendar, TypeHalfWeekOfYear } from "jl-calendar";
 import Bombo from "../Bombo";
 import { IElementInfo, ILeagueConfig, IRankItem, IStageGroupConfig, TypeDrawRulePlayoff, TypeTableMatchState } from "../../../JSportModule";
-import { Team } from "../../../jl-sprt-core";
-import { AnyTeamTableItem } from "../../../jl-sprt-core/profiles/A_TeamTableItem";
-import { AnySportProfile } from "../../../jl-sprt-core/profiles/ISportProfile";
+import { AnyTeam, AnyTeamTableItem, AnySportProfile } from "jl-sprt-core";
 import { SimulationContext } from "../../SimulationContext";
 
 /**
@@ -70,7 +68,7 @@ export default class StageGroup extends Stage<IElementInfo, IStageGroupConfig> {
    * @param cal 
    */
   start(teams: IRankItem[], cal: JCalendar): void {
-    const participants: Team[][] = (this.config.intervalOfDrawDate) ? this.teamsDraw(teams) : this.teamsNoDraw(teams);
+    const participants: AnyTeam[][] = (this.config.intervalOfDrawDate) ? this.teamsDraw(teams) : this.teamsNoDraw(teams);
     // console.log(participants)
     this._groups.forEach((g: League, i: number) => {
       const arr = League.teamsSortForDraw(participants[i]);
@@ -87,7 +85,7 @@ export default class StageGroup extends Stage<IElementInfo, IStageGroupConfig> {
    * 3	4	5	10	15
    * @param teams 
    */
-  private teamsNoDraw(teams: IRankItem[]): Team[][] {
+  private teamsNoDraw(teams: IRankItem[]): AnyTeam[][] {
     let sorted: IRankItem[][] = [];
     // teams = League.teamsSortForDraw(teams, false);
     let gidOffset = 0;
@@ -111,7 +109,7 @@ export default class StageGroup extends Stage<IElementInfo, IStageGroupConfig> {
   }
 
 
-  private teamsDraw(teams: IRankItem[]): Team[][] {
+  private teamsDraw(teams: IRankItem[]): AnyTeam[][] {
     let sorted: IRankItem[][] = [];
     let i = 0; // conteo de la cantidad de intentos para un draw valido
     let isValid = false;

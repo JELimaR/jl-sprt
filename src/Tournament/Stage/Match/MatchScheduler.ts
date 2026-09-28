@@ -1,9 +1,9 @@
 import { JCalendar, JDateTime } from "jl-calendar";
 import { JEventMatch } from "./EventMatch";
-import { A_Match } from "../../../jl-sprt-core";
+import { AnyMatch } from "jl-sprt-core";
 
 
-export function MatchScheduler(match: A_Match<any>, dt: JDateTime, cal: JCalendar): JEventMatch {
+export function MatchScheduler(match: AnyMatch, dt: JDateTime, cal: JCalendar): JEventMatch {
 
   match.schedule(dt);
 

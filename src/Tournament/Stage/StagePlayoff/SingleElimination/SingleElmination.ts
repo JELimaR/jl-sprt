@@ -3,12 +3,12 @@ import { JCalendar, JDateTime } from "jl-calendar";
 import { Round } from './Round';
 import Event_RoundCreationAndTeamsDraw from './Event_RoundCreationAndTeamsDraw';
 import { IElementInfo, ISingleElminationConfig } from '../../../../JSportModule';
-import { Team } from '../../../../jl-sprt-core';
-import { AnyTeamTableItem } from '../../../../jl-sprt-core/profiles/A_TeamTableItem';
-import { AnySportProfile } from '../../../../jl-sprt-core/profiles/ISportProfile';
-import { A_Serie } from '../../../../jl-sprt-core/Match/A_Serie';
+import { AnyTeam } from 'jl-sprt-core';
+import { AnyTeamTableItem } from 'jl-sprt-core';
+import { AnySportProfile } from 'jl-sprt-core';
+import { A_Serie } from 'jl-sprt-core';
 import { TypeTableMatchState } from '../../../../JSportModule/';
-import { A_Match } from '../../../../jl-sprt-core/Match/A_Match';
+import { AnyMatch } from 'jl-sprt-core';
 
 // export interface IElementInfo extends IBaseStageInfo { }
 
@@ -34,8 +34,8 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
   }
 
   get rounds(): Round[] { return this._rounds }
-  get matches(): A_Match<any>[] {
-    let out: A_Match<any>[] = [];
+  get matches(): AnyMatch[] {
+    let out: AnyMatch[] = [];
     this._rounds.forEach((r: Round) => {
       r.matches.forEach((m) => out.push(m));
     })
@@ -69,7 +69,7 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
     }
   }
 
-  createNewRound(teamsDrawSorted: Team[], calendar: JCalendar) {
+  createNewRound(teamsDrawSorted: AnyTeam[], calendar: JCalendar) {
     const roundNumber: number = this._rounds.length + 1;
     const roundIndex: number = this._rounds.length;
     const round: Round = new Round({
@@ -83,7 +83,7 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
     this._rounds.push(round);
   }
 
-  createRoundSeries(teams: Team[]): A_Serie<any, any>[] {
+  createRoundSeries(teams: AnyTeam[]): A_Serie<any, any>[] {
     let out: A_Serie<any, any>[] = [];
 
     const total: number = this.matches.length / ((this.config.opt == 'h&a') ? 2 : 1);
@@ -107,7 +107,7 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
     let out = this.calcTableValues(ttms);
 
     this.rounds.forEach((r: Round, idx: number) => {
-      r.losers.forEach((loser: Team) => {
+      r.losers.forEach((loser: AnyTeam) => {
         let item = out.find((value) => value.team.id === loser.id)
         if (item) item.pos = this.rounds.length + 1 - idx;
       })
@@ -140,8 +140,8 @@ export default class SingleElmination extends BaseStage<IElementInfo, ISingleElm
   }
 
   //
-  static teamsSortForDraw(teamRankArr: Team[]): Team[] {
-    let out: Team[] = [];
+  static teamsSortForDraw(teamRankArr: AnyTeam[]): AnyTeam[] {
+    let out: AnyTeam[] = [];
     const total = teamRankArr.length;
     if (total % 2 !== 0)
       throw new Error(`En un playoff (single elimination), debe ser par la cantidad de teams. (En SingleElimination.teamsSortForDraw)`)

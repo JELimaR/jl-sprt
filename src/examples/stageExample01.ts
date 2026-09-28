@@ -5,22 +5,21 @@ import { mostrarFecha } from "../mostrarFechaBorrar";
 import { AdvanceAll } from '../Tournament/Advance';
 import stageExampleData from "./stageExampleData";
 import { SimulationContext } from "../Tournament/SimulationContext";
-import { Team } from "../jl-sprt-core";
 import { IRankItem, TypeRanking, Ranking } from "../JSportModule";
-import { FootballProfile } from "../jl-sprt-match/football/FootballProfile";
+import { FootballProfile, FootballTeam } from "jl-sprt-match";
 
 const {
   s1,
   s2,
 } = stageExampleData;
-const selection = getExampleTeams(150, 'Team');
+const selection = getExampleTeams(150, new FootballProfile(), 'Team');
 
 export default function stageExample01() {
 
   const cal = JCalendar.createFromYear(1986);
   const ctx = new SimulationContext(cal);
 
-  const rankItemArr: IRankItem[] = selection.map((t: Team, i: number) => { return { pos: i + 1, team: t, origin: 'rankingInicial' } });
+  const rankItemArr: IRankItem[] = selection.map((t: FootballTeam, i: number) => { return { pos: i + 1, team: t, origin: 'rankingInicial' } });
   const ranking: TypeRanking = { context: 'rankingInicial', items: rankItemArr, teams: rankItemArr.map(e => e.team) }
   ctx.store.set(ranking.context, Ranking.fromTypeRanking(ranking));
 

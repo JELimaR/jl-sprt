@@ -1,9 +1,8 @@
 import { IJEventInfo, JDurativeEvent } from "jl-calendar";
-import { A_Match } from "../../../jl-sprt-core/Match/A_Match";
-import { IVolleyScore } from "../../../jl-sprt-match/volleyball/VolleyScore";
+import { AnyMatch, IFootballScore, IVolleyballScore } from "jl-sprt-core";
 
 export interface IJEventMatchInfo extends IJEventInfo {
-  match: A_Match<any>;
+  match: AnyMatch;
 }
 
 /**
@@ -16,7 +15,7 @@ export interface IJEventMatchInfo extends IJEventInfo {
  *
  * Mapeo temporal (simple y homogéneo): 1 intervalo del calendario = 1
  * `match.advance()`, y cada `advance()` de la simulación representa 5 minutos de juego
- * (contrato de A_MatchPlay). Así la duración del partido en el calendario EMERGE de la
+ * (contrato de AnyMatchPlay). Así la duración del partido en el calendario EMERGE de la
  * propia simulación (fútbol termina a los ~90 min de juego → ~18 intervalos; vóley
  * juega ~4 rallies por intervalo y termina cuando alguien gana 3 sets → duración
  * variable pero realista). No se declara duración por deporte.
@@ -29,7 +28,7 @@ export interface IJEventMatchInfo extends IJEventInfo {
  * El flujo por intervalos usa el motor `tick()`/`advanceIntervals()` del calendario.
  */
 export class JEventMatch extends JDurativeEvent {
-  private _match: A_Match<any>;
+  private _match: AnyMatch;
 
   /** Tope de seguridad en intervalos (el fin real lo decide el partido). */
   private static readonly SAFETY_MAX_INTERVALS = 1000;
@@ -48,7 +47,7 @@ export class JEventMatch extends JDurativeEvent {
   get label(): string { return `${this._match.homeTeam.name} vs ${this._match.awayTeam.name}`; }
 
   /** Partido asociado a este evento. */
-  get match(): A_Match<any> { return this._match; }
+  get match(): AnyMatch { return this._match; }
 
   /** Tope de seguridad; el fin efectivo lo da isFinished() (el partido se autotermina). */
   get maxDuration(): number { return JEventMatch.SAFETY_MAX_INTERVALS; }
@@ -75,8 +74,8 @@ export class JEventMatch extends JDurativeEvent {
         console.log(`\tresult:`)
         const res = this._match.result;
         if (!res) throw new Error(`no se obtuvo un res`)
-        console.log(`\t  ${this._match.homeTeam.id.padEnd(10)} : ${this.formatScore(res.teamOneScore.score)}`);
-        console.log(`\t  ${this._match.awayTeam.id.padEnd(10)} : ${this.formatScore(res.teamTwoScore.score)}`);
+        console.log(`\t  ${this._match.homeTeam.id.padEnd(10)} : ${this.formatScore(res._teamOneScore.score)}`);
+        console.log(`\t  ${this._match.awayTeam.id.padEnd(10)} : ${this.formatScore(res._teamTwoScore.score)}`);
       }
     }
   }
@@ -92,16 +91,19 @@ export class JEventMatch extends JDurativeEvent {
   }
 
   // BORRAR
-  private formatScore(score: number | IVolleyScore): string {
+  private formatScore(score: IFootballScore | IVolleyballScore): string {
     // Si es un número (Fútbol, Basket, etc.)
-    if (typeof score === 'number') {
-      return score.toString().padStart(2, ' ');
+    if (!!score.goals) { //OJO
+      return score.goals.toString().padStart(2, ' ');
     }
 
     // Si es Volleyball: "Sets (Puntos por set)"
-    const sets = score.setsWon;
-    const points = score.setPoints.join(' | ');
-    return `${sets} Sets (${points})`;
+    if (!!score.setWons && !!score.setPoints) { //OJO
+      const sets = score.setsWon!;
+      const points = score.setPoints!.join(' | ');
+      return `${sets} Sets (${points})`;
+    }
+    throw new Error(``)
   }
 
   /**
@@ -120,7 +122,7 @@ export class JEventMatch extends JDurativeEvent {
     console.log(`\tresult:`)
     const res = this._match.result;
     if (!res) throw new Error(`no se obtuvo un res`)
-    console.log(`\t  ${this._match.homeTeam.id.padEnd(10)} : ${this.formatScore(res.teamOneScore.score)}`);
-    console.log(`\t  ${this._match.awayTeam.id.padEnd(10)} : ${this.formatScore(res.teamTwoScore.score)}`);
+    console.log(`\t  ${this._match.homeTeam.id.padEnd(10)} : ${this.formatScore(res._teamOneScore.score)}`);
+    console.log(`\t  ${this._match.awayTeam.id.padEnd(10)} : ${this.formatScore(res._teamTwoScore.score)}`);
   }
 }

@@ -1,12 +1,14 @@
 import { getExampleTeams } from "./ExampleData";
 import { Ranking, TypeRanking } from "../JSportModule";
 import { IGenericRankItem } from "../JSportModule/Ranking";
+import { AnyTeam, AnySportProfile } from "jl-sprt-core";
+import { FootballProfile } from "jl-sprt-match";
 
-export function getFederationRankings(count: number, teams: number = 45): Map<string, Ranking> {
+export function getFederationRankings(count: number, teams: number = 45, profile: AnySportProfile = new FootballProfile()): Map<string, Ranking> {
   let out: Map<string, Ranking> = new Map<string, Ranking>();
   for (let fede = 1; fede <= count; fede++) {
     const fid = `F${String(fede).padStart(3, '0')}`;
-    const fteams = getExampleTeams(teams, fid);
+    const fteams = getExampleTeams(teams, profile, fid);
     let ftr: TypeRanking = { context: 'fr_' + fid, items: [], teams: [] };
     fteams.forEach((t, i) => ftr.items.push({ origin: fid, pos: i + 1 }))
     const franking = Ranking.fromTypeRanking(ftr);

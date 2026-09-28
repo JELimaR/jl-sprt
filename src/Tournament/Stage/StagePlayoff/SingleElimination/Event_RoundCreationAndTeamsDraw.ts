@@ -1,5 +1,5 @@
 import { IJEventInfo, JInstantEvent } from "jl-calendar";
-import { Team } from "../../../../jl-sprt-core";
+import { AnyTeam } from "jl-sprt-core";
 import SingleElmination from "./SingleElmination"
 
 export interface IEvent_RoundCreationAndTeamsDrawInfo extends IJEventInfo {
@@ -29,13 +29,13 @@ export default class Event_RoundCreationAndTeamsDraw extends JInstantEvent {
     ${JSON.stringify(this.dateTime.getDateTime().date.halfWeekOfYear)}`);
 
     const winners = this.getLastRoundWinners();
-    const teams: Team[] = SingleElmination.teamsSortForDraw(winners);
+    const teams: AnyTeam[] = SingleElmination.teamsSortForDraw(winners);
     
     this._playoff.createNewRound(teams, this.calendar/*, this.dateTime*/)
   }
   
   // si no hay ronda previa, se deben emparejar los teams participantes
-  private getLastRoundWinners(): Team[] {
+  private getLastRoundWinners(): AnyTeam[] {
     const len = this._playoff.rounds.length;
     if (len == 0) {
       return this._playoff.teamsArr

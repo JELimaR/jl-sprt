@@ -1,4 +1,4 @@
-import { Team } from "../../jl-sprt-core/Team";
+import { A_Team, AnyTeam } from "jl-sprt-core";
 
 export type TypeTableMatchState = 'partial' | 'finished';
 
@@ -11,7 +11,7 @@ export interface IGenericRankItem {
 export interface IRankItem {
   origin: string;
   pos: number;
-  team: Team;
+  team: AnyTeam;
   score?: number;
 }
 

@@ -7,7 +7,7 @@ import { FinalNode, InitialNode, IStageNodeData, RankGroupNode, StageNode } from
 import { ReOrderStageNode, TableStageNode, TransferStageNode } from "./NoneStageNode";
 import { StageGroupNode, StagePlayoffNode } from "./RealStageNode";
 import { TypeIntervalOfDay } from "jl-calendar";
-import { TypeBaseStageOption } from "../../jl-sprt-core";
+import { TypeBaseStageOption } from "jl-sprt-core";
 
 export type TInitialCreator = {
   tournamentId: string;

@@ -1,5 +1,5 @@
 import { CollectionsUtilsFunctions } from "jl-utlts";
-import { randomFloat } from "../../jl-sprt-match/randomSource";
+import { randomFloat } from "jl-sprt-match";
 
 const CUF = CollectionsUtilsFunctions.getInstance();
 

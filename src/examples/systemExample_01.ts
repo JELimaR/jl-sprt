@@ -2,11 +2,11 @@
 import { getExampleTeams } from "./ExampleData";
 import { JEvent, JCalendar, IJDTCreator, JDateTime } from "jl-calendar";
 import { IFederationData, IGenericRankItem, IRankItem, ITournamentConfig, Ranking, TypeRanking } from "../JSportModule";
-import { Team } from "../jl-sprt-core";
+import { AnyTeam } from "jl-sprt-core";
 import { GeneralStageGraph } from "../JSportModule/GeneralStageGraph/GeneralStageGraph";
 import { createGSG, TInitialCreator, TPhaseCreator } from "../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
-import { FootballProfile } from "../jl-sprt-match/football/FootballProfile";
+import { FootballTeam, FootballProfile } from "jl-sprt-match";
 import SportServerAPI from "../JSportServerModule";
 import { mostrarFecha } from "../mostrarFechaBorrar";
 import { teamsAssign } from "../Tournament/teamsAssign";
@@ -21,10 +21,10 @@ class FednAux {
   private _founderIds: string[];
   private _headquarters: string;
   private _dateTimeCreation: number;
-  private _institutions: Team[]; // cambiar a institutions
+  private _institutions: FootballTeam[]; // cambiar a institutions
   private _divisionSystem: any;
 
-  constructor(info: IFederationData, teams: Team[]) {
+  constructor(info: IFederationData, teams: FootballTeam[]) {
     this._id = info.i;
     this._areaAsosiatedId = info.aa;
     this._founderIds = info.fs;
@@ -35,13 +35,13 @@ class FednAux {
     this._divisionSystem = info.lSys
   }
 
-  addInstitution(inst: Team): boolean {
+  addInstitution(inst: FootballTeam): boolean {
     this._institutions.push(inst)
     return true;
   }
 
   getRanking(): Ranking {
-    const rankArr: IRankItem[] = this._institutions.map((inst: Team, i: number) => {
+    const rankArr: IRankItem[] = this._institutions.map((inst: FootballTeam, i: number) => {
       return {
         origin: `fr_S_${this._id}`, pos: i + 1, team: inst
       }
@@ -60,7 +60,7 @@ class FednAux {
       this._institutions[i] = rankTeams[i];
     }
     // verifico que todos siguen estando
-    instPrevList.forEach((elem: Team) => {
+    instPrevList.forEach((elem: FootballTeam) => {
       if (!this._institutions.includes(elem)) {
         console.log(this._institutions.map(e => e.id))
         throw new Error(`en la lista de instituciones no se incluye el elemento: ${elem.id}.
@@ -71,7 +71,7 @@ class FednAux {
 }
 
 const fid = `F${String(1).padStart(3, '0')}`;
-const fteams = getExampleTeams(18, fid);
+const fteams = getExampleTeams(18, new FootballProfile(), fid);
 
 const federation = new FednAux({
   i: fid, aa: 'A_C001', fs: [], ms: [], hq: 'hq_F001',
@@ -192,7 +192,7 @@ export default function systemExample_01() {
 
     }
     if (Y == 1160) {
-      fteams.slice(8, 18).forEach((t: Team) => {
+      fteams.slice(8, 18).forEach((t: FootballTeam) => {
         federation.addInstitution(t)
       })
       console.log(federation)

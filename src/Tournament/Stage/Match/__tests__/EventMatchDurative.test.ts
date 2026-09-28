@@ -4,9 +4,9 @@ import { FootballProfile } from '../../../../jl-sprt-match/football/FootballProf
 import { VolleyballProfile } from '../../../../jl-sprt-match/volleyball/VolleyballProfile';
 import { AmericanFootballProfile } from '../../../../jl-sprt-match/americanFootball/AmericanFootballProfile';
 import VolleyMatchPlay from '../../../../jl-sprt-match/volleyball/VolleyMatchPlay';
-import { ISportProfile, IMatchCreationInfo } from '../../../../jl-sprt-core/profiles/ISportProfile';
+import { ISportProfile, IMatchCreationInfo } from '../../../.jl-sprt-core/profiles/ISportProfile';
 import { reseedRandom } from '../../../../jl-sprt-match/randomSource';
-import { Team, TeamMatch } from '../../../../jl-sprt-core/Team';
+import { Team, TeamMatch } from '../../../.jl-sprt-core/Team';
 import { MatchScheduler } from '../../Match/MatchScheduler';
 
 

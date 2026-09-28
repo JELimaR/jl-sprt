@@ -6,18 +6,17 @@ import { SimulationContext } from "../Tournament/SimulationContext";
 import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
 import { AdvanceAll } from '../Tournament/Advance';
 import { IStageGroupConfig } from "../JSportModule";
-import { Team } from "../jl-sprt-core";
 import { IRankItem, TypeRanking, Ranking } from "../JSportModule";
-import { FootballProfile } from "../jl-sprt-match/football/FootballProfile";
+import { FootballProfile, FootballTeam } from "jl-sprt-match";
 
-const selection = getExampleTeams(80, 'Team');
+const selection = getExampleTeams(80, new FootballProfile(), 'Team');
 
 export default function specialStageGroupExample() {
 
   const cal = JCalendar.createFromYear(168);
   const ctx = new SimulationContext(cal);
 
-  const rankItemArr: IRankItem[] = selection.map((t: Team, i: number) => { return { pos: i + 1, team: t, origin: `C${(i % 13) + 1}` } });
+  const rankItemArr: IRankItem[] = selection.map((t: FootballTeam, i: number) => { return { pos: i + 1, team: t, origin: `C${(i % 13) + 1}` } });
   const ranking: TypeRanking = { context: 'rankingInicial', items: rankItemArr, teams: rankItemArr.map(e => e.team) }
   ctx.store.set(ranking.context, Ranking.fromTypeRanking(ranking));
 
