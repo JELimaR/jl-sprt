@@ -369,3 +369,60 @@ describe("Ranking - aggregate", () => {
     expect(agg.getRankTable().map((t) => t.team.id)).toEqual(["A", "Z"]);
   });
 });
+
+// -----------------------------------------------------------------------------
+// getQualyCondition — deriva una TQualyCondition del propio ranking
+// -----------------------------------------------------------------------------
+describe("Ranking - getQualyCondition", () => {
+  it("toma rankId=context, season='current' y min/max de la primera y última pos", () => {
+    const r = Ranking.fromQualyCondition({
+      rankId: "q",
+      season: "current",
+      minRankPos: 3,
+      maxRankPos: 6,
+    });
+    const qc = r.getQualyCondition();
+    expect(qc.rankId).toBe("q");
+    expect(qc.season).toBe("current");
+    expect(qc.minRankPos).toBe(3);
+    expect(qc.maxRankPos).toBe(6);
+  });
+
+  it("con un ranking bloqueado usa la pos del primer y último item", () => {
+    const r = Ranking.fromRankItemArr("ctx", [
+      rankItem("o", 1, "A"),
+      rankItem("o", 2, "B"),
+      rankItem("o", 3, "C"),
+    ]);
+    const qc = r.getQualyCondition();
+    expect(qc.rankId).toBe("ctx");
+    expect(qc.minRankPos).toBe(1);
+    expect(qc.maxRankPos).toBe(3);
+  });
+});
+
+// -----------------------------------------------------------------------------
+// getGenericRankItems — copias defensivas
+// -----------------------------------------------------------------------------
+describe("Ranking - getGenericRankItems", () => {
+  it("devuelve los items con origin y pos", () => {
+    const r = Ranking.fromRankItemArr("c", [rankItem("o", 1, "A"), rankItem("o", 2, "B")]);
+    expect(r.getGenericRankItems()).toEqual([
+      { origin: "o", pos: 1 },
+      { origin: "o", pos: 2 },
+    ]);
+  });
+
+  it("devuelve copias: mutar el resultado no altera el ranking", () => {
+    const r = Ranking.fromRankItemArr("c", [rankItem("o", 1, "A"), rankItem("o", 2, "B")]);
+    const items = r.getGenericRankItems();
+    items[0].pos = 999;
+    items.push({ origin: "x", pos: 5 });
+    // el ranking original no cambió
+    expect(r.getGenericRankItems()).toEqual([
+      { origin: "o", pos: 1 },
+      { origin: "o", pos: 2 },
+    ]);
+    expect(r.size).toBe(2);
+  });
+});

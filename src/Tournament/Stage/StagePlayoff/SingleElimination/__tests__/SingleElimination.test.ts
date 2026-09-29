@@ -64,3 +64,68 @@ describe("SingleElimination - teamsSortForDraw (sembrado bracket)", () => {
     expect(() => SingleElmination.teamsSortForDraw(arr)).toThrow(/par/);
   });
 });
+
+// -----------------------------------------------------------------------------
+// SingleElimination.getTable — posiciones de los perdedores por ronda
+//
+// Corre una eliminatoria completa (assign + AdvanceAll, determinista con
+// reseedRandom) y verifica que getTable asigna posiciones coherentes:
+//  - un único campeón (pos 1),
+//  - los eliminados en rondas tempranas quedan por debajo de los que avanzan más.
+// -----------------------------------------------------------------------------
+import { JCalendar } from "jl-calendar";
+import { FootballProfile, reseedRandom } from "jl-sprt-match";
+import { AdvanceAll } from "../../../../Advance";
+import { ISingleElminationConfig, IElementInfo } from "../../../../../JSportModule";
+import { getExampleTeams } from "../../../../../examples/ExampleData";
+import SingleElminationDefault from "../SingleElmination";
+
+describe("SingleElimination.getTable - posiciones por ronda (end-to-end)", () => {
+  function playoffConfig(): ISingleElminationConfig {
+    return {
+      idConfig: 'SE1',
+      name: 'Single Elimination',
+      opt: 'home',
+      participantsNumber: 4,
+      roundsNumber: 2,
+      roundHalfWeeks: [[12, 12], [16, 16]] as any,
+      roundHalfWeeksSchedule: [10, 14] as any,
+    };
+  }
+
+  function runPlayoff() {
+    reseedRandom(13);
+    const cal = JCalendar.createFromYear(2000);
+    const info: IElementInfo = { id: 'SE', season: 2000 };
+    const se = new SingleElminationDefault(info, playoffConfig(), new FootballProfile());
+    const teams = getExampleTeams(4, 'football', 'SE');
+    se.assign(teams, cal);
+    AdvanceAll(cal);
+    return se;
+  }
+
+  it("la eliminatoria termina y produce una tabla con los 4 equipos", () => {
+    const se = runPlayoff();
+    expect(se.isFinished).toBe(true);
+    const table = se.getTable('finished');
+    expect(table.length).toBe(4);
+  });
+
+  it("hay un único campeón en la posición 1", () => {
+    const se = runPlayoff();
+    const table = se.getTable('finished');
+    const pos1 = table.filter((t) => t.pos === 1);
+    expect(pos1.length).toBe(1);
+  });
+
+  it("los eliminados en la primera ronda comparten la peor posición", () => {
+    const se = runPlayoff();
+    const table = se.getTable('finished');
+    // 2 rondas: los perdedores de la ronda 1 (idx 0) reciben pos = rounds.length + 1 - 0 = 3.
+    const worst = Math.max(...table.map((t) => t.pos));
+    const atWorst = table.filter((t) => t.pos === worst);
+    // en la ronda 1 se eliminan 2 equipos (4 -> 2)
+    expect(atWorst.length).toBe(2);
+    expect(worst).toBeGreaterThan(1);
+  });
+});

@@ -137,18 +137,18 @@ import confederationExample from './examples/confederationExample';
  */
 function runExamples() {
   baseStageExample();
-  // volleyBaseStageExample();
-  // americanFootballBaseStageExample();
-  // stageExample01();
-  // stageExample02();
-  // stageLeagueExample();
-  // specialStageGroupExample();
-  // stageExample03();
+  volleyBaseStageExample();
+  americanFootballBaseStageExample();
+  stageExample01();
+  stageExample02();
+  stageLeagueExample();
+  specialStageGroupExample();
+  stageExample03();
   // graphExample();
-  // systemExample_01();
-  // fede_inst_Example();
-  // confederationExample();
-  // APIExample();
+  systemExample_01();
+  fede_inst_Example();
+  confederationExample();
+  APIExample();
 }
 
 // Se ejecuta solo si se invoca directamente (npm start / node dist/index.js)

@@ -57,8 +57,8 @@ export class Federation extends SportOrganization<Country, Institution, IFederat
    * @returns string con el id único del torneo de división
    */
   getDivTourId(category: TypeCategory, level: number): string {
-    if (0 >= level && level >= 100) {
-      throw new Error(`
+    if (level <= 0 || level >= 100) {
+      throw new Error(`El nivel de división debe estar entre 1 y 99 (recibido: ${level}).
       En Federation.getDivTourId`)
     }
     return `${category}_${this.id}_D${String(level).padStart(2, '0')}`

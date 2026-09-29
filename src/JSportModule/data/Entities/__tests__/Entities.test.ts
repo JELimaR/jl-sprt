@@ -8,6 +8,8 @@ import { Confederation, IConfederationCreator } from "../Confederation";
 import { Continent } from "../GeogEntity";
 import { TInitialCreator, TPhaseCreator } from "../../../GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData } from "../../../GeneralStageGraph/tournamentFromGSG";
+import { Ranking } from "../../../Ranking";
+import { RankingStore } from "../../../Ranking/RankingStore";
 
 // -----------------------------------------------------------------------------
 // Capa 6 — Entidades (Institution / Federation / LeagueSystem / Confederation)
@@ -234,5 +236,91 @@ describe("Confederation", () => {
     conf.addMember(makeFederation('FA'));
     conf.addMember(makeFederation('FB'));
     expect([...conf.members.keys()].sort()).toEqual(['FA', 'FB']);
+  });
+});
+
+// -----------------------------------------------------------------------------
+// Federation - getDivTourId (id de torneo de división + guarda de nivel)
+// -----------------------------------------------------------------------------
+describe("Federation - getDivTourId", () => {
+  it("formatea el id como <cat>_<fedId>_D<nivel con 2 dígitos>", () => {
+    const fed = makeFederation('FED');
+    expect(fed.getDivTourId(CATEGORY, 1)).toBe('S_FED_D01');
+    expect(fed.getDivTourId(CATEGORY, 12)).toBe('S_FED_D12');
+  });
+
+  it("lanza si el nivel está fuera de [1, 99]", () => {
+    const fed = makeFederation('FED');
+    expect(() => fed.getDivTourId(CATEGORY, 0)).toThrow();
+    expect(() => fed.getDivTourId(CATEGORY, -1)).toThrow();
+    expect(() => fed.getDivTourId(CATEGORY, 100)).toThrow();
+  });
+});
+
+// -----------------------------------------------------------------------------
+// Federation - updateRankings (ascensos / descensos entre temporadas)
+// -----------------------------------------------------------------------------
+describe("Federation - updateRankings", () => {
+  /** Construye un Ranking blocked (tr_) con los teams dados en el orden dado. */
+  function trRanking(context: string, teams: any[], season: number) {
+    const items = teams.map((team, i) => ({ origin: context, pos: i + 1, team }));
+    return Ranking.fromRankItemArr(context, items, { season, generatedBy: 'tournament' });
+  }
+
+  it("una división (p=0, r=0): reordena el ranking según el tr_ del torneo", () => {
+    const fed = federationWithTeams(4, 'FED');
+    const ls = new LeagueSystem({
+      category: CATEGORY, isTransition: false,
+      divisions: [{ level: 1, fromGSGData: ligaConfig(4, 'S_FED_D01'), condition: { N: 4, p: 0, r: 0 } }],
+    });
+    fed.updateLeagueSystem(ls);
+
+    // orden inicial del ranking de la federación
+    const before = fed.getRanking(CATEGORY).getRankTable().map((ri: any) => ri.team.id);
+
+    // tr_ del torneo: mismo conjunto de teams pero en orden inverso
+    const store = new RankingStore();
+    const teamsReversed = [...fed.getRanking(CATEGORY).getRankTable().map((ri: any) => ri.team)].reverse();
+    store.set('tr_S_FED_D01', trRanking('tr_S_FED_D01', teamsReversed, 2000));
+
+    fed.updateRankings(store);
+
+    const after = fed.getRanking(CATEGORY).getRankTable().map((ri: any) => ri.team.id);
+    // con p=0/r=0 el nuevo ranking sigue el orden del tr_ (invertido respecto al inicial)
+    expect(after).toEqual([...before].reverse());
+    // no se pierde ni duplica ningún equipo
+    expect(new Set(after).size).toBe(4);
+    expect([...after].sort()).toEqual([...before].sort());
+  });
+
+  it("lanza si falta el tr_ de una división (temporada no terminada)", () => {
+    const fed = federationWithTeams(4, 'FED');
+    const ls = new LeagueSystem({
+      category: CATEGORY, isTransition: false,
+      divisions: [{ level: 1, fromGSGData: ligaConfig(4, 'S_FED_D01'), condition: { N: 4, p: 0, r: 0 } }],
+    });
+    fed.updateLeagueSystem(ls);
+
+    const store = new RankingStore(); // vacío, sin el tr_
+    expect(() => fed.updateRankings(store)).toThrow();
+  });
+
+  it("no pierde ni duplica equipos aunque el tr_ traiga otro orden", () => {
+    const fed = federationWithTeams(4, 'FED');
+    const ls = new LeagueSystem({
+      category: CATEGORY, isTransition: false,
+      divisions: [{ level: 1, fromGSGData: ligaConfig(4, 'S_FED_D01'), condition: { N: 4, p: 0, r: 0 } }],
+    });
+    fed.updateLeagueSystem(ls);
+
+    const teams = fed.getRanking(CATEGORY).getRankTable().map((ri: any) => ri.team);
+    // orden arbitrario (rotación)
+    const rotated = [teams[2], teams[0], teams[3], teams[1]];
+    const store = new RankingStore();
+    store.set('tr_S_FED_D01', trRanking('tr_S_FED_D01', rotated, 2000));
+
+    fed.updateRankings(store);
+    const after = fed.getRanking(CATEGORY).getRankTable().map((ri: any) => ri.team.id);
+    expect([...after].sort()).toEqual(teams.map((t: any) => t.id).sort());
   });
 });

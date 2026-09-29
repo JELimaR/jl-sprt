@@ -1,18 +1,29 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { JCalendar, JDateTime } from 'jl-calendar';
-import { MatchScheduler } from '../../Match/MatchScheduler';
-import { AnySportProfile, AnyTeam, IMatchCreationInfo } from 'jl-sprt-core';
-import { AmericanFootballProfile, FootballMatchPlay, FootballProfile, reseedRandom, TSport, VolleyballMatchPlay, VolleyballProfile } from 'jl-sprt-match';
+import { MatchScheduler } from '../MatchScheduler';
+import { AnyTeam, IMatchCreationInfo } from 'jl-sprt-core';
+import { FootballProfile, reseedRandom } from 'jl-sprt-match';
 
+// -----------------------------------------------------------------------------
+// JEventMatch + MatchScheduler — ORQUESTACIÓN del partido dentro del calendario.
+//
+// Este test cubre lo que es PROPIO de jl-sprt: cómo el evento durativo agenda un
+// partido, lo pone en juego al alcanzar su instante, lo hace avanzar tick a tick
+// y lo cierra, integrándose con el calendario (JCalendar).
+//
+// NO verifica la simulación del partido (goles, sets, duración por deporte): eso
+// es responsabilidad de jl-sprt-match y se testea allí. Aquí un FootballProfile es
+// sólo el motor mínimo necesario para tener un match que orquestar.
+// -----------------------------------------------------------------------------
 
 const SEED = 13;
+const profile = new FootballProfile();
 
 function fakeTeam(id: string): AnyTeam {
-
   const t: Partial<AnyTeam> = {
     id,
     name: id,
-    getTeamMatch: () => new FootballMatchPlay(),
+    getTeamMatch: () => profile.createTeam({ id, category: 'S', owner: { id: `o-${id}`, name: id } }).getTeamMatch(),
     addNewMatch: () => { },
     addStage: () => { },
   };
@@ -31,71 +42,52 @@ function matchInfo(overrides: Partial<IMatchCreationInfo<any, any>> = {}): IMatc
   };
 }
 
-// Modelo emergente: cada advance() = 1 intervalo (5 min de juego). La duración del
-// partido EMERGE de la simulación (no se declara). `maxReasonable` es un tope holgado
-// para verificar que termina en una cantidad realista de intervalos (no 15 horas).
-const PROFILES: { name: string; profile: AnySportProfile; maxReasonable: number }[] = [
-  { name: 'football', profile: new FootballProfile(), maxReasonable: 40 },       // ~90 min → ~18 int
-  { name: 'volleyball', profile: new VolleyballProfile(), maxReasonable: 80 },    // ~4 rallies/int
-  { name: 'americanFootball', profile: new AmericanFootballProfile(), maxReasonable: 60 },
-];
+function setup() {
+  const base = JDateTime.createFromDayOfYearAndYear(1, 2000);
+  const cal = new JCalendar(base.getCreator());
+  const match = profile.createMatch(matchInfo());
+  const start = base.copy();
+  start.addInterv(1);
+  const ev = MatchScheduler(match, start, cal); // deja el match 'scheduled'
+  return { cal, ev, match };
+}
 
-describe.each(PROFILES)('JEventMatch durativo - profile $name', ({ profile, maxReasonable }) => {
+describe('JEventMatch - metadatos del evento', () => {
   beforeEach(() => reseedRandom(SEED));
 
-  function setup() {
-    const base = JDateTime.createFromDayOfYearAndYear(1, 2000);
-    const cal = new JCalendar(base.getCreator());
-
-    const match = profile.createMatch(matchInfo());
-    const start = base.copy();
-    start.addInterv(1);
-    const ev = MatchScheduler(match, start, cal); // debe estar 'scheduled' para start()
-
-    // const ev = new JEventMatch({
-    //   dateTime: start.getCreator(),
-    //   calendar: cal,
-    //   match,
-    // });
-    // cal.addEvent(ev);
-    return { cal, ev, match };
-  }
-
-  it('kind/label expuestos', () => {
+  it('expone kind = "match" y un label legible con ambos equipos', () => {
     const { ev } = setup();
     expect(ev.kind).toBe('match');
     expect(ev.label).toBe('A vs B');
   });
 
-  it('start pone el match en juego al alcanzar su instante', () => {
+  it('MatchScheduler deja el match agendado (scheduled)', () => {
+    const { match } = setup();
+    expect(match.state).toBe('scheduled');
+  });
+});
+
+describe('JEventMatch - ciclo de vida en el calendario', () => {
+  beforeEach(() => reseedRandom(SEED));
+
+  it('pone el match en juego al alcanzar su instante, sin bloquear (no interactivo)', () => {
     const { cal, ev, match } = setup();
     expect(match.state).toBe('scheduled');
 
-    cal.tick(); // procesa base (vacío) -> base+1
+    cal.tick(); // base (vacío) -> base+1
     expect(match.state).toBe('scheduled');
 
-    cal.tick(); // now == inicio -> start() (+ un advance en el mismo tick)
+    cal.tick(); // now == inicio -> start()
     expect(ev.lifecycle).toBe('process');
     expect(['playing', 'finished']).toContain(match.state);
-    expect(ev.status).toBe('idle'); // no interactivo, no bloquea
+    expect(ev.status).toBe('idle'); // evento no interactivo: no frena el calendario
     expect(cal.getPendingInteractiveEvents().length).toBe(0);
   });
 
-  it('avanzar pocos intervalos muestra el partido EN JUEGO (progreso parcial)', () => {
-    const { cal, match } = setup();
-    cal.advanceIntervals(1); // start
-    cal.advanceIntervals(2); // pocos pasos
-    // el tiempo interno de la simulación avanzó
-    expect(match['_playing'].time).toBeGreaterThan(0);
-    // aún no debería haber terminado tan pronto
-    expect(match.isFinished).toBe(false);
-    expect(match.state).toBe('playing');
-  });
-
-  it('el partido termina en una cantidad REALISTA de intervalos (no 15 horas)', () => {
+  it('avanzar el calendario progresa el partido y termina el evento (resolved)', () => {
     const { cal, ev, match } = setup();
-    // Avanzar hasta un tope holgado pero realista: debe haber terminado dentro de él.
-    cal.advanceIntervals(1 + maxReasonable);
+    // Tope holgado de intervalos: al avanzar el calendario, el evento debe cerrarse.
+    cal.advanceIntervals(1 + 100);
     expect(match.isFinished).toBe(true);
     expect(ev.lifecycle).toBe('finished');
     expect(ev.status).toBe('resolved');
@@ -103,65 +95,10 @@ describe.each(PROFILES)('JEventMatch durativo - profile $name', ({ profile, maxR
     expect(cal.getActiveEvents()).not.toContain(ev);
   });
 
-  it('execute() sigue funcionando como fallback (partido completo de una)', () => {
-    const base = JDateTime.createFromDayOfYearAndYear(1, 2000);
-    const cal = new JCalendar(base.getCreator());
-    const match = profile.createMatch(matchInfo());
-    const start = base.copy();
-    start.addInterv(1);
-    const ev = MatchScheduler(match, start, cal);
-
+  it('execute() funciona como fallback: corre el partido completo de una', () => {
+    const { match, ev } = setup();
     ev.execute();
     expect(match.isFinished).toBe(true);
     expect(match.result).toBeDefined();
-  });
-});
-
-describe('Descansos', () => {
-  beforeEach(() => reseedRandom(SEED));
-
-  function driveMatch(profile: AnySportProfile) {
-    const base = JDateTime.createFromDayOfYearAndYear(1, 2000);
-    const cal = new JCalendar(base.getCreator());
-    const match = profile.createMatch(matchInfo());
-    const start = base.copy();
-    start.addInterv(1);
-    const ev = MatchScheduler(match, start, cal);
-    match.start();
-    return match;
-  }
-
-  it('football: hay un entretiempo (un intervalo sin avanzar el tiempo de juego)', () => {
-    const match = driveMatch(new FootballProfile());
-    let sawPause = false;
-    let guard = 0;
-    while (match.state !== 'finished' && guard < 200) {
-      const before = match['_playing'].time;
-      match.advance();
-      // pausa = el partido sigue jugándose pero el tiempo de juego no avanzó
-      if (match.state === 'playing' && match['_playing'].time === before) {
-        sawPause = true;
-      }
-      guard++;
-    }
-    expect(sawPause).toBe(true);
-  });
-
-  it('vóley: activa un descanso entre sets (breakLeft > 0 tras cerrar un set)', () => {
-    const match = driveMatch(new VolleyballProfile());
-    const play = match['_playing'] as VolleyballMatchPlay;
-
-    let sawBreakActivated = false;
-    let guard = 0;
-    while (match.state !== 'finished' && guard < 500) {
-      match.advance();
-      // Tras un advance que cerró un set (partido en curso), el mecanismo deja pendiente
-      // al menos un intervalo de descanso.
-      if (match.state === 'playing' && play.breakLeft > 0) {
-        sawBreakActivated = true;
-      }
-      guard++;
-    }
-    expect(sawBreakActivated).toBe(true);
   });
 });

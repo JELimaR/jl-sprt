@@ -109,3 +109,78 @@ describe("League - teamsSortForDraw", () => {
     expect(out.map((t) => t.id).sort()).toEqual(arr.map((t) => t.id).sort());
   });
 });
+
+// -----------------------------------------------------------------------------
+// Round Robin - opción 'neutral'
+//
+// 'neutral' produce UNA sola vuelta (como 'home'), pero normaliza la localía a
+// [menor, mayor] en cada partido (no hay ventaja de local).
+// -----------------------------------------------------------------------------
+describe("Round Robin - opción 'neutral'", () => {
+  it("una vuelta: N(N-1)/2 partidos, cada par 1 vez", () => {
+    for (const n of [2, 3, 4, 5, 6, 8]) {
+      const sch = robinRoundSchedulingFunction(n, 'neutral');
+      expect(totalMatches(sch)).toBe((n * (n - 1)) / 2);
+      const counts = pairCounts(sch);
+      expect(counts.size).toBe((n * (n - 1)) / 2);
+      for (const c of counts.values()) expect(c).toBe(1);
+    }
+  });
+
+  it("normaliza la localía: en cada partido el local tiene id menor que el visitante", () => {
+    for (const n of [4, 6, 8]) {
+      const sch = robinRoundSchedulingFunction(n, 'neutral');
+      sch.forEach((round) => round.forEach((m) => {
+        expect(m[0]).toBeLessThan(m[1]);
+      }));
+    }
+  });
+});
+
+// -----------------------------------------------------------------------------
+// Round Robin - N impares y rango completo [2, 20]
+// -----------------------------------------------------------------------------
+describe("Round Robin - N impares y rango completo", () => {
+  it("N impares (home): N(N-1)/2 partidos, cada par 1 vez", () => {
+    for (const n of [3, 5, 7, 9, 11, 13, 15, 17, 19]) {
+      const sch = robinRoundSchedulingFunction(n, 'home');
+      expect(totalMatches(sch)).toBe((n * (n - 1)) / 2);
+      const counts = pairCounts(sch);
+      expect(counts.size).toBe((n * (n - 1)) / 2);
+      for (const c of counts.values()) expect(c).toBe(1);
+    }
+  });
+
+  it("todo el rango [2,20] produce un fixture válido en home y h&a", () => {
+    for (let n = 2; n <= 20; n++) {
+      const home = robinRoundSchedulingFunction(n, 'home');
+      expect(totalMatches(home)).toBe((n * (n - 1)) / 2);
+      const ha = robinRoundSchedulingFunction(n, 'h&a');
+      expect(totalMatches(ha)).toBe(n * (n - 1));
+    }
+  });
+});
+
+// -----------------------------------------------------------------------------
+// teamsSortForDraw - caso N impar (rama del elemento del medio)
+// -----------------------------------------------------------------------------
+describe("League - teamsSortForDraw con N impar", () => {
+  function team(id: string): Team {
+    return { id } as unknown as Team;
+  }
+
+  it("preserva todos los equipos con cantidad impar (permutación)", () => {
+    const arr = Array.from({ length: 7 }, (_, i) => team(`t${i}`));
+    const out = League.teamsSortForDraw(arr);
+    expect(out.length).toBe(arr.length);
+    expect(out.map((t) => t.id).sort()).toEqual(arr.map((t) => t.id).sort());
+    // el elemento del medio (rama impar) queda colocado, sin huecos undefined
+    expect(out.every((t) => t !== undefined)).toBe(true);
+  });
+
+  it("caso mínimo impar (3 equipos) también es permutación completa", () => {
+    const arr = [team('a'), team('b'), team('c')];
+    const out = League.teamsSortForDraw(arr);
+    expect(out.map((t) => t.id).sort()).toEqual(['a', 'b', 'c']);
+  });
+});
