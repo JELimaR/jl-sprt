@@ -2,14 +2,13 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { JCalendar, JDateTime, JDate } from "jl-calendar";
 import { TInitialCreator, TPhaseCreator } from "../../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData } from "../../JSportModule/GeneralStageGraph/tournamentFromGSG";
-import { FootballProfile } from "../../jl-sprt-match/football/FootballProfile";
+import { FootballProfile, reseedRandom } from "jl-sprt-match";
 import { SimulationContext } from "../SimulationContext";
 import Tournament from "../Tournament";
 import { teamsAssign } from "../teamsAssign";
 import { Ranking } from "../../JSportModule/Ranking";
 import { IRankItem } from "../../JSportModule/Ranking/interfaces";
-import { Team } from "../.jl-sprt-core";
-import { reseedRandom } from "../../jl-sprt-match/randomSource";
+import { AnyTeam } from "jl-sprt-core";
 
 const SEED = 13;
 const SEASON = 1156;
@@ -18,8 +17,8 @@ const N = 8;
 // -----------------------------------------------------------------------------
 // Helpers
 // -----------------------------------------------------------------------------
-function fakeTeam(id: string): Team {
-  return { id } as unknown as Team;
+function fakeTeam(id: string): AnyTeam {
+  return { id } as unknown as AnyTeam;
 }
 
 /** Ranking bloqueado (poblado) de N posiciones, con teams sintéticos. */

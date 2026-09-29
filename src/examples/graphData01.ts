@@ -2,15 +2,16 @@ import { getExampleTeams } from "./ExampleData";
 import { Ranking, TypeRanking } from "../JSportModule";
 import { IGenericRankItem } from "../JSportModule/Ranking";
 import { AnyTeam, AnySportProfile } from "jl-sprt-core";
-import { FootballProfile } from "jl-sprt-match";
+import { FootballProfile, ProfilesFactory, TSport } from "jl-sprt-match";
 
-export function getFederationRankings(count: number, teams: number = 45, profile: AnySportProfile = new FootballProfile()): Map<string, Ranking> {
+export function getFederationRankings(count: number, teams: number = 45, sport: TSport = "football"): Map<string, Ranking> {
   let out: Map<string, Ranking> = new Map<string, Ranking>();
+  const profile: AnySportProfile = ProfilesFactory.getProfile(sport)
   for (let fede = 1; fede <= count; fede++) {
     const fid = `F${String(fede).padStart(3, '0')}`;
-    const fteams = getExampleTeams(teams, profile, fid);
+    const fteams = getExampleTeams(teams, sport, fid);
     let ftr: TypeRanking = { context: 'fr_' + fid, items: [], teams: [] };
-    fteams.forEach((t, i) => ftr.items.push({ origin: fid, pos: i + 1 }))
+    fteams.forEach((t: AnyTeam, i: number) => ftr.items.push({ origin: fid, pos: i + 1 }))
     const franking = Ranking.fromTypeRanking(ftr);
     franking.addTeams(fteams);
 
@@ -22,48 +23,48 @@ export function getFederationRankings(count: number, teams: number = 45, profile
 
 export function getExampleRankItemsListOrdered(): IGenericRankItem[] {
   return [
-    {origin: 'fr_F001', pos: 1},
-    {origin: 'fr_F002', pos: 1},
-    {origin: 'fr_F003', pos: 1},
-    {origin: 'fr_F004', pos: 1},
-    {origin: 'fr_F005', pos: 1},
-    {origin: 'fr_F006', pos: 1},
-    {origin: 'fr_F007', pos: 1},
-    {origin: 'fr_F008', pos: 1},
-    {origin: 'fr_F009', pos: 1},
-    {origin: 'fr_F010', pos: 1},
-    {origin: 'fr_F001', pos: 2},
-    {origin: 'fr_F002', pos: 2},
-    {origin: 'fr_F003', pos: 2},
-    {origin: 'fr_F004', pos: 2},
-    {origin: 'fr_F005', pos: 2},
-    {origin: 'fr_F006', pos: 2},
-    {origin: 'fr_F007', pos: 2},
-    {origin: 'fr_F001', pos: 3},
-    {origin: 'fr_F002', pos: 3},
-    {origin: 'fr_F003', pos: 3},
-    {origin: 'fr_F004', pos: 3},
-    {origin: 'fr_F005', pos: 3},
-    {origin: 'fr_F006', pos: 3},
-    {origin: 'fr_F001', pos: 4},
-    {origin: 'fr_F002', pos: 4},
-    {origin: 'fr_F003', pos: 4},
-    {origin: 'fr_F004', pos: 4},
-    {origin: 'fr_F005', pos: 4},
-    {origin: 'fr_F011', pos: 1},
-    {origin: 'fr_F012', pos: 1},
-    {origin: 'fr_F001', pos: 5},
-    {origin: 'fr_F002', pos: 5},
-    {origin: 'fr_F003', pos: 5},
-    {origin: 'fr_F004', pos: 5},
-    {origin: 'fr_F007', pos: 3},
-    {origin: 'fr_F008', pos: 2},
-    {origin: 'fr_F009', pos: 2},
-    {origin: 'fr_F010', pos: 2},
-    {origin: 'fr_F011', pos: 2},
-    {origin: 'fr_F012', pos: 2},
-    {origin: 'fr_F013', pos: 1},
-    {origin: 'fr_F014', pos: 1},
+    { origin: 'fr_F001', pos: 1 },
+    { origin: 'fr_F002', pos: 1 },
+    { origin: 'fr_F003', pos: 1 },
+    { origin: 'fr_F004', pos: 1 },
+    { origin: 'fr_F005', pos: 1 },
+    { origin: 'fr_F006', pos: 1 },
+    { origin: 'fr_F007', pos: 1 },
+    { origin: 'fr_F008', pos: 1 },
+    { origin: 'fr_F009', pos: 1 },
+    { origin: 'fr_F010', pos: 1 },
+    { origin: 'fr_F001', pos: 2 },
+    { origin: 'fr_F002', pos: 2 },
+    { origin: 'fr_F003', pos: 2 },
+    { origin: 'fr_F004', pos: 2 },
+    { origin: 'fr_F005', pos: 2 },
+    { origin: 'fr_F006', pos: 2 },
+    { origin: 'fr_F007', pos: 2 },
+    { origin: 'fr_F001', pos: 3 },
+    { origin: 'fr_F002', pos: 3 },
+    { origin: 'fr_F003', pos: 3 },
+    { origin: 'fr_F004', pos: 3 },
+    { origin: 'fr_F005', pos: 3 },
+    { origin: 'fr_F006', pos: 3 },
+    { origin: 'fr_F001', pos: 4 },
+    { origin: 'fr_F002', pos: 4 },
+    { origin: 'fr_F003', pos: 4 },
+    { origin: 'fr_F004', pos: 4 },
+    { origin: 'fr_F005', pos: 4 },
+    { origin: 'fr_F011', pos: 1 },
+    { origin: 'fr_F012', pos: 1 },
+    { origin: 'fr_F001', pos: 5 },
+    { origin: 'fr_F002', pos: 5 },
+    { origin: 'fr_F003', pos: 5 },
+    { origin: 'fr_F004', pos: 5 },
+    { origin: 'fr_F007', pos: 3 },
+    { origin: 'fr_F008', pos: 2 },
+    { origin: 'fr_F009', pos: 2 },
+    { origin: 'fr_F010', pos: 2 },
+    { origin: 'fr_F011', pos: 2 },
+    { origin: 'fr_F012', pos: 2 },
+    { origin: 'fr_F013', pos: 1 },
+    { origin: 'fr_F014', pos: 1 },
   ];
 }
 

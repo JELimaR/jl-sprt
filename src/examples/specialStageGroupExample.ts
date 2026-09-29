@@ -9,7 +9,7 @@ import { IStageGroupConfig } from "../JSportModule";
 import { IRankItem, TypeRanking, Ranking } from "../JSportModule";
 import { FootballProfile, FootballTeam } from "jl-sprt-match";
 
-const selection = getExampleTeams(80, new FootballProfile(), 'Team');
+const selection = getExampleTeams(80, "football", 'Team');
 
 export default function specialStageGroupExample() {
 

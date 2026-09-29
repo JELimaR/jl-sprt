@@ -11,8 +11,8 @@ export default function baseStageExample() {
 
   const cal = JCalendar.createFromYear(1986);
 
-  const selectionL = getExampleTeams(10,  new FootballProfile(), 'TL');
-  const selectionC = getExampleTeams(132, new FootballProfile(), 'TC').slice(100, 133);
+  const selectionL = getExampleTeams(10, "football", 'TL');
+  const selectionC = getExampleTeams(132, "football", 'TC').slice(100, 133);
 
   // league creation
   const leagueConfig: ILeagueConfig = {

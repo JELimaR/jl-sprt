@@ -2,14 +2,13 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { JCalendar, JDateTime } from "jl-calendar";
 import { TInitialCreator, TPhaseCreator } from "../../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData } from "../../JSportModule/GeneralStageGraph/tournamentFromGSG";
-import { FootballProfile } from "../../jl-sprt-match/football/FootballProfile";
+import { FootballProfile, ProfilesFactory, reseedRandom } from "jl-sprt-match";
 import { SimulationContext } from "../SimulationContext";
 import Tournament from "../Tournament";
 import { teamsAssign } from "../teamsAssign";
 import { Ranking } from "../../JSportModule/Ranking";
 import { IRankItem } from "../../JSportModule/Ranking/interfaces";
-import { Team, TeamMatch } from "../.jl-sprt-core";
-import { reseedRandom } from "../../jl-sprt-match/randomSource";
+import { AnyTeam } from "jl-sprt-core";
 import { AdvanceAll } from "../../Tournament/Advance";
 
 // -----------------------------------------------------------------------------
@@ -26,16 +25,14 @@ import { AdvanceAll } from "../../Tournament/Advance";
 const SEED = 13;
 const SEASON = 2000;
 
-/** Team con lo mínimo que usa el pipeline (id + hooks de match/stage). */
-function fakeTeam(id: string): Team {
-  const t: Partial<Team> = {
+/** Team creado via ProfilesFactory para el test. */
+function fakeTeam(id: string): AnyTeam {
+  const profile = ProfilesFactory.getProfile('football');
+  return profile.createTeam({
     id,
-    entity: { id } as any,
-    getTeamMatch: () => new TeamMatch(id),
-    addNewMatch: () => { },
-    addStage: () => { },
-  };
-  return t as unknown as Team;
+    category: 'S',
+    owner: { id, name: id },
+  });
 }
 
 /** Ranking bloqueado (poblado) de N teams sintéticos, como fuente fr_. */

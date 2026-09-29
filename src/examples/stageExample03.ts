@@ -14,7 +14,7 @@ const {
   s1,
   s3,
 } = stageExampleData;
-const selection = getExampleTeams(150, new FootballProfile(), 'Team');
+const selection = getExampleTeams(150, "football", 'Team');
 
 const stages: TGS[] = [];
 

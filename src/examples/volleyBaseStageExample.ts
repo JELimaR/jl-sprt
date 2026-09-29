@@ -14,8 +14,8 @@ export default function volleyBaseStageExample() {
 
   const cal = JCalendar.createFromYear(1986);
 
-  const selectionL = getExampleTeams(10, new VolleyballProfile(), 'VL');
-  const selectionC = getExampleTeams(132, new VolleyballProfile(), 'VC').slice(100, 133);
+  const selectionL = getExampleTeams(10, "volleyball", 'VL');
+  const selectionC = getExampleTeams(132, "volleyball", 'VC').slice(100, 133);
 
   // league creation
   const leagueConfig: ILeagueConfig = {

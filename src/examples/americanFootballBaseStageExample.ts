@@ -15,8 +15,8 @@ export default function americanFootballBaseStageExample() {
 
   const cal = JCalendar.createFromYear(1986);
 
-  const selectionL = getExampleTeams(10, new AmericanFootballProfile(), 'AFL');
-  const selectionC = getExampleTeams(132, new AmericanFootballProfile(), 'AFC').slice(100, 133);
+  const selectionL = getExampleTeams(10, "american-football", 'AFL');
+  const selectionC = getExampleTeams(132, "american-football", 'AFC').slice(100, 133);
 
   // league creation
   const leagueConfig: ILeagueConfig = {

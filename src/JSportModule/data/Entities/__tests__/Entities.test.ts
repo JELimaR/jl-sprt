@@ -31,6 +31,7 @@ function makeInstitution(id: string): Institution {
     id, name: id, shortName: id, abrevName: id,
     headquarters: town(`T_${id}`),
     funtationDay: new JDate(13556),
+    sport: "football"
   };
   return new Institution(iic);
 }

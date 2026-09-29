@@ -132,7 +132,8 @@ export default class EntityController implements IEntityController {
     const creator: IInstitutionCreator = {
       id: data.i, name: data.n, shortName: data.sn, abrevName: data.ab,
       headquarters: town,
-      funtationDay: new JDate(data.fd)
+      funtationDay: new JDate(data.fd),
+      sport: data.sp,
     }
     return eh.addInstitution(new Institution(creator))
   }

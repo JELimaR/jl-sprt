@@ -5,11 +5,10 @@ import { IInstitutionCreator, Institution } from "../../JSportModule/data/Entiti
 import LeagueSystem, { ILeagueSystemCreator } from "../../JSportModule/data/Entities/LeagueSystem";
 import { TInitialCreator, TPhaseCreator } from "../../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData } from "../../JSportModule/GeneralStageGraph/tournamentFromGSG";
-import { FootballProfile } from "../../jl-sprt-match/football/FootballProfile";
+import { FootballProfile, reseedRandom } from "jl-sprt-match";
 import { teamsAssign } from "../../Tournament/teamsAssign";
 import { SimulationContext } from "../../Tournament/SimulationContext";
 import Tournament from "../../Tournament/Tournament";
-import { reseedRandom } from "../../jl-sprt-match/randomSource";
 import { AdvanceAll } from "../../Tournament/Advance";
 
 // -----------------------------------------------------------------------------
@@ -80,6 +79,7 @@ function buildFederationWithTeams(): Federation {
       id: iid, name: iid, shortName: iid, abrevName: iid,
       headquarters: new Town({ i: `T_${iid}`, n: iid, c: 'C_TEST', p: 2, a: 5 }),
       funtationDay: new JDate(13556),
+      sport: "football"
     };
     const institution = new Institution(iic);
     federation.addMember(institution);

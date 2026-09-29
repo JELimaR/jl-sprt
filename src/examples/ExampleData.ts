@@ -1,27 +1,30 @@
 import { JDate } from "jl-calendar";
 import { Country, IFederationCreator, IFederationData, IInstitutionCreator, Institution, Town } from "../JSportModule";
 import { AnyTeam, AnySportProfile } from "jl-sprt-core";
+import { ProfilesFactory, TSport } from "jl-sprt-match";
 
 
-export const getExampleTeams = (n: number, profile: AnySportProfile, pid: string = ''): AnyTeam[] => {
-	let out: AnyTeam[] = [];
-	for (let i = 1; i <= n; i++) {
-    const iid = `${pid}-T${1000+i}`;
+export const getExampleTeams = (n: number, sport: TSport, pid: string = ''): AnyTeam[] => {
+  let out: AnyTeam[] = [];
+  const profile = ProfilesFactory.getProfile(sport);
+  for (let i = 1; i <= n; i++) {
+    const iid = `${pid}-T${1000 + i}`;
     const cid = `C${String(14).padStart(3, '0')}`;
     const tid = `T${String(Math.round(321 * Math.random() + 187 * Math.random())).padStart(8, '0')}`;
-		out.push(
-			profile.createTeam({
+    out.push(
+      profile.createTeam({
         id: `${'S'}_${iid}`,
         category: 'S',
         owner: new Institution({
           id: iid, name: iid, shortName: iid, abrevName: iid,
-          headquarters: new Town({i: tid, n: tid, c: cid, p: 2, a: 5}),
-          funtationDay: new JDate(13556)
+          headquarters: new Town({ i: tid, n: tid, c: cid, p: 2, a: 5 }),
+          funtationDay: new JDate(13556),
+          sport: sport,
         }),
       })
-		)
-	}
-	return out;
+    )
+  }
+  return out;
 }
 
 export const getFederationCreators = (count: number) => {
@@ -53,8 +56,9 @@ export const getInstitutionCreators = (count: number, cid: string) => {
 
     out.push({
       id: iid, name: iid, shortName: iid, abrevName: iid,
-      headquarters: new Town({i: tid, n: tid, c: cid, p: 2, a: 5}),
-      funtationDay: new JDate(13556)
+      headquarters: new Town({ i: tid, n: tid, c: cid, p: 2, a: 5 }),
+      funtationDay: new JDate(13556),
+      sport: "football"
     })
 
   }

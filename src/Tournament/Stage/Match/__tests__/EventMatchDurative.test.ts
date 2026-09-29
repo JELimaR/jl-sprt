@@ -1,36 +1,31 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { JCalendar, JDateTime } from 'jl-calendar';
-import { FootballProfile } from '../../../../jl-sprt-match/football/FootballProfile';
-import { VolleyballProfile } from '../../../../jl-sprt-match/volleyball/VolleyballProfile';
-import { AmericanFootballProfile } from '../../../../jl-sprt-match/americanFootball/AmericanFootballProfile';
-import VolleyMatchPlay from '../../../../jl-sprt-match/volleyball/VolleyMatchPlay';
-import { ISportProfile, IMatchCreationInfo } from '../../../.jl-sprt-core/profiles/ISportProfile';
-import { reseedRandom } from '../../../../jl-sprt-match/randomSource';
-import { Team, TeamMatch } from '../../../.jl-sprt-core/Team';
 import { MatchScheduler } from '../../Match/MatchScheduler';
+import { AnySportProfile, AnyTeam, IMatchCreationInfo } from 'jl-sprt-core';
+import { AmericanFootballProfile, FootballMatchPlay, FootballProfile, reseedRandom, TSport, VolleyballMatchPlay, VolleyballProfile } from 'jl-sprt-match';
 
 
 const SEED = 13;
 
-function fakeTeam(id: string): Team {
-  const t: Partial<Team> = {
+function fakeTeam(id: string): AnyTeam {
+
+  const t: Partial<AnyTeam> = {
     id,
     name: id,
-    getTeamMatch: () => new TeamMatch(id),
-    addNewMatch: () => {},
-    addStage: () => {},
+    getTeamMatch: () => new FootballMatchPlay(),
+    addNewMatch: () => { },
+    addStage: () => { },
   };
-  return t as unknown as Team;
+  return t as unknown as AnyTeam;
 }
 
-function matchInfo(overrides: Partial<IMatchCreationInfo> = {}): IMatchCreationInfo {
+function matchInfo(overrides: Partial<IMatchCreationInfo<any, any>> = {}): IMatchCreationInfo<any, any> {
   return {
     id: 'm1',
     hw: 10,
     season: 2000,
     homeTeam: fakeTeam('A'),
     awayTeam: fakeTeam('B'),
-    allowedDraw: true,
     isNeutral: false,
     ...overrides,
   };
@@ -39,7 +34,7 @@ function matchInfo(overrides: Partial<IMatchCreationInfo> = {}): IMatchCreationI
 // Modelo emergente: cada advance() = 1 intervalo (5 min de juego). La duración del
 // partido EMERGE de la simulación (no se declara). `maxReasonable` es un tope holgado
 // para verificar que termina en una cantidad realista de intervalos (no 15 horas).
-const PROFILES: { name: string; profile: ISportProfile<any, any, any, any>; maxReasonable: number }[] = [
+const PROFILES: { name: string; profile: AnySportProfile; maxReasonable: number }[] = [
   { name: 'football', profile: new FootballProfile(), maxReasonable: 40 },       // ~90 min → ~18 int
   { name: 'volleyball', profile: new VolleyballProfile(), maxReasonable: 80 },    // ~4 rallies/int
   { name: 'americanFootball', profile: new AmericanFootballProfile(), maxReasonable: 60 },
@@ -52,7 +47,7 @@ describe.each(PROFILES)('JEventMatch durativo - profile $name', ({ profile, maxR
     const base = JDateTime.createFromDayOfYearAndYear(1, 2000);
     const cal = new JCalendar(base.getCreator());
 
-    const match = profile.createMatch(matchInfo({ allowedDraw: false }));
+    const match = profile.createMatch(matchInfo());
     const start = base.copy();
     start.addInterv(1);
     const ev = MatchScheduler(match, start, cal); // debe estar 'scheduled' para start()
@@ -111,7 +106,7 @@ describe.each(PROFILES)('JEventMatch durativo - profile $name', ({ profile, maxR
   it('execute() sigue funcionando como fallback (partido completo de una)', () => {
     const base = JDateTime.createFromDayOfYearAndYear(1, 2000);
     const cal = new JCalendar(base.getCreator());
-    const match = profile.createMatch(matchInfo({ allowedDraw: false }));
+    const match = profile.createMatch(matchInfo());
     const start = base.copy();
     start.addInterv(1);
     const ev = MatchScheduler(match, start, cal);
@@ -125,10 +120,10 @@ describe.each(PROFILES)('JEventMatch durativo - profile $name', ({ profile, maxR
 describe('Descansos', () => {
   beforeEach(() => reseedRandom(SEED));
 
-  function driveMatch(profile: ISportProfile<any, any, any, any>) {
+  function driveMatch(profile: AnySportProfile) {
     const base = JDateTime.createFromDayOfYearAndYear(1, 2000);
     const cal = new JCalendar(base.getCreator());
-    const match = profile.createMatch(matchInfo({ allowedDraw: false }));
+    const match = profile.createMatch(matchInfo());
     const start = base.copy();
     start.addInterv(1);
     const ev = MatchScheduler(match, start, cal);
@@ -154,7 +149,7 @@ describe('Descansos', () => {
 
   it('vóley: activa un descanso entre sets (breakLeft > 0 tras cerrar un set)', () => {
     const match = driveMatch(new VolleyballProfile());
-    const play = match['_playing'] as VolleyMatchPlay;
+    const play = match['_playing'] as VolleyballMatchPlay;
 
     let sawBreakActivated = false;
     let guard = 0;

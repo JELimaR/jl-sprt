@@ -13,7 +13,7 @@ const {
   s3,
   s4,
 } = stageExampleData;
-const selection = getExampleTeams(150, new FootballProfile(), 'Team');
+const selection = getExampleTeams(150, "football", 'Team');
 
 export default function stageExample02() {
 

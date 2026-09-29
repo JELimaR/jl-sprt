@@ -109,6 +109,10 @@ export type { IContinentData, ICountryData, ITownData } from './JSportModule/dat
 export { getContinentData, getCountriesData, getTownsData } from './examples/APIExample/geogData';
 export { getInstitutionsData, getFederationData, getConfederationData } from './examples/APIExample/entitiesData';
 
+// Profiles & Sports (re-exported from jl-sprt-match)
+export { ProfilesFactory, SPORTS } from 'jl-sprt-match';
+export type { TSport, IFootballScore, IVolleyballScore, IAmericanFootballScore, TSupportedMatchScore } from 'jl-sprt-match';
+
 // ============================================================================
 // Examples runner - solo se ejecuta si este archivo se corre directamente
 // ============================================================================
@@ -133,18 +137,18 @@ import confederationExample from './examples/confederationExample';
  */
 function runExamples() {
   baseStageExample();
-  volleyBaseStageExample();
-  americanFootballBaseStageExample();
-  stageExample01();
-  stageExample02();
-  stageLeagueExample();
-  specialStageGroupExample();
-  stageExample03();
+  // volleyBaseStageExample();
+  // americanFootballBaseStageExample();
+  // stageExample01();
+  // stageExample02();
+  // stageLeagueExample();
+  // specialStageGroupExample();
+  // stageExample03();
   // graphExample();
-  systemExample_01();
-  fede_inst_Example();
-  confederationExample();
-  APIExample();
+  // systemExample_01();
+  // fede_inst_Example();
+  // confederationExample();
+  // APIExample();
 }
 
 // Se ejecuta solo si se invoca directamente (npm start / node dist/index.js)

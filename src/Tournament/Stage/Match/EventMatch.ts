@@ -1,5 +1,7 @@
 import { IJEventInfo, JDurativeEvent } from "jl-calendar";
-import { AnyMatch, IFootballScore, IVolleyballScore } from "jl-sprt-core";
+import { AnyMatch, TMatchScore } from "jl-sprt-core";
+import { IAmericanFootballScore, IFootballScore, IVolleyballScore } from "jl-sprt-match";
+import { mostrarFecha } from "../../../mostrarFechaBorrar";
 
 export interface IJEventMatchInfo extends IJEventInfo {
   match: AnyMatch;
@@ -71,6 +73,7 @@ export class JEventMatch extends JDurativeEvent {
       if (this._match.isFinished) {
         this.finish();
         console.log(`playing match ${this._match.id}`);
+        mostrarFecha(this.dateTime)
         console.log(`\tresult:`)
         const res = this._match.result;
         if (!res) throw new Error(`no se obtuvo un res`)
@@ -91,19 +94,25 @@ export class JEventMatch extends JDurativeEvent {
   }
 
   // BORRAR
-  private formatScore(score: IFootballScore | IVolleyballScore): string {
-    // Si es un número (Fútbol, Basket, etc.)
-    if (!!score.goals) { //OJO
-      return score.goals.toString().padStart(2, ' ');
+  private formatScore(score: TMatchScore): string {
+
+    if (score.type === 'football') {
+      const s = score as IFootballScore;
+      return `${s.goals.toString().padStart(2, ' ')}${s.penalties > 0 ? ` - ${s.penalties}` : ''}`;
     }
 
-    // Si es Volleyball: "Sets (Puntos por set)"
-    if (!!score.setWons && !!score.setPoints) { //OJO
-      const sets = score.setsWon!;
-      const points = score.setPoints!.join(' | ');
+    if (score.type === 'volleyball') {
+      const s = score as IVolleyballScore;
+      const sets = s.setsWon!;
+      const points = s.setPoints!.join(' | ');
       return `${sets} Sets (${points})`;
     }
-    throw new Error(``)
+
+    if (score.type === 'american-football') {
+      const s = score as IAmericanFootballScore;
+      return s.totalPoints.toString();
+    }
+    throw new Error(`score type ${score} no implementado`)
   }
 
   /**

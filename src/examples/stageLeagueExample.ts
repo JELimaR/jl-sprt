@@ -9,8 +9,7 @@ import { IRankItem } from "../JSportModule/Ranking";
 import { Ranking, TypeRanking } from "../JSportModule/Ranking";
 import { FootballProfile, FootballTeam } from "jl-sprt-match";
 
-const profile = new FootballProfile();
-const selection = getExampleTeams(150, profile, 'Team');
+const selection = getExampleTeams(150, "football", 'Team');
 
 export default function stageLeagueExample() {
 

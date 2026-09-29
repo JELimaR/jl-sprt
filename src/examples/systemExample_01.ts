@@ -71,7 +71,7 @@ class FednAux {
 }
 
 const fid = `F${String(1).padStart(3, '0')}`;
-const fteams = getExampleTeams(18, new FootballProfile(), fid);
+const fteams = getExampleTeams(18, "football", fid);
 
 const federation = new FednAux({
   i: fid, aa: 'A_C001', fs: [], ms: [], hq: 'hq_F001',
