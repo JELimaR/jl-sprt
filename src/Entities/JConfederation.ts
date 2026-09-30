@@ -8,7 +8,7 @@
 
 // interface IID {id: string}
 
-// export default class JConfederation extends JSportOrganization<JContinent, JFederation> implements IID {
+// export class JConfederation extends JSportOrganization<JContinent, JFederation> implements IID {
   
 //   private _id: string;
 

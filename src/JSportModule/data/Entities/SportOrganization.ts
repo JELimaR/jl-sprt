@@ -24,7 +24,7 @@ export interface ISportOrganizationCreator<G extends GeogEntity<IGeogEntityData>
   members: Map<string, M>;
 }
 
-export default abstract class SportOrganization<
+export abstract class SportOrganization<
   G extends GeogEntity<IGeogEntityData>, M extends { id: string },
   D extends ISportOrganizationData, C extends ISportOrganizationCreator<G, M>
   > extends TDC<D, C> {

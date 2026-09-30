@@ -2,11 +2,11 @@ import { JCalendar, JDateTime } from "jl-calendar";
 import { getExampleTeams } from "./ExampleData";
 import { mostrarFecha } from "../mostrarFechaBorrar";
 import { AdvanceAll } from '../Tournament/Advance';
-import stageExampleData from "./stageExampleData";
+import { stageExampleData } from "./stageExampleData";
 import { SimulationContext } from "../Tournament/SimulationContext";
-import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
+import { StageGroup } from "../Tournament/Stage/StageGroup/StageGroup";
 import { TGS } from "../Tournament/Stage/Stage";
-import StagePlayoff from "../Tournament/Stage/StagePlayoff/StagePlayoff";
+import { StagePlayoff } from "../Tournament/Stage/StagePlayoff/StagePlayoff";
 import { IElementInfo, IRankItem, IStageConfig, IStageGroupConfig, IStagePlayoffConfig, Ranking } from "../JSportModule";
 import { FootballTeam, FootballProfile } from "jl-sprt-match";
 
@@ -18,7 +18,7 @@ const selection = getExampleTeams(150, "football", 'Team');
 
 const stages: TGS[] = [];
 
-export default function stageExample03() {
+export function stageExample03() {
 
   const cal = JCalendar.createFromYear(1986);
   const ctx = new SimulationContext(cal);

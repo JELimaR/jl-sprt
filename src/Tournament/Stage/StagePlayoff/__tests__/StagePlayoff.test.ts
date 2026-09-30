@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import StagePlayoff from "../StagePlayoff";
+import { StagePlayoff } from "../StagePlayoff";
 import { JCalendar, TypeHalfWeekOfYear } from "jl-calendar";
 import { IElementInfo, IStagePlayoffConfig, IRankItem } from "../../../../JSportModule";
 import { SimulationContext } from "../../../SimulationContext";

@@ -1,6 +1,6 @@
 import { IJEventInfo, JInstantEvent, JDateTime, TypeHalfWeekOfYear } from "jl-calendar";
 import { Round } from "./Round";
-import SingleElmination from './SingleElmination';
+import { SingleElimination } from './SingleElimination';
 import { arr2, AnyMatch } from "jl-sprt-core";
 import { JEventMatch } from "../../Match/EventMatch";
 import { MatchScheduler } from "../../Match/MatchScheduler";
@@ -8,22 +8,22 @@ import { MatchScheduler } from "../../Match/MatchScheduler";
 
 export interface IEvent_ScheduleOfRoundMatchesInfo extends IJEventInfo {
 	round: Round;
-	playoff: SingleElmination;
+	playoff: SingleElimination;
 }
-  
+
 export class Event_ScheduleOfRoundMatches extends JInstantEvent {
 	// evento que implica una configuracion necesaria
 	_round: Round;
-	_playoff: SingleElmination;
+	_playoff: SingleElimination;
 	constructor(efc: IEvent_ScheduleOfRoundMatchesInfo) {
-    try {
-      super(efc);
-      this._round = efc.round;
-      this._playoff = efc.playoff;
-    } catch (error) {
-      console.log(efc)
-      throw error
-    }
+		try {
+			super(efc);
+			this._round = efc.round;
+			this._playoff = efc.playoff;
+		} catch (error) {
+			console.log(efc)
+			throw error
+		}
 	}
 
 	get kind(): string { return 'schedule'; }

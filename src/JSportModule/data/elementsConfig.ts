@@ -21,7 +21,7 @@ export interface ILeagueConfig extends IBaseStageConfig {
   turnHalfWeeksSchedule: TypeHalfWeekOfYear[];
 }
 // SingleElimination
-export interface ISingleElminationConfig extends IBaseStageConfig {
+export interface ISingleEliminationConfig extends IBaseStageConfig {
   roundsNumber: number;
   roundHalfWeeks: arr2<TypeHalfWeekOfYear>[];
   roundHalfWeeksSchedule: TypeHalfWeekOfYear[];
@@ -62,7 +62,7 @@ export interface IStageGroupConfig extends IStageConfig {
 // StagePlayoff
 export interface IStagePlayoffConfig extends IStageConfig {
   type: 'playoff',
-  bsConfig: ISingleElminationConfig;
+  bsConfig: ISingleEliminationConfig;
 }
 
 /****************************************************************************************************************************

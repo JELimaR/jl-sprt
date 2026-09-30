@@ -50,7 +50,7 @@ export interface ILeagueSystemCreator {
 }
 
 // hay uno por season
-export default class LeagueSystem {
+export class LeagueSystem {
 
   private _isTransition: boolean;
   private _category: TypeCategory;

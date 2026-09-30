@@ -3,7 +3,7 @@ import { JCalendar, JDateTime, TypeHalfWeekOfYear, TypeIntervalOfDay } from "jl-
 import { IElementInfo, IRankItem, IStageConfig, Ranking, TCC, TQualyCondition, TypeTableMatchState } from "../../JSportModule";
 import { AnyTeamTableItem } from "jl-sprt-core";
 import { SimulationContext } from "../SimulationContext";
-import Bombo from "./Bombo";
+import { Bombo } from "./Bombo";
 import { Event_StageEnd } from "./Event_StageEnd";
 import { Event_StageStart } from "./Event_StageStart";
 
@@ -12,7 +12,7 @@ export type TGS = Stage<IElementInfo, IStageConfig>;
  * generar el start event
  * generar el end event
  */
-export default abstract class Stage<I extends IElementInfo, C extends IStageConfig> extends TCC<I, C> {
+export abstract class Stage<I extends IElementInfo, C extends IStageConfig> extends TCC<I, C> {
 
   protected _ctx: SimulationContext;
 

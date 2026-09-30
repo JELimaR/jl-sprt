@@ -7,6 +7,6 @@ import { getExampleTeams } from "../examples/ExampleData";
 
 const selection = getExampleTeams(32, "football").map((t, idx) => { return { team: t, rank: idx + 1 } })
 
-export default {
+export const exampleSet01 = {
   participantsRank: selection, // el numero de parts debe ser igual a la suma de participantsNumber.news de cada stage
 }

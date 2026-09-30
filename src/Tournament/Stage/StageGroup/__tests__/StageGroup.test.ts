@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import StageGroup from "../StageGroup";
+import { StageGroup } from "../StageGroup";
 import { JCalendar } from "jl-calendar";
 import { IElementInfo, IStageGroupConfig } from "../../../../JSportModule";
 import { SimulationContext } from "../../../SimulationContext";

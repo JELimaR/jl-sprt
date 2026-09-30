@@ -1,7 +1,7 @@
 // import JInternationalEntity, { IJInternationalEntityCreator } from "./JInternationalEntity";
 
 
-// export default class EntiiesManager {
+// export class EntiiesManager {
 //   private static _instance: EntiiesManager;
 //   private constructor() {}
 //   static get instance(): EntiiesManager {

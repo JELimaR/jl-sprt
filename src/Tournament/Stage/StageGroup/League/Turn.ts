@@ -1,5 +1,5 @@
 import { JCalendar, JDateTime, TypeHalfWeekOfYear } from "jl-calendar";
-import League from "./League";
+import { League } from "./League";
 import { Event_ScheduleOfTurnMatches } from "./Event_ScheduleOfTurnMatches";
 import { AnyMatch } from "jl-sprt-core";
 
@@ -37,7 +37,7 @@ export /*default*/ class Turn {
 			league.info.season,
 			'start'
 		);
-    dt.addInterv();
+		dt.addInterv();
 		cal.addEvent(
 			new Event_ScheduleOfTurnMatches({
 				dateTime: dt.getCreator(),

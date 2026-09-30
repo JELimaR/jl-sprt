@@ -7,11 +7,11 @@ import { GeneralStageGraph } from "../JSportModule/GeneralStageGraph/GeneralStag
 import { createGSG, TInitialCreator, TPhaseCreator } from "../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
 import { FootballTeam, FootballProfile } from "jl-sprt-match";
-import SportServerAPI from "../JSportServerModule";
+import { SportServerAPI } from "../JSportServerModule";
 import { mostrarFecha } from "../mostrarFechaBorrar";
 import { teamsAssign } from "../Tournament/teamsAssign";
 import { SimulationContext } from "../Tournament/SimulationContext";
-import Tournament from "../Tournament/Tournament";
+import { Tournament } from "../Tournament/Tournament";
 import { AdvanceAll } from '../Tournament/Advance';
 
 /********************************************************************************* */
@@ -85,7 +85,7 @@ const federation = new FednAux({
 
 /*********************************************************************************** */
 
-export default function systemExample_01() {
+export function systemExample_01() {
 
 
   const ssapi = SportServerAPI();

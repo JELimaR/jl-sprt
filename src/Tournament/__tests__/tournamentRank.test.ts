@@ -4,7 +4,7 @@ import { TInitialCreator, TPhaseCreator } from "../../JSportModule/GeneralStageG
 import { ITournamentFromGSGData } from "../../JSportModule/GeneralStageGraph/tournamentFromGSG";
 import { FootballProfile, ProfilesFactory, reseedRandom } from "jl-sprt-match";
 import { SimulationContext } from "../SimulationContext";
-import Tournament from "../Tournament";
+import { Tournament } from "../Tournament";
 import { teamsAssign } from "../teamsAssign";
 import { Ranking } from "../../JSportModule/Ranking";
 import { IRankItem } from "../../JSportModule/Ranking/interfaces";

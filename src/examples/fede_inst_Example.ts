@@ -3,14 +3,14 @@ import { JCalendar, JDateTime } from "jl-calendar";
 import { Federation, Ranking } from "../JSportModule";
 import { CATEGORIES, TypeCategory, TypeCategoryList } from 'jl-sprt-core'
 import { IInstitutionCreator, Institution } from "../JSportModule/data/Entities/Institution";
-import LeagueSystem, { IDivisionCondition, ILeagueSystemCreator } from "../JSportModule/data/Entities/LeagueSystem";
+import { LeagueSystem, IDivisionCondition, ILeagueSystemCreator } from "../JSportModule/data/Entities/LeagueSystem";
 import { TInitialCreator, TPhaseCreator } from "../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
 import { mostrarFecha } from "../mostrarFechaBorrar";
 import { FootballProfile } from "jl-sprt-match";
 import { teamsAssign } from "../Tournament/teamsAssign";
 import { SimulationContext } from "../Tournament/SimulationContext";
-import Tournament from "../Tournament/Tournament";
+import { Tournament } from "../Tournament/Tournament";
 import { AdvanceAll } from '../Tournament/Advance';
 import { getFederationCreators, getInstitutionCreators } from "./ExampleData";
 
@@ -22,7 +22,7 @@ const federationFileLS = new Map<number, TypeCategoryList<ILeagueSystemCreator>>
 const federationFileMembers = new Map<number, IInstitutionCreator[]>()
 
 
-export default function fede_inst_Example() {
+export function fede_inst_Example() {
   const federationCreator = getFederationCreators(14)[13];
   const federation = new Federation(federationCreator);
   const institutions = getInstitutionCreators(8, federation.areaAsosiated.id);

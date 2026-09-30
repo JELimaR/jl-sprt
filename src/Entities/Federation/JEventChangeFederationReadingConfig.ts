@@ -6,7 +6,7 @@
 //   fed: JFederation;
 // }
 
-// export default class JEventChangeFederationReadingConfig extends JEventOthers {
+// export class JEventChangeFederationReadingConfig extends JEventOthers {
 //   _config: TypeFederationReadingConfig;
 //   _fed: JFederation;
 //   constructor( iecslc: IJEventChangeFederationReadingConfigInfo ) {

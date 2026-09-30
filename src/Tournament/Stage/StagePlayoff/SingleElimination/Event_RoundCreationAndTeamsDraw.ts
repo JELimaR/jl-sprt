@@ -1,15 +1,15 @@
 import { IJEventInfo, JInstantEvent } from "jl-calendar";
 import { AnyTeam } from "jl-sprt-core";
-import SingleElmination from "./SingleElmination"
+import { SingleElimination } from "./SingleElimination"
 import { mostrarFecha } from "../../../../mostrarFechaBorrar";
 
 export interface IEvent_RoundCreationAndTeamsDrawInfo extends IJEventInfo {
-  playoff: SingleElmination;
+  playoff: SingleElimination;
 }
 
 /* Evento en el cual se generan las rounds y se definen los teams de la siguiente ronda */
-export default class Event_RoundCreationAndTeamsDraw extends JInstantEvent {
-  private _playoff: SingleElmination;
+export class Event_RoundCreationAndTeamsDraw extends JInstantEvent {
+  private _playoff: SingleElimination;
 
   constructor(erctdi: IEvent_RoundCreationAndTeamsDrawInfo) {
     try {
@@ -39,7 +39,7 @@ export default class Event_RoundCreationAndTeamsDraw extends JInstantEvent {
     // ESTRUCTURAL opcional, no urgente.
     //
     // Problema estructural (latente): los eventos de creación de todas las rondas
-    // se encolan de golpe en SingleElmination.createChildren() con fechas FIJAS
+    // se encolan de golpe en SingleElimination.createChildren() con fechas FIJAS
     // (roundHalfWeeksSchedule). Los partidos, en cambio, son JDurativeEvent cuya
     // duración EMERGE de la simulación. Si una duración se disparara (p. ej. por un
     // deporte mal acotado en el futuro), este evento de sorteo podría ejecutarse
@@ -76,7 +76,7 @@ export default class Event_RoundCreationAndTeamsDraw extends JInstantEvent {
     // ---------------------------------------------------------------------------
 
     const winners = this.getLastRoundWinners();
-    const teams: AnyTeam[] = SingleElmination.teamsSortForDraw(winners);
+    const teams: AnyTeam[] = SingleElimination.teamsSortForDraw(winners);
 
     this._playoff.createNewRound(teams, this.calendar/*, this.dateTime*/)
   }

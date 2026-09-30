@@ -1,8 +1,8 @@
 
-import SingleElmination from "./SingleElimination/SingleElmination";
+import { SingleElimination } from "./SingleElimination/SingleElimination";
 import { JCalendar, TypeHalfWeekOfYear } from "jl-calendar";
-import Bombo from "../Bombo";
-import Stage from "../Stage";
+import { Bombo } from "../Bombo";
+import { Stage } from "../Stage";
 import { IElementInfo, IRankItem, IStagePlayoffConfig, TypeDrawRulePlayoff, TypeTableMatchState } from "../../../JSportModule";
 import { arr2, AnyTeam } from "jl-sprt-core";
 import { AnyTeamTableItem } from "jl-sprt-core";
@@ -15,9 +15,9 @@ import { SimulationContext } from "../../SimulationContext";
  * Para eso, debe crear cada basestage y agendar un evento start que genera las asignaciones a partir de un draw.
  * Tambien se debe generar un evento end para "dar aviso" de la finalizacion del stage
  */
-export default class StagePlayoff extends Stage<IElementInfo, IStagePlayoffConfig> {
+export class StagePlayoff extends Stage<IElementInfo, IStagePlayoffConfig> {
 
-  private _playoff: SingleElmination;
+  private _playoff: SingleElimination;
 
   constructor(info: IElementInfo, config: IStagePlayoffConfig, ctx: SimulationContext, sportProfile: AnySportProfile) {
     super(info, config, ctx);
@@ -26,10 +26,10 @@ export default class StagePlayoff extends Stage<IElementInfo, IStagePlayoffConfi
       id: `${info.id}_SE`,
       season: this.info.season,
     }
-    this._playoff = new SingleElmination(SEInfo, this.config.bsConfig, sportProfile);
+    this._playoff = new SingleElimination(SEInfo, this.config.bsConfig, sportProfile);
   }
 
-  get playoff(): SingleElmination { return this._playoff }
+  get playoff(): SingleElimination { return this._playoff }
 
   get isFinished(): boolean {
     return this._playoff.isFinished;
@@ -78,7 +78,7 @@ export default class StagePlayoff extends Stage<IElementInfo, IStagePlayoffConfi
 
   private selection(bombos: Bombo<IRankItem>[]) {
     const out: IRankItem[] = [];
-    
+
     bombos.forEach((b: Bombo<IRankItem>) => {
       while (b.state !== 'finished') {
         const elem = b.getNextElement();
@@ -113,7 +113,7 @@ export default class StagePlayoff extends Stage<IElementInfo, IStagePlayoffConfi
         if (rule.origin == 'all') {
           out = out && !(s[0].origin == s[1].origin);
         } else {
-          out = out && !(s[0].origin == rule.origin && s[0].origin == s[1].origin);          
+          out = out && !(s[0].origin == rule.origin && s[0].origin == s[1].origin);
         }
       })
 

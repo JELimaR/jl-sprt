@@ -2,7 +2,7 @@
 import { TInitialCreator, TPhaseCreator, createGSG } from '../JSportModule/GeneralStageGraph/GSGCreators';
 import { getExampleRankItemsListOrdered, getFederationRankings, getInitialRankingExample, } from './graphData01';
 import { ITournamentFromGSGData, tournamentFromGSG } from '../JSportModule/GeneralStageGraph/tournamentFromGSG';
-import Tournament from '../Tournament/Tournament';
+import { Tournament } from '../Tournament/Tournament';
 import { JCalendar } from "jl-calendar";
 import { AdvanceAll } from '../Tournament/Advance';
 import { SimulationContext } from '../Tournament/SimulationContext';
@@ -11,7 +11,7 @@ import { renderGSGtoPNG } from '../renderGSGtoPNG';
 import { teamsAssign } from '../Tournament/teamsAssign';
 import { FootballProfile } from 'jl-sprt-match';
 
-export default function graphExample() {
+export function graphExample() {
 
   console.log('--------------------graph example--------------------------')
   const iniCreator: TInitialCreator = {

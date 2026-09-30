@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import SportServerAPI from "../../JSportServerModule";
+import { SportServerAPI } from "../../JSportServerModule";
 import {
   IContinentData,
   ICountryData,

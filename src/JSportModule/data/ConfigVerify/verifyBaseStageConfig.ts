@@ -1,12 +1,12 @@
 import { TypeHalfWeekOfYear } from "jl-calendar";
-import robinRoundSchedulingFunction from "../../../Tournament/Stage/StageGroup/League/RoundRobin"; // ojo con esta import
-import { IBaseStageConfig, ILeagueConfig, ISingleElminationConfig } from "../../data";
+import { robinRoundSchedulingFunction } from "../../../Tournament/Stage/StageGroup/League/RoundRobin"; // ojo con esta import
+import { IBaseStageConfig, ILeagueConfig, ISingleEliminationConfig } from "../../data";
 import { arr2 } from 'jl-sprt-core';
 
 export function verifyBaseStageConfig(config: IBaseStageConfig): boolean {
-  const aux = config as ISingleElminationConfig;
+  const aux = config as ISingleEliminationConfig;
   if (aux.roundsNumber) {
-    const seConfig = config as ISingleElminationConfig;
+    const seConfig = config as ISingleEliminationConfig;
     return verifySingleEliminationConfig(seConfig);
   } else {
     const lConfig = config as ILeagueConfig;
@@ -58,7 +58,7 @@ function verifyLeagueConfig(config: ILeagueConfig): boolean {
  * * la cantidad de halfweeks asignada para la programacion de cada round coincide con la cantidad de rounds que corresponde
  * * cada round es creada y asignada antes de que se juege y luego de que termine la ronda anterior
  */
-function verifySingleEliminationConfig(config: ISingleElminationConfig): boolean {
+function verifySingleEliminationConfig(config: ISingleEliminationConfig): boolean {
   if (maxNumberRound(config.participantsNumber) < config.roundsNumber) {
     throw new Error(`la cantidad de rounds: ${config.roundsNumber} es
     mayor a la cantidad posible de rounds: ${maxNumberRound(config.participantsNumber)} para la cantidad de

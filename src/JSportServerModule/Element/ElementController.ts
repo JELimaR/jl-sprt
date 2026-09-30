@@ -2,7 +2,7 @@ import { IElementController } from "../../JSportModule";
 
 
 
-export default class ElementController implements IElementController {
+export class ElementController implements IElementController {
   /**
    * Patron Singleton
    */

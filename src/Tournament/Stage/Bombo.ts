@@ -8,7 +8,7 @@ const CUF = CollectionsUtilsFunctions.getInstance();
 	// selectionPerTime: number[];
 // }
 
-export default class Bombo<T> {
+export class Bombo<T> {
 	public _elements: T[];
 	private _stack: T[] = [];
 	private _state: 'reseted' | 'started' | 'finished';

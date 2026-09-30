@@ -1,5 +1,5 @@
-import ElementController from "../JSportServerModule/Element/ElementController";
-import EntityController from "../JSportServerModule/Entity/EntityController";
+import { ElementController } from "../JSportServerModule/Element/ElementController";
+import { EntityController } from "../JSportServerModule/Entity/EntityController";
 import { ISportFactory, IPaginationData, ISportAPIController } from "./apiInterfaces";
 
 export class SportAPIController implements ISportAPIController {

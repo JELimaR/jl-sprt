@@ -118,7 +118,7 @@ const stageInfo4: IElementInfo = {
   season: 1986,
 }
 
-export default {
+export const stageExampleData = {
   s1: { info: stageInfo1, config: stageConfig1 },
   s2: { info: stageInfo2, config: stageConfig2 },
   s3: { info: stageInfo3, config: stageConfig3 },

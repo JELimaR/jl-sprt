@@ -1,5 +1,5 @@
 import { JCalendar, TypeHalfWeekOfYear, JDateTime } from "jl-calendar";
-import SingleElmination from './SingleElmination';
+import { SingleElimination } from './SingleElimination';
 import { Event_ScheduleOfRoundMatches } from './Event_ScheduleOfRoundMatches';
 import { arr2, AnyTeam, A_Serie, AnyMatch } from 'jl-sprt-core';
 
@@ -25,8 +25,8 @@ export class Round {
 
 	get num(): number { return this._num }
 	get halfWeek(): arr2<TypeHalfWeekOfYear> { return this._halfWeeks }
-	get series(): A_Serie<any, any>[] {return this._series }
-	get matches(): AnyMatch[] { 
+	get series(): A_Serie<any, any>[] { return this._series }
+	get matches(): AnyMatch[] {
 		let out: AnyMatch[] = [];
 		this._series.forEach((serie: any /*AnySerie */) => {
 			serie.matches.forEach((match: AnyMatch) => {
@@ -36,16 +36,17 @@ export class Round {
 		return out;
 	}
 
-	 get winners(): AnyTeam[] {
-		 let out: AnyTeam[] = [];
+	get winners(): AnyTeam[] {
+		let out: AnyTeam[] = [];
 		this._series.forEach((s) => out.push(s.winner))
 		return out;
 	}
 
-	 get losers(): AnyTeam[] {
-		 let out: AnyTeam[] = [];
+	get losers(): AnyTeam[] {
+		let out: AnyTeam[] = [];
 		this._series.forEach((s) => {
-			out.push(s.loser)})
+			out.push(s.loser)
+		})
 		return out;
 	}
 
@@ -53,7 +54,7 @@ export class Round {
 		return this.matches.every((m) => m.state === 'finished');
 	}
 
-	generateMatchOfRoundScheduleEvents(cal: JCalendar, playoff: SingleElmination): void {
+	generateMatchOfRoundScheduleEvents(cal: JCalendar, playoff: SingleElimination): void {
 		let dt = JDateTime.createFromHalfWeekOfYearAndYear(
 			this._halfweekSchedule,
 			playoff.info.season,
@@ -62,11 +63,11 @@ export class Round {
 		if (cal.now.absolute >= dt.absolute) {
 			dt = cal.now;
 			dt.addInterv(1);
-      if (cal.now.absolute - dt.absolute > 50) {
+			if (cal.now.absolute - dt.absolute > 50) {
 
-        throw new Error(`stop
+				throw new Error(`stop
         En Round.generateMatchOfRoundScheduleEvents`)
-      }
+			}
 		}
 		cal.addEvent(
 			new Event_ScheduleOfRoundMatches({
@@ -77,6 +78,6 @@ export class Round {
 			})
 		);
 	}
-	
+
 }
 

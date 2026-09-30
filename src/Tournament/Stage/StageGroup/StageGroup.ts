@@ -1,7 +1,7 @@
-import League from "./League/League";
-import Stage from "../Stage";
+import { League } from "./League/League";
+import { Stage } from "../Stage";
 import { JCalendar, TypeHalfWeekOfYear } from "jl-calendar";
-import Bombo from "../Bombo";
+import { Bombo } from "../Bombo";
 import { IElementInfo, ILeagueConfig, IRankItem, IStageGroupConfig, TypeDrawRulePlayoff, TypeTableMatchState } from "../../../JSportModule";
 import { AnyTeam, AnyTeamTableItem, AnySportProfile } from "jl-sprt-core";
 import { SimulationContext } from "../../SimulationContext";
@@ -11,7 +11,7 @@ import { SimulationContext } from "../../SimulationContext";
  * Para eso, debe crear cada basestage y agendar un evento start que genera las asignaciones a partir de un draw.
  * Tambien se debe generar un evento end para "dar aviso" de la finalizacion del stage
  */
-export default class StageGroup extends Stage<IElementInfo, IStageGroupConfig> {
+export class StageGroup extends Stage<IElementInfo, IStageGroupConfig> {
   private _groups: League[] = [];
 
   constructor(info: IElementInfo, config: IStageGroupConfig, ctx: SimulationContext, sportProfile: AnySportProfile) {

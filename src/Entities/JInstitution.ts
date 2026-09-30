@@ -15,7 +15,7 @@
 // }
 
 
-// export default class JInstitution {
+// export class JInstitution {
 //   _id: string;
 //   _installations: JInstallation[] = [];
 

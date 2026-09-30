@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import confederationExample from "../../examples/confederationExample";
+import { confederationExample } from "../../examples/confederationExample";
 import { reseedRandom } from "jl-sprt-match";
 
 // -----------------------------------------------------------------------------

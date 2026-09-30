@@ -11,7 +11,7 @@ import { AnySportProfile } from "jl-sprt-core";
  * Pueden implementar una eliminacion simple directa o un robinround de todos contra todos.
  */
 
-export default abstract class BaseStage<I extends IElementInfo, C extends IBaseStageConfig> extends TCC<I, C> {
+export abstract class BaseStage<I extends IElementInfo, C extends IBaseStageConfig> extends TCC<I, C> {
 
   /**
    * Creacion de una BS. Se asigna la config y la info

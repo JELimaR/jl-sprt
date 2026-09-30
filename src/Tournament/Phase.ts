@@ -4,11 +4,11 @@ import { Ranking, TypeRanking } from "../JSportModule";
 import { AnyTeam } from "jl-sprt-core";
 import { AnySportProfile } from "jl-sprt-core";
 import { SimulationContext } from "./SimulationContext";
-import StageGroup from "./Stage/StageGroup/StageGroup";
-import StagePlayoff from "./Stage/StagePlayoff/StagePlayoff";
+import { StageGroup } from "./Stage/StageGroup/StageGroup";
+import { StagePlayoff } from "./Stage/StagePlayoff/StagePlayoff";
 import { TGS } from "./Stage/Stage";
 
-export default class Phase extends TCC<IElementInfo, IPhaseConfig> { // esto es SortedStagesPhase
+export class Phase extends TCC<IElementInfo, IPhaseConfig> { // esto es SortedStagesPhase
 
   private _parallelStages: TGS[] = [];
   private _ctx: SimulationContext;

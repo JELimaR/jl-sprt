@@ -44,19 +44,23 @@ export { RankingStore } from './JSportModule/Ranking/RankingStore';
 export type { RankingStoreListener } from './JSportModule/Ranking/RankingStore';
 
 // Tournament
-export { default as Tournament } from './Tournament/Tournament';
-export { default as Phase } from './Tournament/Phase';
+export { Tournament } from './Tournament/Tournament';
+export { Phase } from './Tournament/Phase';
 export { SimulationContext, createSimulationContext } from './Tournament/SimulationContext';
 export { TournamentConfigStore } from './Tournament/TournamentConfigStore';
 export { teamsAssign } from './Tournament/teamsAssign';
 
 // Stages
-export { default as Stage } from './Tournament/Stage/Stage';
+export { Stage } from './Tournament/Stage/Stage';
 export type { TGS } from './Tournament/Stage/Stage';
-export { default as StageGroup } from './Tournament/Stage/StageGroup/StageGroup';
-export { default as League } from './Tournament/Stage/StageGroup/League/League';
+export { StageGroup } from './Tournament/Stage/StageGroup/StageGroup';
+export { StagePlayoff } from './Tournament/Stage/StagePlayoff/StagePlayoff';
+export { League } from './Tournament/Stage/StageGroup/League/League';
 export { Turn } from './Tournament/Stage/StageGroup/League/Turn';
 export type { ITurnInfo } from './Tournament/Stage/StageGroup/League/Turn';
+export { SingleElimination } from './Tournament/Stage/StagePlayoff/SingleElimination/SingleElimination';
+export { Round } from './Tournament/Stage/StagePlayoff/SingleElimination/Round';
+export type { IRoundInfo } from './Tournament/Stage/StagePlayoff/SingleElimination/Round';
 
 // Eventos concretos (necesarios para discriminar eventos del calendario).
 // WARNING: exponer estas clases para hacer `instanceof` es un workaround temporal.
@@ -76,14 +80,14 @@ export type {
   IStagePlayoffConfig,
   IBaseStageConfig,
   ILeagueConfig,
-  ISingleElminationConfig,
+  ISingleEliminationConfig,
   TQualyCondition,
 } from './JSportModule/data/elementsConfig';
 
 // API & Server
 export { SportAPIController } from './JSportModule/SportAPI';
 export type { ISportFactory, IEntityController, IElementController, ISportAPIController } from './JSportModule/apiInterfaces';
-export { default as SportServerAPI } from './JSportServerModule';
+export { SportServerAPI } from './JSportServerModule';
 
 // GeneralStageGraph
 export { GeneralStageGraph } from './JSportModule/GeneralStageGraph/GeneralStageGraph';
@@ -113,23 +117,63 @@ export { getInstitutionsData, getFederationData, getConfederationData } from './
 export { ProfilesFactory, SPORTS } from 'jl-sprt-match';
 export type { TSport, IFootballScore, IVolleyballScore, IAmericanFootballScore, TSupportedMatchScore } from 'jl-sprt-match';
 
+// HACE FALTA EXPORTAR TODO?
+export {
+  A_Match,
+  AnyMatch,
+  A_MatchPlay,
+  A_Result,
+  A_Serie,
+  Person,
+  A_Team,
+  AnyTeam,
+  A_TeamRoster,
+  CATEGORIES,
+  getCategoryList,
+  A_TeamTableItem
+} from 'jl-sprt-core';
+export type {
+  IMatchCreationInfo,
+  TypeMatchState,
+  IResultInfo,
+  IWinnerInfo,
+  TypeTotalScore,
+  ISerieCreationInfo,
+  MatchContext,
+  MatchContextProvider,
+  IMatchScore,
+  TMatchScore,
+  IPersonData,
+  ITeamCreator,
+  ITeamOwner,
+  ISportProfile,
+  AnySportProfile,
+  AnyTeamTableItem,
+  IA_TeamTableItemBase,
+  SortFunc,
+  arr2,
+  TypeBaseStageOption,
+  TypeCategory,
+  TypeCategoryList
+} from 'jl-sprt-core';
+
 // ============================================================================
 // Examples runner - solo se ejecuta si este archivo se corre directamente
 // ============================================================================
 
-import APIExample from './examples/APIExample';
-import baseStageExample from './examples/baseStageExample';
-import volleyBaseStageExample from './examples/volleyBaseStageExample';
-import americanFootballBaseStageExample from './examples/americanFootballBaseStageExample';
-import fede_inst_Example from './examples/fede_inst_Example';
-// import graphExample from './examples/graphExample';
-import specialStageGroupExample from './examples/specialStageGroupExample';
-import stageExample01 from './examples/stageExample01';
-import stageExample02 from './examples/stageExample02';
-import stageExample03 from './examples/stageExample03';
-import stageLeagueExample from './examples/stageLeagueExample';
-import systemExample_01 from './examples/systemExample_01';
-import confederationExample from './examples/confederationExample';
+import { APIExample } from './examples/APIExample';
+import { baseStageExample } from './examples/baseStageExample';
+import { volleyBaseStageExample } from './examples/volleyBaseStageExample';
+import { americanFootballBaseStageExample } from './examples/americanFootballBaseStageExample';
+import { fede_inst_Example } from './examples/fede_inst_Example';
+// import {graphExample} from './examples/graphExample';
+import { specialStageGroupExample } from './examples/specialStageGroupExample';
+import { stageExample01 } from './examples/stageExample01';
+import { stageExample02 } from './examples/stageExample02';
+import { stageExample03 } from './examples/stageExample03';
+import { stageLeagueExample } from './examples/stageLeagueExample';
+import { systemExample_01 } from './examples/systemExample_01';
+import { confederationExample } from './examples/confederationExample';
 
 /**
  * Ejecuta un ejemplo específico.

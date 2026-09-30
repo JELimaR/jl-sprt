@@ -5,7 +5,7 @@ import { Country, Continent, Town } from "../../JSportModule/data/Entities/GeogE
 import { Confederation, IConfederationData } from "../../JSportModule/data/Entities/Confederation";
 
 
-export default class EntityHandler implements IEntityHandler {
+export class EntityHandler implements IEntityHandler {
   /**
    * Patron Singleton
    */

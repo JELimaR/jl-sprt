@@ -1,6 +1,6 @@
 import { arr2 } from 'jl-sprt-core'
 
-const robinRoundSchedulingFunction = (n: number, opt: 'home' | 'h&a' | 'neutral'): arr2<number>[][] => {
+export const robinRoundSchedulingFunction = (n: number, opt: 'home' | 'h&a' | 'neutral'): arr2<number>[][] => {
   const isN = opt == 'neutral';
   if (n < 2 || n > 20 || n % 1 !== 0) {
 		throw new Error(`no existe sch para el valor: ${n}`)
@@ -364,8 +364,6 @@ const getBasicScheduling: (()=>arr2<number>[][])[] = [
 	m19,
 	m20
 ]
-
-export default robinRoundSchedulingFunction;
 
 /**
  * algortihm

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import Bombo from "../Bombo";
+import { Bombo } from "../Bombo";
 import { reseedRandom } from "jl-sprt-match";
 
 const SEED = 13;

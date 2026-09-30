@@ -4,11 +4,11 @@ import { IGenericRankItem, Ranking, TCC } from "../JSportModule";
 import { IElementInfo, IPhaseConfig, ITournamentConfig } from "../JSportModule/data";
 import { createGSG } from "../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
-import Phase from "./Phase";
+import { Phase } from "./Phase";
 import { SimulationContext } from "./SimulationContext";
 import { TGS } from "./Stage/Stage";
 
-export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
+export class Tournament extends TCC<IElementInfo, ITournamentConfig> {
 
   private _phases: Phase[] = [];
   private _fromGSGData: ITournamentFromGSGData | undefined;
@@ -69,8 +69,8 @@ export default class Tournament extends TCC<IElementInfo, ITournamentConfig> {
   //   return this.graph.getInitialRankings()
   // }
 
-  getRelativeRank(): Ranking {    
-    let phaseRank: Ranking = Ranking.fromTypeRanking({context: 'none', items: [], teams: []});
+  getRelativeRank(): Ranking {
+    let phaseRank: Ranking = Ranking.fromTypeRanking({ context: 'none', items: [], teams: [] });
 
     let pi = this._phases.length;
     while (pi > 0 && phaseRank.context == 'none') {

@@ -1,42 +1,47 @@
 import { describe, it, expect } from "vitest";
-import SingleElmination from "../SingleElmination";
-import { Team } from "../../../../.jl-sprt-core";
+import { AnyTeam } from "jl-sprt-core";
+import { JCalendar } from "jl-calendar";
+import { SingleElimination } from "../SingleElimination";
+import { FootballProfile, reseedRandom } from "jl-sprt-match";
+import { AdvanceAll } from "../../../../Advance";
+import { ISingleEliminationConfig, IElementInfo } from "../../../../../JSportModule";
+import { getExampleTeams } from "../../../../../examples/ExampleData";
 
 // -----------------------------------------------------------------------------
 // Capa 4 — SingleElimination (statics deterministas del bracket)
 // -----------------------------------------------------------------------------
 
-function team(id: string): Team {
-  return { id } as unknown as Team;
+function team(id: string): AnyTeam {
+  return { id } as unknown as AnyTeam;
 }
 
 describe("SingleElimination - maxNumberRound", () => {
   it("es log2(N) para potencias de 2", () => {
-    expect(SingleElmination.maxNumberRound(2)).toBe(1);
-    expect(SingleElmination.maxNumberRound(4)).toBe(2);
-    expect(SingleElmination.maxNumberRound(8)).toBe(3);
-    expect(SingleElmination.maxNumberRound(16)).toBe(4);
+    expect(SingleElimination.maxNumberRound(2)).toBe(1);
+    expect(SingleElimination.maxNumberRound(4)).toBe(2);
+    expect(SingleElimination.maxNumberRound(8)).toBe(3);
+    expect(SingleElimination.maxNumberRound(16)).toBe(4);
   });
 
   it("cuenta solo los factores 2 cuando N no es potencia de 2", () => {
     // 12 = 2^2 * 3 -> 2 rondas posibles (12->6->3)
-    expect(SingleElmination.maxNumberRound(12)).toBe(2);
+    expect(SingleElimination.maxNumberRound(12)).toBe(2);
     // 6 = 2 * 3 -> 1 ronda (6->3)
-    expect(SingleElmination.maxNumberRound(6)).toBe(1);
+    expect(SingleElimination.maxNumberRound(6)).toBe(1);
     // impar -> 0 rondas
-    expect(SingleElmination.maxNumberRound(5)).toBe(0);
+    expect(SingleElimination.maxNumberRound(5)).toBe(0);
   });
 });
 
 describe("SingleElimination - winnersInMaxNumberRound", () => {
   it("es 1 para potencias de 2 (queda un solo campeón)", () => {
-    expect(SingleElmination.winnersInMaxNumberRound(8)).toBe(1);
-    expect(SingleElmination.winnersInMaxNumberRound(16)).toBe(1);
+    expect(SingleElimination.winnersInMaxNumberRound(8)).toBe(1);
+    expect(SingleElimination.winnersInMaxNumberRound(16)).toBe(1);
   });
 
   it("es el factor impar restante cuando N no es potencia de 2", () => {
-    expect(SingleElmination.winnersInMaxNumberRound(12)).toBe(3); // 12/4
-    expect(SingleElmination.winnersInMaxNumberRound(6)).toBe(3);  // 6/2
+    expect(SingleElimination.winnersInMaxNumberRound(12)).toBe(3); // 12/4
+    expect(SingleElimination.winnersInMaxNumberRound(6)).toBe(3);  // 6/2
   });
 });
 
@@ -44,14 +49,14 @@ describe("SingleElimination - teamsSortForDraw (sembrado bracket)", () => {
   it("empareja mejor vs peor: [tN-1, t0, tN-2, t1, ...]", () => {
     // array ordenado de mejor (t0) a peor (t3)
     const arr = [team('t0'), team('t1'), team('t2'), team('t3')];
-    const out = SingleElmination.teamsSortForDraw(arr);
+    const out = SingleElimination.teamsSortForDraw(arr);
     // series de a 2: (t3 vs t0), (t2 vs t1) -> mejor contra peor
     expect(out.map((t) => t.id)).toEqual(['t3', 't0', 't2', 't1']);
   });
 
   it("con 8 equipos: el 1er sembrado (t0) enfrenta al peor (t7)", () => {
     const arr = Array.from({ length: 8 }, (_, i) => team(`t${i}`));
-    const out = SingleElmination.teamsSortForDraw(arr);
+    const out = SingleElimination.teamsSortForDraw(arr);
     // primer par: (t7 vs t0)
     expect(out[0].id).toBe('t7');
     expect(out[1].id).toBe('t0');
@@ -61,7 +66,7 @@ describe("SingleElimination - teamsSortForDraw (sembrado bracket)", () => {
 
   it("lanza si la cantidad de equipos es impar", () => {
     const arr = [team('t0'), team('t1'), team('t2')];
-    expect(() => SingleElmination.teamsSortForDraw(arr)).toThrow(/par/);
+    expect(() => SingleElimination.teamsSortForDraw(arr)).toThrow(/par/);
   });
 });
 
@@ -73,15 +78,10 @@ describe("SingleElimination - teamsSortForDraw (sembrado bracket)", () => {
 //  - un único campeón (pos 1),
 //  - los eliminados en rondas tempranas quedan por debajo de los que avanzan más.
 // -----------------------------------------------------------------------------
-import { JCalendar } from "jl-calendar";
-import { FootballProfile, reseedRandom } from "jl-sprt-match";
-import { AdvanceAll } from "../../../../Advance";
-import { ISingleElminationConfig, IElementInfo } from "../../../../../JSportModule";
-import { getExampleTeams } from "../../../../../examples/ExampleData";
-import SingleElminationDefault from "../SingleElmination";
+
 
 describe("SingleElimination.getTable - posiciones por ronda (end-to-end)", () => {
-  function playoffConfig(): ISingleElminationConfig {
+  function playoffConfig(): ISingleEliminationConfig {
     return {
       idConfig: 'SE1',
       name: 'Single Elimination',
@@ -97,7 +97,7 @@ describe("SingleElimination.getTable - posiciones por ronda (end-to-end)", () =>
     reseedRandom(13);
     const cal = JCalendar.createFromYear(2000);
     const info: IElementInfo = { id: 'SE', season: 2000 };
-    const se = new SingleElminationDefault(info, playoffConfig(), new FootballProfile());
+    const se = new SingleElimination(info, playoffConfig(), new FootballProfile());
     const teams = getExampleTeams(4, 'football', 'SE');
     se.assign(teams, cal);
     AdvanceAll(cal);

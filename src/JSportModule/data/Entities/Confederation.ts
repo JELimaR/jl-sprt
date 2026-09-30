@@ -1,7 +1,7 @@
 
 import { Federation } from "./Federation";
 import { Continent } from "./GeogEntity";
-import SportOrganization, { ISportOrganizationCreator, ISportOrganizationData } from "./SportOrganization";
+import { SportOrganization, ISportOrganizationCreator, ISportOrganizationData } from "./SportOrganization";
 
 export interface IConfederationData extends ISportOrganizationData {
 

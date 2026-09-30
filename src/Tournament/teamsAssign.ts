@@ -1,7 +1,7 @@
 import { Ranking, IGenericRankItem } from "../JSportModule";
 import { AnyTeam } from "jl-sprt-core";
 import { SimulationContext } from "./SimulationContext";
-import Tournament from "./Tournament";
+import { Tournament } from "./Tournament";
 
 /**
  * teamsAssign — asignación de equipos del ranking inicial de un torneo, con

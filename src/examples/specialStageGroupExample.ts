@@ -3,7 +3,7 @@ import { JCalendar, JDateTime } from "jl-calendar";
 import { getExampleTeams } from "./ExampleData";
 import { mostrarFecha } from "../mostrarFechaBorrar";
 import { SimulationContext } from "../Tournament/SimulationContext";
-import StageGroup from "../Tournament/Stage/StageGroup/StageGroup";
+import { StageGroup } from "../Tournament/Stage/StageGroup/StageGroup";
 import { AdvanceAll } from '../Tournament/Advance';
 import { IStageGroupConfig } from "../JSportModule";
 import { IRankItem, TypeRanking, Ranking } from "../JSportModule";
@@ -11,7 +11,7 @@ import { FootballProfile, FootballTeam } from "jl-sprt-match";
 
 const selection = getExampleTeams(80, "football", 'Team');
 
-export default function specialStageGroupExample() {
+export function specialStageGroupExample() {
 
   const cal = JCalendar.createFromYear(168);
   const ctx = new SimulationContext(cal);

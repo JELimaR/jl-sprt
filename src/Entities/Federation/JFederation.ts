@@ -25,7 +25,7 @@
 //   // dateTimeCreator: IJDTCreator;
 // }
 
-// export default class JFederation extends JSportOrganization<JCountry, JInstitution> {
+// export class JFederation extends JSportOrganization<JCountry, JInstitution> {
 //   private _id: string;
 
 //   /**

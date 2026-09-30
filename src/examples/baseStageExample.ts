@@ -1,13 +1,13 @@
 import { JCalendar, JDateTime } from "jl-calendar";
 import { getExampleTeams } from "./ExampleData";
-import League from "../Tournament/Stage/StageGroup/League/League";
-import SingleElmination from "../Tournament/Stage/StagePlayoff/SingleElimination/SingleElmination";
+import { League } from "../Tournament/Stage/StageGroup/League/League";
+import { SingleElimination } from "../Tournament/Stage/StagePlayoff/SingleElimination/SingleElimination";
 import { mostrarFecha } from "../mostrarFechaBorrar";
-import { ILeagueConfig, ISingleElminationConfig, verifyBaseStageConfig } from "../JSportModule";
+import { ILeagueConfig, ISingleEliminationConfig, verifyBaseStageConfig } from "../JSportModule";
 import { FootballProfile } from "jl-sprt-match";
 import { AdvanceAll } from '../Tournament/Advance';
 
-export default function baseStageExample() {
+export function baseStageExample() {
 
   const cal = JCalendar.createFromYear(1986);
 
@@ -34,7 +34,7 @@ export default function baseStageExample() {
   league.assign(selectionL, cal);
 
   // single elimination creation
-  const singleConfig: ISingleElminationConfig = {
+  const singleConfig: ISingleEliminationConfig = {
     idConfig: 'C1',
     name: 'Cup',
     opt: 'home',
@@ -45,7 +45,7 @@ export default function baseStageExample() {
     roundHalfWeeksSchedule: [56, 63, 70, 75, 80]
   }
   verifyBaseStageConfig(singleConfig);
-  const singleElimination = new SingleElmination(
+  const singleElimination = new SingleElimination(
     {
       id: 'C',
       season: 1986

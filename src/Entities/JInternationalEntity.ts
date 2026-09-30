@@ -7,7 +7,7 @@
 
 // }
 
-// export default class JInternationalEntity extends JSportOrganization<JWorld, JFederation> { // conf o fed?
+// export class JInternationalEntity extends JSportOrganization<JWorld, JFederation> { // conf o fed?
 
 //   private _confederations: Map<string, JConfederation> = new Map<string, JConfederation>(); // o map
 

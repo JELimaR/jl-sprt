@@ -3,7 +3,7 @@ import { JDate } from "jl-calendar";
 import { Country, Town } from "..";
 import { Federation, IFederationCreator } from "../Federation";
 import { Institution, IInstitutionCreator } from "../Institution";
-import LeagueSystem, { ILeagueSystemCreator } from "../LeagueSystem";
+import { LeagueSystem, ILeagueSystemCreator } from "../LeagueSystem";
 import { Confederation, IConfederationCreator } from "../Confederation";
 import { Continent } from "../GeogEntity";
 import { TInitialCreator, TPhaseCreator } from "../../../GeneralStageGraph/GSGCreators";

@@ -2,13 +2,13 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { JCalendar, JDateTime, JDate } from "jl-calendar";
 import { Federation, IFederationCreator, Country, Town } from "../../JSportModule";
 import { IInstitutionCreator, Institution } from "../../JSportModule/data/Entities/Institution";
-import LeagueSystem, { ILeagueSystemCreator } from "../../JSportModule/data/Entities/LeagueSystem";
+import { LeagueSystem, ILeagueSystemCreator } from "../../JSportModule/data/Entities/LeagueSystem";
 import { TInitialCreator, TPhaseCreator } from "../../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData } from "../../JSportModule/GeneralStageGraph/tournamentFromGSG";
 import { FootballProfile, reseedRandom } from "jl-sprt-match";
 import { teamsAssign } from "../../Tournament/teamsAssign";
 import { SimulationContext } from "../../Tournament/SimulationContext";
-import Tournament from "../../Tournament/Tournament";
+import { Tournament } from "../../Tournament/Tournament";
 import { AdvanceAll } from "../../Tournament/Advance";
 
 // -----------------------------------------------------------------------------

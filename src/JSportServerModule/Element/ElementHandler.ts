@@ -1,7 +1,7 @@
 import { IElementHandler } from "../../JSportModule";
 
 
-export default class ElementHandler implements IElementHandler {
+export class ElementHandler implements IElementHandler {
   /**
    * Patron Singleton
    */

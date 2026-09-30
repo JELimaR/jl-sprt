@@ -1,8 +1,8 @@
-import BaseStage from '../../BaseStage';
+import { BaseStage } from '../../BaseStage';
 import { JCalendar, JDateTime } from "jl-calendar";
 import { Round } from './Round';
-import Event_RoundCreationAndTeamsDraw from './Event_RoundCreationAndTeamsDraw';
-import { IElementInfo, ISingleElminationConfig } from '../../../../JSportModule';
+import { Event_RoundCreationAndTeamsDraw } from './Event_RoundCreationAndTeamsDraw';
+import { IElementInfo, ISingleEliminationConfig } from '../../../../JSportModule';
 import { AnyTeam } from 'jl-sprt-core';
 import { AnyTeamTableItem } from 'jl-sprt-core';
 import { AnySportProfile } from 'jl-sprt-core';
@@ -10,20 +10,18 @@ import { A_Serie } from 'jl-sprt-core';
 import { TypeTableMatchState } from '../../../../JSportModule/';
 import { AnyMatch } from 'jl-sprt-core';
 
-// export interface IElementInfo extends IBaseStageInfo { }
-
-export default class SingleElmination extends BaseStage<IElementInfo, ISingleElminationConfig> { // Single elimination
+export class SingleElimination extends BaseStage<IElementInfo, ISingleEliminationConfig> { // Single elimination
 
   private _rounds: Round[] = [];
 
-  constructor(info: IElementInfo, config: ISingleElminationConfig, sportProfile: AnySportProfile) { // FALTA VERIFICAR QUE CADA fechHalfWeeks sea mayor al fechHalfWeeksSchedule
+  constructor(info: IElementInfo, config: ISingleEliminationConfig, sportProfile: AnySportProfile) { // FALTA VERIFICAR QUE CADA fechHalfWeeks sea mayor al fechHalfWeeksSchedule
     super(info, config, sportProfile);
   }
 
-  constructorVerification(config: ISingleElminationConfig): void {
-    if (SingleElmination.maxNumberRound(config.participantsNumber) < config.roundsNumber) {
+  constructorVerification(config: ISingleEliminationConfig): void {
+    if (SingleElimination.maxNumberRound(config.participantsNumber) < config.roundsNumber) {
       throw new Error(`la cantidad de rounds: ${config.roundsNumber} es
-      mayor a la cantidad posible de rounds: ${SingleElmination.maxNumberRound(config.participantsNumber)} para la cantidad de
+      mayor a la cantidad posible de rounds: ${SingleElimination.maxNumberRound(config.participantsNumber)} para la cantidad de
       participants: ${config.participantsNumber}`)
     }
 

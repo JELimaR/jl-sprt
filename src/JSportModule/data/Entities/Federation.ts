@@ -5,8 +5,8 @@ import { IGenericRankItem, IRankItem, Ranking } from "../../Ranking";
 import { CATEGORIES, TypeCategory, TypeCategoryList, AnyTeam } from "jl-sprt-core";
 import { Country } from "./GeogEntity";
 import { Institution } from "./Institution";
-import LeagueSystem, { CupSystem, ICupSystemCreator, IDivisionConfig, ILeagueSystemCreator } from "./LeagueSystem";
-import SportOrganization, { ISportOrganizationCreator, ISportOrganizationData } from "./SportOrganization";
+import { LeagueSystem, CupSystem, ICupSystemCreator, IDivisionConfig, ILeagueSystemCreator } from "./LeagueSystem";
+import { SportOrganization, ISportOrganizationCreator, ISportOrganizationData } from "./SportOrganization";
 
 export interface IFederationData extends ISportOrganizationData {
   lSys: TypeCategoryList<ILeagueSystemCreator>;

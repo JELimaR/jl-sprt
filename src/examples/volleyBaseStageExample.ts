@@ -1,16 +1,16 @@
 import { JCalendar, JDateTime } from "jl-calendar";
 import { getExampleTeams } from "./ExampleData";
-import League from "../Tournament/Stage/StageGroup/League/League";
-import SingleElmination from "../Tournament/Stage/StagePlayoff/SingleElimination/SingleElmination";
+import { League } from "../Tournament/Stage/StageGroup/League/League";
+import { SingleElimination } from "../Tournament/Stage/StagePlayoff/SingleElimination/SingleElimination";
 import { mostrarFecha } from "../mostrarFechaBorrar";
-import { ILeagueConfig, ISingleElminationConfig, verifyBaseStageConfig } from "../JSportModule";
+import { ILeagueConfig, ISingleEliminationConfig, verifyBaseStageConfig } from "../JSportModule";
 import { VolleyballProfile } from "jl-sprt-match";
 import { AdvanceAll } from '../Tournament/Advance';
 
 /**
  * Ejemplo de BaseStage usando VolleyballProfile.
  */
-export default function volleyBaseStageExample() {
+export function volleyBaseStageExample() {
 
   const cal = JCalendar.createFromYear(1986);
 
@@ -37,7 +37,7 @@ export default function volleyBaseStageExample() {
   league.assign(selectionL, cal);
 
   // single elimination creation
-  const singleConfig: ISingleElminationConfig = {
+  const singleConfig: ISingleEliminationConfig = {
     idConfig: 'VC1',
     name: 'Volleyball Cup',
     opt: 'home',
@@ -49,7 +49,7 @@ export default function volleyBaseStageExample() {
   };
   verifyBaseStageConfig(singleConfig);
 
-  const singleElimination = new SingleElmination({
+  const singleElimination = new SingleElimination({
     id: 'VC',
     season: 1986
   }, singleConfig, new VolleyballProfile());
@@ -62,6 +62,6 @@ export default function volleyBaseStageExample() {
 
   console.log(cal.events.length);
 
-  console.table(league.getTable('finished').map(e => e.getInterface()));
-  console.table(singleElimination.getTable('finished').map(e => e.getInterface()));
+  console.table(league.getTable('finished').map((e: any) => e.getInterface()));
+  console.table(singleElimination.getTable('finished').map((e: any) => e.getInterface()));
 }

@@ -1,11 +1,11 @@
 
-import EntityHandler from "./EntityHandler";
+import { EntityHandler } from "./EntityHandler";
 import { JDate } from "jl-calendar";
 import { IEntityController, IContinentData, ICountryData, ITownData, Continent, Country, Town, IConfederationData, Federation, IConfederationCreator, Confederation, IFederationData, Institution, CupSystem, IFederationCreator, IPaginationData, IInstitutionData, IInstitutionCreator } from "../../JSportModule";
 import { TypeCategoryList, CATEGORIES, TypeCategory } from "jl-sprt-core";
-import LeagueSystem from "../../JSportModule/data/Entities/LeagueSystem";
+import { LeagueSystem } from "../../JSportModule/data/Entities/LeagueSystem";
 
-export default class EntityController implements IEntityController {
+export class EntityController implements IEntityController {
   /**
    * Patron Singleton
    */

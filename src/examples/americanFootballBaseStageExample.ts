@@ -1,9 +1,9 @@
 import { JCalendar, JDateTime } from "jl-calendar";
 import { getExampleTeams } from "./ExampleData";
-import League from "../Tournament/Stage/StageGroup/League/League";
-import SingleElmination from "../Tournament/Stage/StagePlayoff/SingleElimination/SingleElmination";
+import { League } from "../Tournament/Stage/StageGroup/League/League";
+import { SingleElimination } from "../Tournament/Stage/StagePlayoff/SingleElimination/SingleElimination";
 import { mostrarFecha } from "../mostrarFechaBorrar";
-import { ILeagueConfig, ISingleElminationConfig, verifyBaseStageConfig } from "../JSportModule";
+import { ILeagueConfig, ISingleEliminationConfig, verifyBaseStageConfig } from "../JSportModule";
 import { AmericanFootballProfile } from "jl-sprt-match";
 import { AdvanceAll } from '../Tournament/Advance';
 
@@ -11,7 +11,7 @@ import { AdvanceAll } from '../Tournament/Advance';
  * Ejemplo de BaseStage usando AmericanFootballProfile.
  * Espejo de volleyBaseStageExample, pero con el profile de American Football.
  */
-export default function americanFootballBaseStageExample() {
+export function americanFootballBaseStageExample() {
 
   const cal = JCalendar.createFromYear(1986);
 
@@ -38,7 +38,7 @@ export default function americanFootballBaseStageExample() {
   league.assign(selectionL, cal);
 
   // single elimination creation
-  const singleConfig: ISingleElminationConfig = {
+  const singleConfig: ISingleEliminationConfig = {
     idConfig: 'AFC1',
     name: 'American Football Cup',
     opt: 'home',
@@ -50,7 +50,7 @@ export default function americanFootballBaseStageExample() {
   };
   verifyBaseStageConfig(singleConfig);
 
-  const singleElimination = new SingleElmination({
+  const singleElimination = new SingleElimination({
     id: 'AFC',
     season: 1986
   }, singleConfig, new AmericanFootballProfile());

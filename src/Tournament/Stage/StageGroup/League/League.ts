@@ -2,13 +2,13 @@
 import { JCalendar } from "jl-calendar";
 import { arr2, AnyTeam, TypeBaseStageOption, AnyMatch, AnyTeamTableItem, AnySportProfile } from "jl-sprt-core";
 import { IElementInfo, ILeagueConfig, TypeTableMatchState } from "../../../../JSportModule";
-import BaseStage from "../../BaseStage";
-import robinRoundSchedulingFunction from "./RoundRobin";
+import { BaseStage } from "../../BaseStage";
+import { robinRoundSchedulingFunction } from "./RoundRobin";
 import { Turn } from "./Turn";
 
 // export interface ILeagueInfo extends IBaseStageInfo { }
 
-export default class League extends BaseStage<IElementInfo, ILeagueConfig> {
+export class League extends BaseStage<IElementInfo, ILeagueConfig> {
 
   private _turns: Turn[] = [];
 

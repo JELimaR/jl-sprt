@@ -1,6 +1,6 @@
 import { IJEventInfo, JInstantEvent, JDateTime } from "jl-calendar";
 import { Turn } from "./Turn";
-import League from './League';
+import { League } from './League';
 import { AnyMatch } from "jl-sprt-core";
 import { JEventMatch } from "../../Match/EventMatch";
 import { MatchScheduler } from "../../Match/MatchScheduler";
@@ -10,21 +10,21 @@ export interface IEvent_ScheduleOfTurnMatchesInfo extends IJEventInfo {
 	// leagueData: ITCCDATA<ILeagueInfo, ILeagueConfig>;
 	league: League;
 }
-  
+
 export class Event_ScheduleOfTurnMatches extends JInstantEvent {
 	// evento que implica una configuracion necesaria
 	_turn: Turn;
 	// _leagueData: ITCCDATA<ILeagueInfo, ILeagueConfig>
 	_league: League;
 	constructor(efc: IEvent_ScheduleOfTurnMatchesInfo) {
-    try {
-      super(efc);
-      this._turn = efc.turn;
-      this._league = efc.league;
-    } catch(error) {
-      console.log(efc)
-      throw error
-    }
+		try {
+			super(efc);
+			this._turn = efc.turn;
+			this._league = efc.league;
+		} catch (error) {
+			console.log(efc)
+			throw error
+		}
 	}
 
 	get kind(): string { return 'schedule'; }
