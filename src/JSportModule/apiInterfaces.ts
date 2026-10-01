@@ -1,7 +1,14 @@
 import { Continent, Country, Federation, IContinentData, ICountryData, IFederationData, IInstitutionData, Institution, ITownData, Town } from "./data";
 import { Confederation, IConfederationData } from "./data/Entities/Confederation";
 
-export interface IPaginationData { }
+// El contrato del ElementController (operaciones + DTOs) vive en elementInterfaces.
+import type { IElementController } from "./elementInterfaces";
+export type { IElementController };
+
+export interface IPaginationData {
+  offset?: number;
+  limit?: number;
+}
 export interface ISportAPIController { 
   
 }
@@ -35,10 +42,6 @@ export interface IEntityController {
   getInstitutionById(id: string): IInstitutionData
 
   associateInstitution(iid: string, fid: string): boolean;
-}
-
-export interface IElementController {
-
 }
 
 /**
