@@ -1,5 +1,6 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { SportServerAPI } from "../../../JSportServerModule";
+import { SportFactoryServer } from "../../SportFactoryServer";
 import type {
   ICreateSimpleLeagueInput,
   IMatchDTO,
@@ -7,17 +8,23 @@ import type {
 } from "../../../JSportModule";
 
 // -----------------------------------------------------------------------------
-// ElementController — Fase A (liga simple end-to-end)
+// ElementController — simulación de liga simple sobre el SportWorld.
 //
-// Verifica el ciclo de vida de una simulación (sesión = mundo con un torneo) y que
-// los DTOs planos salen correctos: fixture, tabla, calendario, avance y cierre.
+// Verifica el ciclo de vida de una simulación y que los DTOs planos salen correctos:
+// fixture, tabla, calendario, avance y cierre.
 //
-// El controller es singleton de proceso, pero cada createSimpleLeague crea una
-// sesión aislada (simulationId distinto). Los casos no comparten estado porque cada
-// uno crea su propia sesión; igual se agrupan en describe por área.
+// MODELO SportWorld: todas las simulaciones viven en el MISMO mundo del proceso (un
+// único calendario). Para aislar cada caso de test, `beforeEach` resetea el mundo del
+// factory (calendario + rankings + entidades limpios).
 // -----------------------------------------------------------------------------
 
 const elements = () => SportServerAPI().getElementController();
+
+beforeEach(() => {
+  // Mundo limpio por caso: evita que el calendario compartido acumule eventos de
+  // simulaciones de casos anteriores.
+  SportFactoryServer.instance.resetWorld();
+});
 
 type Api = ReturnType<typeof elements>;
 
@@ -312,19 +319,33 @@ describe("ElementController - queries puntuales y errores", () => {
     expect(() => api.getState(simulationId)).toThrow();
   });
 
-  it("sesiones distintas no comparten estado (aislamiento por simulationId)", () => {
+  // Modelo SportWorld: las simulaciones conviven en el MISMO mundo (un único
+  // calendario). Cada simulación ve SOLO su torneo (aislamiento de datos por
+  // simulationId), pero el tiempo es compartido: avanzar el mundo progresa todos los
+  // torneos. No hay calendarios paralelos (eso era el andamiaje de la Fase A).
+  it("cada simulación ve solo su torneo (aislamiento de datos por simulationId)", () => {
     const api = elements();
     const a = api.createSimpleLeague(leagueInput(4)).simulationId;
     const b = api.createSimpleLeague(leagueInput(6)).simulationId;
 
-    api.runAll(a);
-    // 'a' terminada no afecta a 'b' (que nunca se avanzó).
-    expect(api.getState(a).finished).toBe(true);
-    expect(api.getState(b).finished).toBe(false);
-    expect(api.getMatches(a).length).toBe(12);  // 'a' jugada
-    expect(api.getMatches(b).length).toBe(0);   // 'b' sin draw todavía
-    // El fixture estructural de 'b' sí existe desde el inicio y es independiente.
+    // Fixtures independientes por torneo, disponibles desde el inicio.
     expect(api.getFixture(a).length).toBe(12);
     expect(api.getFixture(b).length).toBe(30);
+
+    // Los partidos de cada simulación pertenecen a su propio torneo (ids distintos).
+    const idsA = new Set(api.getFixture(a).map((s) => s.slotId));
+    const idsB = api.getFixture(b).map((s) => s.slotId);
+    expect(idsB.some((id) => idsA.has(id))).toBe(false);
+  });
+
+  it("al correr el mundo, los torneos que comparten calendario progresan juntos", () => {
+    const api = elements();
+    const a = api.createSimpleLeague(leagueInput(4)).simulationId;
+    const b = api.createSimpleLeague(leagueInput(4)).simulationId;
+
+    // runAll avanza el calendario del mundo (compartido) hasta vaciarlo: ambos terminan.
+    api.runAll(a);
+    expect(api.getState(a).finished).toBe(true);
+    expect(api.getState(b).finished).toBe(true);
   });
 });

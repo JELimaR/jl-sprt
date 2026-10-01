@@ -27,19 +27,19 @@ export interface IEntityController {
   // 
   createConfederation(data: IConfederationData): boolean;
   getAllConfederations(): IConfederationData[];
-  getConfederationById(id: string): IConfederationData;
+  getConfederationById(id: string): IConfederationData | null;
   removeConfederation(id: string): boolean;
   // federations
   createFederation(data: IFederationData): boolean;
   getFederations(pag: IPaginationData): IFederationData[];
-  getFederationById(id: string): IFederationData;
+  getFederationById(id: string): IFederationData | null;
 
   associateFederation(fid: string, cid: string): boolean;
 
   // institutions
   createInstitution(data: IInstitutionData): boolean;
   getInstitutions(pag: IPaginationData): IInstitutionData[];
-  getInstitutionById(id: string): IInstitutionData
+  getInstitutionById(id: string): IInstitutionData | null;
 
   associateInstitution(iid: string, fid: string): boolean;
 }

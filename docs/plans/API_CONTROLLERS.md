@@ -65,7 +65,15 @@ singleton, desconectadas de las simulaciones. Conectar mundo↔entidades es un
 rediseño grande (toca cómo se guardan/serializan las entidades) y se hace en fase
 aparte (ver Paso intermedio).
 
-### Paso intermedio (lo que se implementa en esta tanda)
+### Paso intermedio (lo que se implementó en la Fase A — ANDAMIAJE, se reemplaza)
+> **NOTA (rediseño en curso):** el modelo de sesión de la Fase A (`ISimulationSession`
+> con `tournaments: Map` + `teamNames: Map`) es **andamiaje temporal**. Se reemplaza por
+> el agregado **`SportWorld`** (dueño de entidades + calendario único + rankings).
+> Ver **`SPORT_WORLD.md`**. En particular, `teamNames` se elimina (el nombre sale de
+> `team → Institution → name`) y el `EntityController` pasa a operar sobre el
+> `SportWorld`. El **Paso 6** de este documento (completar `EntityController`) se
+> absorbe en el plan de `SPORT_WORLD.md` (Paso 2).
+
 Para no casar el diseño con "liga = mundo" ni bloquear la Fase A con el rediseño del
 mundo completo:
 1. La sesión referencia **`Tournament`** (no `StageGroup`); los DTOs de partidos/

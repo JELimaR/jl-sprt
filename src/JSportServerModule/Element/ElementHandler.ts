@@ -1,31 +1,37 @@
 import { IElementHandler } from "../../JSportModule";
 import { SimulationContext } from "../../Tournament/SimulationContext";
 import { Tournament } from "../../Tournament/Tournament";
+import { SportWorld } from "../../World/SportWorld";
 import { TSport } from "jl-sprt-match";
 
 /**
- * Estado de UNA sesión en memoria. Una sesión es un **MUNDO** de simulación:
- * un `SimulationContext` compartido (calendario + stores) y los **torneos** que se
- * juegan en ese mundo. En la Fase A el mundo contiene un único torneo (la liga
- * simple), pero el modelo ya admite varios (`tournaments`).
+ * Estado de UNA sesión de simulación de torneo, dentro de un `SportWorld`.
+ *
+ * La sesión referencia el **mundo** (`world`: dueño del calendario + rankings +
+ * entidades, ver docs/plans/SPORT_WORLD.md) y los **torneos** que la simulación creó
+ * en ese mundo. En la Fase A hay un único torneo (la liga simple), pero el modelo ya
+ * admite varios (`tournaments`).
  *
  * Es estado INTERNO del server: nunca cruza la frontera de la API (lo que sale son
- * DTOs planos). A futuro, el mundo sumará su dimensión de entidades/geografía
- * (hoy en el `EntityController`); eso es un rediseño aparte del `SimulationContext`.
+ * DTOs planos).
+ *
+ * NOTA sobre nombres de team: NO se guarda ningún mapa `teamId -> nombre`. El nombre
+ * legible lo expone el propio team (`A_Team.name`, derivado de su `Institution`). El
+ * parche `teamNames` de la Fase A se eliminó.
  *
  * NOTA sobre stages: la sesión referencia el `Tournament`, que conoce sus stages vía
  * `tournament.stagesMap` (`Map<string, TGS>`). Los DTOs se arman recorriendo esa
- * estructura de forma genérica (StageGroup / StagePlayoff), nunca casteando a un
- * tipo de stage fijo.
+ * estructura de forma genérica (StageGroup / StagePlayoff).
  */
 export interface ISimulationSession {
   id: string;
+  /** El mundo donde vive la simulación (calendario + rankings + entidades). */
+  world: SportWorld;
+  /** Vista del mundo hacia el motor de torneos (calendar + store + tournament configs). */
   ctx: SimulationContext;
   sport: TSport;
-  /** Torneos del mundo, por `tournamentId`. Fase A: un solo torneo. */
+  /** Torneos de la sesión, por `tournamentId`. Fase A: un solo torneo. */
   tournaments: Map<string, Tournament>;
-  /** id de team -> nombre legible, para los DTOs. */
-  teamNames: Map<string, string>;
 }
 
 /**

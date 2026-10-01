@@ -14,6 +14,8 @@ import {
 } from "../../JSportModule";
 import type { FixtureParticipantRef, IFixtureSlot } from "../../Tournament/Stage/Fixture";
 import { ElementHandler, ISimulationSession } from "./ElementHandler";
+import { SportFactoryServer } from "../SportFactoryServer";
+import { SportWorld } from "../../World/SportWorld";
 import { SimulationContext } from "../../Tournament/SimulationContext";
 import { Tournament } from "../../Tournament/Tournament";
 import { StageGroup } from "../../Tournament/Stage/StageGroup/StageGroup";
@@ -23,7 +25,7 @@ import { Ranking } from "../../JSportModule/Ranking/Ranking";
 import { Institution } from "../../JSportModule/data/Entities/Institution";
 import { Town } from "../../JSportModule/data/Entities/GeogEntity";
 import { teamsAssign } from "../../Tournament/teamsAssign";
-import { JCalendar, JDate, JDateTime, DateToString } from "jl-calendar";
+import { JDate, JDateTime, DateToString } from "jl-calendar";
 import type { JEvent } from "jl-calendar";
 import { JEventMatch } from "../../Tournament/Stage/Match/EventMatch";
 import {
@@ -40,7 +42,6 @@ import type { TGS } from "../../Tournament/Stage/Stage";
 import type { ITournamentFromGSGData } from "../../JSportModule/GeneralStageGraph/tournamentFromGSG";
 import type { TInitialCreator, TPhaseCreator } from "../../JSportModule/GeneralStageGraph/GSGCreators";
 
-const DEFAULT_SEASON = 1986;
 const SOURCE_RANKING_CONTEXT = 'fr_S_SIM';
 const SIMPLE_LEAGUE_TOURNAMENT_ID = 'SIM_LEAGUE';
 
@@ -52,18 +53,18 @@ interface MatchWithTurn {
 }
 
 /**
- * ElementController — Fase A: simulaciones de liga simple.
+ * ElementController — API de SIMULACIÓN sobre el `SportWorld` del proceso.
  *
- * Administra **sesiones** por `simulationId` (vía ElementHandler). Una sesión es un
- * MUNDO: un `SimulationContext` compartido + los torneos que se juegan en él. En la
- * Fase A el mundo contiene un único torneo (la liga simple), por eso las queries sin
- * `tournamentId` operan sobre ese único torneo (ver `requireTournament`).
+ * Administra sesiones por `simulationId` (vía ElementHandler). Cada sesión vive dentro
+ * del mundo del proceso (`SportFactoryServer.instance.world`), el mismo que administra
+ * el EntityController: así las entidades (instituciones/teams) y la simulación comparten
+ * estado (ver docs/plans/SPORT_WORLD.md).
  *
- * Los DTOs se arman recorriendo `tournament.stagesMap` de forma genérica (StageGroup
- * y StagePlayoff), nunca casteando a un tipo de stage fijo.
+ * El mundo es dueño del calendario y los rankings; el `SimulationContext` que usa el
+ * motor de torneos se construye como VISTA del mundo (`world.calendar` + `world.rankings`).
  *
- * Toda la maquinaria de dominio (Tournament, SimulationContext, avance del
- * calendario) vive acá; el consumidor (frontend) solo ve el id + DTOs.
+ * Los nombres de team salen de `A_Team.name` (derivado de su Institution) — no hay mapa
+ * paralelo. Los DTOs se arman recorriendo `tournament.stagesMap` de forma genérica.
  */
 export class ElementController implements IElementController {
   private static _instance: ElementController;
@@ -78,6 +79,10 @@ export class ElementController implements IElementController {
     return ElementHandler.instance;
   }
 
+  private get world(): SportWorld {
+    return SportFactoryServer.instance.world;
+  }
+
   // ==========================================================================
   // Comandos
   // ==========================================================================
@@ -86,35 +91,42 @@ export class ElementController implements IElementController {
     if (!input.teams || input.teams.length < 2) {
       throw new Error(`createSimpleLeague: se requieren al menos 2 equipos (recibidos: ${input.teams?.length ?? 0}). En ElementController.createSimpleLeague`);
     }
-    const season = input.season ?? DEFAULT_SEASON;
+    const world = this.world;
+    const season = input.season ?? world.currentSeason;
     const category = input.category ?? 'S';
     const n = input.teams.length;
-
-    const cal = JCalendar.createFromYear(season);
-    const ctx = new SimulationContext(cal);
     const profile = ProfilesFactory.getProfile(input.sport);
 
-    // 1. Crear teams con nombres legibles + mapa id->nombre para los DTOs.
-    const teamNames = new Map<string, string>();
+    // El SimulationContext es una VISTA del mundo: comparte su calendario y su store
+    // de rankings. Así el torneo agenda sus eventos en el calendario del mundo y
+    // publica sus rankings en el store del mundo.
+    const ctx = new SimulationContext(world.calendar, world.rankings);
+
+    // 1. Crear las entidades (instituciones) EN EL MUNDO y obtener sus teams. El
+    //    nombre legible queda en la Institution; el team lo expone vía `name`.
+    const uniq = this.handler.genId();
     const teams: AnyTeam[] = input.teams.map((t, i) => {
-      const instId = t.id ?? `sim-${i}`;
-      const town = new Town({ i: `TWN_${instId}`, n: t.name, c: 'C_SIM', p: 1, a: 1 });
+      const instId = t.id ?? `${uniq}-inst-${i}`;
+      // Town placeholder del mundo (geografía real se cargará vía EntityController).
+      const townId = `TWN_${instId}`;
+      if (!world.getTown(townId)) {
+        world.addTown(new Town({ i: townId, n: t.name, c: 'C_SIM', p: 1, a: 1 }));
+      }
       const inst = new Institution({
         id: instId,
         name: t.name,
         shortName: t.name,
         abrevName: t.name.slice(0, 3).toUpperCase(),
-        headquarters: town,
+        headquarters: world.getTown(townId)!,
         funtationDay: new JDate(1),
         sport: input.sport,
       });
       inst.createTeam(category);
-      const team = inst.getTeam(category)!;
-      teamNames.set(team.id, t.name);
-      return team;
+      world.addInstitution(inst);
+      return inst.getTeam(category)!;
     });
 
-    // 2. Ranking inicial (fuente) para el torneo.
+    // 2. Ranking inicial (fuente) para el torneo, en el store del mundo.
     const rankItems: IRankItem[] = teams.map((team, i) => ({
       pos: i + 1,
       team,
@@ -123,23 +135,19 @@ export class ElementController implements IElementController {
     const sourceRanking = Ranking.fromRankItemArr(SOURCE_RANKING_CONTEXT, rankItems);
     ctx.store.set(sourceRanking.context, sourceRanking);
 
-    // 3. Construir el torneo (1 fase, 1 grupo) desde el GSG.
-    const data = this.buildSimpleLeagueData(n, input.opt);
-    const tournament = Tournament.create(
-      { id: SIMPLE_LEAGUE_TOURNAMENT_ID, season },
-      data,
-      ctx,
-      profile,
-    );
+    // 3. Construir el torneo (1 fase, 1 grupo) desde el GSG. Id único por sesión para
+    //    que varias simulaciones coexistan en el mismo mundo sin colisionar.
+    const tournamentId = `${SIMPLE_LEAGUE_TOURNAMENT_ID}_${uniq}`;
+    const data = this.buildSimpleLeagueData(tournamentId, n, input.opt);
+    const tournament = Tournament.create({ id: tournamentId, season }, data, ctx, profile);
 
     // teamsAssign resuelve el ranking inicial (ini_) desde el store y agenda el draw.
     teamsAssign(tournament, ctx);
 
-    const id = this.handler.genId();
     const tournaments = new Map<string, Tournament>();
-    tournaments.set(SIMPLE_LEAGUE_TOURNAMENT_ID, tournament);
-    this.handler.add({ id, ctx, sport: input.sport, tournaments, teamNames });
-    return { simulationId: id };
+    tournaments.set(tournamentId, tournament);
+    this.handler.add({ id: uniq, world, ctx, sport: input.sport, tournaments });
+    return { simulationId: uniq };
   }
 
   advance(simulationId: string): IAdvanceResultDTO {
@@ -228,11 +236,11 @@ export class ElementController implements IElementController {
   }
 
   // ==========================================================================
-  // Helpers internos — selección de torneo del mundo
+  // Helpers internos — selección de torneo
   // ==========================================================================
 
   /**
-   * Devuelve el torneo sobre el que operan las queries de Fase A. El mundo tiene un
+   * Devuelve el torneo sobre el que operan las queries de Fase A. La sesión tiene un
    * único torneo (la liga simple); cuando el modelo soporte varios, estas firmas
    * recibirán un `tournamentId` explícito.
    */
@@ -278,14 +286,28 @@ export class ElementController implements IElementController {
     return out;
   }
 
+  /**
+   * Mapa `teamId -> AnyTeam` del torneo, derivado de los partidos ya materializados.
+   * Alcanza para resolver nombres en el fixture: un slot solo lleva ref `team` cuando
+   * su Match concreto existe, y ese Match aporta sus equipos.
+   */
+  private teamsById(t: Tournament): Map<string, AnyTeam> {
+    const map = new Map<string, AnyTeam>();
+    this.allMatchesWithTurn(t).forEach(({ match }) => {
+      map.set(match.homeTeam.id, match.homeTeam);
+      map.set(match.awayTeam.id, match.awayTeam);
+    });
+    return map;
+  }
+
   // ==========================================================================
   // Helpers internos — armado de DTOs
   // ==========================================================================
 
   /** GSG data para una liga de N equipos (1 fase, 1 grupo). */
-  private buildSimpleLeagueData(n: number, opt: ICreateSimpleLeagueInput['opt']): ITournamentFromGSGData {
+  private buildSimpleLeagueData(tournamentId: string, n: number, opt: ICreateSimpleLeagueInput['opt']): ITournamentFromGSGData {
     const iniCreator: TInitialCreator = {
-      tournamentId: SIMPLE_LEAGUE_TOURNAMENT_ID,
+      tournamentId,
       qualyrankList: Array.from({ length: n }, (_, i) => ({ origin: SOURCE_RANKING_CONTEXT, pos: i + 1 })),
       rankGroupNumbers: [n],
     };
@@ -306,8 +328,9 @@ export class ElementController implements IElementController {
     };
   }
 
-  private nameOf(s: ISimulationSession, teamId: string): string {
-    return s.teamNames.get(teamId) ?? teamId;
+  /** Nombre legible de un team por id (del propio team; `teamId` como fallback). */
+  private nameOf(teamsById: Map<string, AnyTeam>, teamId: string): string {
+    return teamsById.get(teamId)?.name ?? teamId;
   }
 
   private toDateTimeDTO(dt: JDateTime): IDateTimeDTO {
@@ -318,7 +341,7 @@ export class ElementController implements IElementController {
     };
   }
 
-  private toMatchDTO(s: ISimulationSession, mt: MatchWithTurn): IMatchDTO {
+  private toMatchDTO(mt: MatchWithTurn): IMatchDTO {
     const m = mt.match;
     const res = m.result;
     const homeId = m.homeTeam.id;
@@ -339,9 +362,9 @@ export class ElementController implements IElementController {
       id: m.id,
       turn: mt.turn,
       homeTeamId: homeId,
-      homeName: this.nameOf(s, homeId),
+      homeName: m.homeTeam.name,
       awayTeamId: awayId,
-      awayName: this.nameOf(s, awayId),
+      awayName: m.awayTeam.name,
       state: m.state as MatchStateDTO,
       homeScore,
       awayScore,
@@ -355,24 +378,24 @@ export class ElementController implements IElementController {
 
   private buildMatches(s: ISimulationSession): IMatchDTO[] {
     const t = this.requireTournament(s);
-    return this.allMatchesWithTurn(t).map((mt) => this.toMatchDTO(s, mt));
+    return this.allMatchesWithTurn(t).map((mt) => this.toMatchDTO(mt));
   }
 
-  private toParticipantRefDTO(s: ISimulationSession, ref: FixtureParticipantRef): FixtureParticipantRefDTO {
+  private toParticipantRefDTO(teamsById: Map<string, AnyTeam>, ref: FixtureParticipantRef): FixtureParticipantRefDTO {
     if (ref.kind === 'team') {
-      return { kind: 'team', teamId: ref.teamId, teamName: this.nameOf(s, ref.teamId) };
+      return { kind: 'team', teamId: ref.teamId, teamName: this.nameOf(teamsById, ref.teamId) };
     }
     return ref;
   }
 
-  private toFixtureSlotDTO(s: ISimulationSession, slot: IFixtureSlot): IFixtureSlotDTO {
+  private toFixtureSlotDTO(teamsById: Map<string, AnyTeam>, slot: IFixtureSlot): IFixtureSlotDTO {
     const dto: IFixtureSlotDTO = {
       slotId: slot.slotId,
       stageId: slot.stageId,
       turn: slot.turn,
       halfWeek: slot.halfWeek,
-      home: this.toParticipantRefDTO(s, slot.home),
-      away: this.toParticipantRefDTO(s, slot.away),
+      home: this.toParticipantRefDTO(teamsById, slot.home),
+      away: this.toParticipantRefDTO(teamsById, slot.away),
     };
     if (slot.group !== undefined) dto.group = slot.group;
     if (slot.matchId !== undefined) dto.matchId = slot.matchId;
@@ -381,9 +404,10 @@ export class ElementController implements IElementController {
 
   private buildFixture(s: ISimulationSession): IFixtureSlotDTO[] {
     const t = this.requireTournament(s);
+    const teamsById = this.teamsById(t);
     const out: IFixtureSlotDTO[] = [];
     t.stagesMap.forEach((stage) => {
-      stage.getFixture().forEach((slot) => out.push(this.toFixtureSlotDTO(s, slot)));
+      stage.getFixture().forEach((slot) => out.push(this.toFixtureSlotDTO(teamsById, slot)));
     });
     return out;
   }
@@ -398,7 +422,7 @@ export class ElementController implements IElementController {
         rows.push({
           pos,
           teamId: String(team),
-          teamName: this.nameOf(s, String(team)),
+          teamName: tti.team.name,
           values: values as Record<string, number>,
         });
       });

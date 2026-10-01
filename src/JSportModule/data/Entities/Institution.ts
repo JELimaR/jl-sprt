@@ -37,6 +37,7 @@ export class Institution extends TDC<IInstitutionData, IInstitutionCreator> {
   get shortName(): string { return this.info.shortName }
   get abrevName(): string { return this.info.abrevName }
   get sport(): TSport { return this.info.sport; }
+  get headquarters(): Town { return this.info.headquarters; }
 
   createTeam(category: TypeCategory) {
     if (this._teams[category])
