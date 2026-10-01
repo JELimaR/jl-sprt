@@ -29,28 +29,38 @@ import { getFederationRankings } from "./graphData01";
  *     Octavos: ganadores del cruce (8) vs 1ros de grupo de B (8).
  *     ... (para el ejemplo llegamos hasta octavos).
  *
- * POR QUÉ LOS 8 ENTRANTES VAN "ARRIBA" (rankGroupNumbers: [8, 32])
- * ---------------------------------------------------------------
- * Los 3ros de A NO juegan la fase de grupos de B: entran directo al cruce, así
- * que su camino al título es MÁS CORTO. En el sourceRank, "arriba" = mejor
- * sembrado. Un equipo que entra directo a una ronda avanzada no puede estar peor
- * sembrado que uno que será eliminado en la fase de grupos. Además,
- * `tournamentFromGSG` valida que "el último rank group inicial pueda llegar al
- * primer lugar" (el peor sembrado inicial debe tener camino al título); poner los
- * entrantes arriba respeta ambas cosas. Por otro lado y más importante, cada phase
- * cuenta con un conjunto de Stages, las cuales van "tomando" teams de forma
- * secuencial. 
+ * DÓNDE SE UBICAN LOS 8 ENTRANTES EN LA LISTA (rankGroupNumbers: [8, 32])
+ * ----------------------------------------------------------------------
+ * CLAVE: el ruteo del GSG es POSICIONAL y CONSECUTIVO. Cada stage toma un bloque
+ * CONTIGUO de la lista ordenada de rank groups. Lo único que determina qué grupos
+ * caen juntos en un stage es su POSICIÓN en la lista (no su identidad ni su
+ * "mérito deportivo").
  *
- * Pero para el EMPAREJAMIENTO del cruce, los entrantes (3ros de A) deben quedar
- * POR DEBAJO de los 1ros de B: para eso se usa el ReOrderStageNode, que
- * intercambia dos rank groups. Ese es exactamente su propósito.
+ * Los 8 entrantes (3ros de A) NO juegan la fase de grupos de B: la saltean (de
+ * hecho, al crear B ni siquiera se sabe quiénes son).
+ *
+ * RAZÓN 1 — van ARRIBA para que el RESTO quede contiguo. Si los 8 entrantes no
+ * estuvieran agrupados en su propio rank group inicial arriba ([8, 32]), los 32
+ * que sí van a grupos NO formarían un bloque contiguo consumible por el stage de
+ * grupos de B. Ponerlos arriba (y juntos) es lo que deja a los demás en orden
+ * continuo para crear los stages de la fase 1.
+ *
+ * RAZÓN 2 — luego se REORDENA para el cruce. Tras la fase de grupos de B, la lista
+ * queda [3rosA, 1rosB, 2dosB, ...]. Los 3ros de A deben cruzar con los 2dos de B,
+ * pero 3rosA (idx0) y 2dosB (idx2) no son adyacentes. Un reOrder intercambia
+ * (3rosA, 1rosB) dejando [1rosB, 3rosA, 2dosB, ...]: ahora 3rosA queda contiguo a
+ * 2dosB (listo para el cruce) y 1rosB queda primero (listo para los octavos).
+ *
+ * El emparejamiento NO se logra por "jerarquía deportiva", sino REORDENANDO la
+ * lista para que el bloque contiguo que consume el cruce sea el correcto. Para eso
+ * está el ReOrderStageNode (abajo se detalla el intercambio).
  *
  * ESTADO: FUNCIONAL. Tanto A como B se ejecutan end-to-end en un mismo
  * SimulationContext. El Torneo B usa `teamsAssign` (resolución diferida): sus 8
  * entrantes (los 3ros de A) NO se conocen al crearlo, pero se resuelven solos
  * cuando la fase de grupos de A termina y escribe su `rs_` en el store. El
- * `ReOrderStageNode` acomoda a esos entrantes por debajo de los 1ros de B para el
- * cruce. Ver docs/plans/COUPLED_TOURNAMENTS.md y RUNTIME_VALIDATIONS.md (§ Fase B).
+ * `ReOrderStageNode` reacomoda esos entrantes en la lista para que el cruce los
+ * tome junto a los 2dos de B. Ver docs/plans/COUPLED_TOURNAMENTS.md.
  */
 
 const SEASON = 1990;
@@ -152,21 +162,26 @@ function buildTournamentB(): ITournamentFromGSGData {
       ],
     },
 
-    // --- Fase 2: REORDEN. El intercambio correcto es (entrantesA, 1rosB).
+    // --- Fase 2: REORDEN. Intercambia el par (entrantesA, 1rosB).
     // Consume 5: [entrantesA, 1rosB, 2dosB, 3rosB, 4tosB].
     // reOrder sobre (entrantesA,1rosB) -> (1rosB,entrantesA).
     // Produce: [1rosB(8), entrantesA(8), 2dosB(8), 3rosB(8), 4tosB(8)].
     //
-    // POR QUÉ ESTE INTERCAMBIO (y no (1rosB,2dosB)):
-    // El sembrado (sourceRank) pone a los entrantesA (3ros de A) ARRIBA de todo
-    // porque saltean la fase de grupos (no pueden jugarla: al arrancar el torneo
-    // ni siquiera se sabe quiénes son). Pero deportivamente los 1rosB están MEJOR
-    // rankeados que los entrantesA dentro de B. El reOrder invierte ese par para
-    // que 1rosB queden POR ENCIMA de entrantesA. Efecto secundario buscado: tras
-    // el swap, entrantesA queda adyacente a 2dosB (idx1, idx2), que es justo el
-    // cruce que sigue (3ros de A vs 2dos de B). Y 1rosB queda arriba, esperando
-    // los octavos. (Este ejemplo NO es funcional todavía porque el reOrder está
-    // deshabilitado; ver docs/plans/COUPLED_TOURNAMENTS.md.)
+    // POR QUÉ ESTE INTERCAMBIO (es ESTRUCTURAL, por el consumo consecutivo):
+    //   Antes:    3rosA  1rosB  2dosB   (entrantesA = 3rosA)
+    //   Después:  1rosB  3rosA  2dosB
+    //
+    // El cruce que sigue (Fase 3) debe emparejar entrantesA (3rosA) con 2dosB. Pero
+    // el consumo de rank groups es CONSECUTIVO: un stage toma un bloque contiguo de
+    // la lista. En la lista actual [3rosA, 1rosB, 2dosB, ...], 3rosA (idx0) y 2dosB
+    // (idx2) NO son adyacentes: 1rosB está en el medio. Para que el playoff del
+    // cruce pueda tomarlos juntos, hay que REACOMODAR la lista.
+    // El reOrder intercambia (3rosA, 1rosB) -> deja [1rosB, 3rosA, 2dosB, ...]:
+    // ahora 3rosA (idx1) queda ADYACENTE a 2dosB (idx2), que es exactamente lo que
+    // el cruce consumirá. Como beneficio, 1rosB queda primero, listo para
+    // engancharse después con los ganadores del cruce (Fase 4) sin otro reOrder.
+    // No es "poner a 1rosB arriba por mérito": es alinear el orden de la lista con
+    // el consumo consecutivo posterior.
     {
       id: 2,
       stages: [

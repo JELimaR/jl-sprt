@@ -97,27 +97,32 @@ export class TransferStageNode extends NoneStageNode<IStageNodeData> {
 }
 
 /**
- * ReOrderStageNode (ROR) — invierte el orden de DOS rankings de entrada.
+ * ReOrderStageNode (ROR) — reordena la LISTA de rank groups (intercambia 2).
  *
- * POR QUÉ EXISTE (ejemplo real, competiciones de confederación tipo UEFA):
- * en la Europa League, los terceros de los grupos de Champions "bajan" y juegan
- * un playoff previo a octavos contra los segundos de los grupos de Europa League;
- * recién luego los ganadores enfrentan a los primeros de los grupos de Europa
- * League.
+ * CONTEXTO IMPRESCINDIBLE: el GSG rutea los rank groups de forma POSICIONAL y
+ * CONSECUTIVA. Cada stage de la fase siguiente consume un BLOQUE CONTIGUO de la
+ * lista ordenada de rank groups que produjo la fase anterior (ver
+ * createPhaseNodes: toma `count` rank groups consecutivos por índice). No hay
+ * ruteo por identidad: lo único que determina qué grupos caen juntos en un stage
+ * es su POSICIÓN en la lista.
  *
- * El problema: en el ranking global del torneo (el "sourceRank" con el que se
- * arma todo), los que vienen "primeros" de su grupo están ARRIBA. Pero para que
- * ese cruce funcione, los equipos entrantes (los que bajan) tienen que quedar
- * POR DEBAJO de los primeros de grupo del otro lado del cruce. Si no se invierte
- * el orden de esos dos rankings, el emparejamiento no puede formarse: los
- * "primeros" quedarían enfrentados entre sí en lugar de contra los entrantes.
+ * POR QUÉ EXISTE: justamente porque el consumo es consecutivo, dos rank groups
+ * que NO están adyacentes en la lista no pueden terminar en el mismo stage. La
+ * única forma de juntarlos (o de separarlos de su vecino actual) es CAMBIAR SU
+ * POSICIÓN en la lista ANTES de que el siguiente stage la consuma. Para eso
+ * existe este nodo: intercambia el orden de dos rank groups adyacentes de modo
+ * que el bloque contiguo que tomará el stage siguiente sea el deseado.
  *
- * ReOrder resuelve esto intercambiando los dos rankings, de modo que el orden
- * relativo quede como lo necesita la ronda (los entrantes por debajo de los
- * locales), sin alterar el contenido de cada ranking.
+ * Es una operación puramente ESTRUCTURAL sobre el orden de la lista, no sobre el
+ * "mérito deportivo" de los equipos. No altera el contenido de cada rank group,
+ * solo su posición relativa en la lista.
  *
- * INVARIANTE: recibe exactamente 2 rankings (es una operación binaria de
- * intercambio).
+ * Restricción (Principio B / verifyNoRecross): como reOrder es el único nodo que
+ * rompe el orden global, solo es legítimo cuando una de sus dos fuentes es
+ * EXTERNA al torneo (torneo acoplado). Reordenar dos ramas internas ya separadas
+ * sería re-cruzar ramas (prohibido).
+ *
+ * INVARIANTE: recibe exactamente 2 rank groups (intercambio binario).
  */
 export class ReOrderStageNode extends NoneStageNode<ITableStageNodeData> {
   constructor(data: ITableStageNodeData, r: Ranking[]) {
@@ -127,7 +132,10 @@ export class ReOrderStageNode extends NoneStageNode<ITableStageNodeData> {
     }
   }
 
-  /** Devuelve los dos rankings en orden inverso (intercambiados). */
+  /**
+   * Emite los dos rank groups con su posición intercambiada en la lista, para
+   * que el consumo consecutivo posterior empareje el bloque deseado.
+   */
   getRanksGroups(): Ranking[] {
     return [this.r[1], this.r[0]];
   }

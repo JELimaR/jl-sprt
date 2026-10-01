@@ -45,21 +45,28 @@ inicial de B cuando parte depende de resultados futuros de A.
 **Conclusión:** hoy la arquitectura NO soporta "un torneo cuyo ranking inicial
 contiene equipos determinados por resultados posteriores de otro torneo".
 
-## Problema 2 — el reOrder y el sembrado de los entrantes
+## Problema 2 — el reOrder y el orden de la lista de rank groups
 
-Los 3ros de A no juegan la fase de grupos de B → su camino al título es más corto →
-en el sourceRank deben ir **arriba** (mejor sembrados; además `tournamentFromGSG`
-valida que "el último rank group inicial pueda llegar al primer lugar").
+Clave: el ruteo del GSG es POSICIONAL y CONSECUTIVO. Cada stage toma un bloque
+CONTIGUO de la lista de rank groups. Lo que determina qué grupos se emparejan en un
+stage es su POSICIÓN en la lista, no su identidad ni su "mérito deportivo".
 
-Pero en el **emparejamiento del cruce**, los 3ros de A deben quedar **por debajo de
-los 1ros de B** (menor jerarquía dentro de B). El par que se intercambia es
-**(entrantesA, 1rosB) → (1rosB, entrantesA)**: NO es (1rosB, 2dosB). La razón es que
-1rosB están mejor rankeados deportivamente que los entrantesA, así que deben quedar
-por encima; y como efecto secundario, tras el swap los entrantesA quedan adyacentes a
-los 2dosB, que es justo el cruce (3ros de A vs 2dos de B). Para invertir ese orden
-relativo existe el `ReOrderStageNode`. **Está comentado a propósito** en
-`GSGCreators.createStage` (`case 'reOrder'`), porque activarlo sin resolver el
-Problema 1 no tiene sentido: el caso que lo necesita no puede ejecutarse todavía.
+Los 3ros de A no juegan la fase de grupos de B (la saltean), así que van en su
+propio rank group inicial, separado de los 32 que sí van a grupos. El cruce que
+sigue debe emparejar **entrantesA con 2dosB**. Pero tras la fase de grupos de B la
+lista queda `[entrantesA, 1rosB, 2dosB, 3rosB, 4tosB]`: entrantesA (idx0) y 2dosB
+(idx2) NO son adyacentes (1rosB está en el medio), así que un stage no puede
+tomarlos juntos.
+
+Por eso se usa el `ReOrderStageNode`, que intercambia **(entrantesA, 1rosB) →
+(1rosB, entrantesA)**. Resultado: `[1rosB, entrantesA, 2dosB, ...]`, donde entrantesA
+queda adyacente a 2dosB (listo para el cruce) y 1rosB queda primero (listo para
+engancharse luego con los ganadores del cruce, sin otro reOrder). Es un reacomodo
+ESTRUCTURAL del orden de la lista para alinearlo con el consumo consecutivo
+posterior; NO es "poner a 1rosB arriba por estar mejor rankeado".
+
+El `case 'reOrder'` en `GSGCreators.createStage` ya está HABILITADO (ver Problema 1,
+resuelto por `teamsAssign`).
 
 ## Problema 3 — dependencia temporal entre stages/torneos (no validada)
 
@@ -127,10 +134,12 @@ routing por identidad ni por nombre. Consecuencias:
 - El orden en que un StageGroup emite sus rank groups es fijo:
   `[1ros, 2dos, 3ros, 4tos]`. El diseñador del GSG debe conocerlo para rutear cada
   rama al stage correcto.
-- El **sembrado** (posición en el sourceRank) tiene semántica: "arriba" = mejor
-  sembrado / camino más largo/protegido. Un equipo que entra directo a una ronda
-  avanzada (ej. saltea la fase de grupos) debe ir ARRIBA, aunque en el emparejamiento
-  de esa ronda tenga que quedar por debajo (para eso está el reOrder).
+- La **posición en la lista** determina el ruteo (qué grupos caen juntos en cada
+  stage), no una semántica de "mérito". Un equipo que entra directo a una ronda
+  avanzada (ej. saltea la fase de grupos) ocupa su propio rank group; si la lista no
+  lo deja adyacente al bloque con el que debe emparejarse, se usa un reOrder para
+  reacomodar el orden ANTES del consumo. El reOrder es un ajuste estructural del
+  orden de la lista, no un ajuste de sembrado deportivo.
 - `tournamentFromGSG` ya valida una parte: que el ÚLTIMO rank group inicial pueda
   llegar al primer lugar (el peor sembrado tiene camino al título). Queremos más
   validaciones de coherencia de orden (abajo).
@@ -180,8 +189,9 @@ solo al fondo de la tabla).
 
 1. **No re-cruzar ramas bifurcadas** (principio B). ✅ IMPLEMENTADO: `verifyNoRecross`
    (ver `docs/plans/PRINCIPLE_B_NO_RECROSS.md`).
-2. **Orden del sembrado**: que los entrantes que saltean fases estén arriba, y que el
-   reOrder solo se use para acomodar el emparejamiento, no para violar el sembrado.
+2. **Orden de la lista de rank groups**: que el reOrder solo se use para reacomodar
+   el orden de la lista de modo que el consumo consecutivo empareje los bloques
+   correctos (ajuste estructural), nunca para re-cruzar ramas internas ya separadas.
 3. **Dependencia temporal** (Problema 3): `hwStart` de un stage posterior al `hwEnd`
    de sus fuentes. ✅ IMPLEMENTADO: intra-torneo en `verifyTournamentConfig` y
    cross-tournament en `verifyCoupledTournaments` (ambas se ejecutan al registrar el

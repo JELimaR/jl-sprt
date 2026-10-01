@@ -67,10 +67,14 @@ Verificado en código (`getRanksGroups()` de cada nodo):
 
 ## 2. El único punto conflictivo: `reOrder`
 
-`reOrder` invierte el orden de exactamente 2 RG. Existe para un caso muy concreto
-(competiciones de confederación tipo UEFA, ver `NoneStageNode.ts`): los equipos
-"entrantes" (que bajan de otro torneo) deben quedar POR DEBAJO de los locales en el
-emparejamiento del cruce, aunque estructuralmente vengan "arriba" en el sembrado.
+`reOrder` intercambia el orden de exactamente 2 RG en la lista. Existe por una
+razón ESTRUCTURAL: como el consumo de RG es posicional y consecutivo (cada stage
+toma un bloque contiguo), la única forma de que dos RG no adyacentes terminen en el
+mismo stage es reacomodar la lista ANTES del consumo. `reOrder` hace ese
+reacomodo. Caso típico: torneos de confederación acoplados (ver `NoneStageNode.ts`),
+donde un reOrder deja a los equipos entrantes de otro torneo adyacentes al bloque
+con el que deben emparejarse en el cruce. No tiene que ver con el "mérito deportivo"
+de los equipos, sino con alinear el orden de la lista al ruteo consecutivo.
 
 **Restricción acordada:** un `reOrder` legítimo solo aparece cuando **una de sus
 dos fuentes es EXTERNA al torneo** (viene de otro GSG: un `tr_`/`rs_` de otro

@@ -201,13 +201,13 @@ function createStage(sid: string, stageCreator: TStageNodeCreator, stageRGs: Ran
       )
       break;
     case 'reOrder':
-      // Habilitado (Fase B). Intercambia el orden de exactamente 2 rankings de entrada
-      // (ver ReOrderStageNode). Se usa en torneos acoplados para que los entrantes
-      // (equipos que saltean fases, ej. los 3ros de A que bajan a B) queden POR DEBAJO
-      // de los locales en el emparejamiento del cruce, aunque estructuralmente vengan
-      // "arriba" en el sembrado. Antes estaba comentado porque el ranking inicial con
-      // entrantes desconocidos no se podía resolver; teamsAssign (resolución diferida)
-      // ya lo permite. Ver docs/plans/COUPLED_TOURNAMENTS.md y RUNTIME_VALIDATIONS.md.
+      // Reordena la LISTA de rank groups intercambiando 2 adyacentes (ver
+      // ReOrderStageNode). Como el ruteo entre fases es posicional y consecutivo,
+      // este nodo sirve para reacomodar el orden de la lista de modo que el bloque
+      // contiguo que consumirá el stage siguiente sea el deseado. Es una operación
+      // estructural sobre el orden, no sobre el mérito deportivo de los equipos.
+      // Uso típico: torneos acoplados (una de las fuentes es externa). Ver
+      // docs/plans/COUPLED_TOURNAMENTS.md y PRINCIPLE_B_NO_RECROSS.md.
       out = new ReOrderStageNode({
         ...nodeData,
         qNumber: stageCreator.value,
