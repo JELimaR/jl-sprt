@@ -23,7 +23,7 @@ export class Event_StageStart extends JInstantEvent {
   get kind(): string { return 'stage-start'; }
   get label(): string { return `Inicio de stage ${this._stage.info.id}`; }
 
-  execute() {
+  advance() {
     console.log(`ejecuting starting and teams draw from stage: ${this._stage.info.id}  (${this._stage.info.season})`);
     
     const rankTable = this.getParticipants();

@@ -33,7 +33,7 @@
     "graphology-canvas": "^0.4.3",
     "graphology-simple-path": "^0.2.0",
     "graphology-types": "^0.24.8",
-    "jl-calendar": "^2.1.1",
+    "jl-calendar": "^2.2.0",
     "jl-sprt-core": "^1.2.0",
     "jl-sprt-match": "^1.2.0",
     "jl-utlts": "^1.4.0"

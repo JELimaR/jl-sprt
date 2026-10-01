@@ -24,7 +24,7 @@ export class Event_RoundCreationAndTeamsDraw extends JInstantEvent {
   get kind(): string { return 'draw'; }
   get label(): string { return `Sorteo/creación de ronda ${this._playoff.rounds.length + 1} (${this._playoff.info.id})`; }
 
-  execute(): void {
+  advance(): void {
     const thisRoundNumber = this._playoff.rounds.length + 1;
     console.log(`ejecuting creation of Round number: ${thisRoundNumber}, from: ${this._playoff.info.id}`);
     mostrarFecha(this.dateTime)

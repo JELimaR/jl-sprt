@@ -30,7 +30,7 @@ export class Event_ScheduleOfTurnMatches extends JInstantEvent {
 	get kind(): string { return 'schedule'; }
 	get label(): string { return `Programación jornada ${this._turn.num}`; }
 
-	execute() {
+	advance() {
 		console.log(`ejecuting match scheduling for matchHWeek number: ${this._turn.num}`);
 		// el evento debe crearse en el match
 		this._turn.matches.forEach((match: AnyMatch) => {

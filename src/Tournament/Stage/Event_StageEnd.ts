@@ -23,7 +23,7 @@ export class Event_StageEnd extends JInstantEvent {
   get kind(): string { return 'stage-end'; }
   get label(): string { return `Cierre de stage ${this._stage.info.id}`; }
 
-  execute() {
+  advance() {
     console.log(`ejecuting finishing stage: ${this._stage.info.id} (${this._stage.info.season})`);
 
     if (!this._stage.isFinished)

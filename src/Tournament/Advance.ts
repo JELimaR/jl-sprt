@@ -57,7 +57,15 @@ function exectuteAllEvents(cal: JCalendar, GUARD: number) {
 
     console.log();
     console.log(`event index: ${idx}`);
-    eve.execute();
+    if (eve instanceof JDurativeEvent) {
+      eve.start();
+      while (!eve.isFinished()) {
+        eve.advance();
+      }
+      eve.finish();
+    } else {
+      eve.advance();
+    }
     mostrarFecha(eve.dateTime);
     console.log('-------------------------------------------------------------------------------------------------');
 

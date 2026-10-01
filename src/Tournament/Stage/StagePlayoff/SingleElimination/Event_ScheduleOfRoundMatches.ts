@@ -29,7 +29,7 @@ export class Event_ScheduleOfRoundMatches extends JInstantEvent {
 	get kind(): string { return 'schedule'; }
 	get label(): string { return `Programación ronda ${this._round.num}`; }
 
-	execute() {
+	advance() {
 		console.log(`ejecuting match scheduling for Round number: ${this._round.num}`);
 		// el evento debe crearse en el match
 		const hws2: arr2<TypeHalfWeekOfYear> = this._round.halfWeek;
