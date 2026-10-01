@@ -8,6 +8,7 @@ import { arr2, AnyTeam } from "jl-sprt-core";
 import { AnyTeamTableItem } from "jl-sprt-core";
 import { AnySportProfile } from "jl-sprt-core";
 import { SimulationContext } from "../../SimulationContext";
+import { IFixtureSlot } from "../Fixture";
 
 
 /**
@@ -127,6 +128,11 @@ export class StagePlayoff extends Stage<IElementInfo, IStagePlayoffConfig> {
    */
   getTable(ttms: TypeTableMatchState): AnyTeamTableItem[] {
     return this.playoff.getTable(ttms);
+  }
+
+  /** Fixture estructural del playoff: delega en el SingleElimination. */
+  getFixture(): IFixtureSlot[] {
+    return this.playoff.getFixture();
   }
 
 }

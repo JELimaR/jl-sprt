@@ -5,6 +5,7 @@ import { Bombo } from "../Bombo";
 import { IElementInfo, ILeagueConfig, IRankItem, IStageGroupConfig, TypeDrawRulePlayoff, TypeTableMatchState } from "../../../JSportModule";
 import { AnyTeam, AnyTeamTableItem, AnySportProfile } from "jl-sprt-core";
 import { SimulationContext } from "../../SimulationContext";
+import { IFixtureSlot } from "../Fixture";
 
 /**
  * Debe encargarse de la creacion y de la asignacion de los equipos a cada basestage
@@ -199,6 +200,20 @@ export class StageGroup extends Stage<IElementInfo, IStageGroupConfig> {
       out.push(g.getTable(ttms));
     })
 
+    return out;
+  }
+
+  /**
+   * Fixture estructural del stage: concatena el fixture de cada grupo, etiquetando
+   * cada slot con su número de grupo (1-based).
+   */
+  getFixture(): IFixtureSlot[] {
+    const out: IFixtureSlot[] = [];
+    this._groups.forEach((g: League, i: number) => {
+      g.getFixture().forEach((slot) => {
+        out.push({ ...slot, group: i + 1 });
+      });
+    });
     return out;
   }
 }

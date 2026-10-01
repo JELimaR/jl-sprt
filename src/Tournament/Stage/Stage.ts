@@ -6,6 +6,7 @@ import { SimulationContext } from "../SimulationContext";
 import { Bombo } from "./Bombo";
 import { Event_StageEnd } from "./Event_StageEnd";
 import { Event_StageStart } from "./Event_StageStart";
+import { IFixtureSlot } from "./Fixture";
 
 export type TGS = Stage<IElementInfo, IStageConfig>;
 /**
@@ -131,6 +132,14 @@ export abstract class Stage<I extends IElementInfo, C extends IStageConfig> exte
   }
 
   abstract getTable(ttms: TypeTableMatchState): AnyTeamTableItem[];
+
+  /**
+   * Fixture estructural del stage completo: los partidos que van a ocurrir, con su
+   * half-week y emparejamiento, conocidos desde la creación del torneo (ver
+   * Fixture.ts). StageGroup concatena el de sus grupos; StagePlayoff delega en su
+   * SingleElimination.
+   */
+  abstract getFixture(): IFixtureSlot[];
 
   /**
    * 

@@ -5,6 +5,7 @@ import { AnyTeam }from "jl-sprt-core";
 import { AnyMatch } from "jl-sprt-core";
 import { AnyTeamTableItem } from "jl-sprt-core";
 import { AnySportProfile } from "jl-sprt-core";
+import { IFixtureSlot } from "./Fixture";
 
 /**
  * En el BaseStage es donde se configuran las rondas o turnos y los partidos de un torneo.
@@ -31,6 +32,15 @@ export abstract class BaseStage<I extends IElementInfo, C extends IBaseStageConf
   abstract constructorVerification(config: C): void;
 
   abstract get matches(): AnyMatch[];
+
+  /**
+   * Fixture estructural del stage: los partidos que van a ocurrir (half-week +
+   * emparejamiento), conocidos desde la creación del torneo, con o sin el Match
+   * concreto ya materializado. Ver Fixture.ts.
+   *
+   * Lo implementa cada stage según su formato (liga: round-robin; playoff: bracket).
+   */
+  abstract getFixture(): IFixtureSlot[];
 
   get isFinished(): boolean {
     return this.matches.every((m) => m.state === 'finished');

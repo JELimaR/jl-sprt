@@ -102,6 +102,8 @@ export type {
   ICreateSimpleLeagueInput,
   ISimulationRef,
   IAdvanceResultDTO,
+  FixtureParticipantRefDTO,
+  IFixtureSlotDTO,
 } from './JSportModule/elementInterfaces';
 
 // GeneralStageGraph
@@ -132,44 +134,29 @@ export { getInstitutionsData, getFederationData, getConfederationData } from './
 export { ProfilesFactory, SPORTS } from 'jl-sprt-match';
 export type { TSport, IFootballScore, IVolleyballScore, IAmericanFootballScore, TSupportedMatchScore } from 'jl-sprt-match';
 
-// HACE FALTA EXPORTAR TODO?
+// Core (jl-sprt-core) — superficie PÚBLICA mínima.
+//
+// Solo se reexporta lo que el consumidor (frontend / API) necesita como contrato de
+// CONSTRUCCIÓN o LECTURA. Las clases abstractas internas del dominio de core
+// (A_Match, A_MatchPlay, A_Result, A_Serie, A_Team, A_TeamRoster, A_TeamTableItem,
+// Person) y sus tipos de implementación (IMatchCreationInfo, IResultInfo, MatchContext,
+// TMatchScore, etc.) NO se exponen: con el ElementController devolviendo DTOs, el front
+// ya no instancia ni manipula esas clases. Quien las necesite las importa de
+// 'jl-sprt-core' directamente. (Ver docs/plans/API_CONTROLLERS.md §3 y §5.)
 export {
-  A_Match,
   AnyMatch,
-  A_MatchPlay,
-  A_Result,
-  A_Serie,
-  Person,
-  A_Team,
   AnyTeam,
-  A_TeamRoster,
   CATEGORIES,
   getCategoryList,
-  A_TeamTableItem
 } from 'jl-sprt-core';
 export type {
-  IMatchCreationInfo,
-  TypeMatchState,
-  IResultInfo,
-  IWinnerInfo,
-  TypeTotalScore,
-  ISerieCreationInfo,
-  MatchContext,
-  MatchContextProvider,
-  IMatchScore,
-  TMatchScore,
-  IPersonData,
   ITeamCreator,
-  ITeamOwner,
-  ISportProfile,
   AnySportProfile,
   AnyTeamTableItem,
-  IA_TeamTableItemBase,
-  SortFunc,
   arr2,
   TypeBaseStageOption,
   TypeCategory,
-  TypeCategoryList
+  TypeCategoryList,
 } from 'jl-sprt-core';
 
 // ============================================================================

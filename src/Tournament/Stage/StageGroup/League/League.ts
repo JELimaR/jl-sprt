@@ -5,6 +5,7 @@ import { IElementInfo, ILeagueConfig, TypeTableMatchState } from "../../../../JS
 import { BaseStage } from "../../BaseStage";
 import { robinRoundSchedulingFunction } from "./RoundRobin";
 import { Turn } from "./Turn";
+import { FixtureParticipantRef, IFixtureSlot } from "../../Fixture";
 
 // export interface ILeagueInfo extends IBaseStageInfo { }
 
@@ -139,6 +140,59 @@ export class League extends BaseStage<IElementInfo, ILeagueConfig> {
     }
 
     out.forEach((itti, idx) => itti.pos = idx + 1)
+
+    return out;
+  }
+
+  /**
+   * Fixture estructural de la liga. Deriva las jornadas y emparejamientos del
+   * round-robin (determinístico, sin equipos) y las half-weeks del config. Si el
+   * draw ya ocurrió (los turns existen), enriquece cada slot con el equipo real y el
+   * `matchId`; si no, deja la referencia como `seed` (posición de ranking).
+   *
+   * El `slotId` usa el MISMO esquema que el id del Match real
+   * (`<stageId>-T<turno>-M<idx>`), para poder enlazar slot <-> match.
+   */
+  getFixture(): IFixtureSlot[] {
+    const sch: arr2<number>[][] = League.getDataScheduling(
+      this.config.participantsNumber,
+      this.config.opt,
+    );
+
+    const out: IFixtureSlot[] = [];
+    let globalMatchCount = 0;
+
+    sch.forEach((turnPairs: arr2<number>[], turnIndex: number) => {
+      const turnNumber = turnIndex + 1;
+      const existingTurn = this._turns[turnIndex];
+
+      turnPairs.forEach((pair: arr2<number>, i: number) => {
+        globalMatchCount++;
+        const slotId = `${this.info.id}-T${turnNumber}-M${globalMatchCount}`;
+        // El round-robin da [home, away] como POSICIONES (1-based) del ranking.
+        let home: FixtureParticipantRef = { kind: 'seed', pos: pair[0] };
+        let away: FixtureParticipantRef = { kind: 'seed', pos: pair[1] };
+        let matchId: string | undefined;
+
+        // Si el turn ya está materializado, usar el Match real (equipos + id).
+        const match = existingTurn?.matches[i];
+        if (match) {
+          matchId = match.id;
+          home = { kind: 'team', teamId: match.homeTeam.id };
+          away = { kind: 'team', teamId: match.awayTeam.id };
+        }
+
+        out.push({
+          slotId,
+          stageId: this.info.id,
+          turn: turnNumber,
+          halfWeek: this.config.turnHalfWeeks[turnIndex],
+          home,
+          away,
+          matchId,
+        });
+      });
+    });
 
     return out;
   }

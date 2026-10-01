@@ -9,6 +9,7 @@ import { AnySportProfile } from 'jl-sprt-core';
 import { A_Serie } from 'jl-sprt-core';
 import { TypeTableMatchState } from '../../../../JSportModule/';
 import { AnyMatch } from 'jl-sprt-core';
+import { FixtureParticipantRef, IFixtureSlot } from '../../Fixture';
 
 export class SingleElimination extends BaseStage<IElementInfo, ISingleEliminationConfig> { // Single elimination
 
@@ -117,6 +118,85 @@ export class SingleElimination extends BaseStage<IElementInfo, ISingleEliminatio
     }
 
     return out;
+  }
+
+  /**
+   * Fixture estructural del bracket de eliminación simple.
+   *
+   * El bracket es determinístico en estructura desde el create:
+   *  - Ronda 1: `participantsNumber/2` series; serie `s` empareja seed `s` vs seed
+   *    `participantsNumber+1-s` (los equipos reales dependen del draw, por eso van
+   *    como `seed` hasta materializarse).
+   *  - Rondas N>1: cada serie enfrenta a los GANADORES de dos series de la ronda
+   *    previa (referencia simbólica `winnerOf`), hasta que esa ronda se juega.
+   *
+   * Cada serie produce 1 slot (opt 'home'/'neutral') o 2 slots (opt 'h&a', ida y
+   * vuelta). Si la ronda ya está materializada, cada slot toma el Match real
+   * (equipos + id); si no, queda como `seed`/`winnerOf`.
+   *
+   * El `slotId` sigue el esquema `<stageId>-R<ronda>-S<serieGlobal>-M<idx>`.
+   */
+  getFixture(): IFixtureSlot[] {
+    const out: IFixtureSlot[] = [];
+    const matchesPerSerie = this.config.opt === 'h&a' ? 2 : 1;
+
+    let seriesInRound = this.config.participantsNumber / 2;
+    let globalSerieCount = 0;
+
+    for (let roundIndex = 0; roundIndex < this.config.roundsNumber; roundIndex++) {
+      const roundNumber = roundIndex + 1;
+      const halfWeek = this.config.roundHalfWeeks[roundIndex]?.[0];
+      const existingRound = this._rounds[roundIndex];
+
+      for (let s = 0; s < seriesInRound; s++) {
+        globalSerieCount++;
+        const serieNumber = s + 1;
+
+        // Participantes estructurales de la serie.
+        let home: FixtureParticipantRef;
+        let away: FixtureParticipantRef;
+        if (roundIndex === 0) {
+          // Ronda 1: emparejamiento por seed (posición de ranking).
+          home = { kind: 'seed', pos: serieNumber };
+          away = { kind: 'seed', pos: this.config.participantsNumber + 1 - serieNumber };
+        } else {
+          // Ronda N>1: ganadores de dos series de la ronda previa.
+          home = { kind: 'winnerOf', slotId: this.serieSlotId(roundNumber - 1, 2 * serieNumber - 1) };
+          away = { kind: 'winnerOf', slotId: this.serieSlotId(roundNumber - 1, 2 * serieNumber) };
+        }
+
+        // Serie materializada: usar equipos reales.
+        const serie = existingRound?.series[s];
+        if (serie) {
+          home = { kind: 'team', teamId: serie.teamOne.id };
+          away = { kind: 'team', teamId: serie.teamTwo.id };
+        }
+
+        for (let k = 0; k < matchesPerSerie; k++) {
+          const slotId = `${this.serieSlotId(roundNumber, serieNumber)}-M${k + 1}`;
+          const matchId = serie?.matches[k]?.id;
+          out.push({
+            slotId,
+            stageId: this.info.id,
+            turn: roundNumber,
+            halfWeek,
+            // En la vuelta de un h&a se invierte la localía.
+            home: k === 1 ? away : home,
+            away: k === 1 ? home : away,
+            matchId,
+          });
+        }
+      }
+
+      seriesInRound = Math.floor(seriesInRound / 2);
+    }
+
+    return out;
+  }
+
+  /** Id estable de una serie dentro del bracket (ronda + serie, 1-based). */
+  private serieSlotId(roundNumber: number, serieNumber: number): string {
+    return `${this.info.id}-R${roundNumber}-S${serieNumber}`;
   }
 
   /************************************************************************************************************************************************************* */

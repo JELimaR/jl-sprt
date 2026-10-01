@@ -1,6 +1,6 @@
 {
   "name": "jl-sprt",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -35,7 +35,7 @@
     "graphology-types": "^0.24.8",
     "jl-calendar": "^2.1.1",
     "jl-sprt-core": "^1.2.0",
-    "jl-sprt-match": "^1.1.0",
+    "jl-sprt-match": "^1.2.0",
     "jl-utlts": "^1.4.0"
   }
 }

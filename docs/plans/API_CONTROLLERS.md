@@ -27,17 +27,54 @@
   (ver `jl-sprt-app/src/lib/sport-api.ts`), pero para torneos arma todo a mano.
 
 ### Problema estructural a resolver antes de nada: aislamiento de simulaciones
-Los controllers son **singletons de proceso**. Pero una simulación (un torneo con
-su `SimulationContext`: calendario + store + configs) es **estado mutable y
-aislado**: la liga simple del front necesita *su* calendario y *su* store, y debe
-poder haber varias en paralelo (o reiniciarse) sin pisarse. Un `ElementController`
-singleton que guarde "el torneo actual" no sirve para eso.
+Los controllers son **singletons de proceso**. Pero una simulación es **estado
+mutable y aislado**: necesita *su* calendario y *su* store, y debe poder haber
+varias en paralelo (o reiniciarse) sin pisarse. Un `ElementController` singleton
+que guarde "el torneo actual" no sirve para eso.
 
-**Decisión (CONFIRMADA):** el `ElementController` administra **sesiones de
-simulación** identificadas por un `simulationId` (string). Cada operación de torneo
-recibe ese id. Internamente, el controller mantiene un `Map<simulationId,
-Simulacion>` (vía el `ElementHandler`). El front crea una sesión, guarda el id
-(solo un string), y todas sus llamadas (avanzar, leer tabla, etc.) lo referencian.
+**Decisión (CONFIRMADA):** el `ElementController` administra **sesiones**
+identificadas por un `simulationId` (string). Cada operación recibe ese id.
+Internamente, el controller mantiene un `Map<simulationId, Sesion>` (vía el
+`ElementHandler`). El front crea una sesión, guarda el id (solo un string), y todas
+sus llamadas lo referencian.
+
+### Qué es una sesión: un MUNDO, no un torneo (CORRECCIÓN de modelo)
+Replanteo tras aclaración del usuario. Una sesión **NO** es "un torneo con su
+contexto". Una sesión es un **MUNDO**: geografía (continentes/países/ciudades) +
+entidades (confederaciones/federaciones/instituciones) + **MUCHOS torneos** (ligas,
+copas) que se juegan en ese mundo a lo largo del tiempo. La idea del producto es
+simular cada liga/copa de ese mundo.
+
+Implicancias del modelo correcto:
+- `simulationId` identifica el **mundo**, no un torneo. Dentro del mundo cada torneo
+  tiene su propio `tournamentId`.
+- El `SimulationContext` (calendario + stores) es **compartido** por todo el mundo.
+- Las lecturas de torneo se piden por `(simulationId, tournamentId)`.
+- La sesión referencia **`Tournament`** (que ya conoce sus stages vía `stagesMap`),
+  nunca un `StageGroup` fijo. Castear a `StageGroup` fue un error de portar literal
+  `simpleLeague.ts`: ataría la sesión a "liga de un grupo" y rompe con copas
+  (`StagePlayoff`) y multi-stage.
+- Por eso el futuro usa DB: no se simulan 100 años ni millones de torneos en memoria
+  por sesión; el mundo (entidades, configs, resultados jugados) persiste y el runtime
+  de un torneo puntual se reconstruye cuando hace falta.
+
+**Dónde faltaba modelar el mundo:** hoy el `SimulationContext` tiene calendario +
+ranking store + tournament config store, pero **le falta la dimensión del mundo**
+(entidades/geografía). Esas entidades viven hoy aisladas en el `EntityController`
+singleton, desconectadas de las simulaciones. Conectar mundo↔entidades es un
+rediseño grande (toca cómo se guardan/serializan las entidades) y se hace en fase
+aparte (ver Paso intermedio).
+
+### Paso intermedio (lo que se implementa en esta tanda)
+Para no casar el diseño con "liga = mundo" ni bloquear la Fase A con el rediseño del
+mundo completo:
+1. La sesión referencia **`Tournament`** (no `StageGroup`); los DTOs de partidos/
+   tabla se arman recorriendo `tournament.stagesMap` de forma **genérica** (manejar
+   `StageGroup` y, a futuro, `StagePlayoff`).
+2. La sesión queda **preparada** para contener varios torneos y la dimensión del
+   mundo, pero la Fase A crea **solo** la liga simple (un torneo en el mundo).
+3. El rediseño profundo del `SimulationContext` (incluir entidades/geografía del
+   mundo y su relación con el `EntityController`) se planifica **aparte**.
 
 Implicancias:
 - El front trabaja con **un string + DTOs**, nunca con clases del dominio.
@@ -250,14 +287,31 @@ aparte). Solo tipos; sin implementación.
 **Paso 3 — `ElementHandler`.** Estado de sesiones: `Map<simulationId,
 { ctx: SimulationContext, tournament, stage, teamNames }>`. Métodos de bajo nivel.
 
-**Paso 4 — `ElementController` Fase A.** Implementar `createSimpleLeague`,
-`advance`/`advanceToNext`/`runAll`, `getState`/`getMatches`/`getStandings`/
-`getCalendarEvents`. Portar aquí la lógica que hoy vive en `simpleLeague.ts`
-(construcción del torneo, avance, armado de DTOs). Tests del controller.
+**Paso 4 — `ElementController` Fase A. [HECHO]** Implementado `createSimpleLeague`,
+`advance`/`runAll`/`dispose`, `getState`/`getFixture`/`getMatches`/`getMatch`/
+`getStandings`/`getCalendarEvents`/`getCurrentDate`. Portada la lógica de
+`simpleLeague.ts`. 21 tests del controller; suite completa de jl-sprt: 232 tests OK.
 
-**Paso 5 — Limpiar exports de `jl-sprt`.** Quitar de `index.ts` las clases
-internas de core que el front ya no necesita; exportar lo que el controller expone.
-Bump + publicar core (si cambió) y jl-sprt.
+> **Extensión fixture estructural (opción A).** Se agregó el concepto de FIXTURE:
+> los partidos que VAN a ocurrir (half-week + emparejamiento), conocidos desde la
+> creación del torneo, antes de que exista el Match concreto (que se materializa en
+> el draw durante el avance). Método abstracto `getFixture(): IFixtureSlot[]` en
+> `BaseStage` y `Stage`, implementado por `League` (round-robin), `StageGroup`
+> (concatena grupos), `SingleElimination` (bracket; rondas N>1 referencian al ganador
+> de series previas) y `StagePlayoff` (delega). Tipos del dominio en
+> `Tournament/Stage/Fixture.ts`; DTOs `IFixtureSlotDTO`/`FixtureParticipantRefDTO` y
+> query `getFixture(simulationId)` en el contrato. Un slot nace como `seed`
+> (posición) y se completa a `team` + `matchId` cuando el Match se materializa.
+
+**Paso 5 — Limpiar exports de `jl-sprt`. [HECHO]** Se quitaron del `index.ts` las
+clases abstractas internas de core (`A_Match`, `A_MatchPlay`, `A_Result`, `A_Serie`,
+`A_Team`, `A_TeamRoster`, `A_TeamTableItem`, `Person`) y sus tipos de implementación
+(`IMatchCreationInfo`, `IResultInfo`, `MatchContext`, `TMatchScore`, etc.), que el
+front ya no usa (consume DTOs). Se preservó la superficie de construcción/lectura
+(`AnyMatch`, `AnyTeam`, `AnySportProfile`, `AnyTeamTableItem`, `ITeamCreator`,
+`CATEGORIES`, `getCategoryList`, `arr2`, `TypeBaseStageOption`, `TypeCategory`,
+`TypeCategoryList`). Bump jl-sprt: **2.1.2 → 2.2.0**. (Core no cambió en esta tanda.)
+Pendiente: publicar (flujo acordado) e instalar en el front.
 
 **Paso 6 — Completar `EntityController`.** Métodos faltantes + validación +
 paginación.

@@ -101,6 +101,39 @@ export interface ICalendarEventDTO {
   matchId?: string;
 }
 
+/**
+ * Referencia a un participante de un slot del fixture, en cualquier etapa de
+ * resolución (espeja FixtureParticipantRef del dominio como dato plano).
+ *  - `seed`: posición del ranking inicial del stage (aún sin equipo).
+ *  - `team`: equipo ya resuelto (el draw ocurrió) — incluye el nombre legible.
+ *  - `winnerOf`/`loserOf`: ganador/perdedor de otro slot (playoff).
+ */
+export type FixtureParticipantRefDTO =
+  | { kind: 'seed'; pos: number }
+  | { kind: 'team'; teamId: string; teamName: string }
+  | { kind: 'winnerOf'; slotId: string }
+  | { kind: 'loserOf'; slotId: string };
+
+/**
+ * Un partido del fixture conocido estructuralmente desde la creación del torneo,
+ * exista o no todavía el partido concreto. Permite mostrar "cuándo va a haber un
+ * partido" antes de que se materialice (draw/schedule).
+ */
+export interface IFixtureSlotDTO {
+  slotId: string;
+  stageId: string;
+  /** Grupo (1-based) en ligas multi-grupo; ausente si no aplica. */
+  group?: number;
+  /** Jornada (liga) o ronda (playoff), 1-based. */
+  turn: number;
+  /** Half-week aproximada en que se jugará. */
+  halfWeek: number;
+  home: FixtureParticipantRefDTO;
+  away: FixtureParticipantRefDTO;
+  /** Si el partido concreto ya existe, su id (para abrir el detalle vía getMatch). */
+  matchId?: string;
+}
+
 /** Estado completo de una simulación en un instante dado. */
 export interface ISimulationStateDTO {
   standings: IStandingRowDTO[];
@@ -183,7 +216,14 @@ export interface IElementController {
   /** Estado completo de la simulación. Lanza si el id no existe. */
   getState(simulationId: string): ISimulationStateDTO;
 
-  /** Partidos de la simulación. */
+  /**
+   * Fixture estructural: los partidos que van a ocurrir (half-week + emparejamiento),
+   * conocidos desde la creación del torneo, con o sin el partido concreto ya
+   * materializado. Útil para mostrar el calendario completo desde el inicio.
+   */
+  getFixture(simulationId: string): IFixtureSlotDTO[];
+
+  /** Partidos de la simulación (los partidos concretos ya materializados). */
   getMatches(simulationId: string): IMatchDTO[];
 
   /** Un partido por id, o null si no existe. */
