@@ -272,14 +272,31 @@ no debe tener `execute()`; su avance lo maneja el calendario con `start/advance/
 y proveer un mecanismo correcto de avance acelerado. Esa mejora de `jl-calendar` se
 planifica aparte; el LOD se retoma después, sobre ese mecanismo.
 
-**Paso 6 — Purga del calendario (`jl-calendar`).** Limpieza de eventos resueltos para
-acotar el calendario perpetuo. (Puede combinarse con la mejora de `execute()` del Paso 5
-en el mismo release de `jl-calendar`.) Bump + publicar `jl-calendar`; instalar en jl-sprt.
+**Paso 6 — Purga del calendario. [REPLANTEADO / POSPUESTO]** Se descartó purgar el
+calendario tal como estaba: purgar los eventos pasados rompería la navegación de la
+HISTORIA (no se podría "volver atrás"). La historia debe vivir en otra capa, no en la
+cola de eventos del motor. **Decisión:** la purga se hará con "historia como `eventDTO`"
+(guardar cada evento procesado como dato plano antes de descartarlo del calendario).
+Queda como trabajo FUTURO, no bloquea. El prerequisito que sí se hizo: el refactor
+`execute()` → `advance()` en `jl-calendar` (un durative ya no tiene `execute()`; el
+núcleo de todo evento es `advance()`).
 
-**Paso 7 — Limpieza `JEventMatch`.** Quitar `console.log` de debug y `formatScore`
-`// BORRAR`.
+**Paso 7 — Limpieza de logs + formateo de score. [HECHO]**
+- Se eliminó el `formatScore //BORRAR` duplicado de `JEventMatch`.
+- `A_Match.describeScore()` (jl-sprt-core): marcador legible por deporte (2 líneas
+  home/away) con agregado de serie y desempate; implementado en football/volleyball/
+  american-football (jl-sprt-match). Reemplaza el formateo ad-hoc.
+- Logs FUERA del dominio: los eventos dejan de imprimir en `advance()` y exponen
+  `describe()`. `jl-calendar` gana un hook de observación (`setEventObserver`) +
+  `JEvent.describe()` abstracto. Un `attachExampleLogger(cal)` en los examples imprime
+  fecha + `describe()`; la app/server/tests quedan silenciosos.
+- `scoreFormat.ts` (jl-sprt-match) SE MANTIENE: alimenta los DTOs del `ElementController`
+  (propósito distinto al log).
+- Releases involucrados: `jl-calendar@2.3.0`, `jl-sprt-core@1.2.0`, `jl-sprt-match@1.3.0`.
 
-**Paso 8 — Bump + publicar.** `jl-sprt@3.0.0`. Rediseñar/adaptar el front. Verificar la app.
+**Paso 8 — Bump + publicar + migrar el front. [EN CURSO]** Migrar `jl-sprt-app` a los
+DTOs del `ElementController` (ver `jl-sprt-app/docs/APP_MIGRATION.md`). Bump jl-sprt +
+publicar. Verificar la app.
 
 ---
 
