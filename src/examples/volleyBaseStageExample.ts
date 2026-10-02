@@ -6,6 +6,7 @@ import { mostrarFecha } from "../mostrarFechaBorrar";
 import { ILeagueConfig, ISingleEliminationConfig, verifyBaseStageConfig } from "../JSportModule";
 import { VolleyballProfile } from "jl-sprt-match";
 import { AdvanceAll } from '../Tournament/Advance';
+import { attachExampleLogger } from "./exampleLogger";
 
 /**
  * Ejemplo de BaseStage usando VolleyballProfile.
@@ -13,6 +14,7 @@ import { AdvanceAll } from '../Tournament/Advance';
 export function volleyBaseStageExample() {
 
   const cal = JCalendar.createFromYear(1986);
+  attachExampleLogger(cal);
 
   const selectionL = getExampleTeams(10, "volleyball", 'VL');
   const selectionC = getExampleTeams(132, "volleyball", 'VC').slice(100, 133);

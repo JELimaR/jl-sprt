@@ -6,10 +6,12 @@ import { mostrarFecha } from "../mostrarFechaBorrar";
 import { ILeagueConfig, ISingleEliminationConfig, verifyBaseStageConfig } from "../JSportModule";
 import { FootballProfile } from "jl-sprt-match";
 import { AdvanceAll } from '../Tournament/Advance';
+import { attachExampleLogger } from "./exampleLogger";
 
 export function baseStageExample() {
 
   const cal = JCalendar.createFromYear(1986);
+  attachExampleLogger(cal);
 
   const selectionL = getExampleTeams(10, "football", 'TL');
   const selectionC = getExampleTeams(132, "football", 'TC').slice(100, 133);

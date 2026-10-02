@@ -23,12 +23,15 @@ export class Event_StageEnd extends JInstantEvent {
   get kind(): string { return 'stage-end'; }
   get label(): string { return `Cierre de stage ${this._stage.info.id}`; }
 
-  advance() {
-    console.log(`ejecuting finishing stage: ${this._stage.info.id} (${this._stage.info.season})`);
+  /** Descripción legible para observación (logs de examples). No imprime. */
+  describe(): string {
+    return `cierre de stage ${this._stage.info.id} (${this._stage.info.season})`;
+  }
 
+  advance() {
     if (!this._stage.isFinished)
       throw new Error(`la stage ${this._stage.info.id} no esta terminada (${this._stage.info.season})`)
- 
+
     let ranking: Ranking = this._stage.getRelativeRank();
     this._store.set(ranking.context, ranking);
   }

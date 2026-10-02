@@ -30,8 +30,12 @@ export class Event_ScheduleOfTurnMatches extends JInstantEvent {
 	get kind(): string { return 'schedule'; }
 	get label(): string { return `Programación jornada ${this._turn.num}`; }
 
+	/** Descripción legible para observación (logs de examples). No imprime. */
+	describe(): string {
+		return `programación jornada ${this._turn.num}`;
+	}
+
 	advance() {
-		console.log(`ejecuting match scheduling for matchHWeek number: ${this._turn.num}`);
 		// el evento debe crearse en el match
 		this._turn.matches.forEach((match: AnyMatch) => {
 			const dt = JDateTime.createFromHalfWeekOfYearAndYear(

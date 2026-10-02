@@ -23,9 +23,12 @@ export class Event_StageStart extends JInstantEvent {
   get kind(): string { return 'stage-start'; }
   get label(): string { return `Inicio de stage ${this._stage.info.id}`; }
 
+  /** Descripción legible para observación (logs de examples). No imprime. */
+  describe(): string {
+    return `inicio y sorteo de stage ${this._stage.info.id} (${this._stage.info.season})`;
+  }
+
   advance() {
-    console.log(`ejecuting starting and teams draw from stage: ${this._stage.info.id}  (${this._stage.info.season})`);
-    
     const rankTable = this.getParticipants();
     rankTable.forEach((iri: IRankItem) => {
       iri.team.addStage(this._stage)

@@ -12,6 +12,7 @@ import { teamsAssign } from "../Tournament/teamsAssign";
 import { SimulationContext } from "../Tournament/SimulationContext";
 import { Tournament } from "../Tournament/Tournament";
 import { AdvanceAll } from '../Tournament/Advance';
+import { attachExampleLogger } from "./exampleLogger";
 import { getFederationCreators, getInstitutionCreators } from "./ExampleData";
 
 /**
@@ -57,6 +58,7 @@ export function fede_inst_Example() {
   for (let Y = 1154; Y <= 1166; Y++) {
     console.log('-------------------------------', Y, '------------------------------------')
     cal = JCalendar.createFromYear(Y);
+    attachExampleLogger(cal);
     const ctx = new SimulationContext(cal);
     mostrarFecha(cal.now)
     // actualizo la cantidad institutions

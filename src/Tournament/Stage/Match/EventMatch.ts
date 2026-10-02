@@ -1,7 +1,5 @@
 import { IJEventInfo, JDurativeEvent } from "jl-calendar";
-import { AnyMatch, TMatchScore } from "jl-sprt-core";
-import { IAmericanFootballScore, IFootballScore, IVolleyballScore } from "jl-sprt-match";
-import { mostrarFecha } from "../../../mostrarFechaBorrar";
+import { AnyMatch } from "jl-sprt-core";
 
 export interface IJEventMatchInfo extends IJEventInfo {
   match: AnyMatch;
@@ -72,13 +70,6 @@ export class JEventMatch extends JDurativeEvent {
       this._match.advance();
       if (this._match.isFinished) {
         this.finish();
-        console.log(`playing match ${this._match.id}`);
-        mostrarFecha(this.dateTime)
-        console.log(`\tresult:`)
-        const res = this._match.result;
-        if (!res) throw new Error(`no se obtuvo un res`)
-        console.log(`\t  ${this._match.homeTeam.id.padEnd(10)} : ${this.formatScore(res._teamOneScore.score)}`);
-        console.log(`\t  ${this._match.awayTeam.id.padEnd(10)} : ${this.formatScore(res._teamTwoScore.score)}`);
       }
     }
   }
@@ -93,26 +84,13 @@ export class JEventMatch extends JDurativeEvent {
     }
   }
 
-  // BORRAR
-  private formatScore(score: TMatchScore): string {
-
-    if (score.type === 'football') {
-      const s = score as IFootballScore;
-      return `${s.goals.toString().padStart(2, ' ')}${s.penalties > 0 ? ` - ${s.penalties}` : ''}`;
-    }
-
-    if (score.type === 'volleyball') {
-      const s = score as IVolleyballScore;
-      const sets = s.setsWon!;
-      const points = s.setPoints!.join(' | ');
-      return `${sets} Sets (${points})`;
-    }
-
-    if (score.type === 'american-football') {
-      const s = score as IAmericanFootballScore;
-      return s.totalPoints.toString();
-    }
-    throw new Error(`score type ${score} no implementado`)
+  /**
+   * Descripción legible del evento, para OBSERVACIÓN (logs de examples vía el
+   * observer del calendario). NO imprime: devuelve el texto. El marcador lo provee el
+   * propio match (`describeScore()`, bloque de 2 líneas home/away).
+   */
+  describe(): string {
+    return `partido ${this._match.id}\n${this._match.describeScore()}`;
   }
 
   /**
@@ -124,14 +102,8 @@ export class JEventMatch extends JDurativeEvent {
     if (this._match.state !== 'playing' && !this._match.isFinished) {
       this._match.start();
     }
-    console.log(`playing match ${this._match.id}`);
     while (this._match.state !== 'finished') {
       this._match.advance();
     }
-    console.log(`\tresult:`)
-    const res = this._match.result;
-    if (!res) throw new Error(`no se obtuvo un res`)
-    console.log(`\t  ${this._match.homeTeam.id.padEnd(10)} : ${this.formatScore(res._teamOneScore.score)}`);
-    console.log(`\t  ${this._match.awayTeam.id.padEnd(10)} : ${this.formatScore(res._teamTwoScore.score)}`);
   }
 }

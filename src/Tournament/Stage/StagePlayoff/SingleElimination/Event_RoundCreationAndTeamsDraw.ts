@@ -1,7 +1,6 @@
 import { IJEventInfo, JInstantEvent } from "jl-calendar";
 import { AnyTeam } from "jl-sprt-core";
 import { SingleElimination } from "./SingleElimination"
-import { mostrarFecha } from "../../../../mostrarFechaBorrar";
 
 export interface IEvent_RoundCreationAndTeamsDrawInfo extends IJEventInfo {
   playoff: SingleElimination;
@@ -24,11 +23,12 @@ export class Event_RoundCreationAndTeamsDraw extends JInstantEvent {
   get kind(): string { return 'draw'; }
   get label(): string { return `Sorteo/creación de ronda ${this._playoff.rounds.length + 1} (${this._playoff.info.id})`; }
 
-  advance(): void {
-    const thisRoundNumber = this._playoff.rounds.length + 1;
-    console.log(`ejecuting creation of Round number: ${thisRoundNumber}, from: ${this._playoff.info.id}`);
-    mostrarFecha(this.dateTime)
+  /** Descripción legible para observación (logs de examples). No imprime. */
+  describe(): string {
+    return `sorteo/creación de ronda ${this._playoff.rounds.length + 1} (${this._playoff.info.id})`;
+  }
 
+  advance(): void {
     // ---------------------------------------------------------------------------
     // PROPUESTA (NO IMPLEMENTADA): guarda de reprogramación del sorteo.
     //

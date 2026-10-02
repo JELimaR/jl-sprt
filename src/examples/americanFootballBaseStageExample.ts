@@ -6,6 +6,7 @@ import { mostrarFecha } from "../mostrarFechaBorrar";
 import { ILeagueConfig, ISingleEliminationConfig, verifyBaseStageConfig } from "../JSportModule";
 import { AmericanFootballProfile } from "jl-sprt-match";
 import { AdvanceAll } from '../Tournament/Advance';
+import { attachExampleLogger } from "./exampleLogger";
 
 /**
  * Ejemplo de BaseStage usando AmericanFootballProfile.
@@ -14,6 +15,7 @@ import { AdvanceAll } from '../Tournament/Advance';
 export function americanFootballBaseStageExample() {
 
   const cal = JCalendar.createFromYear(1986);
+  attachExampleLogger(cal);
 
   const selectionL = getExampleTeams(10, "american-football", 'AFL');
   const selectionC = getExampleTeams(132, "american-football", 'AFC').slice(100, 133);
