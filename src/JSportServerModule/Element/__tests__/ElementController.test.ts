@@ -325,33 +325,90 @@ describe("ElementController - queries puntuales y errores", () => {
     expect(() => api.getState(simulationId)).toThrow();
   });
 
-  // Modelo SportWorld: las simulaciones conviven en el MISMO mundo (un único
-  // calendario). Cada simulación ve SOLO su torneo (aislamiento de datos por
-  // simulationId), pero el tiempo es compartido: avanzar el mundo progresa todos los
-  // torneos. No hay calendarios paralelos (eso era el andamiaje de la Fase A).
-  it("cada simulación ve solo su torneo (aislamiento de datos por simulationId)", () => {
+  // UN MUNDO = UNA SIMULACIÓN: crear una liga simple REINICIA el mundo. No coexisten
+  // dos simulaciones; la nueva reemplaza a la anterior y la previa deja de existir.
+  it("crear una nueva liga reinicia el mundo: la simulación anterior deja de existir", () => {
     const api = elements();
     const a = api.createSimpleLeague(leagueInput(4)).simulationId;
-    const b = api.createSimpleLeague(leagueInput(6)).simulationId;
-
-    // Fixtures independientes por torneo, disponibles desde el inicio.
     expect(api.getFixture(a).length).toBe(12);
-    expect(api.getFixture(b).length).toBe(30);
 
-    // Los partidos de cada simulación pertenecen a su propio torneo (ids distintos).
-    const idsA = new Set(api.getFixture(a).map((s) => s.slotId));
-    const idsB = api.getFixture(b).map((s) => s.slotId);
-    expect(idsB.some((id) => idsA.has(id))).toBe(false);
+    // Crear otra liga descarta el mundo anterior: `a` ya no existe.
+    const b = api.createSimpleLeague(leagueInput(6)).simulationId;
+    expect(a).not.toBe(b);
+    expect(api.getFixture(b).length).toBe(30);
+    expect(() => api.getState(a)).toThrow();
+  });
+});
+
+describe("ElementController - vistas de equipo (team)", () => {
+  it("getTeam devuelve info del equipo + su institución, o null si no existe", () => {
+    const api = elements();
+    const { simulationId } = api.createSimpleLeague(leagueInput(4));
+    advanceUntilMatches(api, simulationId);
+    const anyMatch = api.getMatches(simulationId)[0];
+
+    const team = api.getTeam(simulationId, anyMatch.homeTeamId);
+    expect(team).not.toBeNull();
+    expect(team!.teamId).toBe(anyMatch.homeTeamId);
+    expect(team!.name).toBe(anyMatch.homeName);
+    expect(team!.category).toBe("S");
+    expect(team!.sport).toBe("football");
+    expect(typeof team!.institutionId).toBe("string");
+    expect(team!.institutionName.length).toBeGreaterThan(0);
+
+    expect(api.getTeam(simulationId, "no-existe")).toBeNull();
   });
 
-  it("al correr el mundo, los torneos que comparten calendario progresan juntos", () => {
+  it("getTeam con simulación inexistente devuelve null (query tolerante)", () => {
     const api = elements();
-    const a = api.createSimpleLeague(leagueInput(4)).simulationId;
-    const b = api.createSimpleLeague(leagueInput(4)).simulationId;
+    expect(api.getTeam("sim-fantasma", "x")).toBeNull();
+  });
 
-    // runAll avanza el calendario del mundo (compartido) hasta vaciarlo: ambos terminan.
-    api.runAll(a);
-    expect(api.getState(a).finished).toBe(true);
-    expect(api.getState(b).finished).toBe(true);
+  it("getTeamTournaments devuelve el torneo del equipo con su posición y estado", () => {
+    const api = elements();
+    const { simulationId } = api.createSimpleLeague(leagueInput(6));
+    advanceUntilMatches(api, simulationId);
+    const teamId = api.getMatches(simulationId)[0].homeTeamId;
+
+    const tournaments = api.getTeamTournaments(simulationId, teamId);
+    expect(tournaments.length).toBe(1);
+    expect(tournaments[0].finished).toBe(false);
+    expect(tournaments[0].position).toBeGreaterThanOrEqual(1);
+    expect(tournaments[0].position).toBeLessThanOrEqual(6);
+
+    // Tras terminar, el torneo figura como finished.
+    api.runAll(simulationId);
+    expect(api.getTeamTournaments(simulationId, teamId)[0].finished).toBe(true);
+  });
+
+  it("getTeamMatches: TODOS los partidos del equipo, ordenados por instante", () => {
+    const api = elements();
+    const { simulationId } = api.createSimpleLeague(leagueInput(4));
+    advanceUntilMatches(api, simulationId);
+    const teamId = api.getMatches(simulationId)[0].homeTeamId;
+
+    const teamMatches = api.getTeamMatches(simulationId, teamId);
+    // Liga de 4 h&a: cada equipo juega 6 partidos (2 por rival).
+    expect(teamMatches.length).toBe(6);
+    // Todos involucran al equipo.
+    teamMatches.forEach((m) => {
+      expect(m.homeTeamId === teamId || m.awayTeamId === teamId).toBe(true);
+    });
+    // Ordenados por instante (no decreciente).
+    for (let i = 1; i < teamMatches.length; i++) {
+      expect(teamMatches[i].date.absolute).toBeGreaterThanOrEqual(teamMatches[i - 1].date.absolute);
+    }
+  });
+
+  it("getTeamMatches filtrado por torneo coincide con el total (un solo torneo en Fase A)", () => {
+    const api = elements();
+    const { simulationId } = api.createSimpleLeague(leagueInput(4));
+    advanceUntilMatches(api, simulationId);
+    const teamId = api.getMatches(simulationId)[0].homeTeamId;
+
+    const all = api.getTeamMatches(simulationId, teamId);
+    const tournamentId = api.getTeamTournaments(simulationId, teamId)[0].tournamentId;
+    const byTournament = api.getTeamMatches(simulationId, teamId, tournamentId);
+    expect(byTournament.length).toBe(all.length);
   });
 });

@@ -91,4 +91,9 @@ export class ElementHandler implements IElementHandler {
   remove(simulationId: string): boolean {
     return this._sessions.delete(simulationId);
   }
+
+  /** Elimina TODAS las sesiones. Usado al reiniciar el mundo (un mundo = una simulación). */
+  clear(): void {
+    this._sessions.clear();
+  }
 }

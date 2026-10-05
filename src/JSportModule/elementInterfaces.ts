@@ -166,6 +166,32 @@ export interface IAdvanceResultDTO {
   pendingEvents: ICalendarEventDTO[];
 }
 
+/**
+ * Vista plana de un equipo (team) de la simulación. Un team pertenece a una
+ * institución por categoría; expone los ids/nombres para enlazar a sus páginas.
+ */
+export interface ITeamDTO {
+  teamId: string;
+  name: string;
+  category: TypeCategory;
+  institutionId: string;
+  institutionName: string;
+  sport: TSport;
+  // futuro: federationId?: string;  // selecciones (cuando el modelo lo soporte)
+}
+
+/**
+ * Torneo en el que participa un equipo, visto desde el equipo. `position` es la
+ * posición actual del equipo en la tabla del torneo (si el stage tiene tabla).
+ */
+export interface ITeamTournamentDTO {
+  tournamentId: string;
+  name: string;
+  season: number;
+  position?: number;
+  finished: boolean;
+}
+
 // ╔══════════════════════════════════════════════════════════════════════════╗
 // ║ CASOS DE USO / ESCENARIOS DE PRUEBA — NO es la API real                    ║
 // ║                                                                            ║
@@ -286,6 +312,21 @@ export interface IElementController {
 
   /** Fecha/instante actual de la simulación. */
   getCurrentDate(simulationId: string): IDateTimeDTO;
+
+  /** Un equipo por id (info general + institución), o null si no existe. */
+  getTeam(simulationId: string, teamId: string): ITeamDTO | null;
+
+  /**
+   * Torneos en los que participa el equipo (desde su punto de vista), con su posición
+   * actual en la tabla si aplica. Fase A: un único torneo (la liga simple).
+   */
+  getTeamTournaments(simulationId: string, teamId: string): ITeamTournamentDTO[];
+
+  /**
+   * Partidos del equipo. Sin `tournamentId`: TODOS los del equipo en la simulación,
+   * ordenados por instante (estilo agenda). Con `tournamentId`: solo los de ese torneo.
+   */
+  getTeamMatches(simulationId: string, teamId: string, tournamentId?: string): IMatchDTO[];
 
   // ===========================================================================
   // CASOS DE USO / ESCENARIOS DE PRUEBA — NO es la API real (ver bloque arriba)

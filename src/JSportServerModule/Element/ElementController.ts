@@ -11,6 +11,8 @@ import {
   MatchStateDTO,
   IFixtureSlotDTO,
   FixtureParticipantRefDTO,
+  ITeamDTO,
+  ITeamTournamentDTO,
 } from "../../JSportModule";
 import type { FixtureParticipantRef, IFixtureSlot } from "../../Tournament/Stage/Fixture";
 import { ElementHandler, ISimulationSession } from "./ElementHandler";
@@ -25,7 +27,7 @@ import { Ranking } from "../../JSportModule/Ranking/Ranking";
 import { Institution } from "../../JSportModule/data/Entities/Institution";
 import { Town } from "../../JSportModule/data/Entities/GeogEntity";
 import { teamsAssign } from "../../Tournament/teamsAssign";
-import { JCalendar, JDate, JDateTime, DateToString } from "jl-calendar";
+import { JDate, JDateTime, DateToString } from "jl-calendar";
 import type { JEvent } from "jl-calendar";
 import { JEventMatch } from "../../Tournament/Stage/Match/EventMatch";
 import {
@@ -98,21 +100,24 @@ export class ElementController implements IElementController {
     if (!input.teams || input.teams.length < 2) {
       throw new Error(`createSimpleLeague: se requieren al menos 2 equipos (recibidos: ${input.teams?.length ?? 0}). En ElementController.createSimpleLeague`);
     }
-    const world = this.world;
-    const season = input.season ?? world.currentSeason;
     const category = input.category ?? 'S';
     const n = input.teams.length;
     const profile = ProfilesFactory.getProfile(input.sport);
 
-    // Cada simulación tiene su PROPIO calendario (aislamiento por simulación): sus
-    // eventos no se mezclan con los de otras simulaciones del mismo proceso. Los
-    // rankings del mundo SÍ se comparten (las entidades viven en el mundo). El
-    // calendario propio arranca en el día 1 de la temporada de la simulación.
-    //
-    // NOTA (escenario de prueba): la "liga simple" es un caso de uso aislado; por eso
-    // calendario propio. Cuando el SportWorld maneje el calendario único real, la
-    // creación de torneos del mundo irá por otro flujo (no por createSimpleLeague).
-    const ctx = new SimulationContext(JCalendar.createFromYear(season), world.rankings);
+    // UN MUNDO = UNA SIMULACIÓN. Crear una liga simple REINICIA el mundo del proceso:
+    // se descarta por completo el mundo anterior (entidades + calendario + rankings) y
+    // se limpian las sesiones previas. Así nunca coexisten dos simulaciones (p. ej.
+    // entrar al test, salir y volver a entrar no acumula mundos; tampoco el doble
+    // montaje de React StrictMode deja una simulación extra con sus eventos).
+    const world = input.season !== undefined
+      ? SportFactoryServer.instance.resetWorld(input.season)
+      : SportFactoryServer.instance.resetWorld();
+    this.handler.clear();
+    const season = world.currentSeason;
+
+    // El SimulationContext es una VISTA del mundo: comparte su calendario único y su
+    // store de rankings. El torneo agenda sus eventos en el calendario del mundo.
+    const ctx = new SimulationContext(world.calendar, world.rankings);
 
     // 1. Crear las entidades (instituciones) EN EL MUNDO y obtener sus teams. El
     //    nombre legible queda en la Institution; el team lo expone vía `name`.
@@ -186,25 +191,11 @@ export class ElementController implements IElementController {
     const s = this.handler.require(simulationId);
     const cal = s.ctx.calendar;
 
-    // Solo se salta tiempo muerto si no hay actividad en curso. Si hay durativos
-    // activos, el reloj ya está en la zona de eventos: no hay nada que saltar.
-    if (cal.getActiveEvents().length === 0) {
-      const NE = cal.getNextEvents();
-      if (NE) {
-        // Dejar el reloj en el intervalo INMEDIATAMENTE ANTERIOR al próximo evento,
-        // sin ejecutarlo. El siguiente `advance` (un tick) lo ejecuta. El salto se
-        // hace con `advanceIntervals` del calendario, que internamente pasa por
-        // `tick()` en cada paso (no mueve el reloj por fuera).
-        const intervals = JDateTime.difBetween(NE.dt, cal.now) - 1;
-        if (intervals > 0) {
-          const jump = cal.advanceIntervals(intervals);
-          if (jump.pending.length > 0) {
-            return this.buildAdvanceResult(s, jump.pending);
-          }
-        }
-      }
-    }
-
+    // Salto INERTE hasta el intervalo anterior al próximo evento, SIN ejecutar nada en
+    // el camino. `skipToNextEvent` solo mueve el reloj (no simula intervalos), así que
+    // no arranca/juega los durativos que haya por delante. El siguiente `advance` (un
+    // tick) ejecuta el evento. Si hay durativos activos o no hay futuros, no salta.
+    cal.skipToNextEvent();
     return this.buildAdvanceResult(s, []);
   }
 
@@ -222,15 +213,11 @@ export class ElementController implements IElementController {
 
     // ¿Hay actividad para ejecutar en el instante actual?
     //  - durativos en curso, o
-    //  - un evento agendado exactamente en `now`, o
-    //  - el próximo evento está en el intervalo INMEDIATAMENTE siguiente (gap == 1):
-    //    estamos "a las puertas", el tick siguiente lo ejecuta.
+    //  - un evento agendado exactamente en `now` (el reloj ya está en su fecha).
     const hasActive = cal.getActiveEvents().length > 0;
     const hasEventNow = cal.getCurrentEventList().length > 0;
-    const next = cal.getNextEvents();
-    const gap = next ? JDateTime.difBetween(next.dt, cal.now) : Infinity;
 
-    if (hasActive || hasEventNow || gap <= 1) {
+    if (hasActive || hasEventNow) {
       // Ejecutar el instante actual / avanzar el durativo: un único tick.
       let pending: JEvent[] = [];
       if (cal.hasEventsToProcess()) {
@@ -240,14 +227,10 @@ export class ElementController implements IElementController {
       return this.buildAdvanceResult(s, pending);
     }
 
-    // Hay tiempo muerto por delante: saltar hasta el intervalo anterior al próximo
-    // evento, sin ejecutarlo (lo ejecutará el próximo `step`, que entrará por gap<=1).
-    if (next) {
-      const jump = cal.advanceIntervals(gap - 1);
-      return this.buildAdvanceResult(s, jump.pending);
-    }
-
-    // No hay nada por delante.
+    // No hay nada en `now`: SALTO INERTE hasta la fecha exacta del próximo evento, sin
+    // ejecutarlo (lo ejecutará el próximo `step`, que entrará por hasEventNow). Solo
+    // mueve el reloj; no simula el camino ni juega durativos.
+    cal.skipToNextEvent();
     return this.buildAdvanceResult(s, []);
   }
 
@@ -315,6 +298,62 @@ export class ElementController implements IElementController {
     return this.toDateTimeDTO(s.ctx.calendar.now);
   }
 
+  getTeam(simulationId: string, teamId: string): ITeamDTO | null {
+    const s = this.handler.find(simulationId);
+    if (!s) return null;
+    const team = this.findTeam(s, teamId);
+    if (!team) return null;
+    return {
+      teamId: team.id,
+      name: team.name,
+      category: team.category,
+      institutionId: team.entity.id,
+      institutionName: team.entity.name,
+      sport: s.sport,
+    };
+  }
+
+  getTeamTournaments(simulationId: string, teamId: string): ITeamTournamentDTO[] {
+    const s = this.handler.require(simulationId);
+    const out: ITeamTournamentDTO[] = [];
+    s.tournaments.forEach((t) => {
+      // El team participa si aparece en algún partido del torneo.
+      const plays = this.allMatchesWithTurn(t).some(
+        ({ match }) => match.homeTeam.id === teamId || match.awayTeam.id === teamId,
+      );
+      if (!plays) return;
+      const finished = this.isTournamentFinished(t);
+      const position = this.teamPositionInTournament(t, teamId);
+      out.push({
+        tournamentId: t.config.idConfig,
+        name: t.config.name,
+        season: t.info.season,
+        position,
+        finished,
+      });
+    });
+    return out;
+  }
+
+  getTeamMatches(simulationId: string, teamId: string, tournamentId?: string): IMatchDTO[] {
+    const s = this.handler.require(simulationId);
+    const tournaments = tournamentId
+      ? [...s.tournaments.values()].filter((t) => t.config.idConfig === tournamentId)
+      : [...s.tournaments.values()];
+
+    const matches: IMatchDTO[] = [];
+    tournaments.forEach((t) => {
+      this.allMatchesWithTurn(t).forEach((mt) => {
+        if (mt.match.homeTeam.id === teamId || mt.match.awayTeam.id === teamId) {
+          matches.push(this.toMatchDTO(mt));
+        }
+      });
+    });
+    // Estilo agenda: ordenado por instante.
+    matches.sort((a, b) => a.date.absolute - b.date.absolute);
+    return matches;
+  }
+
   // ==========================================================================
   // Helpers internos — selección de torneo
   // ==========================================================================
@@ -330,6 +369,44 @@ export class ElementController implements IElementController {
       throw new Error(`La simulación "${s.id}" no tiene torneos. En ElementController.requireTournament`);
     }
     return first;
+  }
+
+  /** Busca un team por id en toda la sesión (derivado de los partidos materializados). */
+  private findTeam(s: ISimulationSession, teamId: string): AnyTeam | undefined {
+    for (const t of s.tournaments.values()) {
+      const found = this.teamsById(t).get(teamId);
+      if (found) return found;
+    }
+    return undefined;
+  }
+
+  /**
+   * Un torneo está TERMINADO si tiene al menos un partido materializado y todos están
+   * finalizados. Robusto frente a la vacuidad de `stage.isFinished` (que, al basarse en
+   * `matches.every(...)`, devuelve true para un stage aún sin partidos: antes del draw
+   * NO es "terminado", es "no empezado").
+   */
+  private isTournamentFinished(t: Tournament): boolean {
+    const matches = this.allMatchesWithTurn(t);
+    if (matches.length === 0) return false;
+    return matches.every(({ match }) => match.state === 'finished');
+  }
+
+  /**
+   * Posición (1-based) del equipo en la tabla del torneo, o undefined si el stage no
+   * tiene tabla o el equipo no figura. Recorre los stages y devuelve la primera
+   * coincidencia por teamId.
+   */
+  private teamPositionInTournament(t: Tournament, teamId: string): number | undefined {
+    for (const stage of t.stagesMap.values()) {
+      for (const tti of stage.getTable('partial')) {
+        if (tti.team.id === teamId) {
+          const row = tti.getInterface() as unknown as { pos: number };
+          return row.pos;
+        }
+      }
+    }
+    return undefined;
   }
 
   // ==========================================================================
@@ -560,7 +637,7 @@ export class ElementController implements IElementController {
     const next = cal.getNextEvents();
     const hasActiveMatches = cal.getActiveEvents().length > 0;
     const hasNextEvent = !!next && next.events.length > 0;
-    const finished = [...t.stagesMap.values()].every((stage) => stage.isFinished);
+    const finished = this.isTournamentFinished(t);
     return {
       standings: this.buildStandings(s, 'partial'),
       matches: this.buildMatches(s),
