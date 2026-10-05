@@ -83,9 +83,16 @@ export class ElementController implements IElementController {
     return SportFactoryServer.instance.world;
   }
 
-  // ==========================================================================
-  // Comandos
-  // ==========================================================================
+  // ╔════════════════════════════════════════════════════════════════════════╗
+  // ║ CASOS DE USO / ESCENARIOS DE PRUEBA — NO es la API real                  ║
+  // ║                                                                          ║
+  // ║ `createSimpleLeague` (y su helper `buildSimpleLeagueData` más abajo) NO  ║
+  // ║ forman parte de la API "real" de elements: montan un escenario concreto  ║
+  // ║ (liga simple) para poder construir/probar los componentes de la app. La  ║
+  // ║ creación real de torneos del mundo irá por otro flujo (SportWorld /      ║
+  // ║ creadores de torneos). Mantener claramente separado de los comandos y    ║
+  // ║ queries genéricos (advance/runAll/getState/...).                         ║
+  // ╚════════════════════════════════════════════════════════════════════════╝
 
   createSimpleLeague(input: ICreateSimpleLeagueInput): ISimulationRef {
     if (!input.teams || input.teams.length < 2) {
@@ -150,25 +157,58 @@ export class ElementController implements IElementController {
     return { simulationId: uniq };
   }
 
+  // ==========================================================================
+  // API REAL — Comandos (genéricos, independientes del escenario)
+  // ==========================================================================
+
   advance(simulationId: string): IAdvanceResultDTO {
     const s = this.handler.require(simulationId);
     const cal = s.ctx.calendar;
     let pending: JEvent[] = [];
 
+    // Avance fino: exactamente un tick. Procesa el instante actual (ejecuta
+    // instantáneos, arranca/avanza durativos) y mueve el reloj un intervalo, salvo
+    // que un interactivo lo frene. No salta tiempo muerto.
     if (cal.hasEventsToProcess()) {
-      // Si no hay durativos activos, saltar el tiempo muerto hasta el próximo evento.
-      if (cal.getActiveEvents().length === 0) {
-        const NE = cal.getNextEvents();
-        if (NE) {
-          const intervals = JDateTime.difBetween(NE.dt, cal.now) - 1;
-          if (intervals > 0) cal.advanceIntervals(intervals);
-        }
-      }
       const res = cal.tick();
       if (!res.advanced) pending = res.pending;
     }
 
     return this.buildAdvanceResult(s, pending);
+  }
+
+  advanceToNextEvent(simulationId: string): IAdvanceResultDTO {
+    const s = this.handler.require(simulationId);
+    const cal = s.ctx.calendar;
+
+    // Solo se salta tiempo muerto si no hay actividad en curso. Si hay durativos
+    // activos, el reloj ya está en la zona de eventos: no hay nada que saltar.
+    if (cal.getActiveEvents().length === 0) {
+      const NE = cal.getNextEvents();
+      if (NE) {
+        // Dejar el reloj en el intervalo INMEDIATAMENTE ANTERIOR al próximo evento,
+        // sin ejecutarlo. El siguiente `advance` (un tick) lo ejecuta. El salto se
+        // hace con `advanceIntervals` del calendario, que internamente pasa por
+        // `tick()` en cada paso (no mueve el reloj por fuera).
+        const intervals = JDateTime.difBetween(NE.dt, cal.now) - 1;
+        if (intervals > 0) {
+          const jump = cal.advanceIntervals(intervals);
+          if (jump.pending.length > 0) {
+            return this.buildAdvanceResult(s, jump.pending);
+          }
+        }
+      }
+    }
+
+    return this.buildAdvanceResult(s, []);
+  }
+
+  advanceIntervals(simulationId: string, n: number): IAdvanceResultDTO {
+    const s = this.handler.require(simulationId);
+    const cal = s.ctx.calendar;
+    // Hasta n ticks; `advanceIntervals` del calendario frena ante un interactivo.
+    const res = cal.advanceIntervals(n);
+    return this.buildAdvanceResult(s, res.pending);
   }
 
   runAll(simulationId: string, guard: number = 5 * 300 * 378): IAdvanceResultDTO {
@@ -304,7 +344,10 @@ export class ElementController implements IElementController {
   // Helpers internos — armado de DTOs
   // ==========================================================================
 
-  /** GSG data para una liga de N equipos (1 fase, 1 grupo). */
+  /**
+   * [CASO DE USO] GSG data para una liga de N equipos (1 fase, 1 grupo).
+   * Helper exclusivo de `createSimpleLeague` (escenario de prueba), no de la API real.
+   */
   private buildSimpleLeagueData(tournamentId: string, n: number, opt: ICreateSimpleLeagueInput['opt']): ITournamentFromGSGData {
     const iniCreator: TInitialCreator = {
       tournamentId,

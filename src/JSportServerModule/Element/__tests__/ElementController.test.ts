@@ -31,10 +31,16 @@ type Api = ReturnType<typeof elements>;
 /**
  * Avanza la simulación hasta que el draw del stage materializa el fixture (los
  * partidos existen recién tras el Event_StageStart). Guard para no colgar el test.
+ *
+ * Usa `advanceToNextEvent` (salta el tiempo muerto hasta el intervalo anterior al
+ * próximo evento) seguido de un `advance` (un tick) que ejecuta ese evento. `advance`
+ * por sí solo es un único intervalo y no salta tiempo muerto, por lo que no sirve para
+ * recorrer rápido el calendario hasta el draw.
  */
 function advanceUntilMatches(api: Api, simulationId: string, guard = 200): void {
   let i = 0;
   while (api.getMatches(simulationId).length === 0 && i < guard) {
+    api.advanceToNextEvent(simulationId);
     api.advance(simulationId);
     i++;
   }

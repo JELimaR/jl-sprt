@@ -151,27 +151,8 @@ export interface ISimulationStateDTO {
 }
 
 // ----------------------------------------------------------------------------
-// Inputs
+// Inputs — API real
 // ----------------------------------------------------------------------------
-
-/** Equipo de entrada para crear una liga simple (datos mínimos legibles). */
-export interface ISimpleLeagueTeamInput {
-  /** Opcional: si no se provee, la API genera uno. */
-  id?: string;
-  name: string;
-}
-
-/** Input para crear una liga simple (1 fase, 1 grupo). */
-export interface ICreateSimpleLeagueInput {
-  sport: TSport;
-  teams: ISimpleLeagueTeamInput[];
-  /** Formato: 'home' (solo ida), 'h&a' (ida y vuelta), 'neutral'. */
-  opt: TypeBaseStageOption;
-  /** Temporada (año del modelo). Si se omite, la API usa una por defecto. */
-  season?: number;
-  /** Categoría de los equipos. Si se omite, 'S'. */
-  category?: TypeCategory;
-}
 
 /** Identificador de una simulación creada. */
 export interface ISimulationRef {
@@ -183,6 +164,36 @@ export interface IAdvanceResultDTO {
   state: ISimulationStateDTO;
   /** Eventos que frenaron el avance (interactivos). Vacío si avanzó limpio. */
   pendingEvents: ICalendarEventDTO[];
+}
+
+// ╔══════════════════════════════════════════════════════════════════════════╗
+// ║ CASOS DE USO / ESCENARIOS DE PRUEBA — NO es la API real                    ║
+// ║                                                                            ║
+// ║ Lo que sigue (inputs + el método `createSimpleLeague` del controller) NO   ║
+// ║ forma parte del contrato "real" de la API de elements. Son HELPERS para    ║
+// ║ montar un escenario de simulación concreto (una liga simple) y así poder   ║
+// ║ construir/probar los componentes de la app (p. ej. /tests/simple-league).  ║
+// ║ La construcción real de torneos del mundo vivirá en otro flujo (SportWorld ║
+// ║ / creadores de torneos), no acá. Mantener este bloque claramente separado. ║
+// ╚══════════════════════════════════════════════════════════════════════════╝
+
+/** [CASO DE USO] Equipo de entrada para crear una liga simple (datos mínimos legibles). */
+export interface ISimpleLeagueTeamInput {
+  /** Opcional: si no se provee, la API genera uno. */
+  id?: string;
+  name: string;
+}
+
+/** [CASO DE USO] Input para crear una liga simple (1 fase, 1 grupo). */
+export interface ICreateSimpleLeagueInput {
+  sport: TSport;
+  teams: ISimpleLeagueTeamInput[];
+  /** Formato: 'home' (solo ida), 'h&a' (ida y vuelta), 'neutral'. */
+  opt: TypeBaseStageOption;
+  /** Temporada (año del modelo). Si se omite, la API usa una por defecto. */
+  season?: number;
+  /** Categoría de los equipos. Si se omite, 'S'. */
+  category?: TypeCategory;
 }
 
 // ----------------------------------------------------------------------------
@@ -197,13 +208,36 @@ export interface IAdvanceResultDTO {
  * null/[] cuando corresponde a "no encontrado" esperable.
  */
 export interface IElementController {
+  // ===========================================================================
+  // API REAL — operaciones genéricas de simulación (independientes del escenario)
+  // ===========================================================================
+
   // --- comandos ---
 
-  /** Crea una simulación de liga simple y la deja lista para avanzar. */
-  createSimpleLeague(input: ICreateSimpleLeagueInput): ISimulationRef;
-
-  /** Avanza hasta el próximo instante con eventos (o un paso de partido en curso). */
+  /**
+   * Avanza EXACTAMENTE un intervalo (un `tick` del calendario). Es el avance fino:
+   * procesa lo que haya en el instante actual (ejecuta instantáneos, arranca/avanza
+   * durativos) y mueve el reloj un intervalo, salvo que un evento interactivo frene.
+   * No salta tiempo muerto: para llegar a la zona de eventos usar `advanceToNextEvent`.
+   */
   advance(simulationId: string): IAdvanceResultDTO;
+
+  /**
+   * Salta el TIEMPO MUERTO hasta dejar el reloj en el intervalo INMEDIATAMENTE ANTERIOR
+   * al próximo evento, sin ejecutarlo. El siguiente `advance` (un tick) es el que
+   * ejecuta ese evento y arranca sus durativos; así, dentro de la zona de eventos cada
+   * `advance` es un único tick (p. ej. ver un partido minuto a minuto).
+   *
+   * Si ya hay durativos en curso (hay actividad en el instante actual), no hay tiempo
+   * muerto que saltar y no avanza. Si no quedan eventos futuros, tampoco avanza.
+   */
+  advanceToNextEvent(simulationId: string): IAdvanceResultDTO;
+
+  /**
+   * Avanza hasta `n` intervalos (n `tick`s), deteniéndose antes si aparece un evento
+   * interactivo pendiente. Es el control "avanzar N intervalos" de la UI.
+   */
+  advanceIntervals(simulationId: string, n: number): IAdvanceResultDTO;
 
   /** Corre la simulación hasta el final (o hasta que un evento interactivo frene). */
   runAll(simulationId: string): IAdvanceResultDTO;
@@ -237,4 +271,15 @@ export interface IElementController {
 
   /** Fecha/instante actual de la simulación. */
   getCurrentDate(simulationId: string): IDateTimeDTO;
+
+  // ===========================================================================
+  // CASOS DE USO / ESCENARIOS DE PRUEBA — NO es la API real (ver bloque arriba)
+  //
+  // Helper para montar un escenario concreto (liga simple) y construir/probar los
+  // componentes de la app. La creación "real" de torneos del mundo irá por otro
+  // flujo (SportWorld / creadores de torneos). No mezclar con los comandos de arriba.
+  // ===========================================================================
+
+  /** [CASO DE USO] Crea una simulación de liga simple y la deja lista para avanzar. */
+  createSimpleLeague(input: ICreateSimpleLeagueInput): ISimulationRef;
 }
