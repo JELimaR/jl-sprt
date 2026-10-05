@@ -52,11 +52,23 @@ export interface SetScoreDTO {
   away: number;
 }
 
+/**
+ * Resultado del partido desde el punto de vista de quién ganó. Lo determina el deporte
+ * (incluye series ida/vuelta, penales, etc.), NO se infiere del marcador en la UI.
+ *  - 'home' / 'away': ganador.
+ *  - 'draw': empate (deportes que lo permiten, p. ej. fútbol en fase de grupos).
+ *  - null: aún no definido (no jugado / en curso / sin ganador aún).
+ */
+export type MatchWinnerDTO = 'home' | 'away' | 'draw' | null;
+
 /** Vista plana de un partido. */
 export interface IMatchDTO {
   id: string;
   /** Jornada/turno al que pertenece (si aplica). */
   turn: number;
+  /** Torneo al que pertenece el partido. */
+  tournamentId: string;
+  tournamentName: string;
   homeTeamId: string;
   homeName: string;
   awayTeamId: string;
@@ -67,6 +79,8 @@ export interface IMatchDTO {
   awayScore: number;
   /** Marcador ya formateado por el deporte (p. ej. "2 - 1"). null si aún no inició. */
   scoreText: string | null;
+  /** Ganador del partido (lo decide el deporte), o null si no está definido. */
+  winner: MatchWinnerDTO;
   /** Desglose por set (vacío en deportes sin sets). */
   sets: SetScoreDTO[];
   /** true si el partido se está jugando ahora mismo. */

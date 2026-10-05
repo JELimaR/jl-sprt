@@ -9,6 +9,7 @@ import {
   ICalendarEventDTO,
   IDateTimeDTO,
   MatchStateDTO,
+  MatchWinnerDTO,
   IFixtureSlotDTO,
   FixtureParticipantRefDTO,
   ITeamDTO,
@@ -47,11 +48,13 @@ import type { TInitialCreator, TPhaseCreator } from "../../JSportModule/GeneralS
 const SOURCE_RANKING_CONTEXT = 'fr_S_SIM';
 const SIMPLE_LEAGUE_TOURNAMENT_ID = 'SIM_LEAGUE';
 
-/** Partido + metadatos de la jornada/ronda a la que pertenece (para el DTO). */
+/** Partido + metadatos de la jornada/ronda y el torneo al que pertenece (para el DTO). */
 interface MatchWithTurn {
   match: AnyMatch;
   turn: number;
   halfWeek: number;
+  tournamentId: string;
+  tournamentName: string;
 }
 
 /**
@@ -413,21 +416,21 @@ export class ElementController implements IElementController {
   // Helpers internos — recorrido genérico de stages
   // ==========================================================================
 
-  /** Extrae los partidos de un stage con su jornada/ronda, sea group o playoff. */
-  private matchesOfStage(stage: TGS): MatchWithTurn[] {
+  /** Extrae los partidos de un stage con su jornada/ronda y el torneo, sea group o playoff. */
+  private matchesOfStage(stage: TGS, tournamentId: string, tournamentName: string): MatchWithTurn[] {
     const out: MatchWithTurn[] = [];
     if (stage instanceof StageGroup) {
       stage.groups.forEach((league: League) => {
         league.turns.forEach((turn) => {
           turn.matches.forEach((match: AnyMatch) => {
-            out.push({ match, turn: turn.num, halfWeek: turn.halfWeek });
+            out.push({ match, turn: turn.num, halfWeek: turn.halfWeek, tournamentId, tournamentName });
           });
         });
       });
     } else if (stage instanceof StagePlayoff) {
       stage.playoff.rounds.forEach((round) => {
         round.matches.forEach((match: AnyMatch) => {
-          out.push({ match, turn: round.num, halfWeek: round.halfWeek?.[0] ?? 0 });
+          out.push({ match, turn: round.num, halfWeek: round.halfWeek?.[0] ?? 0, tournamentId, tournamentName });
         });
       });
     }
@@ -437,8 +440,10 @@ export class ElementController implements IElementController {
   /** Recorre todos los stages del torneo recolectando sus partidos. */
   private allMatchesWithTurn(t: Tournament): MatchWithTurn[] {
     const out: MatchWithTurn[] = [];
+    const tournamentId = t.config.idConfig;
+    const tournamentName = t.config.name;
     t.stagesMap.forEach((stage) => {
-      this.matchesOfStage(stage).forEach((mt) => out.push(mt));
+      this.matchesOfStage(stage, tournamentId, tournamentName).forEach((mt) => out.push(mt));
     });
     return out;
   }
@@ -510,6 +515,7 @@ export class ElementController implements IElementController {
     let awayScore = 0;
     let scoreText: string | null = null;
     let sets: IMatchDTO['sets'] = [];
+    let winner: MatchWinnerDTO = null;
     if (res) {
       const hs = res.getScore(homeId) as TSupportedMatchScore;
       const as = res.getScore(awayId) as TSupportedMatchScore;
@@ -518,9 +524,18 @@ export class ElementController implements IElementController {
       scoreText = formatScoreText(hs, as);
       sets = getSetBreakdown(hs, as);
     }
+    // El ganador lo decide el deporte (getResultInfo), solo cuando el partido terminó.
+    if (m.state === 'finished' && res) {
+      const info = res.getResultInfo();
+      if (info.teamWinner === homeId) winner = 'home';
+      else if (info.teamWinner === awayId) winner = 'away';
+      else winner = 'draw';
+    }
     return {
       id: m.id,
       turn: mt.turn,
+      tournamentId: mt.tournamentId,
+      tournamentName: mt.tournamentName,
       homeTeamId: homeId,
       homeName: m.homeTeam.name,
       awayTeamId: awayId,
@@ -529,6 +544,7 @@ export class ElementController implements IElementController {
       homeScore,
       awayScore,
       scoreText,
+      winner,
       sets,
       live: m.state === 'playing',
       date: this.toDateTimeDTO(m.date),

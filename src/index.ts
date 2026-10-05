@@ -93,6 +93,7 @@ export type {
   IDateTimeDTO,
   MatchStateDTO,
   SetScoreDTO,
+  MatchWinnerDTO,
   IMatchDTO,
   IStandingRowDTO,
   EventKindDTO,

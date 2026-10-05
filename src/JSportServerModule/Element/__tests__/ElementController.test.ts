@@ -269,6 +269,10 @@ describe("ElementController - deportes (profiles)", () => {
     expect(m.sets).toEqual([]); // fútbol no tiene sets
     expect(typeof m.homeScore).toBe("number");
     expect(typeof m.awayScore).toBe("number");
+    // Metadatos de torneo y ganador (partido ya terminado tras runAll).
+    expect(typeof m.tournamentId).toBe("string");
+    expect(m.tournamentName.length).toBeGreaterThan(0);
+    expect(["home", "away", "draw"]).toContain(m.winner);
   });
 
   it("vóley: cada partido terminado tiene desglose de sets y un ganador", () => {
@@ -282,6 +286,8 @@ describe("ElementController - deportes (profiles)", () => {
       expect(m.sets.length).toBeGreaterThan(0);
       // En vóley no hay empate: un equipo gana más sets que el otro.
       expect(m.homeScore).not.toBe(m.awayScore);
+      // Y por lo mismo, el ganador es home o away (nunca draw).
+      expect(["home", "away"]).toContain(m.winner);
     });
   });
 });
