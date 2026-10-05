@@ -25,7 +25,7 @@ import { Ranking } from "../../JSportModule/Ranking/Ranking";
 import { Institution } from "../../JSportModule/data/Entities/Institution";
 import { Town } from "../../JSportModule/data/Entities/GeogEntity";
 import { teamsAssign } from "../../Tournament/teamsAssign";
-import { JDate, JDateTime, DateToString } from "jl-calendar";
+import { JCalendar, JDate, JDateTime, DateToString } from "jl-calendar";
 import type { JEvent } from "jl-calendar";
 import { JEventMatch } from "../../Tournament/Stage/Match/EventMatch";
 import {
@@ -104,10 +104,15 @@ export class ElementController implements IElementController {
     const n = input.teams.length;
     const profile = ProfilesFactory.getProfile(input.sport);
 
-    // El SimulationContext es una VISTA del mundo: comparte su calendario y su store
-    // de rankings. Así el torneo agenda sus eventos en el calendario del mundo y
-    // publica sus rankings en el store del mundo.
-    const ctx = new SimulationContext(world.calendar, world.rankings);
+    // Cada simulación tiene su PROPIO calendario (aislamiento por simulación): sus
+    // eventos no se mezclan con los de otras simulaciones del mismo proceso. Los
+    // rankings del mundo SÍ se comparten (las entidades viven en el mundo). El
+    // calendario propio arranca en el día 1 de la temporada de la simulación.
+    //
+    // NOTA (escenario de prueba): la "liga simple" es un caso de uso aislado; por eso
+    // calendario propio. Cuando el SportWorld maneje el calendario único real, la
+    // creación de torneos del mundo irá por otro flujo (no por createSimpleLeague).
+    const ctx = new SimulationContext(JCalendar.createFromYear(season), world.rankings);
 
     // 1. Crear las entidades (instituciones) EN EL MUNDO y obtener sus teams. El
     //    nombre legible queda en la Institution; el team lo expone vía `name`.
@@ -209,6 +214,41 @@ export class ElementController implements IElementController {
     // Hasta n ticks; `advanceIntervals` del calendario frena ante un interactivo.
     const res = cal.advanceIntervals(n);
     return this.buildAdvanceResult(s, res.pending);
+  }
+
+  step(simulationId: string): IAdvanceResultDTO {
+    const s = this.handler.require(simulationId);
+    const cal = s.ctx.calendar;
+
+    // ¿Hay actividad para ejecutar en el instante actual?
+    //  - durativos en curso, o
+    //  - un evento agendado exactamente en `now`, o
+    //  - el próximo evento está en el intervalo INMEDIATAMENTE siguiente (gap == 1):
+    //    estamos "a las puertas", el tick siguiente lo ejecuta.
+    const hasActive = cal.getActiveEvents().length > 0;
+    const hasEventNow = cal.getCurrentEventList().length > 0;
+    const next = cal.getNextEvents();
+    const gap = next ? JDateTime.difBetween(next.dt, cal.now) : Infinity;
+
+    if (hasActive || hasEventNow || gap <= 1) {
+      // Ejecutar el instante actual / avanzar el durativo: un único tick.
+      let pending: JEvent[] = [];
+      if (cal.hasEventsToProcess()) {
+        const res = cal.tick();
+        if (!res.advanced) pending = res.pending;
+      }
+      return this.buildAdvanceResult(s, pending);
+    }
+
+    // Hay tiempo muerto por delante: saltar hasta el intervalo anterior al próximo
+    // evento, sin ejecutarlo (lo ejecutará el próximo `step`, que entrará por gap<=1).
+    if (next) {
+      const jump = cal.advanceIntervals(gap - 1);
+      return this.buildAdvanceResult(s, jump.pending);
+    }
+
+    // No hay nada por delante.
+    return this.buildAdvanceResult(s, []);
   }
 
   runAll(simulationId: string, guard: number = 5 * 300 * 378): IAdvanceResultDTO {

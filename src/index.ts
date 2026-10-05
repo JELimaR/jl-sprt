@@ -144,12 +144,12 @@ export type { TSport, IFootballScore, IVolleyballScore, IAmericanFootballScore, 
 // ya no instancia ni manipula esas clases. Quien las necesite las importa de
 // 'jl-sprt-core' directamente. (Ver docs/plans/API_CONTROLLERS.md §3 y §5.)
 export {
-  AnyMatch,
-  AnyTeam,
   CATEGORIES,
   getCategoryList,
 } from 'jl-sprt-core';
 export type {
+  AnyMatch,
+  AnyTeam,
   ITeamCreator,
   AnySportProfile,
   AnyTeamTableItem,

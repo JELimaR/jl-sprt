@@ -239,6 +239,21 @@ export interface IElementController {
    */
   advanceIntervals(simulationId: string, n: number): IAdvanceResultDTO;
 
+  /**
+   * Un "paso" de conveniencia para un botón único de avance (combina las primitivas):
+   *  - si hay actividad en el instante actual (durativos en curso, o el próximo evento
+   *    está en el intervalo inmediatamente siguiente, o hay un evento en el instante
+   *    actual) → hace un `tick` (ejecuta ese instante / avanza el durativo);
+   *  - si no → salta el tiempo muerto dejando el reloj en el intervalo anterior al
+   *    próximo evento (como `advanceToNextEvent`).
+   *
+   * Apretarlo repetidamente: salta al borde del próximo evento → tick que lo ejecuta y
+   * arranca sus durativos → ticks mientras haya actividad → al quedar el instante
+   * limpio y el próximo evento lejos, vuelve a saltar. No ejecuta el evento "de más":
+   * el salto deja el reloj a las puertas, y es el tick siguiente el que lo ejecuta.
+   */
+  step(simulationId: string): IAdvanceResultDTO;
+
   /** Corre la simulación hasta el final (o hasta que un evento interactivo frene). */
   runAll(simulationId: string): IAdvanceResultDTO;
 
