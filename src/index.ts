@@ -104,6 +104,8 @@ export type {
   IAdvanceResultDTO,
   FixtureParticipantRefDTO,
   IFixtureSlotDTO,
+  ITeamDTO,
+  ITeamTournamentDTO,
 } from './JSportModule/elementInterfaces';
 
 // GeneralStageGraph
