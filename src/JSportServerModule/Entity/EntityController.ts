@@ -5,7 +5,7 @@ import {
   IConfederationData, IConfederationCreator, Confederation,
   IFederationData, IFederationCreator, Federation,
   IInstitutionData, IInstitutionCreator, Institution,
-  CupSystem, IPaginationData,
+  CupSystem, IPaginationData, ITeamEntityDTO,
 } from "../../JSportModule";
 import { TypeCategoryList, CATEGORIES, TypeCategory } from "jl-sprt-core";
 import { LeagueSystem } from "../../JSportModule/data/Entities/LeagueSystem";
@@ -177,6 +177,17 @@ export class EntityController implements IEntityController {
   getInstitutionById(id: string): IInstitutionData | null {
     const i = this.world.getInstitution(id);
     return i ? i.getData() : null;
+  }
+
+  getInstitutionTeams(id: string): ITeamEntityDTO[] {
+    const inst = this.world.getInstitution(id);
+    if (!inst) return [];
+    return inst.teams.map((team) => ({
+      teamId: team.id,
+      category: team.category,
+      name: team.name,
+      sport: inst.sport,
+    }));
   }
 
   /**

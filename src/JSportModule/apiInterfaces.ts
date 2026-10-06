@@ -1,5 +1,7 @@
 import { Continent, Country, Federation, IContinentData, ICountryData, IFederationData, IInstitutionData, Institution, ITownData, Town } from "./data";
 import { Confederation, IConfederationData } from "./data/Entities/Confederation";
+import type { TypeCategory } from "jl-sprt-core";
+import type { TSport } from "jl-sprt-match";
 
 // El contrato del ElementController (operaciones + DTOs) vive en elementInterfaces.
 import type { IElementController } from "./elementInterfaces";
@@ -8,6 +10,18 @@ export type { IElementController };
 export interface IPaginationData {
   offset?: number;
   limit?: number;
+}
+
+/**
+ * Vista plana de un equipo A NIVEL DE ENTIDAD (fuera de una simulación): identifica el
+ * team de una institución en una categoría. Para datos de simulación (torneos, tabla,
+ * partidos) está `ITeamDTO`/`getTeam` del ElementController.
+ */
+export interface ITeamEntityDTO {
+  teamId: string;
+  category: TypeCategory;
+  name: string;
+  sport: TSport;
 }
 export interface ISportAPIController { 
   
@@ -40,6 +54,8 @@ export interface IEntityController {
   createInstitution(data: IInstitutionData): boolean;
   getInstitutions(pag: IPaginationData): IInstitutionData[];
   getInstitutionById(id: string): IInstitutionData | null;
+  /** Equipos de una institución (uno por categoría existente). [] si no existe. */
+  getInstitutionTeams(id: string): ITeamEntityDTO[];
 
   associateInstitution(iid: string, fid: string): boolean;
 }

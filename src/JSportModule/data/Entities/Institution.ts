@@ -1,7 +1,7 @@
 import { Town } from "..";
 import { JDate } from "jl-calendar";
 import { TDC } from "../../patterns/templateDataCreator";
-import { AnyTeam, TypeCategory, TypeCategoryList } from "jl-sprt-core";
+import { AnyTeam, CATEGORIES, TypeCategory, TypeCategoryList } from "jl-sprt-core";
 import { ProfilesFactory, TSport } from "jl-sprt-match";
 
 export interface IInstitutionData {
@@ -53,6 +53,16 @@ export class Institution extends TDC<IInstitutionData, IInstitutionCreator> {
 
   getTeam(category: TypeCategory): AnyTeam | undefined {
     return this._teams[category]
+  }
+
+  /** Categorías en las que la institución tiene equipo, en el orden canónico. */
+  get categories(): TypeCategory[] {
+    return CATEGORIES.filter((c) => this._teams[c] !== undefined);
+  }
+
+  /** Equipos de la institución (uno por categoría existente), en orden canónico. */
+  get teams(): AnyTeam[] {
+    return this.categories.map((c) => this._teams[c]!);
   }
 
   getData(): IInstitutionData {

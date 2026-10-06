@@ -86,7 +86,7 @@ export type {
 
 // API & Server
 export { SportAPIController } from './JSportModule/SportAPI';
-export type { ISportFactory, IEntityController, IElementController, ISportAPIController, IPaginationData } from './JSportModule/apiInterfaces';
+export type { ISportFactory, IEntityController, IElementController, ISportAPIController, IPaginationData, ITeamEntityDTO } from './JSportModule/apiInterfaces';
 export { SportServerAPI } from './JSportServerModule';
 // ElementController DTOs (contrato de la API de simulaciones de torneo).
 export type {
