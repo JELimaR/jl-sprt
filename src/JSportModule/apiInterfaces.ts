@@ -22,6 +22,9 @@ export interface ITeamEntityDTO {
   category: TypeCategory;
   name: string;
   sport: TSport;
+  /** Colores de camiseta heredados de la institución (hex). */
+  primaryColor: string;
+  secondaryColor: string;
 }
 export interface ISportAPIController { 
   

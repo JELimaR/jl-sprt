@@ -3,6 +3,7 @@ import { JDate } from "jl-calendar";
 import { TDC } from "../../patterns/templateDataCreator";
 import { AnyTeam, CATEGORIES, TypeCategory, TypeCategoryList } from "jl-sprt-core";
 import { ProfilesFactory, TSport } from "jl-sprt-match";
+import { IKitColors, pickKitColors } from "./kitColors";
 
 export interface IInstitutionData {
   i: string; // id
@@ -12,6 +13,12 @@ export interface IInstitutionData {
   hq: string; // headquarters
   fd: number; // funtationDay
   sp: TSport; // sport
+  /**
+   * Colores de camiseta (hex). OPCIONALES en la ENTRADA (si no vienen, se asignan de
+   * forma determinística por id). En la SALIDA de `getData()` siempre vienen definidos.
+   */
+  pc?: string; // primaryColor
+  sc?: string; // secondaryColor
 }
 
 
@@ -23,6 +30,12 @@ export interface IInstitutionCreator {
   headquarters: Town; // headquarters
   funtationDay: JDate; // funtationDay
   sport: TSport; // sport
+  /**
+   * Colores de camiseta. Opcionales: si no se proveen, se asignan de forma
+   * determinística a partir del `id` (misma institución → mismos colores).
+   */
+  primaryColor?: string;
+  secondaryColor?: string;
 }
 
 export class Institution extends TDC<IInstitutionData, IInstitutionCreator> {
@@ -38,6 +51,20 @@ export class Institution extends TDC<IInstitutionData, IInstitutionCreator> {
   get abrevName(): string { return this.info.abrevName }
   get sport(): TSport { return this.info.sport; }
   get headquarters(): Town { return this.info.headquarters; }
+
+  /** Colores de camiseta: los del creator, o un par determinístico por id si faltan. */
+  private _kit?: IKitColors;
+  private get kit(): IKitColors {
+    if (!this._kit) {
+      this._kit =
+        this.info.primaryColor && this.info.secondaryColor
+          ? { primary: this.info.primaryColor, secondary: this.info.secondaryColor }
+          : pickKitColors(this.info.id);
+    }
+    return this._kit;
+  }
+  get primaryColor(): string { return this.kit.primary; }
+  get secondaryColor(): string { return this.kit.secondary; }
 
   createTeam(category: TypeCategory) {
     if (this._teams[category])
@@ -71,6 +98,8 @@ export class Institution extends TDC<IInstitutionData, IInstitutionCreator> {
       hq: this.info.headquarters.id,
       fd: this.info.funtationDay.getDate().dayAbsolute,
       sp: this.sport,
+      pc: this.primaryColor,
+      sc: this.secondaryColor,
     }
   }
 }

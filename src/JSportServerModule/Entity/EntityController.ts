@@ -166,6 +166,7 @@ export class EntityController implements IEntityController {
     const creator: IInstitutionCreator = {
       id: data.i, name: data.n, shortName: data.sn, abrevName: data.ab,
       headquarters: town, funtationDay: new JDate(data.fd), sport: data.sp,
+      primaryColor: data.pc, secondaryColor: data.sc,
     };
     return this.world.addInstitution(new Institution(creator));
   }
@@ -187,6 +188,8 @@ export class EntityController implements IEntityController {
       category: team.category,
       name: team.name,
       sport: inst.sport,
+      primaryColor: inst.primaryColor,
+      secondaryColor: inst.secondaryColor,
     }));
   }
 

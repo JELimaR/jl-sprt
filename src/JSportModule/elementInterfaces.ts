@@ -191,6 +191,9 @@ export interface ITeamDTO {
   institutionId: string;
   institutionName: string;
   sport: TSport;
+  /** Colores de camiseta heredados de la institución (hex). */
+  primaryColor: string;
+  secondaryColor: string;
   // futuro: federationId?: string;  // selecciones (cuando el modelo lo soporte)
 }
 

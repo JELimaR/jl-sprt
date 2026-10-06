@@ -27,6 +27,7 @@ import { League } from "../../Tournament/Stage/StageGroup/League/League";
 import { Ranking } from "../../JSportModule/Ranking/Ranking";
 import { Institution } from "../../JSportModule/data/Entities/Institution";
 import { Town } from "../../JSportModule/data/Entities/GeogEntity";
+import { pickKitColors } from "../../JSportModule/data/Entities/kitColors";
 import { teamsAssign } from "../../Tournament/teamsAssign";
 import { JDate, JDateTime, DateToString } from "jl-calendar";
 import type { JEvent } from "jl-calendar";
@@ -306,6 +307,11 @@ export class ElementController implements IElementController {
     if (!s) return null;
     const team = this.findTeam(s, teamId);
     if (!team) return null;
+    // Colores de camiseta: los de la institución del team (misma fuente que el DTO de
+    // entidad). Si la institución no estuviera en el mundo, se derivan por id.
+    const inst = s.world.getInstitution(team.entity.id);
+    const primaryColor = inst ? inst.primaryColor : pickKitColors(team.entity.id).primary;
+    const secondaryColor = inst ? inst.secondaryColor : pickKitColors(team.entity.id).secondary;
     return {
       teamId: team.id,
       name: team.name,
@@ -313,6 +319,8 @@ export class ElementController implements IElementController {
       institutionId: team.entity.id,
       institutionName: team.entity.name,
       sport: s.sport,
+      primaryColor,
+      secondaryColor,
     };
   }
 
