@@ -65,7 +65,8 @@ Un **Tournament** es el elemento de más alto nivel que representa un torneo dep
 ### Creación
 
 ```typescript
-import { Tournament, FootballProfile } from 'jl-sprt';
+import { Tournament } from 'jl-sprt';
+import { FootballProfile } from 'jl-sprt-match';
 
 const tournament = Tournament.create(
   { id: 'trn_001', season: 2024 },  // IElementInfo (season es number)

@@ -87,11 +87,12 @@ npm start
 
 ## Uso Básico
 
+> Nota importante: la API raíz exporta la capa de dominio y del servidor (`Tournament`, `JCalendar`, `SportServerAPI`, etc.). Los perfiles específicos de deporte (`FootballProfile`, `VolleyballProfile`, `AmericanFootballProfile`) se importan desde `jl-sprt-match`.
+
 ### 1. Inicialización vía API
 
 ```typescript
-import SportServerAPI from 'jl-sprt';
-import { JCalendar, JDateTime } from 'jl-sprt';
+import { SportServerAPI, JCalendar, JDateTime } from 'jl-sprt';
 
 // Crear instancia del API
 const ssapi = SportServerAPI();
@@ -112,7 +113,7 @@ federationsData.forEach((fed) => entities.createFederation(fed));
 
 ```typescript
 import { Tournament } from 'jl-sprt';
-import { FootballProfile } from 'jl-sprt';
+import { FootballProfile } from 'jl-sprt-match';
 
 // Tournament.create requiere: info, datos GSG, calendario y un SportProfile
 const tournament = Tournament.create(
@@ -133,7 +134,14 @@ const finalRanking = tournament.getRelativeRank();
 console.table(finalRanking.getRankTable().map(r => ({ ...r, team: r.team.id })));
 ```
 
-> Nota: el `import` desde `'jl-sprt'` aplica al consumir la librería publicada. Dentro del propio repositorio, los ejemplos importan mediante rutas relativas.
+### Uso dentro del repositorio
+
+Dentro del propio repositorio, algunos ejemplos utilizan imports relativos porque compilan desde el código fuente y no desde el paquete publicado. En consumo real, la convención recomendada es:
+
+```typescript
+import { SportServerAPI, JCalendar, JDateTime, Tournament } from 'jl-sprt';
+import { FootballProfile } from 'jl-sprt-match';
+```
 
 ## Dependencias Principales
 

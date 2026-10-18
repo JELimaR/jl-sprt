@@ -7,13 +7,15 @@ Referencia de la API pública. Los tipos y firmas descritos aquí reflejan el c�
 ## Inicialización
 
 ### SportServerAPI()
-Función principal para inicializar el sistema. Es el export default de `JSportServerModule`.
+Función principal para inicializar el sistema. Se exporta como función nombrada desde el paquete raíz.
 
 ```typescript
-import SportServerAPI from 'jl-sprt';
+import { SportServerAPI } from 'jl-sprt';
 
 const api = SportServerAPI();
 ```
+
+> Los perfiles concretos del deporte (`FootballProfile`, `VolleyballProfile`, `AmericanFootballProfile`) se importan desde `jl-sprt-match`, no desde el paquete raíz de `jl-sprt`.
 
 **Retorna**: `SportAPIController`
 
@@ -129,6 +131,8 @@ const calendar = new JCalendar(
 );
 ```
 
+> `JCalendar`, `JDateTime` y otros tipos del calendario forman parte del paquete raíz. Los perfiles deportivos deben importarse desde `jl-sprt-match`.
+
 ### Propiedades y métodos principales
 
 ```typescript
@@ -174,7 +178,8 @@ JDateTime.createFromHalfWeekOfYearAndYear(
 Crea un torneo a partir de datos GSG. **Requiere un `SportProfile`.**
 
 ```typescript
-import { Tournament, FootballProfile } from 'jl-sprt';
+import { Tournament } from 'jl-sprt';
+import { FootballProfile } from 'jl-sprt-match';
 
 const tournament = Tournament.create(
   { id: 'trn_001', season: 2024 },
@@ -326,9 +331,8 @@ interface IRankingMetadata {
 ## Ejemplo de Uso Completo
 
 ```typescript
-import SportServerAPI, {
-  JCalendar, JDateTime, Tournament, FootballProfile, Ranking,
-} from 'jl-sprt';
+import { SportServerAPI, JCalendar, JDateTime, Tournament, Ranking } from 'jl-sprt';
+import { FootballProfile } from 'jl-sprt-match';
 
 // 1. Inicializar API y calendario
 const api = SportServerAPI();
