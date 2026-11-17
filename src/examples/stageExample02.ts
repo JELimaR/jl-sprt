@@ -13,7 +13,7 @@ const {
   s3,
   s4,
 } = stageExampleData;
-const selection = getExampleTeams(150, "football", 'Team');
+const selection = getExampleTeams(150, "football", 'Team') as FootballTeam[];
 
 export function stageExample02() {
 

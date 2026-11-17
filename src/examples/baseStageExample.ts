@@ -4,7 +4,7 @@ import { League } from "../Tournament/Stage/StageGroup/League/League";
 import { SingleElimination } from "../Tournament/Stage/StagePlayoff/SingleElimination/SingleElimination";
 import { mostrarFecha } from "../mostrarFechaBorrar";
 import { ILeagueConfig, ISingleEliminationConfig, verifyBaseStageConfig } from "../JSportModule";
-import { FootballProfile } from "jl-sprt-match";
+import { FootballProfile,FootballTeam } from "jl-sprt-match";
 import { AdvanceAll } from '../Tournament/Advance';
 import { attachExampleLogger } from "./exampleLogger";
 
@@ -13,8 +13,14 @@ export function baseStageExample() {
   const cal = JCalendar.createFromYear(1986);
   attachExampleLogger(cal);
 
-  const selectionL = getExampleTeams(10, "football", 'TL');
-  const selectionC = getExampleTeams(132, "football", 'TC').slice(100, 133);
+  const selectionL = getExampleTeams(10, "football", 'TL') as FootballTeam[];
+  const iniStats = selectionL.map(team => {return {
+    i: team.id,
+    A: team.attributes.attack.toFixed(2),
+    D: team.attributes.defense.toFixed(2),
+    L: team.attributes.learning.toFixed(2)
+  }})
+  const selectionC = getExampleTeams(132, "football", 'TC').slice(100, 133) as FootballTeam[];
 
   // league creation
   const leagueConfig: ILeagueConfig = {
@@ -63,5 +69,17 @@ export function baseStageExample() {
 
   console.table(league.getTable('finished').map(e => e.getInterface()))
   console.table(singleElimination.getTable('finished').map(e => e.getInterface()))
+
+  const finStats = selectionL.map(team => {return {
+    i: team.id,
+    A: team.attributes.attack.toFixed(2),
+    D: team.attributes.defense.toFixed(2),
+    L: team.attributes.learning.toFixed(2)
+  }})
+
+  console.log('--------------------------------')
+  console.table(iniStats)
+  console.log('--------------------------------')
+  console.table(finStats)
 
 }

@@ -57,7 +57,7 @@ class FednAux {
     const instPrevList = [...this._institutions];
     const rankTeams = rank.getRankTable().map(iri => iri.team)
     for (let i = 0; i < rankTeams.length; i++) {
-      this._institutions[i] = rankTeams[i];
+      this._institutions[i] = rankTeams[i] as FootballTeam;
     }
     // verifico que todos siguen estando
     instPrevList.forEach((elem: FootballTeam) => {
@@ -71,7 +71,7 @@ class FednAux {
 }
 
 const fid = `F${String(1).padStart(3, '0')}`;
-const fteams = getExampleTeams(18, "football", fid);
+const fteams = getExampleTeams(18, "football", fid) as FootballTeam[];
 
 const federation = new FednAux({
   i: fid, aa: 'A_C001', fs: [], ms: [], hq: 'hq_F001',

@@ -3,7 +3,6 @@ import { Country, IFederationCreator, IFederationData, IInstitutionCreator, Inst
 import { AnyTeam, AnySportProfile } from "jl-sprt-core";
 import { ProfilesFactory, TSport } from "jl-sprt-match";
 
-
 export const getExampleTeams = (n: number, sport: TSport, pid: string = ''): AnyTeam[] => {
   let out: AnyTeam[] = [];
   const profile = ProfilesFactory.getProfile(sport);
@@ -21,6 +20,10 @@ export const getExampleTeams = (n: number, sport: TSport, pid: string = ''): Any
           funtationDay: new JDate(13556),
           sport: sport,
         }),
+        init: { 
+          staff: new FootballCoachingStaff(0.2),
+          attributes: { learning: 0.2 } 
+        }
       })
     )
   }
