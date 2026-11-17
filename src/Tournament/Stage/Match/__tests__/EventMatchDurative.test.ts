@@ -26,6 +26,7 @@ function fakeTeam(id: string): AnyTeam {
     getTeamMatch: () => profile.createTeam({ id, category: 'S', owner: { id: `o-${id}`, name: id } }).getTeamMatch(),
     addNewMatch: () => { },
     addStage: () => { },
+    syncTo: () => { }, // A_Match.start() sincroniza la evolución del team
   };
   return t as unknown as AnyTeam;
 }

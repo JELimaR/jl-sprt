@@ -1,7 +1,7 @@
 import { Town } from "..";
 import { JDate } from "jl-calendar";
 import { TDC } from "../../patterns/templateDataCreator";
-import { AnyTeam, CATEGORIES, TypeCategory, TypeCategoryList } from "jl-sprt-core";
+import { AnyTeam, CATEGORIES, TypeCategory, TypeCategoryList, assertUnitInterval } from "jl-sprt-core";
 import { ProfilesFactory, TSport } from "jl-sprt-match";
 import { IKitColors, pickKitColors } from "./kitColors";
 
@@ -36,6 +36,16 @@ export interface IInstitutionCreator {
    */
   primaryColor?: string;
   secondaryColor?: string;
+  /**
+   * Calidad de las instalaciones de entrenamiento (0..1). Si falta, los teams usan el
+   * valor por defecto de jl-sprt-core. A futuro se descompone (físico, recuperación...).
+   */
+  trainingFacilities?: number;
+  /**
+   * Coordinación de la institución (0..1): alineación de sus teams y cantera con un
+   * mismo estilo de juego. Hoy es sólo dato.
+   */
+  coordination?: number;
 }
 
 export class Institution extends TDC<IInstitutionData, IInstitutionCreator> {
@@ -43,7 +53,14 @@ export class Institution extends TDC<IInstitutionData, IInstitutionCreator> {
 
   constructor(iic: IInstitutionCreator) {
     super(iic)
+    if (iic.trainingFacilities !== undefined) assertUnitInterval('trainingFacilities', iic.trainingFacilities);
+    if (iic.coordination !== undefined) assertUnitInterval('coordination', iic.coordination);
   }
+
+  /** Implementa `ITeamOwner.trainingFacilities`: lo leen los teams de la institución. */
+  get trainingFacilities(): number | undefined { return this.info.trainingFacilities }
+  /** Implementa `ITeamOwner.coordination`. */
+  get coordination(): number | undefined { return this.info.coordination }
 
   get id() { return this.info.id }
   get name(): string { return this.info.name }
