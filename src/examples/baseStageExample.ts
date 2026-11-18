@@ -18,7 +18,8 @@ export function baseStageExample() {
     i: team.id,
     A: team.attributes.attack.toFixed(2),
     D: team.attributes.defense.toFixed(2),
-    L: team.attributes.learning.toFixed(2)
+    L: team.attributes.learning.toFixed(2),
+    'A+D': (team.attributes.attack + team.attributes.defense).toFixed(2)
   }})
   const selectionC = getExampleTeams(132, "football", 'TC').slice(100, 133) as FootballTeam[];
 
@@ -74,7 +75,8 @@ export function baseStageExample() {
     i: team.id,
     A: team.attributes.attack.toFixed(2),
     D: team.attributes.defense.toFixed(2),
-    L: team.attributes.learning.toFixed(2)
+    L: team.attributes.learning.toFixed(2),
+    'A+D': (team.attributes.attack + team.attributes.defense).toFixed(2)
   }})
 
   console.log('--------------------------------')
@@ -82,4 +84,14 @@ export function baseStageExample() {
   console.log('--------------------------------')
   console.table(finStats)
 
+  console.table(league.getTable('finished').map(e => getI(e)))
+
+}
+
+const getI = (t: any) => {
+  return {
+    p: t.pos,
+    i: t.team.id,
+    'A+D': (t.team.attributes.attack + t.team.attributes.defense).toFixed(2)
+  }
 }

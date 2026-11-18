@@ -189,15 +189,15 @@ function runExamples() {
   baseStageExample();
   // volleyBaseStageExample();
   // americanFootballBaseStageExample();
-  /// stageExample01();
-  /// stageExample02();
+  // stageExample01();
+  // stageExample02();
   // stageLeagueExample();
   // specialStageGroupExample();
-  /// stageExample03();
+  // stageExample03();
   // graphExample();
   // systemExample_01();
   // fede_inst_Example();
-  /// confederationExample();
+  // confederationExample();
   // APIExample();
 }
 
