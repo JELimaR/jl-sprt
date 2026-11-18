@@ -5,7 +5,7 @@ import { IInstitutionCreator, Institution } from "../../JSportModule/data/Entiti
 import { LeagueSystem, ILeagueSystemCreator } from "../../JSportModule/data/Entities/LeagueSystem";
 import { TInitialCreator, TPhaseCreator } from "../../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData } from "../../JSportModule/GeneralStageGraph/tournamentFromGSG";
-import { FootballProfile, reseedRandom } from "jl-sprt-match";
+import { FootballProfile, initialTeam, reseedRandom } from "jl-sprt-match";
 import { teamsAssign } from "../../Tournament/teamsAssign";
 import { SimulationContext } from "../../Tournament/SimulationContext";
 import { Tournament } from "../../Tournament/Tournament";
@@ -83,7 +83,7 @@ function buildFederationWithTeams(): Federation {
     };
     const institution = new Institution(iic);
     federation.addMember(institution);
-    institution.createTeam('S');
+    institution.createTeam('S', initialTeam(institution.sport, () => 0.5));
     federation.addInstitutionToCategory(institution, 'S');
   }
   return federation;

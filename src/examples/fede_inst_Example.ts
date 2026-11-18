@@ -7,7 +7,7 @@ import { LeagueSystem, IDivisionCondition, ILeagueSystemCreator } from "../JSpor
 import { TInitialCreator, TPhaseCreator } from "../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData, tournamentFromGSG } from "../JSportModule/GeneralStageGraph/tournamentFromGSG";
 import { mostrarFecha } from "../mostrarFechaBorrar";
-import { FootballProfile } from "jl-sprt-match";
+import { FootballProfile, initialTeam, randomFloat } from "jl-sprt-match";
 import { teamsAssign } from "../Tournament/teamsAssign";
 import { SimulationContext } from "../Tournament/SimulationContext";
 import { Tournament } from "../Tournament/Tournament";
@@ -30,7 +30,7 @@ export function fede_inst_Example() {
   institutions.forEach((iic: IInstitutionCreator) => {
     const institution = new Institution(iic);
     federation.addMember(institution);
-    institution.createTeam('S');
+    institution.createTeam('S', initialTeam(institution.sport, randomFloat));
     federation.addInstitutionToCategory(institution, 'S')
   })
 
@@ -69,7 +69,7 @@ export function fede_inst_Example() {
       newMembers.forEach((newMember: IInstitutionCreator) => {
         const institution = new Institution(newMember);
         federation.addMember(institution)
-        institution.createTeam('S');
+        institution.createTeam('S', initialTeam(institution.sport, randomFloat));
         federation.addInstitutionToCategory(institution, 'S')
         console.log(`✓ Added institution: ${institution.id}`);
       })

@@ -10,6 +10,7 @@ import { TInitialCreator, TPhaseCreator } from "../../../GeneralStageGraph/GSGCr
 import { ITournamentFromGSGData } from "../../../GeneralStageGraph/tournamentFromGSG";
 import { Ranking } from "../../../Ranking";
 import { RankingStore } from "../../../Ranking/RankingStore";
+import { initialTeam } from "jl-sprt-match";
 
 // -----------------------------------------------------------------------------
 // Capa 6 — Entidades (Institution / Federation / LeagueSystem / Confederation)
@@ -58,7 +59,7 @@ function federationWithTeams(n: number, id = 'FED'): Federation {
   for (let i = 1; i <= n; i++) {
     const inst = makeInstitution(`I${String(i).padStart(3, '0')}`);
     fed.addMember(inst);
-    inst.createTeam(CATEGORY);
+    inst.createTeam(CATEGORY, initialTeam(inst.sport, () => 0.5));
     fed.addInstitutionToCategory(inst, CATEGORY);
   }
   return fed;
@@ -91,7 +92,7 @@ describe("Institution", () => {
   it("createTeam crea un team por categoría; getTeam lo devuelve", () => {
     const inst = makeInstitution('I1');
     expect(inst.getTeam(CATEGORY)).toBeUndefined();
-    inst.createTeam(CATEGORY);
+    inst.createTeam(CATEGORY, initialTeam(inst.sport, () => 0.5));
     const team = inst.getTeam(CATEGORY);
     expect(team).toBeDefined();
     expect(team!.id).toBe('S_I1'); // <category>_<entity.id>
@@ -99,8 +100,8 @@ describe("Institution", () => {
 
   it("createTeam lanza si ya existe team en esa categoría", () => {
     const inst = makeInstitution('I1');
-    inst.createTeam(CATEGORY);
-    expect(() => inst.createTeam(CATEGORY)).toThrow(/ya cuenta con un team/);
+    inst.createTeam(CATEGORY, initialTeam(inst.sport, () => 0.5));
+    expect(() => inst.createTeam(CATEGORY, initialTeam(inst.sport, () => 0.5))).toThrow(/ya cuenta con un team/);
   });
 });
 
@@ -128,7 +129,7 @@ describe("Federation - addMember / addInstitutionToCategory", () => {
     const fed = makeFederation();
     const inst = makeInstitution('I1');
     fed.addMember(inst);
-    inst.createTeam(CATEGORY);
+    inst.createTeam(CATEGORY, initialTeam(inst.sport, () => 0.5));
     fed.addInstitutionToCategory(inst, CATEGORY);
     expect(() => fed.addInstitutionToCategory(inst, CATEGORY)).toThrow();
   });

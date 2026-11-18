@@ -1,7 +1,7 @@
 import { Town } from "..";
 import { JDate } from "jl-calendar";
 import { TDC } from "../../patterns/templateDataCreator";
-import { AnyTeam, CATEGORIES, TypeCategory, TypeCategoryList, assertUnitInterval } from "jl-sprt-core";
+import { AnyTeam, CATEGORIES, ITeamInit, TypeCategory, TypeCategoryList, assertUnitInterval } from "jl-sprt-core";
 import { ProfilesFactory, TSport } from "jl-sprt-match";
 import { IKitColors, pickKitColors } from "./kitColors";
 
@@ -83,7 +83,12 @@ export class Institution extends TDC<IInstitutionData, IInstitutionCreator> {
   get primaryColor(): string { return this.kit.primary; }
   get secondaryColor(): string { return this.kit.secondary; }
 
-  createTeam(category: TypeCategory) {
+  /**
+   * Crea el team de la institución en una categoría. Sus atributos y su staff son
+   * obligatorios y explícitos (`init`), del tipo que define el deporte de la
+   * institución.
+   */
+  createTeam(category: TypeCategory, init: ITeamInit) {
     if (this._teams[category])
       throw new Error(`la inst ${this.info.id} ya cuenta con un team en la categoria: ${category}`);
 
@@ -92,6 +97,7 @@ export class Institution extends TDC<IInstitutionData, IInstitutionCreator> {
       id: `${category}_${this.id}`,
       category: category,
       owner: this,
+      ...init,
     });
   }
 

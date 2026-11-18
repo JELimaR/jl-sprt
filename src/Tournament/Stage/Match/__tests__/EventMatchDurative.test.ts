@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { JCalendar, JDateTime } from 'jl-calendar';
 import { MatchScheduler } from '../MatchScheduler';
 import { AnyTeam, IMatchCreationInfo } from 'jl-sprt-core';
-import { FootballProfile, reseedRandom } from 'jl-sprt-match';
+import { FootballProfile, initialFootballTeam, reseedRandom } from 'jl-sprt-match';
 
 // -----------------------------------------------------------------------------
 // JEventMatch + MatchScheduler — ORQUESTACIÓN del partido dentro del calendario.
@@ -23,7 +23,9 @@ function fakeTeam(id: string): AnyTeam {
   const t: Partial<AnyTeam> = {
     id,
     name: id,
-    getTeamMatch: () => profile.createTeam({ id, category: 'S', owner: { id: `o-${id}`, name: id } }).getTeamMatch(),
+    getTeamMatch: () => profile.createTeam({
+      id, category: 'S', owner: { id: `o-${id}`, name: id }, ...initialFootballTeam(() => 0.5),
+    }).getTeamMatch(),
     addNewMatch: () => { },
     addStage: () => { },
     syncTo: () => { }, // A_Match.start() sincroniza la evolución del team

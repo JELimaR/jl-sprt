@@ -38,6 +38,8 @@ import {
   getSetBreakdown,
   scoreValue,
   TSupportedMatchScore,
+  initialTeam,
+  randomFloat,
 } from "jl-sprt-match";
 import type { AnyMatch, AnyTeam } from "jl-sprt-core";
 import type { TypeHalfWeekOfYear } from "jl-calendar";
@@ -142,7 +144,8 @@ export class ElementController implements IElementController {
         funtationDay: new JDate(1),
         sport: input.sport,
       });
-      inst.createTeam(category);
+      // Valores iniciales con el helper transitorio de jl-sprt-match (teams distintos).
+      inst.createTeam(category, initialTeam(input.sport, randomFloat));
       world.addInstitution(inst);
       return inst.getTeam(category)!;
     });

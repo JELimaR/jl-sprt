@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { JCalendar, JDateTime } from "jl-calendar";
 import { TInitialCreator, TPhaseCreator } from "../../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData } from "../../JSportModule/GeneralStageGraph/tournamentFromGSG";
-import { FootballProfile, ProfilesFactory, reseedRandom } from "jl-sprt-match";
+import { FootballProfile, ProfilesFactory, initialTeam, reseedRandom } from "jl-sprt-match";
 import { SimulationContext } from "../SimulationContext";
 import { Tournament } from "../Tournament";
 import { teamsAssign } from "../teamsAssign";
@@ -32,6 +32,7 @@ function fakeTeam(id: string): AnyTeam {
     id,
     category: 'S',
     owner: { id, name: id },
+    ...initialTeam('football', () => 0.5),
   });
 }
 

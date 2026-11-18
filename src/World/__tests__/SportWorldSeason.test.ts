@@ -6,7 +6,7 @@ import { IInstitutionCreator, Institution } from "../../JSportModule/data/Entiti
 import { LeagueSystem, ILeagueSystemCreator } from "../../JSportModule/data/Entities/LeagueSystem";
 import { TInitialCreator, TPhaseCreator } from "../../JSportModule/GeneralStageGraph/GSGCreators";
 import { ITournamentFromGSGData } from "../../JSportModule/GeneralStageGraph/tournamentFromGSG";
-import { reseedRandom } from "jl-sprt-match";
+import { initialTeam, reseedRandom } from "jl-sprt-match";
 
 // -----------------------------------------------------------------------------
 // SportWorld — Paso 4: ciclo de temporada (runSeason + closeSeason) a nivel
@@ -73,7 +73,7 @@ function buildFederationWithTeams(): Federation {
     };
     const institution = new Institution(iic);
     federation.addMember(institution);
-    institution.createTeam('S');
+    institution.createTeam('S', initialTeam(institution.sport, () => 0.5));
     federation.addInstitutionToCategory(institution, 'S');
   }
   return federation;

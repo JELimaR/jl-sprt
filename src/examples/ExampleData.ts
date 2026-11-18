@@ -1,8 +1,13 @@
 import { JDate } from "jl-calendar";
 import { Country, IFederationCreator, IFederationData, IInstitutionCreator, Institution, Town } from "../JSportModule";
-import { AnyTeam, AnySportProfile } from "jl-sprt-core";
-import { ProfilesFactory, TSport } from "jl-sprt-match";
+import { AnyTeam } from "jl-sprt-core";
+import { ProfilesFactory, TSport, initialTeam, randomFloat } from "jl-sprt-match";
 
+/**
+ * Teams de ejemplo. Cada uno recibe atributos, staff e instalaciones de su
+ * institución distintos (helper transitorio de valores iniciales de jl-sprt-match),
+ * de modo que los equipos no son todos iguales.
+ */
 export const getExampleTeams = (n: number, sport: TSport, pid: string = ''): AnyTeam[] => {
   let out: AnyTeam[] = [];
   const profile = ProfilesFactory.getProfile(sport);
@@ -19,11 +24,9 @@ export const getExampleTeams = (n: number, sport: TSport, pid: string = ''): Any
           headquarters: new Town({ i: tid, n: tid, c: cid, p: 2, a: 5 }),
           funtationDay: new JDate(13556),
           sport: sport,
+          trainingFacilities: randomFloat(),
         }),
-        init: { 
-          staff: new FootballCoachingStaff(0.2),
-          attributes: { learning: 0.2 } 
-        }
+        ...initialTeam(sport, randomFloat),
       })
     )
   }
@@ -61,7 +64,8 @@ export const getInstitutionCreators = (count: number, cid: string) => {
       id: iid, name: iid, shortName: iid, abrevName: iid,
       headquarters: new Town({ i: tid, n: tid, c: cid, p: 2, a: 5 }),
       funtationDay: new JDate(13556),
-      sport: "football"
+      sport: "football",
+      trainingFacilities: randomFloat(),
     })
 
   }
