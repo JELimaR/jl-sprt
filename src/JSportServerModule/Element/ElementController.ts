@@ -1,6 +1,7 @@
 import {
   IElementController,
   ICreateSimpleLeagueInput,
+  ICreateCupInput,
   ISimulationRef,
   IAdvanceResultDTO,
   ISimulationStateDTO,
@@ -41,7 +42,7 @@ import {
   initialTeam,
   randomFloat,
 } from "jl-sprt-match";
-import type { AnyMatch, AnyTeam } from "jl-sprt-core";
+import type { AnyMatch, AnyTeam, TypeCategory } from "jl-sprt-core";
 import type { TypeHalfWeekOfYear } from "jl-calendar";
 import type { IRankItem, TypeTableMatchState } from "../../JSportModule";
 import type { TGS } from "../../Tournament/Stage/Stage";
@@ -50,6 +51,9 @@ import type { TInitialCreator, TPhaseCreator } from "../../JSportModule/GeneralS
 
 const SOURCE_RANKING_CONTEXT = 'fr_S_SIM';
 const SIMPLE_LEAGUE_TOURNAMENT_ID = 'SIM_LEAGUE';
+const CUP_TOURNAMENT_ID = 'SIM_CUP';
+/** La copa de eliminación directa es un bracket de 64 (5 rondas: 64->32->16->8->4->2). */
+const CUP_TEAMS = 64;
 
 /** Partido + metadatos de la jornada/ronda y el torneo al que pertenece (para el DTO). */
 interface MatchWithTurn {
@@ -106,17 +110,53 @@ export class ElementController implements IElementController {
     if (!input.teams || input.teams.length < 2) {
       throw new Error(`createSimpleLeague: se requieren al menos 2 equipos (recibidos: ${input.teams?.length ?? 0}). En ElementController.createSimpleLeague`);
     }
-    const category = input.category ?? 'S';
-    const n = input.teams.length;
-    const profile = ProfilesFactory.getProfile(input.sport);
+    return this.createSimulation(
+      input.sport,
+      input.teams,
+      input.season,
+      input.category,
+      SIMPLE_LEAGUE_TOURNAMENT_ID,
+      (tournamentId) => this.buildSimpleLeagueData(tournamentId, input.teams.length, input.opt),
+    );
+  }
 
-    // UN MUNDO = UNA SIMULACIÓN. Crear una liga simple REINICIA el mundo del proceso:
+  createSingleEliminationCup(input: ICreateCupInput): ISimulationRef {
+    if (!input.teams || input.teams.length !== CUP_TEAMS) {
+      throw new Error(`createSingleEliminationCup: se requieren exactamente ${CUP_TEAMS} equipos (recibidos: ${input.teams?.length ?? 0}). En ElementController.createSingleEliminationCup`);
+    }
+    return this.createSimulation(
+      input.sport,
+      input.teams,
+      input.season,
+      input.category,
+      CUP_TOURNAMENT_ID,
+      (tournamentId) => this.buildSingleEliminationCupData(tournamentId),
+    );
+  }
+
+  /**
+   * Núcleo común de los CASOS DE USO: reinicia el mundo (un mundo = una simulación),
+   * crea las instituciones/teams, arma el ranking fuente y construye el torneo desde
+   * el GSG que provee `buildData`. Registra la sesión y devuelve su `simulationId`.
+   */
+  private createSimulation(
+    sport: ICreateSimpleLeagueInput['sport'],
+    teamsInput: ICreateSimpleLeagueInput['teams'],
+    inputSeason: number | undefined,
+    inputCategory: TypeCategory | undefined,
+    tournamentPrefix: string,
+    buildData: (tournamentId: string) => ITournamentFromGSGData,
+  ): ISimulationRef {
+    const category = inputCategory ?? 'S';
+    const profile = ProfilesFactory.getProfile(sport);
+
+    // UN MUNDO = UNA SIMULACIÓN. Crear el escenario REINICIA el mundo del proceso:
     // se descarta por completo el mundo anterior (entidades + calendario + rankings) y
     // se limpian las sesiones previas. Así nunca coexisten dos simulaciones (p. ej.
     // entrar al test, salir y volver a entrar no acumula mundos; tampoco el doble
     // montaje de React StrictMode deja una simulación extra con sus eventos).
-    const world = input.season !== undefined
-      ? SportFactoryServer.instance.resetWorld(input.season)
+    const world = inputSeason !== undefined
+      ? SportFactoryServer.instance.resetWorld(inputSeason)
       : SportFactoryServer.instance.resetWorld();
     this.handler.clear();
     const season = world.currentSeason;
@@ -128,7 +168,7 @@ export class ElementController implements IElementController {
     // 1. Crear las entidades (instituciones) EN EL MUNDO y obtener sus teams. El
     //    nombre legible queda en la Institution; el team lo expone vía `name`.
     const uniq = this.handler.genId();
-    const teams: AnyTeam[] = input.teams.map((t, i) => {
+    const teams: AnyTeam[] = teamsInput.map((t, i) => {
       const instId = t.id ?? `${uniq}-inst-${i}`;
       // Town placeholder del mundo (geografía real se cargará vía EntityController).
       const townId = `TWN_${instId}`;
@@ -142,10 +182,10 @@ export class ElementController implements IElementController {
         abrevName: t.name.slice(0, 3).toUpperCase(),
         headquarters: world.getTown(townId)!,
         funtationDay: new JDate(1),
-        sport: input.sport,
+        sport,
       });
       // Valores iniciales con el helper transitorio de jl-sprt-match (teams distintos).
-      inst.createTeam(category, initialTeam(input.sport, randomFloat));
+      inst.createTeam(category, initialTeam(sport, randomFloat));
       world.addInstitution(inst);
       return inst.getTeam(category)!;
     });
@@ -159,10 +199,9 @@ export class ElementController implements IElementController {
     const sourceRanking = Ranking.fromRankItemArr(SOURCE_RANKING_CONTEXT, rankItems);
     ctx.store.set(sourceRanking.context, sourceRanking);
 
-    // 3. Construir el torneo (1 fase, 1 grupo) desde el GSG. Id único por sesión para
-    //    que varias simulaciones coexistan en el mismo mundo sin colisionar.
-    const tournamentId = `${SIMPLE_LEAGUE_TOURNAMENT_ID}_${uniq}`;
-    const data = this.buildSimpleLeagueData(tournamentId, n, input.opt);
+    // 3. Construir el torneo desde el GSG. Id único por sesión.
+    const tournamentId = `${tournamentPrefix}_${uniq}`;
+    const data = buildData(tournamentId);
     const tournament = Tournament.create({ id: tournamentId, season }, data, ctx, profile);
 
     // teamsAssign resuelve el ranking inicial (ini_) desde el store y agenda el draw.
@@ -170,7 +209,7 @@ export class ElementController implements IElementController {
 
     const tournaments = new Map<string, Tournament>();
     tournaments.set(tournamentId, tournament);
-    this.handler.add({ id: uniq, world, ctx, sport: input.sport, tournaments });
+    this.handler.add({ id: uniq, world, ctx, sport, tournaments });
     return { simulationId: uniq };
   }
 
@@ -497,6 +536,56 @@ export class ElementController implements IElementController {
     const schedList = Array.from({ length: turnsCount }, (_, i) => 3 + i * 2) as TypeHalfWeekOfYear[];
     return {
       name: 'Simple League',
+      gsgData: { initialCreator: iniCreator, phaseArr },
+      matchList,
+      schedList,
+      qualyRules: [],
+    };
+  }
+
+  /**
+   * [CASO DE USO] GSG data para una COPA de eliminación directa de 64 equipos.
+   * Helper exclusivo de `createSingleEliminationCup`, no de la API real.
+   *
+   * Estructura en 2 fases:
+   *  - Fase 1: un StagePlayoff IDA/VUELTA ('h&a') de 5 rondas (64->32->16->8->4->2).
+   *    Un playoff de R rondas produce R+1 rank groups (los cortes por ronda):
+   *    [finalistas(2), perd_r5(2), perd_r4(4), perd_r3(8), perd_r2(16), perd_r1(32)] = 6.
+   *  - Fase 2: la FINAL en campo NEUTRAL (StagePlayoff de 1 ronda sobre los 2
+   *    finalistas) + 5 `transfer` que arrastran las ramas eliminadas al FinalNode
+   *    (verifyPhaseCreator exige consumir los 6 rank groups de la fase 1).
+   *
+   * Fechas: 10 del bracket (5 rondas h&a, pares ida/vuelta) + 1 final = 11.
+   */
+  private buildSingleEliminationCupData(tournamentId: string): ITournamentFromGSGData {
+    const n = CUP_TEAMS;
+    const iniCreator: TInitialCreator = {
+      tournamentId,
+      qualyrankList: Array.from({ length: n }, (_, i) => ({ origin: SOURCE_RANKING_CONTEXT, pos: i + 1 })),
+      rankGroupNumbers: [n], // un único bracket de 64
+    };
+    const phaseArr: TPhaseCreator[] = [
+      // Fase 1: bracket h&a de 5 rondas. Produce 6 rank groups.
+      { id: 1, stages: [{ count: 1, stage: { type: 'playoff', opt: 'h&a', value: 5 } }] },
+      // Fase 2: FINAL neutral (consume los 2 finalistas) + arrastre de las 5 ramas
+      // eliminadas (consume los 6 rank groups de la fase 1: 1 final + 5 transfer).
+      {
+        id: 2,
+        stages: [
+          { count: 1, stage: { type: 'playoff', opt: 'neutral', value: 1 } }, // FINAL: 2 -> campeón
+          { count: 1, stage: { type: 'transfer' } }, // perd_r5
+          { count: 1, stage: { type: 'transfer' } }, // perd_r4
+          { count: 1, stage: { type: 'transfer' } }, // perd_r3
+          { count: 1, stage: { type: 'transfer' } }, // perd_r2
+          { count: 1, stage: { type: 'transfer' } }, // perd_r1
+        ],
+      },
+    ];
+    // 10 fechas del bracket (5 rondas h&a, pares ida/vuelta) + 1 final neutral = 11.
+    const matchList = [10, 12, 18, 20, 26, 28, 34, 36, 42, 44, 50] as TypeHalfWeekOfYear[];
+    const schedList = [8, 8, 16, 16, 24, 24, 32, 32, 40, 40, 46] as TypeHalfWeekOfYear[];
+    return {
+      name: 'Single Elimination Cup',
       gsgData: { initialCreator: iniCreator, phaseArr },
       matchList,
       schedList,

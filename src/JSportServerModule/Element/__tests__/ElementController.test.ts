@@ -3,6 +3,7 @@ import { SportServerAPI } from "../../../JSportServerModule";
 import { SportFactoryServer } from "../../SportFactoryServer";
 import type {
   ICreateSimpleLeagueInput,
+  ICreateCupInput,
   IMatchDTO,
   IStandingRowDTO,
 } from "../../../JSportModule";
@@ -416,5 +417,104 @@ describe("ElementController - vistas de equipo (team)", () => {
     const tournamentId = api.getTeamTournaments(simulationId, teamId)[0].tournamentId;
     const byTournament = api.getTeamMatches(simulationId, teamId, tournamentId);
     expect(byTournament.length).toBe(all.length);
+  });
+});
+
+// -----------------------------------------------------------------------------
+// Caso de uso 2 — Copa de eliminación directa: 64 equipos, rondas ida/vuelta
+// (5 rondas: 64->32->16->8->4->2) y la FINAL en campo neutral (partido único).
+// Total de partidos: 2 * (32 + 16 + 8 + 4 + 2) + 1 = 125.
+// -----------------------------------------------------------------------------
+
+/** Input de copa de N equipos con nombres legibles (la copa exige 64). */
+function cupInput(n = 64, overrides: Partial<ICreateCupInput> = {}): ICreateCupInput {
+  return {
+    sport: "football",
+    teams: Array.from({ length: n }, (_, i) => ({ id: `C${i}`, name: `Club ${i}` })),
+    ...overrides,
+  };
+}
+
+const CUP_TOTAL_MATCHES = 2 * (32 + 16 + 8 + 4 + 2) + 1;
+
+describe("ElementController - createSingleEliminationCup", () => {
+  it("crea la sesión con 64 equipos y devuelve un simulationId", () => {
+    const api = elements();
+    const { simulationId } = api.createSingleEliminationCup(cupInput());
+    expect(typeof simulationId).toBe("string");
+    expect(simulationId.length).toBeGreaterThan(0);
+
+    const state = api.getState(simulationId);
+    expect(state.finished).toBe(false);
+    expect(state.canAdvance).toBe(true);
+  });
+
+  it("lanza si no son exactamente 64 equipos", () => {
+    const api = elements();
+    expect(() => api.createSingleEliminationCup(cupInput(32))).toThrow(/exactamente 64/);
+    expect(() => api.createSingleEliminationCup(cupInput(65))).toThrow(/exactamente 64/);
+  });
+
+  it("runAll termina la copa: todos los partidos finished y 125 en total", () => {
+    const api = elements();
+    const { simulationId } = api.createSingleEliminationCup(cupInput());
+    const result = api.runAll(simulationId);
+
+    expect(result.state.finished).toBe(true);
+    const matches = api.getMatches(simulationId);
+    expect(matches.length).toBe(CUP_TOTAL_MATCHES);
+    matches.forEach((m) => {
+      expect(m.state).toBe("finished");
+      expect(m.tournamentName).toBe("Single Elimination Cup");
+    });
+  });
+
+  it("la final es un único partido y es el último de la copa", () => {
+    const api = elements();
+    const { simulationId } = api.createSingleEliminationCup(cupInput());
+    api.runAll(simulationId);
+
+    const matches = [...api.getMatches(simulationId)].sort(
+      (a, b) => a.date.absolute - b.date.absolute,
+    );
+    const final = matches[matches.length - 1];
+    // Ningún otro partido comparte la fecha de la final (partido único, neutral).
+    const sameDate = matches.filter((m) => m.date.absolute === final.date.absolute);
+    expect(sameDate.length).toBe(1);
+    // La final define un ganador (no hay empate en una final de eliminación).
+    expect(["home", "away"]).toContain(final.winner);
+  });
+
+  it("cada equipo juega una cantidad de partidos coherente con su eliminación", () => {
+    const api = elements();
+    const { simulationId } = api.createSingleEliminationCup(cupInput());
+    api.runAll(simulationId);
+
+    // Eliminado en ronda r (1..5) juega 2r partidos; los finalistas juegan 2*5 + 1.
+    const valid = new Set([2, 4, 6, 8, 10, 11]);
+    const counts = new Map<number, number>();
+    for (let i = 0; i < 64; i++) {
+      const teamId = `S_C${i}`; // id del team = `${category}_${institutionId}`
+      const n = api.getTeamMatches(simulationId, teamId).length;
+      expect(valid.has(n)).toBe(true);
+      counts.set(n, (counts.get(n) ?? 0) + 1);
+    }
+    // Distribución del bracket: 32/16/8/4/2 eliminados por ronda (r1..r5) y los 2
+    // finalistas (que suman la final). 32+16+8+4+2+2 = 64.
+    expect(counts.get(2)).toBe(32);
+    expect(counts.get(4)).toBe(16);
+    expect(counts.get(6)).toBe(8);
+    expect(counts.get(8)).toBe(4);
+    expect(counts.get(10)).toBe(2);
+    expect(counts.get(11)).toBe(2);
+  });
+
+  it("crear la copa reinicia el mundo: una liga previa deja de existir", () => {
+    const api = elements();
+    const league = api.createSimpleLeague(leagueInput(4)).simulationId;
+    const cup = api.createSingleEliminationCup(cupInput()).simulationId;
+    expect(cup).not.toBe(league);
+    expect(() => api.getState(league)).toThrow();
+    expect(api.getState(cup).finished).toBe(false);
   });
 });

@@ -239,6 +239,20 @@ export interface ICreateSimpleLeagueInput {
   category?: TypeCategory;
 }
 
+/**
+ * [CASO DE USO] Input para crear una COPA de eliminación directa. Formato fijo del
+ * escenario: 64 equipos, rondas de ida y vuelta (h&a) y la FINAL en campo neutral.
+ */
+export interface ICreateCupInput {
+  sport: TSport;
+  /** Equipos participantes. Deben ser exactamente 64 (bracket de 5 rondas). */
+  teams: ISimpleLeagueTeamInput[];
+  /** Temporada (año del modelo). Si se omite, la API usa una por defecto. */
+  season?: number;
+  /** Categoría de los equipos. Si se omite, 'S'. */
+  category?: TypeCategory;
+}
+
 // ----------------------------------------------------------------------------
 // Controller
 // ----------------------------------------------------------------------------
@@ -355,4 +369,10 @@ export interface IElementController {
 
   /** [CASO DE USO] Crea una simulación de liga simple y la deja lista para avanzar. */
   createSimpleLeague(input: ICreateSimpleLeagueInput): ISimulationRef;
+
+  /**
+   * [CASO DE USO] Crea una simulación de COPA de eliminación directa (64 equipos,
+   * rondas ida/vuelta, final en campo neutral) y la deja lista para avanzar.
+   */
+  createSingleEliminationCup(input: ICreateCupInput): ISimulationRef;
 }

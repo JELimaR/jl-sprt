@@ -101,6 +101,7 @@ export type {
   ISimulationStateDTO,
   ISimpleLeagueTeamInput,
   ICreateSimpleLeagueInput,
+  ICreateCupInput,
   ISimulationRef,
   IAdvanceResultDTO,
   FixtureParticipantRefDTO,
