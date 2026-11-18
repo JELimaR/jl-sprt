@@ -42,10 +42,16 @@ export class Round {
 		return out;
 	}
 
+	/**
+	 * Perdedores de las series YA TERMINADAS de la ronda. Las series en curso se
+	 * omiten: la tabla parcial (getTable) se consulta en cualquier momento de la
+	 * simulación, también entre la ida y la vuelta, y `serie.loser` lanza si la serie
+	 * no terminó.
+	 */
 	get losers(): AnyTeam[] {
 		let out: AnyTeam[] = [];
 		this._series.forEach((s) => {
-			out.push(s.loser)
+			if (s.isFinished) out.push(s.loser)
 		})
 		return out;
 	}
