@@ -15,35 +15,29 @@ export interface IPaletteColor {
   readonly weight: number;
 }
 
-/** Colores de club, ponderados por lo frecuentes que son (como la paleta de myFPL). */
+/** Colores de club, ponderados por lo frecuentes que son (tonos estilo myFPL). */
 export const KIT_PALETTE: readonly IPaletteColor[] = Object.freeze([
   { id: 'white', name: 'Blanco', hex: '#ffffff', weight: 14 },
-  { id: 'black', name: 'Negro', hex: '#111111', weight: 10 },
-  { id: 'red', name: 'Rojo', hex: '#d21f2b', weight: 14 },
-  { id: 'blue', name: 'Azul', hex: '#1f4fa8', weight: 13 },
-  { id: 'navy', name: 'Azul marino', hex: '#14213d', weight: 8 },
-  { id: 'sky', name: 'Celeste', hex: '#74b3e0', weight: 6 },
-  { id: 'green', name: 'Verde', hex: '#1b8a3a', weight: 7 },
-  { id: 'yellow', name: 'Amarillo', hex: '#f5c400', weight: 6 },
-  { id: 'maroon', name: 'Granate', hex: '#7a1f2b', weight: 5 },
-  { id: 'orange', name: 'Naranja', hex: '#f07c1d', weight: 4 },
-  { id: 'purple', name: 'Violeta', hex: '#5b2a86', weight: 3 },
-  { id: 'burgundy', name: 'Bordó oscuro', hex: '#4a0f1c', weight: 2 },
-  { id: 'grey', name: 'Gris', hex: '#8a8d91', weight: 2 },
-  { id: 'gold', name: 'Dorado', hex: '#c9a227', weight: 2 },
-  { id: 'pink', name: 'Rosa', hex: '#e86aa6', weight: 1 },
-  { id: 'teal', name: 'Verde agua', hex: '#1aa59a', weight: 1 },
+  { id: 'black', name: 'Negro', hex: '#15161a', weight: 10 },
+  { id: 'grey', name: 'Gris', hex: '#9aa0a8', weight: 3 },
+  { id: 'red', name: 'Rojo', hex: '#d62828', weight: 14 },
+  { id: 'orange', name: 'Naranja', hex: '#e8590c', weight: 4 },
+  { id: 'yellow', name: 'Amarillo', hex: '#f4c91a', weight: 6 },
+  { id: 'green', name: 'Verde', hex: '#23c46e', weight: 7 },
+  { id: 'sky', name: 'Celeste', hex: '#5aa9e6', weight: 8 },
+  { id: 'navy', name: 'Azul marino', hex: '#16235a', weight: 12 },
+  { id: 'purple', name: 'Violeta', hex: '#6d28d9', weight: 3 },
 ]);
 
 /** Colores de las equipaciones especiales (arquero, líbero). */
 export const SPECIAL_KIT_PALETTE: readonly IPaletteColor[] = Object.freeze([
-  { id: 'green', name: 'Verde', hex: '#1b8a3a', weight: 5 },
-  { id: 'yellow', name: 'Amarillo', hex: '#f5c400', weight: 5 },
-  { id: 'orange', name: 'Naranja', hex: '#f07c1d', weight: 4 },
-  { id: 'black', name: 'Negro', hex: '#111111', weight: 4 },
-  { id: 'grey', name: 'Gris', hex: '#8a8d91', weight: 3 },
-  { id: 'pink', name: 'Rosa', hex: '#e86aa6', weight: 2 },
-  { id: 'lime', name: 'Lima', hex: '#a8d81c', weight: 3 },
+  { id: 'green', name: 'Verde', hex: '#23c46e', weight: 5 },
+  { id: 'yellow', name: 'Amarillo', hex: '#f4c91a', weight: 5 },
+  { id: 'orange', name: 'Naranja', hex: '#e8590c', weight: 4 },
+  { id: 'black', name: 'Negro', hex: '#15161a', weight: 4 },
+  { id: 'grey', name: 'Gris', hex: '#9aa0a8', weight: 3 },
+  { id: 'purple', name: 'Violeta', hex: '#6d28d9', weight: 2 },
+  { id: 'sky', name: 'Celeste', hex: '#5aa9e6', weight: 2 },
 ]);
 
 export interface IKitParams {

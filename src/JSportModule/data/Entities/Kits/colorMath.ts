@@ -12,7 +12,7 @@ export type HexColor = string;
 const HEX_COLOR = /^#[0-9a-fA-F]{6}$/;
 
 export const KIT_WHITE: HexColor = '#ffffff';
-export const KIT_BLACK: HexColor = '#111111';
+export const KIT_BLACK: HexColor = '#15161a';
 
 export function isHexColor(value: unknown): value is HexColor {
   return typeof value === 'string' && HEX_COLOR.test(value);

@@ -49,20 +49,20 @@ Además, sobre `kit&colors.md`:
 
 Un catálogo fijo de colores con nombre y peso, en `jl-sprt`. Lo usan el generador (para elegir) y el visualizador (como muestras en los selectores, igual que myFPL). El editor también acepta un hex libre.
 
-| Color | Hex (aprox.) | Peso |
+| Color | Hex | Peso |
 |---|---|---|
 | Blanco | `#ffffff` | 14 |
-| Negro | `#111111` | 10 |
-| Rojo | `#d21f2b` | 14 |
-| Azul | `#1f4fa8` | 13 |
-| Azul marino | `#14213d` | 8 |
-| Celeste | `#74b3e0` | 6 |
-| Verde | `#1b8a3a` | 7 |
-| Amarillo | `#f5c400` | 6 |
-| Granate | `#7a1f2b` | 5 |
-| Naranja | `#f07c1d` | 4 |
-| Violeta | `#5b2a86` | 3 |
-| Bordó oscuro, gris, dorado, rosa, verde agua | ... | 1 a 2 |
+| Negro | `#15161a` | 10 |
+| Gris | `#9aa0a8` | 3 |
+| Rojo | `#d62828` | 14 |
+| Naranja | `#e8590c` | 4 |
+| Amarillo | `#f4c91a` | 6 |
+| Verde | `#23c46e` | 7 |
+| Celeste | `#5aa9e6` | 8 |
+| Azul marino | `#16235a` | 12 |
+| Violeta | `#6d28d9` | 3 |
+
+Las equipaciones especiales (arquero, líbero) usan un subconjunto: verde, amarillo, naranja, negro, gris, violeta y celeste.
 
 Los pesos son iniciales y pueden quedar como parámetros, igual que los de los motores.
 
