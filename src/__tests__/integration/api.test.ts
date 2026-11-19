@@ -46,8 +46,8 @@ function towns(): ITownData[] {
 }
 function institutions(): IInstitutionData[] {
   return [
-    { i: 'I1', ab: 'I1', sn: 'Inst 1', n: 'Institution 1', hq: '1', fd: 100 },
-    { i: 'I2', ab: 'I2', sn: 'Inst 2', n: 'Institution 2', hq: '2', fd: 200 },
+    { i: 'I1', ab: 'I1', sn: 'Inst 1', n: 'Institution 1', hq: '1', fd: 100, sp: 'football' },
+    { i: 'I2', ab: 'I2', sn: 'Inst 2', n: 'Institution 2', hq: '2', fd: 200, sp: 'football' },
   ];
 }
 function federations(): IFederationData[] {
@@ -98,7 +98,7 @@ describe("Integración - API de entidades (EntityController end-to-end)", () => 
     expect(f1.ms).toEqual(['I1']);
 
     // getFederationById devuelve los datos de una federación puntual
-    expect(entities.getFederationById('2').n).toBe('Federation 2');
+    expect(entities.getFederationById('2')!.n).toBe('Federation 2');
 
     // 4) confederaciones
     confederations().forEach((conf) => {
