@@ -15,6 +15,7 @@ import {
   FixtureParticipantRefDTO,
   ITeamDTO,
   ITeamTournamentDTO,
+  IMatchTeamKitDTO,
 } from "../../JSportModule";
 import type { FixtureParticipantRef, IFixtureSlot } from "../../Tournament/Stage/Fixture";
 import { ElementHandler, ISimulationSession } from "./ElementHandler";
@@ -28,7 +29,7 @@ import { League } from "../../Tournament/Stage/StageGroup/League/League";
 import { Ranking } from "../../JSportModule/Ranking/Ranking";
 import { Institution } from "../../JSportModule/data/Entities/Institution";
 import { Town } from "../../JSportModule/data/Entities/GeogEntity";
-import { pickKitColors } from "../../JSportModule/data/Entities/kitColors";
+import { IKitSet, IMatchKitChoice, selectMatchKits, shirtDominant, webColorsOf } from "../../JSportModule/data/Entities/Kits";
 import { teamsAssign } from "../../Tournament/teamsAssign";
 import { JDate, JDateTime, DateToString } from "jl-calendar";
 import type { JEvent } from "jl-calendar";
@@ -349,11 +350,9 @@ export class ElementController implements IElementController {
     if (!s) return null;
     const team = this.findTeam(s, teamId);
     if (!team) return null;
-    // Colores de camiseta: los de la institución del team (misma fuente que el DTO de
-    // entidad). Si la institución no estuviera en el mundo, se derivan por id.
-    const inst = s.world.getInstitution(team.entity.id);
-    const primaryColor = inst ? inst.primaryColor : pickKitColors(team.entity.id).primary;
-    const secondaryColor = inst ? inst.secondaryColor : pickKitColors(team.entity.id).secondary;
+    // Colores y equipaciones: los de la institución del team (misma fuente que el DTO
+    // de entidad). Toda institución de una simulación está en el mundo.
+    const inst = this.requireInstitutionOf(s, team);
     return {
       teamId: team.id,
       name: team.name,
@@ -361,8 +360,9 @@ export class ElementController implements IElementController {
       institutionId: team.entity.id,
       institutionName: team.entity.name,
       sport: s.sport,
-      primaryColor,
-      secondaryColor,
+      identityColors: [...inst.identity.colors],
+      webColors: inst.webColors(),
+      kits: inst.kits,
     };
   }
 
@@ -398,7 +398,7 @@ export class ElementController implements IElementController {
     tournaments.forEach((t) => {
       this.allMatchesWithTurn(t).forEach((mt) => {
         if (mt.match.homeTeam.id === teamId || mt.match.awayTeam.id === teamId) {
-          matches.push(this.toMatchDTO(mt));
+          matches.push(this.toMatchDTO(s, mt));
         }
       });
     });
@@ -606,9 +606,27 @@ export class ElementController implements IElementController {
     };
   }
 
-  private toMatchDTO(mt: MatchWithTurn): IMatchDTO {
+  /** Institución de un team. Lanza si no está en el mundo (invariante de la simulación). */
+  private requireInstitutionOf(s: ISimulationSession, team: { id: string; entity: { id: string } }): Institution {
+    const inst = s.world.getInstitution(team.entity.id);
+    if (!inst) throw new Error(`team ${team.id}: institution '${team.entity.id}' is not in the world`);
+    return inst;
+  }
+
+  private toMatchTeamKitDTO(kits: IKitSet, choice: IMatchKitChoice): IMatchTeamKitDTO {
+    const field = kits[choice.field];
+    const special: IMatchTeamKitDTO['special'] = {};
+    for (const [position, slot] of Object.entries(choice.special)) special[position] = { slot, kit: kits[slot] };
+    return { fieldSlot: choice.field, field, web: webColorsOf(shirtDominant(field)), special };
+  }
+
+  private toMatchDTO(s: ISimulationSession, mt: MatchWithTurn): IMatchDTO {
     const m = mt.match;
     const res = m.result;
+    // Equipaciones del partido: las decide el dominio (choque por ΔE), no la interfaz.
+    const homeKits = this.requireInstitutionOf(s, m.homeTeam).kits;
+    const awayKits = this.requireInstitutionOf(s, m.awayTeam).kits;
+    const kitSelection = selectMatchKits(ProfilesFactory.getProfile(s.sport).kitSpec, homeKits, awayKits);
     const homeId = m.homeTeam.id;
     const awayId = m.awayTeam.id;
     let homeScore = 0;
@@ -640,6 +658,9 @@ export class ElementController implements IElementController {
       homeName: m.homeTeam.name,
       awayTeamId: awayId,
       awayName: m.awayTeam.name,
+      homeKit: this.toMatchTeamKitDTO(homeKits, kitSelection.home),
+      awayKit: this.toMatchTeamKitDTO(awayKits, kitSelection.away),
+      awayKitChanged: kitSelection.awayChanged,
       state: m.state as MatchStateDTO,
       homeScore,
       awayScore,
@@ -654,7 +675,7 @@ export class ElementController implements IElementController {
 
   private buildMatches(s: ISimulationSession): IMatchDTO[] {
     const t = this.requireTournament(s);
-    return this.allMatchesWithTurn(t).map((mt) => this.toMatchDTO(mt));
+    return this.allMatchesWithTurn(t).map((mt) => this.toMatchDTO(s, mt));
   }
 
   private toParticipantRefDTO(teamsById: Map<string, AnyTeam>, ref: FixtureParticipantRef): FixtureParticipantRefDTO {

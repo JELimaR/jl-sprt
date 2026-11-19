@@ -2,6 +2,7 @@ import { Continent, Country, Federation, IContinentData, ICountryData, IFederati
 import { Confederation, IConfederationData } from "./data/Entities/Confederation";
 import type { TypeCategory } from "jl-sprt-core";
 import type { TSport } from "jl-sprt-match";
+import type { HexColor, IKitSet, IWebColors } from "./data/Entities/Kits";
 
 // El contrato del ElementController (operaciones + DTOs) vive en elementInterfaces.
 import type { IElementController } from "./elementInterfaces";
@@ -22,9 +23,16 @@ export interface ITeamEntityDTO {
   category: TypeCategory;
   name: string;
   sport: TSport;
-  /** Colores de camiseta heredados de la institución (hex). */
+  /** @deprecated Usar `webColors.bg`. */
   primaryColor: string;
+  /** @deprecated Usar `webColors.fg`. */
   secondaryColor: string;
+  /** Colores institucionales (1 a 4); el primero es el principal. */
+  identityColors: HexColor[];
+  /** Colores de interfaz de la institución. */
+  webColors: IWebColors;
+  /** Equipaciones de la institución, por id de equipación del deporte. */
+  kits: IKitSet;
 }
 export interface ISportAPIController { 
   

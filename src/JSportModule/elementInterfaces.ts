@@ -20,6 +20,7 @@
 import type { IJDateTime } from 'jl-calendar';
 import type { TSport } from 'jl-sprt-match';
 import type { TypeBaseStageOption, TypeCategory } from 'jl-sprt-core';
+import type { HexColor, IKitDesign, IKitSet, IWebColors } from './data/Entities/Kits';
 
 // ----------------------------------------------------------------------------
 // DTOs comunes
@@ -61,6 +62,17 @@ export interface SetScoreDTO {
  */
 export type MatchWinnerDTO = 'home' | 'away' | 'draw' | null;
 
+/** Equipaciones que usa un equipo en un partido (las elige el dominio). */
+export interface IMatchTeamKitDTO {
+  /** Id de la equipación de campo ('home', 'away', 'third'). */
+  fieldSlot: string;
+  field: IKitDesign;
+  /** Colores de interfaz del equipo en este partido (dominante de su camiseta). */
+  web: IWebColors;
+  /** Equipación de cada puesto especial ('goalkeeper' -> { slot: 'gk1', kit }). */
+  special: Record<string, { slot: string; kit: IKitDesign }>;
+}
+
 /** Vista plana de un partido. */
 export interface IMatchDTO {
   id: string;
@@ -73,6 +85,10 @@ export interface IMatchDTO {
   homeName: string;
   awayTeamId: string;
   awayName: string;
+  homeKit: IMatchTeamKitDTO;
+  awayKit: IMatchTeamKitDTO;
+  /** true si el visitante no usa su titular porque chocaba con la del local. */
+  awayKitChanged: boolean;
   state: MatchStateDTO;
   /** Marcador numérico comparable (incluye parcial si está en juego). */
   homeScore: number;
@@ -191,9 +207,12 @@ export interface ITeamDTO {
   institutionId: string;
   institutionName: string;
   sport: TSport;
-  /** Colores de camiseta heredados de la institución (hex). */
-  primaryColor: string;
-  secondaryColor: string;
+  /** Colores institucionales (1 a 4); el primero es el principal. */
+  identityColors: HexColor[];
+  /** Colores de interfaz de la institución. */
+  webColors: IWebColors;
+  /** Equipaciones de la institución, por id de equipación del deporte. */
+  kits: IKitSet;
   // futuro: federationId?: string;  // selecciones (cuando el modelo lo soporte)
 }
 

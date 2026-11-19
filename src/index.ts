@@ -95,6 +95,7 @@ export type {
   SetScoreDTO,
   MatchWinnerDTO,
   IMatchDTO,
+  IMatchTeamKitDTO,
   IStandingRowDTO,
   EventKindDTO,
   ICalendarEventDTO,
@@ -125,6 +126,22 @@ export { Federation } from './JSportModule/data/Entities/Federation';
 export type { IFederationData, IFederationCreator } from './JSportModule/data/Entities/Federation';
 export { Confederation } from './JSportModule/data/Entities/Confederation';
 export type { IConfederationData } from './JSportModule/data/Entities/Confederation';
+
+// Kits: identidad cromática y equipaciones (generación, validación, choques)
+export {
+  KIT_PALETTE, SPECIAL_KIT_PALETTE, KIT_PARAMS, SHIRT_PATTERNS, COLLAR_TYPES, KIT_WHITE, KIT_BLACK,
+  isHexColor, relativeLuminance, contrastRatio, readableTextColor, deltaE,
+  shirtDominant, webColorsOf,
+  assertIdentity, assertKitDesign, assertKitSet,
+  kitDesignToData, kitDesignFromData, kitSetToData, kitSetFromData,
+  generateIdentity, generateInstitutionKits,
+  selectMatchKits,
+} from './JSportModule/data/Entities/Kits';
+export type {
+  HexColor, ShirtPattern, CollarType, IShirtDesign, IShortsDesign, ISocksDesign, IKitDesign, IKitSet,
+  IInstitutionIdentity, IInstitutionKits, IWebColors, IPaletteColor, IKitParams,
+  IKitData, IKitSetData, IMatchKitChoice, IMatchKitsSelection,
+} from './JSportModule/data/Entities/Kits';
 
 // Geographic Entities
 export { Continent, Country, Town } from './JSportModule/data/Entities/GeogEntity';

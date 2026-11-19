@@ -7,6 +7,7 @@ import {
   IInstitutionData, IInstitutionCreator, Institution,
   CupSystem, IPaginationData, ITeamEntityDTO,
 } from "../../JSportModule";
+import { kitSetFromData } from "../../JSportModule/data/Entities/Kits";
 import { TypeCategoryList, CATEGORIES, TypeCategory } from "jl-sprt-core";
 import { LeagueSystem } from "../../JSportModule/data/Entities/LeagueSystem";
 import { SportFactoryServer } from "../SportFactoryServer";
@@ -166,7 +167,8 @@ export class EntityController implements IEntityController {
     const creator: IInstitutionCreator = {
       id: data.i, name: data.n, shortName: data.sn, abrevName: data.ab,
       headquarters: town, funtationDay: new JDate(data.fd), sport: data.sp,
-      primaryColor: data.pc, secondaryColor: data.sc,
+      identity: data.ic ? { colors: data.ic } : undefined,
+      kits: data.kt ? kitSetFromData(data.kt) : undefined,
     };
     return this.world.addInstitution(new Institution(creator));
   }
@@ -190,6 +192,9 @@ export class EntityController implements IEntityController {
       sport: inst.sport,
       primaryColor: inst.primaryColor,
       secondaryColor: inst.secondaryColor,
+      identityColors: [...inst.identity.colors],
+      webColors: inst.webColors(),
+      kits: inst.kits,
     }));
   }
 

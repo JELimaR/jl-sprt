@@ -1,9 +1,12 @@
 import { Town } from "..";
 import { JDate } from "jl-calendar";
 import { TDC } from "../../patterns/templateDataCreator";
-import { AnyTeam, CATEGORIES, ITeamInit, TypeCategory, TypeCategoryList, assertUnitInterval } from "jl-sprt-core";
+import { AnyTeam, CATEGORIES, IKitSpec, ITeamInit, TypeCategory, TypeCategoryList, assertUnitInterval } from "jl-sprt-core";
 import { ProfilesFactory, TSport } from "jl-sprt-match";
-import { IKitColors, pickKitColors } from "./kitColors";
+import {
+  HexColor, IInstitutionIdentity, IInstitutionKits, IKitSet, IKitSetData, IWebColors,
+  assertIdentity, assertKitSet, generateInstitutionKits, kitSetToData, shirtDominant, webColorsOf,
+} from "./Kits";
 
 export interface IInstitutionData {
   i: string; // id
@@ -14,11 +17,11 @@ export interface IInstitutionData {
   fd: number; // funtationDay
   sp: TSport; // sport
   /**
-   * Colores de camiseta (hex). OPCIONALES en la ENTRADA (si no vienen, se asignan de
-   * forma determinística por id). En la SALIDA de `getData()` siempre vienen definidos.
+   * Colores institucionales y equipaciones. Opcionales en la ENTRADA (si faltan, se
+   * generan por id); en la SALIDA de `getData()` siempre vienen.
    */
-  pc?: string; // primaryColor
-  sc?: string; // secondaryColor
+  ic?: HexColor[];   // identity colors
+  kt?: IKitSetData;  // kits, por id de equipación
 }
 
 
@@ -31,11 +34,14 @@ export interface IInstitutionCreator {
   funtationDay: JDate; // funtationDay
   sport: TSport; // sport
   /**
-   * Colores de camiseta. Opcionales: si no se proveen, se asignan de forma
-   * determinística a partir del `id` (misma institución → mismos colores).
+   * Colores institucionales. Opcional: si falta, se genera a partir del `id`.
    */
-  primaryColor?: string;
-  secondaryColor?: string;
+  identity?: IInstitutionIdentity;
+  /**
+   * Equipaciones. Opcional: si falta, se generan a partir del `id` (con `identity` si
+   * vino). Si viene, debe venir `identity` y cumplir el `kitSpec` del deporte.
+   */
+  kits?: IKitSet;
   /**
    * Calidad de las instalaciones de entrenamiento (0..1). Si falta, los teams usan el
    * valor por defecto de jl-sprt-core. A futuro se descompone (físico, recuperación...).
@@ -50,11 +56,28 @@ export interface IInstitutionCreator {
 
 export class Institution extends TDC<IInstitutionData, IInstitutionCreator> {
   _teams: TypeCategoryList<AnyTeam> = {};
+  private readonly _kits: IInstitutionKits;
 
   constructor(iic: IInstitutionCreator) {
     super(iic)
     if (iic.trainingFacilities !== undefined) assertUnitInterval('trainingFacilities', iic.trainingFacilities);
     if (iic.coordination !== undefined) assertUnitInterval('coordination', iic.coordination);
+    this._kits = Institution.resolveKits(iic, ProfilesFactory.getProfile(iic.sport).kitSpec);
+  }
+
+  /**
+   * Identidad y equipaciones, una sola vez al crear. Si vienen, se validan y se usan
+   * tal cual (nunca se regeneran); si no, se generan por id.
+   */
+  private static resolveKits(iic: IInstitutionCreator, spec: IKitSpec): IInstitutionKits {
+    if (iic.kits) {
+      if (!iic.identity) throw new Error(`institution ${iic.id}: kits requires identity`);
+      assertIdentity(iic.identity);
+      assertKitSet(iic.kits, spec);
+      return { identity: { colors: [...iic.identity.colors] }, kits: { ...iic.kits } };
+    }
+    if (iic.identity) return generateInstitutionKits(iic.id, spec, iic.identity);
+    return generateInstitutionKits(iic.id, spec);
   }
 
   /** Implementa `ITeamOwner.trainingFacilities`: lo leen los teams de la institución. */
@@ -69,19 +92,20 @@ export class Institution extends TDC<IInstitutionData, IInstitutionCreator> {
   get sport(): TSport { return this.info.sport; }
   get headquarters(): Town { return this.info.headquarters; }
 
-  /** Colores de camiseta: los del creator, o un par determinístico por id si faltan. */
-  private _kit?: IKitColors;
-  private get kit(): IKitColors {
-    if (!this._kit) {
-      this._kit =
-        this.info.primaryColor && this.info.secondaryColor
-          ? { primary: this.info.primaryColor, secondary: this.info.secondaryColor }
-          : pickKitColors(this.info.id);
-    }
-    return this._kit;
+  /** Colores institucionales. */
+  get identity(): IInstitutionIdentity { return this._kits.identity; }
+  /** Equipaciones, por id de equipación del deporte. */
+  get kits(): IKitSet { return this._kits.kits; }
+
+  /** Colores de interfaz de la institución, a partir de su color principal. */
+  webColors(): IWebColors { return webColorsOf(this._kits.identity.colors[0]); }
+
+  /** Colores de interfaz de una equipación, a partir del dominante de su camiseta. */
+  kitWebColors(slotId: string): IWebColors {
+    const kit = this._kits.kits[slotId];
+    if (!kit) throw new Error(`institution ${this.id} has no kit '${slotId}'`);
+    return webColorsOf(shirtDominant(kit));
   }
-  get primaryColor(): string { return this.kit.primary; }
-  get secondaryColor(): string { return this.kit.secondary; }
 
   /**
    * Crea el team de la institución en una categoría. Sus atributos y su staff son
@@ -121,8 +145,8 @@ export class Institution extends TDC<IInstitutionData, IInstitutionCreator> {
       hq: this.info.headquarters.id,
       fd: this.info.funtationDay.getDate().dayAbsolute,
       sp: this.sport,
-      pc: this.primaryColor,
-      sc: this.secondaryColor,
+      ic: [...this.identity.colors],
+      kt: kitSetToData(this.kits),
     }
   }
 }
