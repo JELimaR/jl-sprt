@@ -23,10 +23,6 @@ export interface ITeamEntityDTO {
   category: TypeCategory;
   name: string;
   sport: TSport;
-  /** @deprecated Usar `webColors.bg`. */
-  primaryColor: string;
-  /** @deprecated Usar `webColors.fg`. */
-  secondaryColor: string;
   /** Colores institucionales (1 a 4); el primero es el principal. */
   identityColors: HexColor[];
   /** Colores de interfaz de la institución. */

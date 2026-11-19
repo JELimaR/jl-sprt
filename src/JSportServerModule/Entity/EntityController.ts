@@ -190,8 +190,6 @@ export class EntityController implements IEntityController {
       category: team.category,
       name: team.name,
       sport: inst.sport,
-      primaryColor: inst.primaryColor,
-      secondaryColor: inst.secondaryColor,
       identityColors: [...inst.identity.colors],
       webColors: inst.webColors(),
       kits: inst.kits,

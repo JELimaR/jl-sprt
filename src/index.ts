@@ -167,8 +167,17 @@ export type { TSport, IFootballScore, IVolleyballScore, IAmericanFootballScore, 
 export {
   CATEGORIES,
   getCategoryList,
+  // Contrato de equipaciones de un deporte (lo usan el visualizador y la app).
+  fieldKitSlots,
+  specialKitSlotsByPosition,
+  requiredKitSlotIds,
 } from 'jl-sprt-core';
 export type {
+  IKitSpec,
+  IKitSlotSpec,
+  KitGarment,
+  KitRole,
+  KitContrastTarget,
   AnyMatch,
   AnyTeam,
   ITeamCreator,
